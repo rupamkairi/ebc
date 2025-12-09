@@ -1,7 +1,7 @@
 interface Props {}
 
 const Page = (props: Props) => {
-  return <div>Hello</div>;
+  return <div>Hello EBC</div>;
 };
 
 export default Page;
