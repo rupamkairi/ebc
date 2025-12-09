@@ -1,7 +1,13 @@
+import LoginPage from "./auth/login/page";
+
 interface Props {}
 
 const Page = (props: Props) => {
-  return <div>Hello EBC</div>;
+  return (
+    <div>
+      <LoginPage />
+    </div>
+  );
 };
 
 export default Page;
