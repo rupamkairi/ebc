@@ -14,13 +14,16 @@ export default function PhoneLogin() {
 
   async function handleSendOtp(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    await sendOtpMutation.mutateAsync({ phone });
+    await sendOtpMutation.mutateAsync({ phoneNumber: phone });
     setOtpSent(true);
   }
 
   async function handleVerify(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const data = await verifyOtpMutation.mutateAsync({ phone, code: otp });
+    const data = await verifyOtpMutation.mutateAsync({
+      phoneNumber: phone,
+      code: otp,
+    });
 
     if (data?.user) {
       router.push("/dashboard");

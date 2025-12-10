@@ -1,7 +1,12 @@
 "use client";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { sendOtp, verifyOtp, fetchCurrentUser } from "@/queries/auth";
+import {
+  sendOtp,
+  verifyOtp,
+  fetchCurrentUser,
+  VerifyOtpPayload,
+} from "@/queries/auth";
 import { useAuthStore } from "@/store/authStore";
 import { setAuthToken } from "@/lib/axios";
 import { useEffect } from "react";
@@ -14,7 +19,7 @@ export function useAuth() {
   });
 
   const verifyOtpMutation = useMutation({
-    mutationFn: async (payload: { phone: string; code: string }) => {
+    mutationFn: async (payload: VerifyOtpPayload) => {
       const data = await verifyOtp(payload);
 
       if (data?.token) {
