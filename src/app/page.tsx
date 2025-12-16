@@ -1,13 +1,7 @@
-import LoginPage from "./auth/login/page";
-
-interface Props {}
-
-const Page = (props: Props) => {
+export default function Page() {
   return (
     <div>
-      <LoginPage />
+      <p>Whereas disregard and contempt for human rights have resulted</p>
     </div>
   );
-};
-
-export default Page;
+}
