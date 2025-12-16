@@ -1,13 +1,9 @@
 // src/store/authStore.ts
 import { create } from "zustand";
 
-export type User = {
-  id: string;
-  name?: string;
-  phoneNumber?: string;
-  email?: string;
-  role?: string;
-};
+import { SessionResponse } from "@/types/auth";
+
+export type User = SessionResponse["user"];
 
 type AuthState = {
   token?: string | null;

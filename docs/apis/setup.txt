@@ -1,0 +1,23 @@
+Prompt - 
+"""
+For the beginning I want you to help me setup 1 Important utility for me.
+use fetch instead of axios. Pick a suitable name for this utility function.
+this should be extended with default headers and base url. api endpoits will come from a constant file that organizes all the apis in a structured way.
+this should handle response & errors properly & return accordingly. should be able to handle all the requests params, body, query, methods, headers, cookies, authorization etc.
+this should be able to allow generic types & end-to-end type safety.
+this utility should later be used with all the react queries.
+
+So after the utility generate & organize the react queries for all the apis.
+organize the types somewhere too. for the request & response. that you can use in queries. also forward the other states from the queries properly so I can track loading error & utilize useful features of react queries.
+
+For overall state management use zustand & efficiently implement queries & mutations that seamlessly work with state manager.
+
+States related to auth & user should be implemented & called at the signup & signin.
+handle init calls properly at the correct level.
+
+For now Focus only on the `auth/admin/*` routes especially create, create-admin, create-admin-manager, create-admin-accountant, create-admin-executive, login & session (get session).
+
+Do not need to write tests - but do write examples So I do not need to write those to tests. organize test requests data somewhere that can be referenced while working.
+
+Setup these basic utilities do not write Any Components or UI related code.
+"""

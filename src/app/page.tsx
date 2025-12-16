@@ -1,7 +1,10 @@
+import { AuthExample } from "@/examples/auth-hooks-usage";
+
 export default function Page() {
   return (
     <div>
-      <p>Whereas disregard and contempt for human rights have resulted</p>
+      <p>App</p>
+      <AuthExample />
     </div>
   );
 }
