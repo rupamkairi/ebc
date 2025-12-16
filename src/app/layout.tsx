@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
-import QueryClientProvider from "./queries/QueryClientProvider";
+import QueryClientProvider from "@/queries/QueryClientProvider";
 
 // const sans = Open_Sans({
 //   weight: ["400", "500", "600", "700", "800"],
