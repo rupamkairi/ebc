@@ -46,7 +46,7 @@ export default function PhoneLogin() {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white p-2 rounded"
+            className="w-full bg-blue-600 text-white p-2 rounded cursor-pointer"
           >
             Send OTP
           </button>
