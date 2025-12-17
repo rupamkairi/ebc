@@ -64,10 +64,17 @@ const data = {
       url: "#",
       icon: BookOpen,
       items: [
-        { title: "Categories", url: "#" },
-        { title: "Products", url: "#" },
-        { title: "Brands", url: "#" },
-        { title: "Specifications", url: "#" },
+        { title: "Categories", url: "/admin-dashboard/catalog/categories" },
+        {
+          title: "Sub Categories",
+          url: "/admin-dashboard/catalog/sub-categories",
+        },
+        { title: "Brands", url: "/admin-dashboard/catalog/brands" },
+        {
+          title: "Specifications",
+          url: "/admin-dashboard/catalog/specifications",
+        },
+        { title: "Items", url: "/admin-dashboard/catalog/items" },
       ],
     },
     {

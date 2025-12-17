@@ -19,4 +19,37 @@ export const API_ENDPOINTS = {
     },
     SESSION: "/auth/session",
   },
+  CATALOG: {
+    CATEGORY: {
+      CREATE: "/catalog/category",
+      UPDATE: "/catalog/category",
+      DELETE: "/catalog/category",
+      LIST: "/catalog/category/list",
+    },
+    BRAND: {
+      CREATE: "/catalog/brand",
+      UPDATE: "/catalog/brand",
+      DELETE: "/catalog/brand",
+      LIST: "/catalog/brand/list",
+    },
+    SPECIFICATION: {
+      CREATE: "/catalog/specification",
+      UPDATE: "/catalog/specification",
+      DELETE: "/catalog/specification",
+      LIST: "/catalog/specification/list",
+    },
+    ITEM: {
+      CREATE: "/catalog/item",
+      UPDATE: "/catalog/item",
+      DELETE: "/catalog/item",
+      LIST: "/catalog/item/list",
+    },
+    ITEM_RATE: {
+      CREATE: "/catalog/itemrate",
+      UPDATE: "/catalog/itemrate",
+      DELETE: "/catalog/itemrate",
+      LIST: "/catalog/itemrate/list",
+    },
+    UPLOAD: "/catalog/upload",
+  },
 } as const;

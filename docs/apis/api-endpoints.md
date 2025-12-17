@@ -196,3 +196,282 @@ _Note: Newly created users must use "Send OTP" to login._
   "name": "Updated Name"
 }
 ```
+
+# Entity API Endpoints
+
+Base URL: `/api/entity`
+
+All routes require `Authorization: Bearer <token>` header.
+
+## Business Entity Management
+
+### 1. Create Entity
+
+**POST** `/`
+
+**Roles:** `USER_SELLER_ADMIN`, `USER_SERVICE_ADMIN`.
+**Constraint:** Limit 1 entity per user.
+
+**Request Body:**
+
+```json
+{
+  "name": "My Business",
+  "legalName": "My Business Pvt Ltd",
+  "description": "A description of the business."
+}
+```
+
+**Response:**
+
+```json
+{
+  "id": "uuid",
+  "name": "My Business",
+  ...
+}
+```
+
+### 2. Get Entities
+
+**GET** `/`
+
+**Roles:** `USER_SELLER_ADMIN`, `USER_SERVICE_ADMIN` (Fetch own), `ADMIN_MANAGER`, `ADMIN_EXECUTIVE` (Fetch all).
+
+**Response:**
+
+```json
+[
+  {
+    "id": "uuid",
+    "name": "My Business",
+    "createdById": "user-uuid",
+    ...
+  }
+]
+```
+
+### 3. Update Entity Details
+
+**PATCH** `/:id`
+
+**Roles:** `USER_SELLER_ADMIN`, `USER_SERVICE_ADMIN`.
+Updates the entity with the specified ID. Must be owned by the user.
+
+**Request Body:**
+
+```json
+{
+  "name": "Updated Name",
+  "legalName": "Updated Legal Name",
+  "description": "Updated description"
+}
+```
+
+**Response:**
+
+```json
+{
+  "id": "uuid",
+  "name": "Updated Name",
+  ...
+}
+```
+
+### 4. Verify Entity
+
+**PATCH** `/:id/verify`
+
+**Roles:** `ADMIN_MANAGER`, `ADMIN_EXECUTIVE`.
+
+**Request Body:**
+
+```json
+{
+  "status": "APPROVED",
+  "remark": "All documents are valid."
+}
+```
+
+_Note: `status` must be either "APPROVED" or "REJECTED"._
+
+**Response:**
+
+```json
+{
+  "id": "uuid",
+  "verificationStatus": "APPROVED",
+  ...
+}
+```
+
+# Catalog API Endpoints
+
+Base URL: `/api/catalog`
+
+## Category
+
+- **Create**: `POST /category`
+  - Body:
+  ```json
+  {
+    "name": "Cement & Binders",
+    "type": "PRODUCT"
+  }
+  ```
+  And for Sub-Category
+  ```json
+  {
+    "name": "Cement",
+    "type": "PRODUCT",
+    "parentCategoryId": "f224e3b3-82e0-43ab-a374-cd6ce81f457f"
+  }
+  ```
+- **Update**: `PATCH /category`
+  - Body:
+  ```json
+  {
+    "id": "UUID",
+    "name": "String",
+    ...
+  }
+  ```
+- **Delete**: `DELETE /category`
+  - Body: `{ "id": "UUID" }`
+- **List**: `POST /category/list`
+  - Body:
+    ```json
+    {
+      "type": "PRODUCT",
+      "isSubCategory": true,
+      "parentCategoryId": "UUID"
+    }
+    ```
+
+## Brand
+
+- **Create**: `POST /brand`
+  - Body: `{ "name": "String" }`
+- **Update**: `PATCH /brand`
+  - Body: `{ "id": "UUID", "name": "String" }`
+- **Delete**: `DELETE /brand`
+  - Body: `{ "id": "UUID" }`
+- **List**: `POST /brand/list`
+  - Body:
+    ```json
+    {
+      "search": "String"
+    }
+    ```
+
+## Specification
+
+- **Create**: `POST /specification`
+  - Body: `{ "name": "String", "description": "String?" }`
+- **Update**: `PATCH /specification`
+  - Body: `{ "id": "UUID", "name": "String", ... }`
+- **Delete**: `DELETE /specification`
+  - Body: `{ "id": "UUID" }`
+- **List**: `POST /specification/list`
+  - Body:
+    ```json
+    {
+      "search": "String"
+    }
+    ```
+
+## Item
+
+- **Create**: `POST /item`
+  - Body:
+  ```json
+  {
+    "name": "ACC 10kg Cement - Corrosion Resistant",
+    "description": "ACC 10kg Cement - Corrosion Resistant. Pack: 5 Meter. HSN: 2524. GST: 5%. Supplier: Manufacturer located in Telangana.",
+    "type": "PRODUCT",
+    "HSNCode": "2524",
+    "GSTPercentage": 5,
+    "categoryId": "c49c663b-6fac-4952-9a24-22a1f0d270d9",
+    "brandId": "c4968c03-f892-44fa-9f2e-50b473ac4e3a",
+    "specificationId": "5a9d9825-1c40-4a30-9aee-f9cb18ec6a9e"
+  }
+  ```
+- **Update**: `PATCH /item`
+  - Body:
+  ```json
+  {
+    "id": "UUID",
+    ...
+  }
+  ```
+- **Delete**: `DELETE /item`
+  - Body: `{ "id": "UUID" }`
+- **List**: `POST /item/list`
+  - Body:
+    ```json
+    {
+      "categoryId": "UUID",
+      "brandId": "UUID",
+      "specificationId": "UUID",
+      "type": "PRODUCT"
+    }
+    ```
+
+## Item Rate
+
+- **Create**: `POST /itemrate`
+  - Body:
+  ```json
+  {
+    "itemId": "b9cacaae-b2e5-472c-9410-92738972a2fb",
+    "entityId": "8e789b10-6224-4d27-b328-e3497476d7bb",
+    "minQuantity": 50,
+    "unitType": "Kilogram",
+    "rate": 400
+  }
+  ```
+  Or,
+  ```json
+  {
+    "itemId": "b9cacaae-b2e5-472c-9410-92738972a2fb",
+    "entityId": "8e789b10-6224-4d27-b328-e3497476d7bb",
+    "minQuantity": 5,
+    "unitType": "Bag",
+    "secondaryQuantity": 50,
+    "secondaryUnitType": "Kilogram",
+    "rate": 2000,
+    "isNegotiable": true
+  }
+  ```
+- **Update**: `PATCH /itemrate`
+  - Body: `{ "id": "UUID", ... }`
+- **Delete**: `DELETE /itemrate`
+  - Body: `{ "id": "UUID" }`
+- **List**: `POST /itemrate/list`
+  - Body:
+    ```json
+    {
+      "itemId": "UUID",
+      "entityId": "UUID"
+    }
+    ```
+
+## Bulk Upload
+
+- **Upload**: `POST /upload`
+  - Body: Array of Objects
+  ```json
+  [
+    {
+      "type": "PRODUCT",
+      "category": "Electronics",
+      "subCategory": "Laptops",
+      "brand": "Dell",
+      "specification": "Core i7",
+      "item": "XPS 15",
+      "HSNCode": "8471",
+      "GSTPercentage": "18"
+    }
+  ]
+  ```
+- This does not account for finding (category, brand & specification) & link or create & link.
