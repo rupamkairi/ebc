@@ -42,5 +42,7 @@ export interface SessionResponse {
     banned?: boolean;
     banReason?: string;
     banExpires?: string;
+    phoneNumber?: string | null;
+    phoneVerified?: boolean;
   };
 }

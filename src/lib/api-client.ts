@@ -66,6 +66,7 @@ async function fetchClient<T>(
   const config: RequestInit = {
     ...customConfig,
     headers,
+    credentials: "include",
   };
 
   if (body) {

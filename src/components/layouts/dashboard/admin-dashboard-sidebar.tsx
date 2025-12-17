@@ -39,7 +39,7 @@ const data = {
       icon: SquareTerminal,
       isActive: true,
       items: [
-        { title: "Managers", url: "#" },
+        { title: "Managers", url: "/admin-dashboard/admin-managers" },
         { title: "Accountants", url: "#" },
         { title: "Executives", url: "#" },
       ],

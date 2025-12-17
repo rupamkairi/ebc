@@ -8,6 +8,7 @@ export const API_ENDPOINTS = {
       CREATE_EXECUTIVE: "/auth/admin/create-admin-executive",
       SET_ROLE: "/auth/admin/set-role",
       UPDATE_PROFILE: "/auth/admin/update",
+      LIST_USERS: "/auth/admin/list-users",
     },
     USER: {
       SEND_OTP: "/auth/user/send-otp",

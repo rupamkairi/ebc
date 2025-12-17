@@ -14,8 +14,8 @@ All Admin creation and update routes require `Authorization: Bearer <token>` hea
 
 ```json
 {
-  "email": "admin@example.com",
-  "password": "securepassword"
+  "email": "root@example.com",
+  "password": "password"
 }
 ```
 
@@ -41,7 +41,7 @@ _Note: Publicly accessible only if no Admins exist in the system._
 {
   "email": "root@example.com",
   "name": "Root Admin",
-  "password": "securepassword"
+  "password": "password"
 }
 ```
 
@@ -61,7 +61,7 @@ Only accessible by specific roles (defined in `permissions.json`).
 {
   "email": "manager@example.com",
   "name": "Admin Manager",
-  "password": "securepassword"
+  "password": "password"
 }
 ```
 
@@ -104,6 +104,21 @@ _Note: Valid roles: `ADMIN_MANAGER`, `ADMIN_ACCOUNTANT`, `ADMIN_EXECUTIVE`, `UNA
 {
   "session": { ... },
   "user": { ... }
+}
+```
+
+### 7. List Users
+
+**POST** `/admin/list-users`
+_Requires ADMIN, ADMIN_MANAGER, or ADMIN_EXECUTIVE role._
+
+**Request Body:**
+
+```json
+{
+  "role": "USER_SELLER_ADMIN", // Optional
+  "phoneVerified": true, // Optional
+  "search": "john" // Optional search text
 }
 ```
 

@@ -8,6 +8,8 @@ import type * as React from "react";
 export default function Provider({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
 
+  /* Manual hydration removed - handled by Zustand persist middleware */
+
   return (
     <QueryClientProvider client={queryClient}>
       {children}

@@ -1,0 +1,30 @@
+Objective: Implement a robust Authentication system and an Admin Managers management module for a Next.js Admin Dashboard.
+
+Tech Stack & Requirements:
+
+State Management: zustand (use persist middleware for Authentication to handle page reloads).
+Data Fetching: @tanstack/react-query. API Client must handle Authorization headers and set credentials: "include" for cookie support.
+Forms: @tanstack/react-form (Headless form management). Do not use react-hook-form.
+Tables: @tanstack/react-table. Create a reusable, type-safe 
+DataTable
+ component in src/components/datatable (separate from shadcn ui) that supports server-side pagination, sorting, and filtering.
+UI: shadcn/ui components (Dialog, Input, Button, etc.) and sonner for toast notifications.
+Specific Tasks:
+
+Authentication Flow:
+Create authService for Login and Session logical.
+Implement useAuthStore with persistence to managing Token/User state.
+Create an AuthGuard component to protect dashboard routes.
+Refactor AdminLoginForm to integrate with the service and store.
+Reusable Data Table:
+Build a DataTable component wrapper around useReactTable.
+Include sub-components for DataTablePagination and DataTableColumnHeader (sortable).
+Ensure it accepts pagination and sorting state as props for server-side control.
+Admin Managers Module:
+Create adminService with endpoints to createAdminManager and getUsers.
+List View: Create a page at /admin-dashboard/admin-managers using the reusable DataTable. It must fetch data using React Query, passing pagination/sorting params to the API.
+Create View: Implement a CreateAdminManagerForm inside a Dialog, using TanStack Form for validation (name, email format, password length) and submission.
+Architecture:
+Keep API services, React Query hooks, and UI components separated.
+Update api-endpoints.ts with necessary routes (/auth/admin/list-users, etc.).
+Ensure the User type interface is accurate (including fields like phoneNumber).
