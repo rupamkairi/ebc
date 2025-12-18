@@ -24,16 +24,16 @@ import { useAuthStore } from "@/store/authStore";
 import { firstAndLastNameInitials } from "@/lib/utils";
 
 // This is sample data.
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-};
+// const data = {
+//   user: {
+//     name: "shadcn",
+//     email: "m@example.com",
+//     avatar: "/avatars/shadcn.jpg",
+//   },
+// };
 
 export function AdminDashboardUser() {
-  const user = useAuthStore((state) => state.user);
+  const { user, logout } = useAuthStore();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -97,7 +97,7 @@ export function AdminDashboardUser() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={logout} className="cursor-pointer text-destructive focus:text-destructive">
           <LogOut />
           Log out
         </DropdownMenuItem>
