@@ -119,7 +119,7 @@ export function AdminDashboardSidebar({
             >
               <a href="#">
                 <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <span className="text-base font-semibold">EBC Marketplace</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

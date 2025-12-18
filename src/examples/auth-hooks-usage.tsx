@@ -87,8 +87,11 @@ export const AuthExample = () => {
         </div>
       ) : (
         <div>
-          <button onClick={handleLogin}>Login as Admin</button>
-          <button onClick={handleCreateRootAdmin}>
+          <br />
+          <button onClick={handleLogin} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer">
+            Login as Admin
+          </button> <br /><br />
+          <button onClick={handleCreateRootAdmin} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer">
             Create Root Admin (Setup)
           </button>
         </div>
