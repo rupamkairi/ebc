@@ -1,18 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
+import { useSyncSession } from "@/hooks/api/use-auth-admin";
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  useSyncSession();
   const token = useAuthStore((state) => state.token);
   // const user = useAuthStore((state) => state.user); // Unused for now
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   useEffect(() => {
     if (mounted && !token) {

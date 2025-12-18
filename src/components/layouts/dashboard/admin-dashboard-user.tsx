@@ -20,6 +20,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
+import { useAuthStore } from "@/store/authStore";
+import { firstAndLastNameInitials } from "@/lib/utils";
 
 // This is sample data.
 const data = {
@@ -31,7 +33,7 @@ const data = {
 };
 
 export function AdminDashboardUser() {
-  const user = data.user;
+  const user = useAuthStore((state) => state.user);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -40,12 +42,14 @@ export function AdminDashboardUser() {
           className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
         >
           <Avatar className="h-8 w-8 rounded-lg">
-            <AvatarImage src={user.avatar} alt={user.name} />
-            <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+            <AvatarImage src={user?.image || ""} alt={user?.name} />
+            <AvatarFallback className="rounded-lg">
+              {user?.name ? firstAndLastNameInitials(user.name) : "U"}
+            </AvatarFallback>
           </Avatar>
           <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-medium">{user.name}</span>
-            <span className="truncate text-xs">{user.email}</span>
+            <span className="truncate font-medium">{user?.name}</span>
+            <span className="truncate text-xs">{user?.email}</span>
           </div>
           <ChevronsUpDown className="ml-auto size-4" />
         </SidebarMenuButton>
@@ -59,32 +63,34 @@ export function AdminDashboardUser() {
         <DropdownMenuLabel className="p-0 font-normal">
           <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
             <Avatar className="h-8 w-8 rounded-lg">
-              <AvatarImage src={user.avatar} alt={user.name} />
-              <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+              <AvatarImage src={user?.image || ""} alt={user?.name} />
+              <AvatarFallback className="rounded-lg">
+                {user?.name ? firstAndLastNameInitials(user.name) : "U"}
+              </AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">{user.name}</span>
-              <span className="truncate text-xs">{user.email}</span>
+              <span className="truncate font-medium">{user?.name}</span>
+              <span className="truncate text-xs">{user?.email}</span>
             </div>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
+        {/* <DropdownMenuSeparator /> */}
+        {/* <DropdownMenuGroup>
           <DropdownMenuItem>
             <Sparkles />
             Upgrade to Pro
           </DropdownMenuItem>
-        </DropdownMenuGroup>
+        </DropdownMenuGroup> */}
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          {/* <DropdownMenuItem>
             <BadgeCheck />
             Account
           </DropdownMenuItem>
           <DropdownMenuItem>
             <CreditCard />
             Billing
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuItem>
             <Bell />
             Notifications
