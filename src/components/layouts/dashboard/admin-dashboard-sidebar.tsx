@@ -1,7 +1,16 @@
 "use client";
 
 import { IconInnerShadowTop } from "@tabler/icons-react";
-import { BookOpen, Bot, Settings2, SquareTerminal } from "lucide-react";
+import {
+  BarChart3,
+  ChevronRight,
+  Cpu,
+  Library,
+  Settings,
+  ShieldCheck,
+  Store,
+  Users,
+} from "lucide-react";
 import * as React from "react";
 
 // import { NavMain } from "@/components/nav-main"
@@ -28,7 +37,6 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { ChevronRight } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 
 // This is sample data.
@@ -37,7 +45,7 @@ const data = {
     {
       title: "Admin",
       url: "#",
-      icon: SquareTerminal,
+      icon: ShieldCheck,
       isActive: true,
       items: [
         { title: "Managers", url: "/admin-dashboard/admin-managers" },
@@ -48,7 +56,7 @@ const data = {
     {
       title: "Sellers",
       url: "#",
-      icon: Bot,
+      icon: Store,
       items: [
         { title: "Product Managers", url: "#" },
         { title: "Service Providers", url: "#" },
@@ -57,13 +65,13 @@ const data = {
     {
       title: "Buyers",
       url: "#",
-      icon: Bot,
+      icon: Users,
       items: [{ title: "Buyers", url: "#" }],
     },
     {
       title: "Catalog",
       url: "#",
-      icon: BookOpen,
+      icon: Library,
       items: [
         { title: "Categories", url: "/admin-dashboard/catalog/categories" },
         {
@@ -81,7 +89,7 @@ const data = {
     {
       title: "Reports",
       url: "#",
-      icon: Settings2,
+      icon: BarChart3,
       items: [
         { title: "General", url: "#" },
         { title: "Team", url: "#" },
@@ -92,7 +100,7 @@ const data = {
     {
       title: "AI",
       url: "#",
-      icon: Settings2,
+      icon: Cpu,
       items: [
         { title: "Conference Hall", url: "#" },
         { title: "Calculators", url: "#" },
@@ -101,7 +109,7 @@ const data = {
     {
       title: "Settings",
       url: "#",
-      icon: Settings2,
+      icon: Settings,
     },
   ],
 };
