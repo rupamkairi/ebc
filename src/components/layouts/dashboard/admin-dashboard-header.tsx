@@ -15,6 +15,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminDashboardUser } from "@/components/layouts/dashboard/admin-dashboard-user";
+import { MediaUploader } from "@/components/upload";
 import { PATH_BREADCRUMBS } from "@/lib/path-breadcrumbs";
 
 export default function AdminDashboardHeader() {
@@ -58,6 +59,7 @@ export default function AdminDashboardHeader() {
           </Breadcrumb>
         </div>
         <div className="flex items-center gap-2">
+          <MediaUploader />
           <Separator orientation="vertical" className="mr-2 h-4" />
           <AdminDashboardUser />
         </div>
