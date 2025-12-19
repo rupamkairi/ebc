@@ -21,6 +21,7 @@ import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { useAuthStore } from "@/store/authStore";
 import { firstAndLastNameInitials } from "@/lib/utils";
 import { useRefreshSession } from "@/queries/authQueries";
+import { useQueryClient } from "@tanstack/react-query";
 
 // This is sample data.
 // const data = {
@@ -34,6 +35,13 @@ import { useRefreshSession } from "@/queries/authQueries";
 export function AdminDashboardUser() {
   const { user, logout } = useAuthStore();
   const refreshSession = useRefreshSession();
+  const queryClient = useQueryClient();
+
+  const handleLogout = () => {
+    logout();
+    queryClient.clear();
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -94,7 +102,7 @@ export function AdminDashboardUser() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={logout}
+          onClick={handleLogout}
           className="cursor-pointer text-destructive focus:text-destructive"
         >
           <LogOut className="mr-2 h-4 w-4" />

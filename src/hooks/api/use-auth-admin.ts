@@ -27,7 +27,7 @@ export function useAdminLogin() {
     onSuccess: (data) => {
       setToken(data.token);
       // Invalidate session to fetch fresh user data
-      queryClient.invalidateQueries({ queryKey: SESSION_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: ["auth", "session"] });
     },
   });
 }
@@ -74,14 +74,13 @@ export function useCreateAdminExecutive() {
 }
 
 // --- Queries ---
-
-export const SESSION_QUERY_KEY = ["session"];
+export const SESSION_QUERY_KEY = ["auth", "session"];
 
 export function useSession() {
-  const token = useAuthStore((state) => state.token); // Dependency to refetch if token changes
+  const token = useAuthStore((state) => state.token);
 
   return useQuery({
-    queryKey: SESSION_QUERY_KEY,
+    queryKey: [...SESSION_QUERY_KEY, token],
     queryFn: async () => {
       const data = await fetchClient<SessionResponse>(
         API_ENDPOINTS.AUTH.SESSION,

@@ -13,7 +13,7 @@ export function useSessionQuery() {
   const token = useAuthStore((state) => state.token);
 
   const query = useQuery({
-    queryKey: authKeys.session(),
+    queryKey: [...authKeys.session(), token],
     queryFn: () => authService.getSession(),
     enabled: !!token,
   });
