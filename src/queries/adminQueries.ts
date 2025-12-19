@@ -29,3 +29,27 @@ export function useCreateAdminManagerMutation() {
     },
   });
 }
+
+export function useCreateAdminAccountantMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: CreateAdminSubordinateRequest) =>
+      adminService.createAdminAccountant(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.all });
+    },
+  });
+}
+
+export function useCreateAdminExecutiveMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: CreateAdminSubordinateRequest) =>
+      adminService.createAdminExecutive(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.all });
+    },
+  });
+}

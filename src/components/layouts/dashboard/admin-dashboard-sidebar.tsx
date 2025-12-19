@@ -40,8 +40,8 @@ const data = {
       isActive: true,
       items: [
         { title: "Managers", url: "/admin-dashboard/admin-managers" },
-        { title: "Accountants", url: "#" },
-        { title: "Executives", url: "#" },
+        { title: "Accountants", url: "/admin-dashboard/admin-accountants" },
+        { title: "Executives", url: "/admin-dashboard/admin-executives" },
       ],
     },
     {

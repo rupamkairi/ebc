@@ -20,6 +20,20 @@ export const adminService = {
     });
   },
 
+  async createAdminAccountant(data: CreateAdminSubordinateRequest) {
+    return fetchClient(API_ENDPOINTS.AUTH.ADMIN.CREATE_ACCOUNTANT, {
+      method: "POST",
+      body: data,
+    });
+  },
+
+  async createAdminExecutive(data: CreateAdminSubordinateRequest) {
+    return fetchClient(API_ENDPOINTS.AUTH.ADMIN.CREATE_EXECUTIVE, {
+      method: "POST",
+      body: data,
+    });
+  },
+
   async getUsers(params: UserListParams = {}) {
     return fetchClient<SessionResponse["user"][]>(
       API_ENDPOINTS.AUTH.ADMIN.LIST_USERS,

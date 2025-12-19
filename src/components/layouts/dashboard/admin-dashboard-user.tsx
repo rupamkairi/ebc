@@ -1,12 +1,10 @@
 "use client";
 
 import {
-  BadgeCheck,
   Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
-  Sparkles,
+  RefreshCcw,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -22,6 +20,7 @@ import {
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { useAuthStore } from "@/store/authStore";
 import { firstAndLastNameInitials } from "@/lib/utils";
+import { useRefreshSession } from "@/queries/authQueries";
 
 // This is sample data.
 // const data = {
@@ -34,6 +33,7 @@ import { firstAndLastNameInitials } from "@/lib/utils";
 
 export function AdminDashboardUser() {
   const { user, logout } = useAuthStore();
+  const refreshSession = useRefreshSession();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -83,22 +83,21 @@ export function AdminDashboardUser() {
         </DropdownMenuGroup> */}
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          {/* <DropdownMenuItem>
-            <BadgeCheck />
-            Account
+          <DropdownMenuItem onClick={refreshSession} className="cursor-pointer">
+            <RefreshCcw className="mr-2 h-4 w-4" />
+            Refresh Session
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <CreditCard />
-            Billing
-          </DropdownMenuItem> */}
-          <DropdownMenuItem>
-            <Bell />
+            <Bell className="mr-2 h-4 w-4" />
             Notifications
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={logout} className="cursor-pointer text-destructive focus:text-destructive">
-          <LogOut />
+        <DropdownMenuItem
+          onClick={logout}
+          className="cursor-pointer text-destructive focus:text-destructive"
+        >
+          <LogOut className="mr-2 h-4 w-4" />
           Log out
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -1,6 +1,8 @@
 export const PATH_BREADCRUMBS: Record<string, string> = {
   "admin-dashboard": "Dashboard",
   "admin-managers": "Managers",
+  "admin-accountants": "Accountants",
+  "admin-executives": "Executives",
   "catalog": "Catalog",
   "categories": "Categories",
   "sub-categories": "Sub Categories",
