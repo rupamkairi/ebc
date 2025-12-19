@@ -29,6 +29,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { ChevronRight } from "lucide-react";
+import { useAuthStore } from "@/store/authStore";
 
 // This is sample data.
 const data = {
@@ -108,6 +109,40 @@ const data = {
 export function AdminDashboardSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useAuthStore();
+  const role = user?.role?.toUpperCase();
+
+  const filteredNavMain = data.navMain
+    .map((group) => {
+      if (group.title === "Admin") {
+        const filteredItems = group.items?.filter((item) => {
+          // Admin (Super Admin) sees everything
+          if (role === "ADMIN") return true;
+
+          if (role === "ADMIN_MANAGER") {
+            // Manager hides Accountants
+            return item.title !== "Accountants";
+          }
+          if (role === "ADMIN_ACCOUNTANT") {
+            // Accountant hides Managers and Executives
+            return item.title !== "Managers" && item.title !== "Executives";
+          }
+          if (role === "ADMIN_EXECUTIVE") {
+            // Executive hides Managers, Accountants, and Executives
+            return (
+              item.title !== "Managers" &&
+              item.title !== "Accountants" &&
+              item.title !== "Executives"
+            );
+          }
+          return true;
+        });
+        return { ...group, items: filteredItems };
+      }
+      return group;
+    })
+    .filter((group) => !group.items || group.items.length > 0);
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -129,7 +164,7 @@ export function AdminDashboardSidebar({
         <SidebarGroup>
           <SidebarGroupLabel>Platform</SidebarGroupLabel>
           <SidebarMenu>
-            {data.navMain.map((item) => (
+            {filteredNavMain.map((item) => (
               <Collapsible
                 key={item.title}
                 asChild
