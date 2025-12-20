@@ -205,8 +205,8 @@ export function CategoryForm() {
                           setPreviewUrl(uploadedFiles[0].url);
                         }
                       }}
-                      // maxFiles={1}
-                      // endpoint="/media/upload/single"
+                      variant="single"
+                      crop={true}
                       label={field.state.value ? "Change Icon" : "Upload Icon"}
                     />
                   </div>

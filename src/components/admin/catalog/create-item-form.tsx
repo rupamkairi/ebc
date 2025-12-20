@@ -14,11 +14,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  useBrandsQuery,
-  useCategoriesQuery,
   useCreateItemMutation,
   useUpdateItemMutation,
-  useSpecificationsQuery,
 } from "@/queries/catalogQueries";
 import { toast } from "sonner";
 import { ApiError } from "@/lib/api-client";
@@ -32,20 +29,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEffect } from "react";
+import { BrandSearchAutocomplete } from "@/components/autocompletes/brand-search-autocomplete";
+import { CategorySearchAutocomplete } from "@/components/autocompletes/category-search-autocomplete";
+import { SpecificationSearchAutocomplete } from "@/components/autocompletes/specification-search-autocomplete";
 
 export function ItemForm() {
   const { isCreateOpen, setCreateOpen, isEditOpen, setEditOpen, selectedItem } =
     useItemStore();
+  // Create/Update mutations
   const createMutation = useCreateItemMutation();
   const updateMutation = useUpdateItemMutation();
 
   const isOpen = isCreateOpen || isEditOpen;
   const isEditing = isEditOpen && !!selectedItem;
-
-  // Fetch dependencies
-  const { data: categories } = useCategoriesQuery({ perPage: 100 });
-  const { data: brands } = useBrandsQuery({ perPage: 100 });
-  const { data: specifications } = useSpecificationsQuery({ perPage: 100 });
 
   const form = useForm({
     defaultValues: {
@@ -314,22 +310,12 @@ export function ItemForm() {
                   Category
                 </Label>
                 <div className="col-span-3">
-                  <Select
+                  <CategorySearchAutocomplete
                     value={field.state.value}
                     onValueChange={field.handleChange}
-                    disabled={!categories}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories?.map((cat) => (
-                        <SelectItem key={cat.id} value={cat.id}>
-                          {cat.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    placeholder="Search category"
+                    label="Select category"
+                  />
                   {field.state.meta.errors ? (
                     <p className="text-sm text-red-500 mt-1">
                       {field.state.meta.errors.join(", ")}
@@ -354,22 +340,12 @@ export function ItemForm() {
                   Brand
                 </Label>
                 <div className="col-span-3">
-                  <Select
+                  <BrandSearchAutocomplete
                     value={field.state.value}
                     onValueChange={field.handleChange}
-                    disabled={!brands}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select brand" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {brands?.map((brand) => (
-                        <SelectItem key={brand.id} value={brand.id}>
-                          {brand.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    placeholder="Search brand"
+                    label="Select brand"
+                  />
                   {field.state.meta.errors ? (
                     <p className="text-sm text-red-500 mt-1">
                       {field.state.meta.errors.join(", ")}
@@ -394,22 +370,12 @@ export function ItemForm() {
                   Specification
                 </Label>
                 <div className="col-span-3">
-                  <Select
+                  <SpecificationSearchAutocomplete
                     value={field.state.value}
                     onValueChange={field.handleChange}
-                    disabled={!specifications}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select specification" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {specifications?.map((spec) => (
-                        <SelectItem key={spec.id} value={spec.id}>
-                          {spec.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    placeholder="Search specification"
+                    label="Select specification"
+                  />
                   {field.state.meta.errors ? (
                     <p className="text-sm text-red-500 mt-1">
                       {field.state.meta.errors.join(", ")}

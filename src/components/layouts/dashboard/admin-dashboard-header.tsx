@@ -59,7 +59,7 @@ export default function AdminDashboardHeader() {
           </Breadcrumb>
         </div>
         <div className="flex items-center gap-2">
-          <MediaUploader />
+          <MediaUploader variant="multiple" label="Upload to Library" />
           <Separator orientation="vertical" className="mr-2 h-4" />
           <AdminDashboardUser />
         </div>
