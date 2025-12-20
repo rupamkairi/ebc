@@ -15,6 +15,7 @@ interface AutocompleteBaseProps<T, P> {
   className?: string;
   disabled?: boolean;
   additionalParams?: Partial<P>;
+  searchField?: string;
 }
 
 export function AutocompleteBase<T, P>({
@@ -28,6 +29,7 @@ export function AutocompleteBase<T, P>({
   className,
   disabled,
   additionalParams = {},
+  searchField = "search",
 }: AutocompleteBaseProps<T, P>) {
   const [searchValue, setSearchValue] = React.useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = React.useState("");
@@ -41,7 +43,7 @@ export function AutocompleteBase<T, P>({
 
   const { data, isLoading } = useQueryHook({
     ...additionalParams,
-    search: debouncedSearchValue,
+    [searchField]: debouncedSearchValue,
   } as P);
 
   const options = React.useMemo(() => {
