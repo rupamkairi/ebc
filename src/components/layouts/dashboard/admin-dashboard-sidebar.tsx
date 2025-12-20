@@ -43,7 +43,7 @@ import { useAuthStore } from "@/store/authStore";
 const data = {
   navMain: [
     {
-      title: "Admin",
+      title: "Admins",
       url: "#",
       icon: ShieldCheck,
       isActive: true,
@@ -54,16 +54,16 @@ const data = {
       ],
     },
     {
-      title: "Sellers",
+      title: "Sellers & Providers",
       url: "#",
       icon: Store,
       items: [
-        { title: "Product Managers", url: "#" },
+        { title: "Product Sellers", url: "#" },
         { title: "Service Providers", url: "#" },
       ],
     },
     {
-      title: "Buyers",
+      title: "Buyers & Consumers",
       url: "#",
       icon: Users,
       items: [{ title: "Buyers", url: "#" }],

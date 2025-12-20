@@ -1,7 +1,5 @@
 "use client";
 
-import { useForm } from "@tanstack/react-form";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,11 +12,22 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useCreateAdminManagerMutation } from "@/queries/adminQueries";
-import { toast } from "sonner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { ApiError } from "@/lib/api-client";
+import { useCreateAdminManagerMutation } from "@/queries/adminQueries";
+import { useAuthStore } from "@/store/authStore";
+import { useForm } from "@tanstack/react-form";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export function CreateAdminManagerForm() {
+  const { user } = useAuthStore();
+  const role = user?.role?.toUpperCase();
+
   const [open, setOpen] = useState(false);
   const mutation = useCreateAdminManagerMutation();
 
@@ -46,10 +55,19 @@ export function CreateAdminManagerForm() {
     },
   });
 
+  const disabled = role !== "ADMIN";
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Add Manager</Button>
+        <Tooltip>
+          <TooltipTrigger>
+            <Button disabled={disabled}>Add Manager</Button>
+          </TooltipTrigger>
+          <TooltipContent hidden={!disabled}>
+            <p>Only Admin can add manager</p>
+          </TooltipContent>
+        </Tooltip>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
