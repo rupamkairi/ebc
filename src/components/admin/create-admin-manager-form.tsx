@@ -54,7 +54,7 @@ export function CreateAdminManagerForm() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Add Manager</Button>
+        <Button className="cursor-pointer">Add Manager</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

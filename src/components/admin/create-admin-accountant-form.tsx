@@ -54,7 +54,7 @@ export function CreateAdminAccountantForm() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Add Accountant</Button>
+        <Button className="cursor-pointer">Add Accountant</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

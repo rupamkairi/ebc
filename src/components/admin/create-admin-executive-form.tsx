@@ -54,7 +54,7 @@ export function CreateAdminExecutiveForm() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Add Executive</Button>
+        <Button className="cursor-pointer">Add Executive</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
