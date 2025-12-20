@@ -59,16 +59,16 @@ export function CreateAdminExecutiveForm() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Tooltip>
-          <TooltipTrigger>
+      <Tooltip>
+        <TooltipTrigger>
+          <DialogTrigger asChild>
             <Button disabled={disabled}>Add Executive</Button>
-          </TooltipTrigger>
-          <TooltipContent hidden={!disabled}>
-            <p>Only Admin & Manager can add executive</p>
-          </TooltipContent>
-        </Tooltip>
-      </DialogTrigger>
+          </DialogTrigger>
+        </TooltipTrigger>
+        <TooltipContent hidden={!disabled}>
+          <p>Only Admin & Manager can add executive</p>
+        </TooltipContent>
+      </Tooltip>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Admin Executive</DialogTitle>
