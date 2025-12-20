@@ -4,7 +4,7 @@ import { Category } from "@/types/catalog";
 interface SubCategoryState {
   isCreateOpen: boolean;
   isEditOpen: boolean;
-  selectedSubCategory: Category | null;
+  selectedCategory: Category | null;
   setCreateOpen: (open: boolean) => void;
   setEditOpen: (open: boolean, subCategory?: Category) => void;
 }
@@ -12,8 +12,8 @@ interface SubCategoryState {
 export const useSubCategoryStore = create<SubCategoryState>((set) => ({
   isCreateOpen: false,
   isEditOpen: false,
-  selectedSubCategory: null,
+  selectedCategory: null,
   setCreateOpen: (open) => set({ isCreateOpen: open }),
   setEditOpen: (open, subCategory) =>
-    set({ isEditOpen: open, selectedSubCategory: open ? subCategory : null }),
+    set({ isEditOpen: open, selectedCategory: open ? subCategory : null }),
 }));

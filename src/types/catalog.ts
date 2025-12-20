@@ -1,3 +1,11 @@
+export interface Media {
+  id: string;
+  url: string;
+  name: string;
+  mimeType: string;
+  size: number;
+}
+
 export interface Category {
   id: string;
   name: string;
@@ -7,13 +15,17 @@ export interface Category {
   updatedAt?: string;
   parentCategory?: Category;
   subCategories?: Category[];
+  categoryIconId?: string | null;
+  categoryIcon?: Media;
 }
 
 export interface Brand {
   id: string;
   name: string;
+  brandLogoId?: string | null;
   createdAt?: string;
   updatedAt?: string;
+  brandLogo?: Media;
 }
 
 export interface Specification {
@@ -45,6 +57,7 @@ export interface CreateCategoryRequest {
   name: string;
   type: string;
   parentCategoryId?: string;
+  categoryIconId?: string;
 }
 
 export interface UpdateCategoryRequest {
@@ -52,6 +65,7 @@ export interface UpdateCategoryRequest {
   name?: string;
   type?: string;
   parentCategoryId?: string | null;
+  categoryIconId?: string | null;
 }
 
 export interface CategoryListParams {
@@ -67,11 +81,13 @@ export interface CategoryListParams {
 
 export interface CreateBrandRequest {
   name: string;
+  brandLogoId?: string;
 }
 
 export interface UpdateBrandRequest {
   id: string;
   name: string;
+  brandLogoId?: string;
 }
 
 export interface BrandListParams {

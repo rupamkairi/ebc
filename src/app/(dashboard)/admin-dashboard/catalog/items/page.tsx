@@ -1,5 +1,5 @@
 import { ItemTable } from "@/components/admin/catalog/item-table";
-import { CreateItemForm } from "@/components/admin/catalog/create-item-form";
+import { ItemForm } from "@/components/admin/catalog/create-item-form";
 
 export default function ItemsPage() {
   return (
@@ -10,7 +10,7 @@ export default function ItemsPage() {
           <p className="text-muted-foreground">Manage catalog items.</p>
         </div>
         <div className="flex items-center space-x-2">
-          <CreateItemForm />
+          <ItemForm />
         </div>
       </div>
       <ItemTable />

@@ -1,5 +1,5 @@
 import { SpecificationTable } from "@/components/admin/catalog/specification-table";
-import { CreateSpecificationForm } from "@/components/admin/catalog/create-specification-form";
+import { SpecificationForm } from "@/components/admin/catalog/create-specification-form";
 
 export default function SpecificationsPage() {
   return (
@@ -12,7 +12,7 @@ export default function SpecificationsPage() {
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <CreateSpecificationForm />
+          <SpecificationForm />
         </div>
       </div>
       <SpecificationTable />

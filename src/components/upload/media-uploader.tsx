@@ -32,7 +32,31 @@ interface UploadFileItem {
   id: string;
 }
 
-export function MediaUploader() {
+interface MediaUploadResponse {
+  id: string;
+  url: string;
+  name: string;
+  mimeType: string;
+  size: number;
+}
+
+interface MediaUploaderProps {
+  onUploadSuccess?: (files: MediaUploadResponse[]) => void;
+  maxFiles?: number;
+  label?: string;
+  variant?: "default" | "outline" | "ghost" | "secondary";
+  showTrigger?: boolean;
+  endpoint?: string;
+}
+
+export function MediaUploader({
+  onUploadSuccess,
+  maxFiles = 10,
+  label = "Upload Media",
+  variant = "outline",
+  showTrigger = true,
+  endpoint = "/media/upload/multiple",
+}: MediaUploaderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [files, setFiles] = useState<UploadFileItem[]>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -41,12 +65,14 @@ export function MediaUploader() {
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const newFiles = Array.from(e.target.files).map((file) => ({
-        file,
-        progress: 0,
-        status: "idle" as const,
-        id: Math.random().toString(36).substring(7),
-      }));
+      const newFiles = Array.from(e.target.files)
+        .slice(0, maxFiles - files.length)
+        .map((file) => ({
+          file,
+          progress: 0,
+          status: "idle" as const,
+          id: Math.random().toString(36).substring(7),
+        }));
       setFiles((prev) => [...prev, ...newFiles]);
     }
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -68,19 +94,19 @@ export function MediaUploader() {
     const token = useAuthStore.getState().token;
 
     const formData = new FormData();
+    const isSingle = endpoint.includes("single") || maxFiles === 1;
     idleFiles.forEach((f) => {
-      formData.append("files", f.file);
+      formData.append(isSingle ? "file" : "files", f.file);
     });
 
-    // Update status to uploading for all idle files
     setFiles((prev) =>
       prev.map((f) => (f.status === "idle" ? { ...f, status: "uploading" } : f))
     );
 
     try {
-      await new Promise((resolve, reject) => {
+      const response = (await new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", `${apiBaseUrl}/media/upload/multiple`);
+        xhr.open("POST", `${apiBaseUrl}${endpoint}`);
 
         if (token) {
           xhr.setRequestHeader("Authorization", `Bearer ${token}`);
@@ -93,7 +119,6 @@ export function MediaUploader() {
             );
             setOverallProgress(percentComplete);
 
-            // Heuristic: update individual file progress equally
             setFiles((prev) =>
               prev.map((f) =>
                 f.status === "uploading"
@@ -106,23 +131,28 @@ export function MediaUploader() {
 
         xhr.onload = () => {
           if (xhr.status >= 200 && xhr.status < 300) {
-            const response = JSON.parse(xhr.responseText);
-            resolve(response);
+            try {
+              const res = JSON.parse(xhr.responseText);
+              // Extract media array from response
+              const data =
+                res.media || res.data || (Array.isArray(res) ? res : [res]);
+              resolve(data);
+            } catch {
+              reject(new Error("Invalid response from server"));
+            }
           } else {
             let errorMessage = "Upload failed";
             try {
               const errorResponse = JSON.parse(xhr.responseText);
               errorMessage = errorResponse.message || errorMessage;
-            } catch (e) {
-              // Ignore parse error
-            }
+            } catch {}
             reject(new Error(errorMessage));
           }
         };
 
         xhr.onerror = () => reject(new Error("Network error"));
         xhr.send(formData);
-      });
+      })) as MediaUploadResponse[];
 
       setFiles((prev) =>
         prev.map((f) =>
@@ -131,7 +161,13 @@ export function MediaUploader() {
             : f
         )
       );
+
       toast.success(`Successfully uploaded ${idleFiles.length} files`);
+
+      if (onUploadSuccess) {
+        onUploadSuccess(response);
+      }
+      setIsOpen(false);
     } catch (error: unknown) {
       console.error("Upload failed:", error);
       const errorMessage =
@@ -157,17 +193,20 @@ export function MediaUploader() {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2">
-          <UploadCloud className="size-4" />
-          <span className="hidden sm:inline">Upload Media</span>
-        </Button>
-      </DialogTrigger>
+      {showTrigger && (
+        <DialogTrigger asChild>
+          <Button variant={variant} size="sm" className="gap-2">
+            <UploadCloud className="size-4" />
+            <span className="hidden sm:inline">{label}</span>
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Upload Media</DialogTitle>
           <DialogDescription>
-            Upload files to the media library. Maximum 10 files per batch.
+            Upload files to the media library. Maximum {maxFiles} files per
+            batch.
           </DialogDescription>
         </DialogHeader>
 
@@ -190,7 +229,7 @@ export function MediaUploader() {
             </div>
             <input
               type="file"
-              multiple
+              multiple={maxFiles > 1}
               className="hidden"
               ref={fileInputRef}
               onChange={onFileChange}

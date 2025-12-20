@@ -55,7 +55,7 @@ export function CreateAdminExecutiveForm() {
     },
   });
 
-  const disabled = role !== "ADMIN_MANAGER";
+  const disabled = role !== "ADMIN" && role !== "ADMIN_MANAGER";
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -65,7 +65,7 @@ export function CreateAdminExecutiveForm() {
             <Button disabled={disabled}>Add Executive</Button>
           </TooltipTrigger>
           <TooltipContent hidden={!disabled}>
-            <p>Only Manager can add executive</p>
+            <p>Only Admin & Manager can add executive</p>
           </TooltipContent>
         </Tooltip>
       </DialogTrigger>

@@ -13,48 +13,112 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useCreateSpecificationMutation } from "@/queries/catalogQueries";
+import {
+  useCreateSpecificationMutation,
+  useUpdateSpecificationMutation,
+} from "@/queries/catalogQueries";
 import { toast } from "sonner";
 import { ApiError } from "@/lib/api-client";
 import { useSpecificationStore } from "@/store/specificationStore";
 import { Textarea } from "@/components/ui/textarea";
+import { useEffect } from "react";
 
-export function CreateSpecificationForm() {
-  const { isCreateOpen, setCreateOpen } = useSpecificationStore();
-  const mutation = useCreateSpecificationMutation();
+export function SpecificationForm() {
+  const {
+    isCreateOpen,
+    setCreateOpen,
+    isEditOpen,
+    setEditOpen,
+    selectedSpecification,
+  } = useSpecificationStore();
+  const createMutation = useCreateSpecificationMutation();
+  const updateMutation = useUpdateSpecificationMutation();
+
+  const isOpen = isCreateOpen || isEditOpen;
+  const isEditing = isEditOpen && !!selectedSpecification;
 
   const form = useForm({
     defaultValues: {
-      name: "",
-      description: "",
+      name: selectedSpecification?.name || "",
+      description: selectedSpecification?.description || "",
     },
     onSubmit: async ({ value }) => {
-      mutation.mutate(value, {
-        onSuccess: () => {
-          setCreateOpen(false);
-          form.reset();
-          toast.success("Specification created successfully");
-        },
-        onError: (error) => {
-          const msg =
-            error instanceof ApiError
-              ? error.message
-              : "Failed to create specification";
-          toast.error(msg);
-        },
-      });
+      if (isEditing) {
+        updateMutation.mutate(
+          { ...value, id: selectedSpecification.id },
+          {
+            onSuccess: () => {
+              setEditOpen(false);
+              form.reset();
+              toast.success("Specification updated successfully");
+            },
+            onError: (error) => {
+              const msg =
+                error instanceof ApiError
+                  ? error.message
+                  : "Failed to update specification";
+              toast.error(msg);
+            },
+          }
+        );
+      } else {
+        createMutation.mutate(value, {
+          onSuccess: () => {
+            setCreateOpen(false);
+            form.reset();
+            toast.success("Specification created successfully");
+          },
+          onError: (error) => {
+            const msg =
+              error instanceof ApiError
+                ? error.message
+                : "Failed to create specification";
+            toast.error(msg);
+          },
+        });
+      }
     },
   });
 
+  useEffect(() => {
+    if (isEditing) {
+      form.reset({
+        name: selectedSpecification.name,
+        description: selectedSpecification.description || "",
+      });
+    } else {
+      form.reset({
+        name: "",
+        description: "",
+      });
+    }
+  }, [isEditing, selectedSpecification, form]);
+
+  const handleOpenChange = (open: boolean) => {
+    if (isEditing) {
+      setEditOpen(open);
+    } else {
+      setCreateOpen(open);
+    }
+  };
+
   return (
-    <Dialog open={isCreateOpen} onOpenChange={setCreateOpen}>
-      <DialogTrigger asChild>
-        <Button onClick={() => setCreateOpen(true)}>Add Specification</Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      {!isEditing && (
+        <DialogTrigger asChild>
+          <Button onClick={() => setCreateOpen(true)}>Add Specification</Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Specification</DialogTitle>
-          <DialogDescription>Create a new specification.</DialogDescription>
+          <DialogTitle>
+            {isEditing ? "Edit Specification" : "Add Specification"}
+          </DialogTitle>
+          <DialogDescription>
+            {isEditing
+              ? "Update specification information."
+              : "Create a new specification."}
+          </DialogDescription>
         </DialogHeader>
         <form
           onSubmit={(e) => {
@@ -124,7 +188,13 @@ export function CreateSpecificationForm() {
             >
               {([canSubmit, isSubmitting]) => (
                 <Button type="submit" disabled={!canSubmit || isSubmitting}>
-                  {isSubmitting ? "Creating..." : "Create Specification"}
+                  {isSubmitting
+                    ? isEditing
+                      ? "Updating..."
+                      : "Creating..."
+                    : isEditing
+                    ? "Update Specification"
+                    : "Create Specification"}
                 </Button>
               )}
             </form.Subscribe>

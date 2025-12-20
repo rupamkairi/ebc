@@ -5,9 +5,11 @@ import {
   BarChart3,
   ChevronRight,
   Cpu,
+  FileBox,
   Library,
   Settings,
   ShieldCheck,
+  Sparkles,
   Store,
   Users,
 } from "lucide-react";
@@ -71,7 +73,7 @@ const data = {
     {
       title: "Catalog",
       url: "#",
-      icon: Library,
+      icon: FileBox,
       items: [
         { title: "Categories", url: "/admin-dashboard/catalog/categories" },
         {
@@ -100,7 +102,7 @@ const data = {
     {
       title: "AI",
       url: "#",
-      icon: Cpu,
+      icon: Sparkles,
       items: [
         { title: "Conference Hall", url: "#" },
         { title: "Calculators", url: "#" },

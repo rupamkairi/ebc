@@ -1,5 +1,5 @@
 import { SubCategoryTable } from "@/components/admin/catalog/sub-category-table";
-import { CreateSubCategoryForm } from "@/components/admin/catalog/create-sub-category-form";
+import { SubCategoryForm } from "@/components/admin/catalog/create-sub-category-form";
 
 export default function SubCategoriesPage() {
   return (
@@ -12,7 +12,7 @@ export default function SubCategoriesPage() {
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <CreateSubCategoryForm />
+          <SubCategoryForm />
         </div>
       </div>
       <SubCategoryTable />

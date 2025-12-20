@@ -9,29 +9,8 @@ import { DataTableColumnHeader } from "@/components/datatable/data-table-column-
 import { Specification } from "@/types/catalog";
 import { format } from "date-fns";
 
-const columns: ColumnDef<Specification>[] = [
-  {
-    accessorKey: "name",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
-    ),
-  },
-  {
-    accessorKey: "description",
-    header: "Description",
-    cell: ({ row }) => row.original.description || "-",
-  },
-  {
-    accessorKey: "createdAt",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Created At" />
-    ),
-    cell: ({ row }) => {
-      if (!row.original.createdAt) return "-";
-      return format(new Date(row.original.createdAt), "PPP");
-    },
-  },
-];
+import { ActionColumn } from "./action-column";
+import { useSpecificationStore } from "@/store/specificationStore";
 
 export function SpecificationTable() {
   const [pagination, setPagination] = useState<PaginationState>({
@@ -39,6 +18,7 @@ export function SpecificationTable() {
     pageSize: 10,
   });
   const [sorting, setSorting] = useState<SortingState>([]);
+  const { setEditOpen } = useSpecificationStore();
 
   const { data, isLoading } = useSpecificationsQuery({
     page: pagination.pageIndex + 1,
@@ -48,6 +28,41 @@ export function SpecificationTable() {
   });
 
   const specifications = data || [];
+
+  const columns: ColumnDef<Specification>[] = [
+    {
+      accessorKey: "name",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Name" />
+      ),
+    },
+    {
+      accessorKey: "description",
+      header: "Description",
+      cell: ({ row }) => row.original.description || "-",
+    },
+    {
+      accessorKey: "createdAt",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Created At" />
+      ),
+      cell: ({ row }) => {
+        if (!row.original.createdAt) return "-";
+        return format(new Date(row.original.createdAt), "PPP");
+      },
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => (
+        <ActionColumn
+          onEdit={() => setEditOpen(true, row.original)}
+          onDelete={() => {
+            // TODO: Implement delete
+          }}
+        />
+      ),
+    },
+  ];
 
   return (
     <DataTable

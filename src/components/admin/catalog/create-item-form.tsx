@@ -17,6 +17,7 @@ import {
   useBrandsQuery,
   useCategoriesQuery,
   useCreateItemMutation,
+  useUpdateItemMutation,
   useSpecificationsQuery,
 } from "@/queries/catalogQueries";
 import { toast } from "sonner";
@@ -30,10 +31,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useEffect } from "react";
 
-export function CreateItemForm() {
-  const { isCreateOpen, setCreateOpen } = useItemStore();
-  const mutation = useCreateItemMutation();
+export function ItemForm() {
+  const { isCreateOpen, setCreateOpen, isEditOpen, setEditOpen, selectedItem } =
+    useItemStore();
+  const createMutation = useCreateItemMutation();
+  const updateMutation = useUpdateItemMutation();
+
+  const isOpen = isCreateOpen || isEditOpen;
+  const isEditing = isEditOpen && !!selectedItem;
 
   // Fetch dependencies
   const { data: categories } = useCategoriesQuery({ perPage: 100 });
@@ -42,40 +49,102 @@ export function CreateItemForm() {
 
   const form = useForm({
     defaultValues: {
-      name: "",
-      description: "",
-      type: "PRODUCT",
-      HSNCode: "",
-      GSTPercentage: 0, // Number
-      categoryId: "",
-      brandId: "",
-      specificationId: "",
+      name: selectedItem?.name || "",
+      description: selectedItem?.description || "",
+      type: selectedItem?.type || "PRODUCT",
+      HSNCode: selectedItem?.HSNCode || "",
+      GSTPercentage: selectedItem?.GSTPercentage || 0,
+      categoryId: selectedItem?.categoryId || "",
+      brandId: selectedItem?.brandId || "",
+      specificationId: selectedItem?.specificationId || "",
     },
     onSubmit: async ({ value }) => {
-      mutation.mutate(value, {
-        onSuccess: () => {
-          setCreateOpen(false);
-          form.reset();
-          toast.success("Item created successfully");
-        },
-        onError: (error) => {
-          const msg =
-            error instanceof ApiError ? error.message : "Failed to create item";
-          toast.error(msg);
-        },
-      });
+      if (isEditing) {
+        updateMutation.mutate(
+          { ...value, id: selectedItem.id },
+          {
+            onSuccess: () => {
+              setEditOpen(false);
+              form.reset();
+              toast.success("Item updated successfully");
+            },
+            onError: (error) => {
+              const msg =
+                error instanceof ApiError
+                  ? error.message
+                  : "Failed to update item";
+              toast.error(msg);
+            },
+          }
+        );
+      } else {
+        createMutation.mutate(value, {
+          onSuccess: () => {
+            setCreateOpen(false);
+            form.reset();
+            toast.success("Item created successfully");
+          },
+          onError: (error) => {
+            const msg =
+              error instanceof ApiError
+                ? error.message
+                : "Failed to create item";
+            toast.error(msg);
+          },
+        });
+      }
     },
   });
 
+  useEffect(() => {
+    if (isEditing) {
+      form.reset({
+        name: selectedItem.name,
+        description: selectedItem.description,
+        type: selectedItem.type,
+        HSNCode: selectedItem.HSNCode,
+        GSTPercentage: selectedItem.GSTPercentage,
+        categoryId: selectedItem.categoryId,
+        brandId: selectedItem.brandId,
+        specificationId: selectedItem.specificationId,
+      });
+    } else {
+      form.reset({
+        name: "",
+        description: "",
+        type: "PRODUCT",
+        HSNCode: "",
+        GSTPercentage: 0,
+        categoryId: "",
+        brandId: "",
+        specificationId: "",
+      });
+    }
+  }, [isEditing, selectedItem, form]);
+
+  const handleOpenChange = (open: boolean) => {
+    if (isEditing) {
+      setEditOpen(open);
+    } else {
+      setCreateOpen(open);
+    }
+  };
+
   return (
-    <Dialog open={isCreateOpen} onOpenChange={setCreateOpen}>
-      <DialogTrigger asChild>
-        <Button onClick={() => setCreateOpen(true)}>Add Item</Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      {!isEditing && (
+        <DialogTrigger asChild>
+          <Button onClick={() => setCreateOpen(true)}>Add Item</Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-[425px] overflow-y-auto max-h-[90vh]">
         <DialogHeader>
-          <DialogTitle>Add Item</DialogTitle>
-          <DialogDescription>Create a new catalog item.</DialogDescription>
+          <DialogTitle>{isEditing ? "Edit Item" : "Add Item"}</DialogTitle>
+          <DialogDescription>
+            {isEditing
+              ? "Update item information."
+              : "Create a new catalog item."}
+          </DialogDescription>
         </DialogHeader>
         <form
           onSubmit={(e) => {
@@ -357,7 +426,13 @@ export function CreateItemForm() {
             >
               {([canSubmit, isSubmitting]) => (
                 <Button type="submit" disabled={!canSubmit || isSubmitting}>
-                  {isSubmitting ? "Creating..." : "Create Item"}
+                  {isSubmitting
+                    ? isEditing
+                      ? "Updating..."
+                      : "Creating..."
+                    : isEditing
+                    ? "Update Item"
+                    : "Create Item"}
                 </Button>
               )}
             </form.Subscribe>
