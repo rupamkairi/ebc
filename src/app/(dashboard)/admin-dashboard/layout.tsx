@@ -3,6 +3,7 @@
 import { AdminDashboardSidebar } from "@/components/layouts/dashboard/admin-dashboard-sidebar";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { AuthGuard } from "@/components/auth/auth-guard";
+import "@/app/globals-admin.css";
 
 // import { AppSidebar } from "@/components/app-sidebar";
 import AdminDashboardHeader from "@/components/layouts/dashboard/admin-dashboard-header";

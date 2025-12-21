@@ -1,7 +1,7 @@
 import I18NProvider from "@/i18n/I18NProvider";
 import QueryClientProvider from "@/queries/QueryClientProvider";
 import { Open_Sans } from "next/font/google";
-import "./globals.css";
+// import "./globals.css";
 
 // Define Metadata type for Next.js
 type Metadata = {
