@@ -2,6 +2,10 @@
 
 import { useLanguage } from "@/hooks/useLanguage";
 import { useSyncExternalStore } from "react";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
 
 export const LanguageSwitcher = () => {
   const { currentLanguage, changeLanguage, t } = useLanguage();
@@ -25,21 +29,20 @@ export const LanguageSwitcher = () => {
   return (
     <div className="flex items-center gap-2">
       <span className="text-sm font-medium">{t("language")}:</span>
-      <select
+
+      <NativeSelect
         value={currentLanguage}
         onChange={(e) => {
-          console.log(e.target.value);
           changeLanguage(e.target.value);
           window.location.reload();
         }}
-        className="rounded-md border border-gray-300 bg-white px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
         {languages.map((lang) => (
-          <option key={lang.code} value={lang.code}>
+          <NativeSelectOption key={lang.code} value={lang.code}>
             {lang.name}
-          </option>
+          </NativeSelectOption>
         ))}
-      </select>
+      </NativeSelect>
     </div>
   );
 };
