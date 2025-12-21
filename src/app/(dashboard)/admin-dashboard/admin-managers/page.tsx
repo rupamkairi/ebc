@@ -1,6 +1,7 @@
+"use client";
+
 import { AdminManagersTable } from "@/components/admin/admin-managers-table";
 import { CreateAdminManagerForm } from "@/components/admin/create-admin-manager-form";
-// import { Separator } from "@/components/ui/separator"
 
 export default function AdminManagersPage() {
   return (

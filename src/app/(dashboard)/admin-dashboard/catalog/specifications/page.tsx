@@ -1,3 +1,5 @@
+"use client";
+
 import { SpecificationTable } from "@/components/admin/catalog/specification-table";
 import { SpecificationForm } from "@/components/admin/catalog/create-specification-form";
 

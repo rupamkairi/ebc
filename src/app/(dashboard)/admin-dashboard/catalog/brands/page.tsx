@@ -1,3 +1,4 @@
+"use client";
 import { BrandTable } from "@/components/admin/catalog/brand-table";
 import { BrandForm } from "@/components/admin/catalog/create-brand-form";
 

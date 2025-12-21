@@ -1,7 +1,13 @@
-import type { Metadata } from "next";
+import I18NProvider from "@/i18n/I18NProvider";
+import QueryClientProvider from "@/queries/QueryClientProvider";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
-import QueryClientProvider from "@/queries/QueryClientProvider";
+
+// Define Metadata type for Next.js
+type Metadata = {
+  title: string;
+  description: string;
+};
 
 // const sans = Open_Sans({
 //   weight: ["400", "500", "600", "700", "800"],
@@ -27,9 +33,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="bn">
+    <html lang="en">
       <body className={`${sansFont.variable} antialiased`}>
-        <QueryClientProvider>{children}</QueryClientProvider>
+        <QueryClientProvider>
+          <I18NProvider>
+            <>{children}</>
+          </I18NProvider>
+        </QueryClientProvider>
       </body>
     </html>
   );

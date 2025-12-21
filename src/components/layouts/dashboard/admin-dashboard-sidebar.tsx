@@ -4,9 +4,7 @@ import { IconInnerShadowTop } from "@tabler/icons-react";
 import {
   BarChart3,
   ChevronRight,
-  Cpu,
   FileBox,
-  Library,
   Settings,
   ShieldCheck,
   Sparkles,
@@ -40,6 +38,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { useAuthStore } from "@/store/authStore";
+import Link from "next/link";
 
 // This is sample data.
 const data = {
@@ -194,9 +193,9 @@ export function AdminDashboardSidebar({
                       {item.items?.map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton asChild>
-                            <a href={subItem.url}>
+                            <Link href={subItem.url}>
                               <span>{subItem.title}</span>
-                            </a>
+                            </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                       ))}
