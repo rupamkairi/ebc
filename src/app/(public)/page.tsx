@@ -1,11 +1,5 @@
-"use client";
-
-import { I18NWelcome } from "@/examples/i18n-welcome";
+import { LandingPage } from "@/components/layouts/landing/landing-page";
 
 export default function HomePage() {
-  return (
-    <div>
-      <I18NWelcome />
-    </div>
-  );
+  return <LandingPage />;
 }
