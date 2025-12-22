@@ -12,8 +12,14 @@ import { useItemsQuery } from "@/queries/catalogQueries";
 import { Loader2, Search, Package, Info, CheckCircle2 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
-export function ItemSearch() {
+interface ItemSearchProps {
+  onItemSelect?: (item: any) => void;
+  className?: string;
+}
+
+export function ItemSearch({ onItemSelect, className }: ItemSearchProps) {
   const [categoryId, setCategoryId] = useState<string>("");
   const [brandId, setBrandId] = useState<string>("");
   const [specificationId, setSpecificationId] = useState<string>("");
@@ -29,10 +35,13 @@ export function ItemSearch() {
     type: "PRODUCT",
   });
 
-  const handleSelectItem = (itemId: string, itemName: string) => {
-    toast.success(`Selected item: ${itemName}`);
-    // You can also pass a callback prop if needed
-    console.log("Selected Item ID:", itemId);
+  const handleSelectItem = (item: any) => {
+    if (onItemSelect) {
+      onItemSelect(item);
+    } else {
+      toast.success(`Selected item: ${item.name}`);
+      console.log("Selected Item ID:", item.id);
+    }
   };
 
   const clearFilters = () => {
@@ -43,7 +52,7 @@ export function ItemSearch() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className={cn("flex flex-col gap-4", className)}>
       <Card>
         <CardHeader>
           <CardTitle className="text-lg font-semibold flex items-center gap-2">
@@ -158,7 +167,7 @@ export function ItemSearch() {
                     </div>
                   </div>
                   <Button
-                    onClick={() => handleSelectItem(item.id, item.name)}
+                    onClick={() => handleSelectItem(item)}
                     size="sm"
                     className="opacity-0 group-hover:opacity-100 transition-opacity"
                   >
