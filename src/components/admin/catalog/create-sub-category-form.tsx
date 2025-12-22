@@ -14,7 +14,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  useCategoriesQuery,
   useCreateCategoryMutation,
   useUpdateCategoryMutation,
 } from "@/queries/catalogQueries";
@@ -29,6 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { MediaUploader } from "@/components/upload/media-uploader";
+import { CategorySearchAutocomplete } from "@/components/autocompletes/category-search-autocomplete";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { CreateCategoryRequest } from "@/types/catalog";
@@ -47,12 +47,6 @@ export function SubCategoryForm() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const isOpen = isCreateOpen || isEditOpen;
   const isEditing = isEditOpen && !!selectedCategory;
-
-  // Fetch parent categories
-  const { data: parentCategories } = useCategoriesQuery({
-    isSubCategory: false,
-    perPage: 100,
-  });
 
   const form = useForm({
     defaultValues: {
@@ -220,8 +214,8 @@ export function SubCategoryForm() {
                           setPreviewUrl(uploadedFiles[0].url);
                         }
                       }}
-                      // maxFiles={1}
-                      // endpoint="/media/upload/single"
+                      variant="single"
+                      crop={true}
                       label={field.state.value ? "Change Icon" : "Upload Icon"}
                     />
                   </div>
@@ -272,22 +266,13 @@ export function SubCategoryForm() {
                   Parent
                 </Label>
                 <div className="col-span-3">
-                  <Select
+                  <CategorySearchAutocomplete
                     value={field.state.value}
                     onValueChange={field.handleChange}
-                    disabled={!parentCategories}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select parent" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {parentCategories?.map((cat) => (
-                        <SelectItem key={cat.id} value={cat.id}>
-                          {cat.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    placeholder="Select parent"
+                    label="Parent Category"
+                    additionalParams={{ isSubCategory: false }}
+                  />
                   {field.state.meta.errors ? (
                     <p className="text-sm text-red-500 mt-1">
                       {field.state.meta.errors.join(", ")}
