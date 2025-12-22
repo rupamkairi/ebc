@@ -59,16 +59,16 @@ export function CreateAdminManagerForm() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Tooltip>
-          <TooltipTrigger>
+      <Tooltip>
+        <TooltipTrigger>
+          <DialogTrigger asChild>
             <Button disabled={disabled}>Add Manager</Button>
-          </TooltipTrigger>
-          <TooltipContent hidden={!disabled}>
-            <p>Only Admin can add manager</p>
-          </TooltipContent>
-        </Tooltip>
-      </DialogTrigger>
+          </DialogTrigger>
+        </TooltipTrigger>
+        <TooltipContent hidden={!disabled}>
+          <p>Only Admin can add manager</p>
+        </TooltipContent>
+      </Tooltip>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Admin Manager</DialogTitle>

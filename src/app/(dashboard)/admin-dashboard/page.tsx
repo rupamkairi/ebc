@@ -1,4 +1,4 @@
-import { RegionSearchSelect } from "@/components/search/region-search-select/region-search-select";
+"use client";
 
 export default function AdminDashboardPage() {
   return (
@@ -11,7 +11,7 @@ export default function AdminDashboardPage() {
       </div>
 
       <div className="space-y-4">
-        <RegionSearchSelect />
+
       </div>
     </div>
   );

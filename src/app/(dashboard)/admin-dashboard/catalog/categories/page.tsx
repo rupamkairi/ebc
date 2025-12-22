@@ -1,3 +1,5 @@
+"use client";
+
 import { CategoryTable } from "@/components/admin/catalog/category-table";
 import { CategoryForm } from "@/components/admin/catalog/create-category-form";
 

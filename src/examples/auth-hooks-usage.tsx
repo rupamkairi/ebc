@@ -1,11 +1,9 @@
 "use client";
 
-import React from "react";
 import {
   useAdminLogin,
   useCreateAdmin,
   useCreateAdminManager,
-  useSession,
   useSyncSession,
 } from "@/hooks/api/use-auth-admin";
 import { useAuthStore } from "@/store/authStore";
@@ -88,10 +86,18 @@ export const AuthExample = () => {
       ) : (
         <div>
           <br />
-          <button onClick={handleLogin} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer">
+          <button
+            onClick={handleLogin}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer"
+          >
             Login as Admin
-          </button> <br /><br />
-          <button onClick={handleCreateRootAdmin} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer">
+          </button>{" "}
+          <br />
+          <br />
+          <button
+            onClick={handleCreateRootAdmin}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer"
+          >
             Create Root Admin (Setup)
           </button>
         </div>

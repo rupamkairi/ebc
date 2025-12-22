@@ -1,10 +1,11 @@
-import { AuthExample } from "@/examples/auth-hooks-usage";
+"use client";
 
-export default function Page() {
+import { I18NWelcome } from "@/examples/i18n-welcome";
+
+export default function HomePage() {
   return (
     <div>
-      <p>App</p>
-      <AuthExample />
+      <I18NWelcome />
     </div>
   );
 }

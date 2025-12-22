@@ -1,3 +1,5 @@
+"use client";
+
 import { SubCategoryTable } from "@/components/admin/catalog/sub-category-table";
 import { SubCategoryForm } from "@/components/admin/catalog/create-sub-category-form";
 

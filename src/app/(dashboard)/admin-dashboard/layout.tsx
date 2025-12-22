@@ -1,3 +1,5 @@
+"use client";
+
 import { AdminDashboardSidebar } from "@/components/layouts/dashboard/admin-dashboard-sidebar";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { AuthGuard } from "@/components/auth/auth-guard";

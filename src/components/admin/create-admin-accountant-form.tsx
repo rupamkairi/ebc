@@ -59,16 +59,16 @@ export function CreateAdminAccountantForm() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Tooltip>
-          <TooltipTrigger>
+      <Tooltip>
+        <TooltipTrigger>
+          <DialogTrigger asChild>
             <Button disabled={disabled}>Add Accountant</Button>
-          </TooltipTrigger>
-          <TooltipContent hidden={!disabled}>
-            <p>Only Admin can add accountant</p>
-          </TooltipContent>
-        </Tooltip>
-      </DialogTrigger>
+          </DialogTrigger>
+        </TooltipTrigger>
+        <TooltipContent hidden={!disabled}>
+          <p>Only Admin can add accountant</p>
+        </TooltipContent>
+      </Tooltip>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Admin Accountant</DialogTitle>

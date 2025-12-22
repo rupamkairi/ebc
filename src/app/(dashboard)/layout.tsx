@@ -1,5 +1,3 @@
-"use client";
-
 import LayoutProvider from "@/components/layouts/dashboard/layout-provider";
 
 export default function DashboardLayout({
