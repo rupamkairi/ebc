@@ -38,13 +38,13 @@ export function DashboardHeader() {
               Home
             </Link>
             <Link
-              href="#"
+              href="/seller-dashboard/catalog"
               className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors"
             >
               My Catalog
             </Link>
             <Link
-              href="#"
+              href="/seller-dashboard/enquiries"
               className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors"
             >
               Enquiries

@@ -10,12 +10,14 @@ import {
   Megaphone,
   ArrowRight,
   Plus,
+  Calendar,
 } from "lucide-react";
 import { DashboardHeader } from "./dashboard-header";
 import { UserInfo } from "./user-info";
 import { DashboardCard } from "./dashboard-card";
 import { BottomNav } from "./bottom-nav";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function SellerDashboardPage() {
   return (
@@ -63,9 +65,11 @@ export default function SellerDashboardPage() {
                     </div>
                   ))}
               </div>
-              <Button className="w-full bg-secondary hover:bg-secondary/90 text-white font-bold py-6 text-lg rounded-xl mt-2">
-                View Leads & Quote Now
-              </Button>
+              <Link href="/seller-dashboard/enquiries">
+                <Button className="w-full bg-secondary hover:bg-secondary/90 text-white font-bold py-6 text-lg rounded-xl mt-2">
+                  View Leads & Quote Now
+                </Button>
+              </Link>
             </div>
           </DashboardCard>
 
@@ -89,9 +93,11 @@ export default function SellerDashboardPage() {
                   </div>
                 </div>
               </div>
-              <Button className="w-full bg-secondary hover:bg-secondary/90 text-white font-bold py-6 text-lg rounded-xl">
-                Create Quotation
-              </Button>
+              <Link href="/seller-dashboard/quotations/new">
+                <Button className="w-full bg-secondary hover:bg-secondary/90 text-white font-bold py-6 text-lg rounded-xl">
+                  Create Quotation
+                </Button>
+              </Link>
             </div>
           </DashboardCard>
 
@@ -112,9 +118,11 @@ export default function SellerDashboardPage() {
                   </div>
                 </div>
               </div>
-              <Button className="w-full bg-secondary hover:bg-secondary/90 text-white font-bold py-6 text-lg rounded-xl">
-                Add/Update Items
-              </Button>
+              <Link href="/seller-dashboard/catalog">
+                <Button className="w-full bg-secondary hover:bg-secondary/90 text-white font-bold py-6 text-lg rounded-xl">
+                  Add/Update Items
+                </Button>
+              </Link>
             </div>
           </DashboardCard>
 
@@ -173,6 +181,36 @@ export default function SellerDashboardPage() {
               </div>
               <Button className="w-full bg-secondary hover:bg-secondary/90 text-white font-bold py-6 text-lg rounded-xl">
                 View Growth Report
+              </Button>
+            </div>
+          </DashboardCard>
+
+          {/* Appointments */}
+          <DashboardCard title="Appointments." icon={Calendar}>
+            <div className="flex flex-col gap-4">
+              <p className="font-semibold text-foreground/80 leading-snug">
+                Upcoming site visits aur meetings ko manage kijiye
+              </p>
+              <div className="bg-muted/30 p-4 rounded-xl space-y-3">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-sm font-bold text-foreground">Site Survey: Scheme 54</p>
+                    <p className="text-[10px] font-medium text-foreground/40 uppercase">Tomorrow, 11:00 AM</p>
+                  </div>
+                  <span className="text-[10px] font-black bg-primary/10 text-primary px-2 py-0.5 rounded">PENDING</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button variant="outline" className="h-9 rounded-lg border-primary text-primary hover:bg-primary/5 text-xs font-bold">
+                    REJECT
+                  </Button>
+                  <Button className="h-9 rounded-lg bg-primary hover:bg-primary/90 text-white text-xs font-bold">
+                    CONFIRM
+                  </Button>
+                </div>
+              </div>
+              <Button variant="ghost" className="w-full text-secondary font-black text-sm py-2 group">
+                View All Appointments
+                <ArrowRight size={14} className="ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </div>
           </DashboardCard>
