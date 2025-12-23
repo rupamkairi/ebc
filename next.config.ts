@@ -5,7 +5,18 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   images: {
     remotePatterns: [
-      new URL("https://ebc-develop.s3.ap-south-1.amazonaws.com/**"),
+      {
+        protocol: "https",
+        hostname: "ebc-develop.s3.ap-south-1.amazonaws.com",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "i.pravatar.cc",
+      },
     ],
   },
 };

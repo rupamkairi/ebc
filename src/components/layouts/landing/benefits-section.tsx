@@ -26,27 +26,30 @@ export function BenefitsSection() {
   return (
     <section className="py-24 bg-white">
       <div className="container mx-auto px-4 md:px-6">
-        <h2 className="text-3xl font-bold text-center mb-16 text-slate-900">
-          {t("benefits_title")}
-        </h2>
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-black text-foreground tracking-tight">
+            {t("benefits_title")}
+          </h2>
+          <div className="h-1.5 w-20 bg-secondary mx-auto mt-4 rounded-full" />
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {benefits.map((benefit, index) => (
-            <Card key={index} className="border-none bg-slate-50/50 hover:bg-slate-50 transition-colors">
+            <Card key={index} className="border-none bg-background/50 hover:bg-white hover:shadow-xl transition-all duration-300 rounded-3xl group">
               <CardContent className="p-8 flex items-start gap-6">
-                <div className="shrink-0 p-3 rounded-xl bg-white shadow-sm border border-slate-100">
+                <div className="shrink-0 p-4 rounded-2xl bg-white shadow-md border border-border group-hover:scale-110 transition-transform duration-300">
                   {benefit.icon}
                 </div>
-                <div className="space-y-1">
-                  <h4 className="font-bold text-slate-900">{benefit.title}</h4>
-                  <p className="text-sm text-slate-600 leading-relaxed">{benefit.desc}</p>
+                <div className="space-y-2">
+                  <h4 className="font-black text-xl text-foreground leading-tight">{benefit.title}</h4>
+                  <p className="text-base text-foreground/60 font-medium leading-relaxed">{benefit.desc}</p>
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
         
-        <div className="mt-16 text-center text-slate-500 text-sm italic">
+        <div className="mt-20 text-center text-foreground/40 text-lg font-black italic tracking-wide uppercase">
           A better home. A better decision. A better sleep at night.
         </div>
       </div>
