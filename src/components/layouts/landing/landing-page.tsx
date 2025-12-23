@@ -6,6 +6,7 @@ import { ProblemSection } from "./problem-section";
 import { FeaturesSection } from "./features-section";
 import { StepsSection } from "./steps-section";
 import { BenefitsSection } from "./benefits-section";
+import { EnquiryCtaSection } from "./enquiry-cta-section";
 import { Footer } from "./footer";
 
 export function LandingPage() {
@@ -16,6 +17,7 @@ export function LandingPage() {
         <Hero />
         <ProblemSection />
         <FeaturesSection />
+        <EnquiryCtaSection />
         <StepsSection />
         <BenefitsSection />
       </main>

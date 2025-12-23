@@ -96,6 +96,19 @@ const english = {
   seller_network_title: "Join the Largest Construction Network in India.",
   seller_path_retailer: "Retailer",
   seller_path_professional: "Professional",
+  enquiry_section_title: "Get Free Material Quotations",
+  enquiry_section_subtitle: "Send your requirements to multiple verified sellers and receive the best prices within hours.",
+  enquiry_section_cta: "Post Your Requirement",
+  enquiry_benefit_1: "Save money with multiple quotes",
+  enquiry_benefit_2: "Verified local sellers only",
+  enquiry_benefit_3: "100% Free & No obligation",
+  enquiry_landing_title: "How to Create an Enquiry",
+  enquiry_landing_desc: "Follow these simple steps to get competitive prices for your construction materials.",
+  enquiry_step_1: "Choose the items you need for your building project.",
+  enquiry_step_2: "Provide your contact and delivery location details.",
+  enquiry_step_3: "Sellers will review and send you their best quotations.",
+  enquiry_dashboard_link: "View your enquiries in Buyer Dashboard",
+  enquiry_dashboard_desc: "Manage all your active enquiries and compare incoming quotations in one place.",
   // Add more translations as needed
 };
 
@@ -192,6 +205,19 @@ const hinglish = {
   seller_network_title: "India ke sabse bade Construction Network se judein.",
   seller_path_retailer: "Retailer",
   seller_path_professional: "Professional",
+  enquiry_section_title: "Free Material Quotations Payein",
+  enquiry_section_subtitle: "Apni zaroorat verified sellers ko bhejein aur sabse acche rates payein kuch hi ghanton mein.",
+  enquiry_section_cta: "Apni Requirement Bhejein",
+  enquiry_benefit_1: "Multiple quotes se paise bachayein",
+  enquiry_benefit_2: "Sirf verified local sellers",
+  enquiry_benefit_3: "100% Free aur koi rok-tok nahi",
+  enquiry_landing_title: "Enquiry Kaise Banayein",
+  enquiry_landing_desc: "Apne construction material ke liye acche rates paane ke liye ye steps follow karein.",
+  enquiry_step_1: "Apne project ke liye zaroori saaman chunein.",
+  enquiry_step_2: "Apna contact aur delivery location batayein.",
+  enquiry_step_3: "Sellers aapko apne sabse acche rates bhejenge.",
+  enquiry_dashboard_link: "Buyer Dashboard mein apni enquiries dekhein",
+  enquiry_dashboard_desc: "Apni saari active enquiries aur quotations ko ek hi jagah manage karein.",
   // Add more translations as needed
 };
 

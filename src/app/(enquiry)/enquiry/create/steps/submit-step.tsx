@@ -48,8 +48,8 @@ export function SubmitStep() {
 
     toast.success("Enquiry Submitted Successfully!");
     resetEnquiry();
-    // Navigate to list or details. For now, navigate to list.
-    router.push("/enquiry");
+    // Navigate to Buyer Dashboard Enquiries List as per assignment
+    router.push("/buyer-dashboard/enquiries");
   };
 
   useEffect(() => {
