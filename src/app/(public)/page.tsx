@@ -1,8 +1,8 @@
 "use client";
 
 import Container from "@/components/containers/containers";
-import { FeaturesSection } from "@/components/layouts/landing-scrap/features-section";
 import { Hero } from "@/components/layouts/landing-scrap/hero";
+import { Navbar } from "@/components/layouts/landing-scrap/navbar";
 import { ProblemSection } from "@/components/layouts/landing-scrap/problem-section";
 import Break from "@/components/spacing/break";
 import {
@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
   TypographyH1,
+  TypographyH3,
   TypographyLarge,
   TypographyMuted,
   TypographyP,
@@ -31,7 +32,6 @@ import {
   Users,
 } from "lucide-react";
 import Image from "next/image";
-import { Navbar } from "@/components/layouts/landing-scrap/navbar";
 
 export default function HomePage() {
   return (
@@ -48,8 +48,8 @@ export default function HomePage() {
       <section className="bg-blue-50/50 py-responsive">
         <Container size="lg">
           <div className="text-center max-w-2xl mx-auto">
-            <TypographyH1 className="font-black tracking-tight">
-              WHAT IS EBC?
+            <TypographyH1 className="text-4xl font-black">
+              What is EBC?
             </TypographyH1>
             <Break className="h-4" />
             <TypographyP className="text-muted-foreground text-lg">
@@ -104,9 +104,9 @@ export default function HomePage() {
       <section className="py-responsive">
         <Container size="lg">
           <div className="text-center">
-            <TypographyMuted className="font-bold tracking-widest uppercase">
-              HOW IT WORKS —
-            </TypographyMuted>
+            <TypographyH3 className="font-bold uppercase">
+              How it works
+            </TypographyH3>
             <TypographyH1 className="text-4xl font-black">
               3 Simple Steps
             </TypographyH1>
@@ -160,9 +160,9 @@ export default function HomePage() {
       <section className="bg-blue-50/50 py-responsive ">
         <Container size="lg">
           <div className="text-center">
-            <TypographyMuted className="font-bold tracking-widest uppercase">
+            <TypographyH1 className="text-4xl font-black">
               MOST LOVED BENEFITS
-            </TypographyMuted>
+            </TypographyH1>
           </div>
 
           <Break className="h-12" />
@@ -197,9 +197,9 @@ export default function HomePage() {
           <Break className="h-12" />
 
           <div className="text-center">
-            <TypographyH1 className="text-xl md:text-2xl font-bold italic text-slate-700">
+            <TypographyH3 className="text-3xl font-black">
               A better home. A better decision. A better sleep at night.
-            </TypographyH1>
+            </TypographyH3>
           </div>
         </Container>
       </section>
@@ -209,12 +209,12 @@ export default function HomePage() {
       {/* USE CASES SECTION */}
       <section className="py-responsive">
         <Container size="lg">
-          {/* <div className="text-center">
-            <TypographyMuted className="font-bold tracking-widest uppercase">
-              Use Cases Section
-            </TypographyMuted>
+          <div className="text-center">
+            <TypographyH1 className="text-4xl font-black">
+              Use Cases
+            </TypographyH1>
             <Break className="h-4" />
-          </div> */}
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <UseCaseCard
@@ -254,6 +254,10 @@ export default function HomePage() {
 
       {/* PRICING SECTION */}
       <section className="bg-blue-50/50 py-responsive">
+        <div className="text-center">
+          <TypographyH1 className="text-4xl font-black"> Pricing</TypographyH1>
+          <Break className="h-4" />
+        </div>
         <Container size="lg">
           <div className="overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-sm ring-1 ring-blue-50">
             <div className="grid grid-cols-2">
@@ -286,15 +290,19 @@ export default function HomePage() {
           <Break className="h-8" />
 
           <div className="text-center">
-            <TypographyP className="font-medium text-muted-foreground">
+            <TypographyH3 className="text-3xl font-black">
               You choose the help you want. Full control. No hidden commissions.
-            </TypographyP>
+            </TypographyH3>
           </div>
         </Container>
       </section>
 
       {/* FAQ SECTION */}
       <section className="py-responsive">
+        <div className="text-center">
+          <TypographyH1 className="text-4xl font-black">FAQs</TypographyH1>
+          <Break className="h-4" />
+        </div>
         <Container size="lg">
           <div className="space-y-4">
             <Accordion
