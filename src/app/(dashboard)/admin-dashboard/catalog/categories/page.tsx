@@ -1,5 +1,7 @@
+"use client";
+
 import { CategoryTable } from "@/components/admin/catalog/category-table";
-import { CreateCategoryForm } from "@/components/admin/catalog/create-category-form";
+import { CategoryForm } from "@/components/admin/catalog/create-category-form";
 
 export default function CategoriesPage() {
   return (
@@ -12,7 +14,7 @@ export default function CategoriesPage() {
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <CreateCategoryForm />
+          <CategoryForm />
         </div>
       </div>
       <CategoryTable />

@@ -14,8 +14,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  useCategoriesQuery,
   useCreateCategoryMutation,
+  useUpdateCategoryMutation,
 } from "@/queries/catalogQueries";
 import { toast } from "sonner";
 import { ApiError } from "@/lib/api-client";
@@ -27,52 +27,120 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { MediaUploader } from "@/components/upload/media-uploader";
+import { CategorySearchAutocomplete } from "@/components/autocompletes/category-search-autocomplete";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { CreateCategoryRequest } from "@/types/catalog";
 
-export function CreateSubCategoryForm() {
-  const { isCreateOpen, setCreateOpen } = useSubCategoryStore();
-  const mutation = useCreateCategoryMutation();
+export function SubCategoryForm() {
+  const {
+    isCreateOpen,
+    setCreateOpen,
+    isEditOpen,
+    setEditOpen,
+    selectedCategory,
+  } = useSubCategoryStore();
+  const createMutation = useCreateCategoryMutation();
+  const updateMutation = useUpdateCategoryMutation();
 
-  // Fetch parent categories
-  const { data: parentCategories } = useCategoriesQuery({
-    isSubCategory: false, // Ensure we only get top-level categories
-    // we might want pagination off or large perPage to get all
-    perPage: 100,
-  });
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const isOpen = isCreateOpen || isEditOpen;
+  const isEditing = isEditOpen && !!selectedCategory;
 
   const form = useForm({
     defaultValues: {
-      name: "",
-      type: "PRODUCT",
-      parentCategoryId: "",
+      name: selectedCategory?.name || "",
+      type: selectedCategory?.type || "PRODUCT",
+      parentCategoryId: selectedCategory?.parentCategoryId || "",
+      categoryIconId: selectedCategory?.categoryIconId || "",
     },
     onSubmit: async ({ value }) => {
-      mutation.mutate(value, {
-        onSuccess: () => {
-          setCreateOpen(false);
-          form.reset();
-          toast.success("SubCategory created successfully");
-        },
-        onError: (error) => {
-          const msg =
-            error instanceof ApiError
-              ? error.message
-              : "Failed to create sub-category";
-          toast.error(msg);
-        },
-      });
+      const payload = {
+        ...value,
+        parentCategoryId: value.parentCategoryId || null,
+      };
+
+      if (isEditing) {
+        updateMutation.mutate(
+          { ...payload, id: selectedCategory.id },
+          {
+            onSuccess: () => {
+              setEditOpen(false);
+              form.reset();
+              toast.success("SubCategory updated successfully");
+            },
+            onError: (error) => {
+              const msg =
+                error instanceof ApiError
+                  ? error.message
+                  : "Failed to update sub-category";
+              toast.error(msg);
+            },
+          }
+        );
+      } else {
+        createMutation.mutate(payload as CreateCategoryRequest, {
+          onSuccess: () => {
+            setCreateOpen(false);
+            form.reset();
+            toast.success("SubCategory created successfully");
+          },
+          onError: (error) => {
+            const msg =
+              error instanceof ApiError
+                ? error.message
+                : "Failed to create sub-category";
+            toast.error(msg);
+          },
+        });
+      }
     },
   });
 
+  useEffect(() => {
+    if (isEditing) {
+      form.reset({
+        name: selectedCategory.name,
+        type: selectedCategory.type,
+        parentCategoryId: selectedCategory.parentCategoryId || "",
+        categoryIconId: selectedCategory.categoryIconId || "",
+      });
+    } else {
+      form.reset({
+        name: "",
+        type: "PRODUCT",
+        parentCategoryId: "",
+        categoryIconId: "",
+      });
+    }
+  }, [isEditing, selectedCategory, form]);
+
+  const handleOpenChange = (open: boolean) => {
+    if (isEditing) {
+      setEditOpen(open);
+    } else {
+      setCreateOpen(open);
+    }
+    if (!open) setPreviewUrl(null);
+  };
+
   return (
-    <Dialog open={isCreateOpen} onOpenChange={setCreateOpen}>
-      <DialogTrigger asChild>
-        <Button onClick={() => setCreateOpen(true)}>Add SubCategory</Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      {!isEditing && (
+        <DialogTrigger asChild>
+          <Button onClick={() => setCreateOpen(true)}>Add SubCategory</Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add SubCategory</DialogTitle>
+          <DialogTitle>
+            {isEditing ? "Edit SubCategory" : "Add SubCategory"}
+          </DialogTitle>
           <DialogDescription>
-            Create a new sub-category under a parent category.
+            {isEditing
+              ? "Update sub-category information."
+              : "Create a new sub-category under a parent category."}
           </DialogDescription>
         </DialogHeader>
         <form
@@ -117,6 +185,50 @@ export function CreateSubCategoryForm() {
             )}
           </form.Field>
 
+          <form.Field name="categoryIconId">
+            {(field) => (
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor={field.name} className="text-right">
+                  Icon
+                </Label>
+                <div className="col-span-3 flex items-center gap-4">
+                  {(previewUrl || selectedCategory?.categoryIcon?.url) && (
+                    <div className="relative size-16 overflow-hidden rounded-md border">
+                      <Image
+                        src={
+                          previewUrl ||
+                          selectedCategory?.categoryIcon?.url ||
+                          ""
+                        }
+                        alt="Icon Preview"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
+                  <div className="flex flex-col gap-2">
+                    <MediaUploader
+                      onUploadSuccess={(uploadedFiles) => {
+                        if (uploadedFiles.length > 0) {
+                          field.handleChange(uploadedFiles[0].id);
+                          setPreviewUrl(uploadedFiles[0].url);
+                        }
+                      }}
+                      variant="single"
+                      crop={true}
+                      label={field.state.value ? "Change Icon" : "Upload Icon"}
+                    />
+                  </div>
+                  {field.state.value && !previewUrl && (
+                    <span className="text-sm text-green-600 font-medium">
+                      {isEditing ? "Current Icon" : "Icon Uploaded"}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+          </form.Field>
+
           <form.Field name="type">
             {(field) => (
               <div className="grid grid-cols-4 items-center gap-4">
@@ -154,22 +266,13 @@ export function CreateSubCategoryForm() {
                   Parent
                 </Label>
                 <div className="col-span-3">
-                  <Select
+                  <CategorySearchAutocomplete
                     value={field.state.value}
                     onValueChange={field.handleChange}
-                    disabled={!parentCategories}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select parent" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {parentCategories?.map((cat) => (
-                        <SelectItem key={cat.id} value={cat.id}>
-                          {cat.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    placeholder="Select parent"
+                    label="Parent Category"
+                    additionalParams={{ isSubCategory: false }}
+                  />
                   {field.state.meta.errors ? (
                     <p className="text-sm text-red-500 mt-1">
                       {field.state.meta.errors.join(", ")}
@@ -186,7 +289,13 @@ export function CreateSubCategoryForm() {
             >
               {([canSubmit, isSubmitting]) => (
                 <Button type="submit" disabled={!canSubmit || isSubmitting}>
-                  {isSubmitting ? "Creating..." : "Create SubCategory"}
+                  {isSubmitting
+                    ? isEditing
+                      ? "Updating..."
+                      : "Creating..."
+                    : isEditing
+                    ? "Update SubCategory"
+                    : "Create SubCategory"}
                 </Button>
               )}
             </form.Subscribe>

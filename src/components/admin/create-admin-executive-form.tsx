@@ -18,10 +18,17 @@ import { useAuthStore } from "@/store/authStore";
 import { useCreateAdminExecutiveMutation } from "@/queries/adminQueries";
 import { toast } from "sonner";
 import { ApiError } from "@/lib/api-client";
+import { useAuthStore } from "@/store/authStore";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function CreateAdminExecutiveForm() {
   const { user } = useAuthStore();
-  const userRole = user?.role?.toUpperCase();
+  const role = user?.role?.toUpperCase();
+
   const [open, setOpen] = useState(false);
   const mutation = useCreateAdminExecutiveMutation();
 
@@ -49,13 +56,20 @@ export function CreateAdminExecutiveForm() {
     },
   });
 
-  if (userRole !== "ADMIN" && userRole !== "ADMIN_MANAGER") return null;
+  const disabled = role !== "ADMIN" && role !== "ADMIN_MANAGER";
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="cursor-pointer">Add Executive</Button>
-      </DialogTrigger>
+      <Tooltip>
+        <TooltipTrigger>
+          <DialogTrigger asChild>
+            <Button disabled={disabled}>Add Executive</Button>
+          </DialogTrigger>
+        </TooltipTrigger>
+        <TooltipContent hidden={!disabled}>
+          <p>Only Admin & Manager can add executive</p>
+        </TooltipContent>
+      </Tooltip>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Admin Executive</DialogTitle>

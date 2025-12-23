@@ -22,15 +22,18 @@ import { cn } from "@/lib/utils";
 
 export function UserLoginMobileOtpForm({
   className,
+  role,
   ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<"div"> & { role?: string }) {
+  const displayRole = role ? role.charAt(0).toUpperCase() + role.slice(1) : "";
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
+          <CardTitle>Login as {displayRole || "User"}</CardTitle>
           <CardDescription>
-            Enter your mobile below to login to your account
+            Enter your mobile below to login to your {displayRole.toLowerCase() || "user"} account
           </CardDescription>
         </CardHeader>
         <CardContent>

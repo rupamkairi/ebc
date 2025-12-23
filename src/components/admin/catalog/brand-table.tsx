@@ -9,24 +9,8 @@ import { DataTableColumnHeader } from "@/components/datatable/data-table-column-
 import { Brand } from "@/types/catalog";
 import { format } from "date-fns";
 
-const columns: ColumnDef<Brand>[] = [
-  {
-    accessorKey: "name",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
-    ),
-  },
-  {
-    accessorKey: "createdAt",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Created At" />
-    ),
-    cell: ({ row }) => {
-      if (!row.original.createdAt) return "-";
-      return format(new Date(row.original.createdAt), "PPP");
-    },
-  },
-];
+import { ActionColumn } from "./action-column";
+import { useBrandStore } from "@/store/brandStore";
 
 export function BrandTable() {
   const [pagination, setPagination] = useState<PaginationState>({
@@ -34,6 +18,7 @@ export function BrandTable() {
     pageSize: 10,
   });
   const [sorting, setSorting] = useState<SortingState>([]);
+  const { setEditOpen } = useBrandStore();
 
   const { data, isLoading } = useBrandsQuery({
     page: pagination.pageIndex + 1,
@@ -43,6 +28,36 @@ export function BrandTable() {
   });
 
   const brands = data || [];
+
+  const columns: ColumnDef<Brand>[] = [
+    {
+      accessorKey: "name",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Name" />
+      ),
+    },
+    {
+      accessorKey: "createdAt",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Created At" />
+      ),
+      cell: ({ row }) => {
+        if (!row.original.createdAt) return "-";
+        return format(new Date(row.original.createdAt), "PPP");
+      },
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => (
+        <ActionColumn
+          onEdit={() => setEditOpen(true, row.original)}
+          onDelete={() => {
+            // TODO: Implement delete
+          }}
+        />
+      ),
+    },
+  ];
 
   return (
     <DataTable

@@ -1,5 +1,6 @@
+"use client";
 import { BrandTable } from "@/components/admin/catalog/brand-table";
-import { CreateBrandForm } from "@/components/admin/catalog/create-brand-form";
+import { BrandForm } from "@/components/admin/catalog/create-brand-form";
 
 export default function BrandsPage() {
   return (
@@ -10,7 +11,7 @@ export default function BrandsPage() {
           <p className="text-muted-foreground">Manage brands.</p>
         </div>
         <div className="flex items-center space-x-2">
-          <CreateBrandForm />
+          <BrandForm />
         </div>
       </div>
       <BrandTable />

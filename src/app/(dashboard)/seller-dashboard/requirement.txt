@@ -1,0 +1,12 @@
+Core Instructions - 
+Just build the UI. Do not worry about the functionality - you do not have to connect any functionality or state management or api integration. I need UI Designs only.
+For Icons use Anything Similar you can find in Lucide/Tabler Icons. I'd say If you can create a wrapper component on top of Lucide/Tabler Icons, which will allow to modify background & foreground of the icon that will be great.
+For text ignore i18n. Just implement static texts.
+
+
+Dashboard - 
+Use these 2 images as Reference for your design.
+I want you to design a dashboard for sellers. 
+Images are appended with "desktop" & "mobile" keywords so Understand the image well before implementation.
+
+All the reusable component you will make during this process list them under directory.

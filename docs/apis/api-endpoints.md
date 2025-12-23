@@ -316,7 +316,8 @@ Base URL: `/api/catalog`
   ```json
   {
     "name": "Cement & Binders",
-    "type": "PRODUCT"
+    "type": "PRODUCT",
+    "categoryIconId": "UUID"
   }
   ```
   And for Sub-Category
@@ -324,7 +325,8 @@ Base URL: `/api/catalog`
   {
     "name": "Cement",
     "type": "PRODUCT",
-    "parentCategoryId": "f224e3b3-82e0-43ab-a374-cd6ce81f457f"
+    "parentCategoryId": "f224e3b3-82e0-43ab-a374-cd6ce81f457f",
+    "categoryIconId": "UUID"
   }
   ```
 - **Update**: `PATCH /category`
@@ -351,7 +353,7 @@ Base URL: `/api/catalog`
 ## Brand
 
 - **Create**: `POST /brand`
-  - Body: `{ "name": "String" }`
+  - Body: `{ "name": "String", "brandLogoId": "UUID" }`
 - **Update**: `PATCH /brand`
   - Body: `{ "id": "UUID", "name": "String" }`
 - **Delete**: `DELETE /brand`

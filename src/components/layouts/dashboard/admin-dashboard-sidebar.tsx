@@ -4,10 +4,10 @@ import { IconInnerShadowTop } from "@tabler/icons-react";
 import {
   BarChart3,
   ChevronRight,
-  Cpu,
-  Library,
+  FileBox,
   Settings,
   ShieldCheck,
+  Sparkles,
   Store,
   Users,
 } from "lucide-react";
@@ -38,15 +38,17 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { useAuthStore } from "@/store/authStore";
+import Link from "next/link";
 
 // This is sample data.
 const data = {
   navMain: [
     {
-      title: "Admin",
+      title: "Admins",
       url: "#",
       icon: ShieldCheck,
       isActive: true,
+      color: "text-purple-500",
       items: [
         { title: "Managers", url: "/admin-dashboard/admin-managers" },
         { title: "Accountants", url: "/admin-dashboard/admin-accountants" },
@@ -54,24 +56,27 @@ const data = {
       ],
     },
     {
-      title: "Sellers",
+      title: "Sellers & Providers",
       url: "#",
       icon: Store,
+      color: "text-blue-500",
       items: [
-        { title: "Product Managers", url: "#" },
+        { title: "Product Sellers", url: "#" },
         { title: "Service Providers", url: "#" },
       ],
     },
     {
-      title: "Buyers",
+      title: "Buyers & Consumers",
       url: "#",
       icon: Users,
+      color: "text-emerald-500",
       items: [{ title: "Buyers", url: "#" }],
     },
     {
       title: "Catalog",
       url: "#",
-      icon: Library,
+      icon: FileBox,
+      color: "text-orange-500",
       items: [
         { title: "Categories", url: "/admin-dashboard/catalog/categories" },
         {
@@ -90,6 +95,7 @@ const data = {
       title: "Reports",
       url: "#",
       icon: BarChart3,
+      color: "text-indigo-500",
       items: [
         { title: "General", url: "#" },
         { title: "Team", url: "#" },
@@ -100,7 +106,8 @@ const data = {
     {
       title: "AI",
       url: "#",
-      icon: Cpu,
+      icon: Sparkles,
+      color: "text-rose-500",
       items: [
         { title: "Conference Hall", url: "#" },
         { title: "Calculators", url: "#" },
@@ -110,6 +117,7 @@ const data = {
       title: "Settings",
       url: "#",
       icon: Settings,
+      color: "text-slate-500",
     },
   ],
 };
@@ -182,7 +190,7 @@ export function AdminDashboardSidebar({
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton tooltip={item.title}>
-                      {item.icon && <item.icon />}
+                      {item.icon && <item.icon className={item.color} />}
                       <span>{item.title}</span>
                       <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                     </SidebarMenuButton>
@@ -192,9 +200,9 @@ export function AdminDashboardSidebar({
                       {item.items?.map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton asChild>
-                            <a href={subItem.url}>
+                            <Link href={subItem.url}>
                               <span>{subItem.title}</span>
-                            </a>
+                            </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                       ))}

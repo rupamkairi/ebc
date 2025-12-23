@@ -1,12 +1,9 @@
+import { SidebarInset } from "@/components/ui/sidebar";
+
 export default function SellerDashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <div>
-      <h1>Seller Layout</h1>
-      {children}
-    </div>
-  );
+  return <SidebarInset>{children}</SidebarInset>;
 }

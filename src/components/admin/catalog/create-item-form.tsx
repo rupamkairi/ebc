@@ -14,10 +14,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  useBrandsQuery,
-  useCategoriesQuery,
   useCreateItemMutation,
-  useSpecificationsQuery,
+  useUpdateItemMutation,
 } from "@/queries/catalogQueries";
 import { toast } from "sonner";
 import { ApiError } from "@/lib/api-client";
@@ -30,52 +28,119 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useEffect } from "react";
+import { BrandSearchAutocomplete } from "@/components/autocompletes/brand-search-autocomplete";
+import { CategorySearchAutocomplete } from "@/components/autocompletes/category-search-autocomplete";
+import { SpecificationSearchAutocomplete } from "@/components/autocompletes/specification-search-autocomplete";
 
-export function CreateItemForm() {
-  const { isCreateOpen, setCreateOpen } = useItemStore();
-  const mutation = useCreateItemMutation();
+export function ItemForm() {
+  const { isCreateOpen, setCreateOpen, isEditOpen, setEditOpen, selectedItem } =
+    useItemStore();
+  // Create/Update mutations
+  const createMutation = useCreateItemMutation();
+  const updateMutation = useUpdateItemMutation();
 
-  // Fetch dependencies
-  const { data: categories } = useCategoriesQuery({ perPage: 100 });
-  const { data: brands } = useBrandsQuery({ perPage: 100 });
-  const { data: specifications } = useSpecificationsQuery({ perPage: 100 });
+  const isOpen = isCreateOpen || isEditOpen;
+  const isEditing = isEditOpen && !!selectedItem;
 
   const form = useForm({
     defaultValues: {
-      name: "",
-      description: "",
-      type: "PRODUCT",
-      HSNCode: "",
-      GSTPercentage: 0, // Number
-      categoryId: "",
-      brandId: "",
-      specificationId: "",
+      name: selectedItem?.name || "",
+      description: selectedItem?.description || "",
+      type: selectedItem?.type || "PRODUCT",
+      HSNCode: selectedItem?.HSNCode || "",
+      GSTPercentage: selectedItem?.GSTPercentage || 0,
+      categoryId: selectedItem?.categoryId || "",
+      brandId: selectedItem?.brandId || "",
+      specificationId: selectedItem?.specificationId || "",
     },
     onSubmit: async ({ value }) => {
-      mutation.mutate(value, {
-        onSuccess: () => {
-          setCreateOpen(false);
-          form.reset();
-          toast.success("Item created successfully");
-        },
-        onError: (error) => {
-          const msg =
-            error instanceof ApiError ? error.message : "Failed to create item";
-          toast.error(msg);
-        },
-      });
+      if (isEditing) {
+        updateMutation.mutate(
+          { ...value, id: selectedItem.id },
+          {
+            onSuccess: () => {
+              setEditOpen(false);
+              form.reset();
+              toast.success("Item updated successfully");
+            },
+            onError: (error) => {
+              const msg =
+                error instanceof ApiError
+                  ? error.message
+                  : "Failed to update item";
+              toast.error(msg);
+            },
+          }
+        );
+      } else {
+        createMutation.mutate(value, {
+          onSuccess: () => {
+            setCreateOpen(false);
+            form.reset();
+            toast.success("Item created successfully");
+          },
+          onError: (error) => {
+            const msg =
+              error instanceof ApiError
+                ? error.message
+                : "Failed to create item";
+            toast.error(msg);
+          },
+        });
+      }
     },
   });
 
+  useEffect(() => {
+    if (isEditing) {
+      form.reset({
+        name: selectedItem.name,
+        description: selectedItem.description,
+        type: selectedItem.type,
+        HSNCode: selectedItem.HSNCode,
+        GSTPercentage: selectedItem.GSTPercentage,
+        categoryId: selectedItem.categoryId,
+        brandId: selectedItem.brandId,
+        specificationId: selectedItem.specificationId,
+      });
+    } else {
+      form.reset({
+        name: "",
+        description: "",
+        type: "PRODUCT",
+        HSNCode: "",
+        GSTPercentage: 0,
+        categoryId: "",
+        brandId: "",
+        specificationId: "",
+      });
+    }
+  }, [isEditing, selectedItem, form]);
+
+  const handleOpenChange = (open: boolean) => {
+    if (isEditing) {
+      setEditOpen(open);
+    } else {
+      setCreateOpen(open);
+    }
+  };
+
   return (
-    <Dialog open={isCreateOpen} onOpenChange={setCreateOpen}>
-      <DialogTrigger asChild>
-        <Button onClick={() => setCreateOpen(true)}>Add Item</Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      {!isEditing && (
+        <DialogTrigger asChild>
+          <Button onClick={() => setCreateOpen(true)}>Add Item</Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-[425px] overflow-y-auto max-h-[90vh]">
         <DialogHeader>
-          <DialogTitle>Add Item</DialogTitle>
-          <DialogDescription>Create a new catalog item.</DialogDescription>
+          <DialogTitle>{isEditing ? "Edit Item" : "Add Item"}</DialogTitle>
+          <DialogDescription>
+            {isEditing
+              ? "Update item information."
+              : "Create a new catalog item."}
+          </DialogDescription>
         </DialogHeader>
         <form
           onSubmit={(e) => {
@@ -245,22 +310,12 @@ export function CreateItemForm() {
                   Category
                 </Label>
                 <div className="col-span-3">
-                  <Select
+                  <CategorySearchAutocomplete
                     value={field.state.value}
                     onValueChange={field.handleChange}
-                    disabled={!categories}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories?.map((cat) => (
-                        <SelectItem key={cat.id} value={cat.id}>
-                          {cat.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    placeholder="Search category"
+                    label="Select category"
+                  />
                   {field.state.meta.errors ? (
                     <p className="text-sm text-red-500 mt-1">
                       {field.state.meta.errors.join(", ")}
@@ -285,22 +340,12 @@ export function CreateItemForm() {
                   Brand
                 </Label>
                 <div className="col-span-3">
-                  <Select
+                  <BrandSearchAutocomplete
                     value={field.state.value}
                     onValueChange={field.handleChange}
-                    disabled={!brands}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select brand" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {brands?.map((brand) => (
-                        <SelectItem key={brand.id} value={brand.id}>
-                          {brand.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    placeholder="Search brand"
+                    label="Select brand"
+                  />
                   {field.state.meta.errors ? (
                     <p className="text-sm text-red-500 mt-1">
                       {field.state.meta.errors.join(", ")}
@@ -325,22 +370,12 @@ export function CreateItemForm() {
                   Specification
                 </Label>
                 <div className="col-span-3">
-                  <Select
+                  <SpecificationSearchAutocomplete
                     value={field.state.value}
                     onValueChange={field.handleChange}
-                    disabled={!specifications}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select specification" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {specifications?.map((spec) => (
-                        <SelectItem key={spec.id} value={spec.id}>
-                          {spec.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    placeholder="Search specification"
+                    label="Select specification"
+                  />
                   {field.state.meta.errors ? (
                     <p className="text-sm text-red-500 mt-1">
                       {field.state.meta.errors.join(", ")}
@@ -357,7 +392,13 @@ export function CreateItemForm() {
             >
               {([canSubmit, isSubmitting]) => (
                 <Button type="submit" disabled={!canSubmit || isSubmitting}>
-                  {isSubmitting ? "Creating..." : "Create Item"}
+                  {isSubmitting
+                    ? isEditing
+                      ? "Updating..."
+                      : "Creating..."
+                    : isEditing
+                    ? "Update Item"
+                    : "Create Item"}
                 </Button>
               )}
             </form.Subscribe>

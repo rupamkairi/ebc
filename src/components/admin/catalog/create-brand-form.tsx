@@ -13,46 +13,111 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useCreateBrandMutation } from "@/queries/catalogQueries";
+import {
+  useCreateBrandMutation,
+  useUpdateBrandMutation,
+} from "@/queries/catalogQueries";
 import { toast } from "sonner";
 import { ApiError } from "@/lib/api-client";
 import { useBrandStore } from "@/store/brandStore";
+import { MediaUploader } from "@/components/upload/media-uploader";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 
-export function CreateBrandForm() {
-  const { isCreateOpen, setCreateOpen } = useBrandStore();
-  const mutation = useCreateBrandMutation();
+export function BrandForm() {
+  const {
+    isCreateOpen,
+    setCreateOpen,
+    isEditOpen,
+    setEditOpen,
+    selectedBrand,
+  } = useBrandStore();
+  const createMutation = useCreateBrandMutation();
+  const updateMutation = useUpdateBrandMutation();
+
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const isOpen = isCreateOpen || isEditOpen;
+  const isEditing = isEditOpen && !!selectedBrand;
 
   const form = useForm({
     defaultValues: {
-      name: "",
+      name: selectedBrand?.name || "",
+      brandLogoId: selectedBrand?.brandLogoId || "",
     },
     onSubmit: async ({ value }) => {
-      mutation.mutate(value, {
-        onSuccess: () => {
-          setCreateOpen(false);
-          form.reset();
-          toast.success("Brand created successfully");
-        },
-        onError: (error) => {
-          const msg =
-            error instanceof ApiError
-              ? error.message
-              : "Failed to create brand";
-          toast.error(msg);
-        },
-      });
+      if (isEditing) {
+        updateMutation.mutate(
+          { ...value, id: selectedBrand.id },
+          {
+            onSuccess: () => {
+              setEditOpen(false);
+              form.reset();
+              toast.success("Brand updated successfully");
+            },
+            onError: (error) => {
+              const msg =
+                error instanceof ApiError
+                  ? error.message
+                  : "Failed to update brand";
+              toast.error(msg);
+            },
+          }
+        );
+      } else {
+        createMutation.mutate(value, {
+          onSuccess: () => {
+            setCreateOpen(false);
+            form.reset();
+            toast.success("Brand created successfully");
+          },
+          onError: (error) => {
+            const msg =
+              error instanceof ApiError
+                ? error.message
+                : "Failed to create brand";
+            toast.error(msg);
+          },
+        });
+      }
     },
   });
 
+  useEffect(() => {
+    if (isEditing) {
+      form.reset({
+        name: selectedBrand.name,
+        brandLogoId: selectedBrand.brandLogoId || "",
+      });
+    } else {
+      form.reset({
+        name: "",
+        brandLogoId: "",
+      });
+    }
+  }, [isEditing, selectedBrand, form]);
+
+  const handleOpenChange = (open: boolean) => {
+    if (isEditing) {
+      setEditOpen(open);
+    } else {
+      setCreateOpen(open);
+    }
+    if (!open) setPreviewUrl(null);
+  };
+
   return (
-    <Dialog open={isCreateOpen} onOpenChange={setCreateOpen}>
-      <DialogTrigger asChild>
-        <Button onClick={() => setCreateOpen(true)}>Add Brand</Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      {!isEditing && (
+        <DialogTrigger asChild>
+          <Button onClick={() => setCreateOpen(true)}>Add Brand</Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Brand</DialogTitle>
-          <DialogDescription>Create a new brand.</DialogDescription>
+          <DialogTitle>{isEditing ? "Edit Brand" : "Add Brand"}</DialogTitle>
+          <DialogDescription>
+            {isEditing ? "Update brand information." : "Create a new brand."}
+          </DialogDescription>
         </DialogHeader>
         <form
           onSubmit={(e) => {
@@ -96,13 +161,59 @@ export function CreateBrandForm() {
             )}
           </form.Field>
 
+          <form.Field name="brandLogoId">
+            {(field) => (
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor={field.name} className="text-right">
+                  Logo
+                </Label>
+                <div className="col-span-3 flex items-center gap-4">
+                  {(previewUrl || selectedBrand?.brandLogo?.url) && (
+                    <div className="relative size-16 overflow-hidden rounded-md border">
+                      <Image
+                        src={previewUrl || selectedBrand?.brandLogo?.url || ""}
+                        alt="Logo Preview"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
+                  <div className="flex flex-col gap-2">
+                    <MediaUploader
+                      onUploadSuccess={(uploadedFiles) => {
+                        if (uploadedFiles.length > 0) {
+                          field.handleChange(uploadedFiles[0].id);
+                          setPreviewUrl(uploadedFiles[0].url);
+                        }
+                      }}
+                      variant="single"
+                      crop={true}
+                      label={field.state.value ? "Change Logo" : "Upload Logo"}
+                    />
+                  </div>
+                  {field.state.value && !previewUrl && (
+                    <span className="text-sm text-green-600 font-medium">
+                      {isEditing ? "Current Logo" : "Logo Uploaded"}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+          </form.Field>
+
           <DialogFooter>
             <form.Subscribe
               selector={(state) => [state.canSubmit, state.isSubmitting]}
             >
               {([canSubmit, isSubmitting]) => (
                 <Button type="submit" disabled={!canSubmit || isSubmitting}>
-                  {isSubmitting ? "Creating..." : "Create Brand"}
+                  {isSubmitting
+                    ? isEditing
+                      ? "Updating..."
+                      : "Creating..."
+                    : isEditing
+                    ? "Update Brand"
+                    : "Create Brand"}
                 </Button>
               )}
             </form.Subscribe>

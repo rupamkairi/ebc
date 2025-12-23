@@ -1,7 +1,5 @@
 "use client";
 
-import { useForm } from "@tanstack/react-form";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,14 +12,22 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAuthStore } from "@/store/authStore";
-import { useCreateAdminAccountantMutation } from "@/queries/adminQueries";
-import { toast } from "sonner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { ApiError } from "@/lib/api-client";
+import { useCreateAdminAccountantMutation } from "@/queries/adminQueries";
+import { useAuthStore } from "@/store/authStore";
+import { useForm } from "@tanstack/react-form";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export function CreateAdminAccountantForm() {
   const { user } = useAuthStore();
-  const userRole = user?.role?.toUpperCase();
+  const role = user?.role?.toUpperCase();
+
   const [open, setOpen] = useState(false);
   const mutation = useCreateAdminAccountantMutation();
 
@@ -49,13 +55,20 @@ export function CreateAdminAccountantForm() {
     },
   });
 
-  if (userRole !== "ADMIN") return null;
+  const disabled = role !== "ADMIN";
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="cursor-pointer">Add Accountant</Button>
-      </DialogTrigger>
+      <Tooltip>
+        <TooltipTrigger>
+          <DialogTrigger asChild>
+            <Button disabled={disabled}>Add Accountant</Button>
+          </DialogTrigger>
+        </TooltipTrigger>
+        <TooltipContent hidden={!disabled}>
+          <p>Only Admin can add accountant</p>
+        </TooltipContent>
+      </Tooltip>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Admin Accountant</DialogTitle>

@@ -10,34 +10,8 @@ import { Category } from "@/types/catalog";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 
-const columns: ColumnDef<Category>[] = [
-  {
-    accessorKey: "name",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
-    ),
-  },
-  {
-    accessorKey: "type",
-    header: "Type",
-    cell: ({ row }) => <Badge variant="outline">{row.original.type}</Badge>,
-  },
-  {
-    accessorKey: "parentCategory.name",
-    header: "Parent Category",
-    cell: ({ row }) => row.original.parentCategory?.name || "-",
-  },
-  {
-    accessorKey: "createdAt",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Created At" />
-    ),
-    cell: ({ row }) => {
-      if (!row.original.createdAt) return "-";
-      return format(new Date(row.original.createdAt), "PPP");
-    },
-  },
-];
+import { ActionColumn } from "./action-column";
+import { useCategoryStore } from "@/store/categoryStore";
 
 export function CategoryTable() {
   const [pagination, setPagination] = useState<PaginationState>({
@@ -45,6 +19,7 @@ export function CategoryTable() {
     pageSize: 10,
   });
   const [sorting, setSorting] = useState<SortingState>([]);
+  const { setEditOpen } = useCategoryStore();
 
   const { data, isLoading } = useCategoriesQuery({
     page: pagination.pageIndex + 1,
@@ -54,6 +29,46 @@ export function CategoryTable() {
   });
 
   const categories = data || [];
+
+  const columns: ColumnDef<Category>[] = [
+    {
+      accessorKey: "name",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Name" />
+      ),
+    },
+    {
+      accessorKey: "type",
+      header: "Type",
+      cell: ({ row }) => <Badge variant="outline">{row.original.type}</Badge>,
+    },
+    {
+      accessorKey: "parentCategory.name",
+      header: "Parent Category",
+      cell: ({ row }) => row.original.parentCategory?.name || "-",
+    },
+    {
+      accessorKey: "createdAt",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Created At" />
+      ),
+      cell: ({ row }) => {
+        if (!row.original.createdAt) return "-";
+        return format(new Date(row.original.createdAt), "PPP");
+      },
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => (
+        <ActionColumn
+          onEdit={() => setEditOpen(true, row.original)}
+          onDelete={() => {
+            // TODO: Implement delete
+          }}
+        />
+      ),
+    },
+  ];
 
   return (
     <DataTable
