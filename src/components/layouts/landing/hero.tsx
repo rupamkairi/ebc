@@ -4,6 +4,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle2, ShieldCheck, Star } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export function Hero() {
   const { t } = useLanguage();
@@ -36,9 +37,11 @@ export function Hero() {
                 {t("home_cta_primary")}
                 <ArrowRight className="size-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button size="lg" variant="outline" className="h-16 px-10 text-lg font-bold border-2 rounded-2xl hover:bg-primary/5 hover:text-primary transition-all">
-                {t("home_cta_secondary")}
-              </Button>
+              <Link href="/how-it-works" className="w-full sm:w-auto">
+                <Button size="lg" variant="outline" className="h-16 px-10 text-lg font-bold border-2 rounded-2xl hover:bg-primary/5 hover:text-primary transition-all w-full">
+                  {t("home_cta_secondary")}
+                </Button>
+              </Link>
             </div>
 
             <div className="flex items-center gap-6 pt-6">
