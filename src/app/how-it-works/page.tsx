@@ -2,18 +2,18 @@
 
 import { useLanguage } from "@/hooks/useLanguage";
 import { Button } from "@/components/ui/button";
-import { 
-  ArrowRight, 
-  Home, 
-  Briefcase, 
+import {
+  ArrowRight,
+  Home,
+  Briefcase,
   ChevronLeft,
   ShieldCheck,
   TrendingUp,
-  Sparkles
+  Sparkles,
 } from "lucide-react";
 import Link from "next/link";
-import { Navbar } from "@/components/layouts/landing/navbar";
-import { Footer } from "@/components/layouts/landing/footer";
+import { Navbar } from "@/components/layouts/landing-scrap/navbar";
+import { Footer } from "@/components/layouts/landing-scrap/footer";
 
 export default function HowItWorksPage() {
   const { t } = useLanguage();
@@ -21,7 +21,7 @@ export default function HowItWorksPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Navbar />
-      
+
       <main className="flex-1 flex flex-col items-center justify-center py-20 px-4 relative overflow-hidden">
         {/* Background Decorative Elements */}
         <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl -z-10" />
@@ -30,8 +30,8 @@ export default function HowItWorksPage() {
         <div className="container max-w-6xl mx-auto flex flex-col items-center text-center space-y-12">
           {/* Back Button & Header */}
           <div className="space-y-4 animate-in fade-in slide-in-from-top duration-700">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-primary hover:gap-3 transition-all mb-4"
             >
               <ChevronLeft size={16} />
@@ -56,14 +56,16 @@ export default function HowItWorksPage() {
                   <div className="size-12 rounded-2xl bg-white/10 flex items-center justify-center">
                     <Home size={24} />
                   </div>
-                  <h3 className="text-2xl font-black">{t("i_am_buyer_title")}</h3>
+                  <h3 className="text-2xl font-black">
+                    {t("i_am_buyer_title")}
+                  </h3>
                 </div>
-                
+
                 <div className="p-8 md:p-10 flex flex-col flex-1 space-y-8">
                   <p className="text-lg text-foreground/60 font-medium leading-relaxed flex-1">
                     {t("i_am_buyer_desc")}
                   </p>
-                  
+
                   {/* Feature Lists */}
                   <div className="space-y-4">
                     <div className="flex items-center gap-3 text-sm font-bold text-foreground/80">
@@ -77,7 +79,10 @@ export default function HowItWorksPage() {
                   </div>
 
                   <Link href="/how-it-helps/buyer" className="w-full">
-                    <Button size="lg" className="h-16 w-full bg-primary hover:bg-primary/90 text-white font-black text-lg rounded-2xl shadow-xl shadow-primary/20 gap-3 group/btn">
+                    <Button
+                      size="lg"
+                      className="h-16 w-full bg-primary hover:bg-primary/90 text-white font-black text-lg rounded-2xl shadow-xl shadow-primary/20 gap-3 group/btn"
+                    >
                       {t("get_started_buyer")}
                       <ArrowRight className="size-6 group-hover/btn:translate-x-1 transition-transform" />
                     </Button>
@@ -95,9 +100,11 @@ export default function HowItWorksPage() {
                   <div className="size-12 rounded-2xl bg-white/10 flex items-center justify-center">
                     <Briefcase size={24} />
                   </div>
-                  <h3 className="text-2xl font-black">{t("i_am_seller_title")}</h3>
+                  <h3 className="text-2xl font-black">
+                    {t("i_am_seller_title")}
+                  </h3>
                 </div>
-                
+
                 <div className="p-8 md:p-10 flex flex-col flex-1 space-y-8">
                   <p className="text-lg text-foreground/60 font-medium leading-relaxed flex-1">
                     {t("i_am_seller_desc")}
@@ -116,7 +123,10 @@ export default function HowItWorksPage() {
                   </div>
 
                   <Link href="/how-it-helps/seller" className="w-full">
-                    <Button size="lg" className="h-16 w-full bg-secondary hover:bg-secondary/90 text-white font-black text-lg rounded-2xl shadow-xl shadow-secondary/20 gap-3 group/btn">
+                    <Button
+                      size="lg"
+                      className="h-16 w-full bg-secondary hover:bg-secondary/90 text-white font-black text-lg rounded-2xl shadow-xl shadow-secondary/20 gap-3 group/btn"
+                    >
                       {t("get_started_seller")}
                       <ArrowRight className="size-6 group-hover/btn:translate-x-1 transition-transform" />
                     </Button>
@@ -125,7 +135,7 @@ export default function HowItWorksPage() {
               </div>
             </div>
           </div>
-          
+
           <div className="pt-8 text-foreground/40 text-sm font-bold uppercase tracking-widest animate-in fade-in duration-1000 delay-700">
             EBC Aapke Sath, Har Kadam Par.
           </div>

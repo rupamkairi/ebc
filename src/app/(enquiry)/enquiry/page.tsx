@@ -2,11 +2,18 @@
 
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAuthStore } from "@/store/authStore";
-import { Navbar } from "@/components/layouts/landing/navbar";
-import { Footer } from "@/components/layouts/landing/footer";
+import { Navbar } from "@/components/layouts/landing-scrap/navbar";
+import { Footer } from "@/components/layouts/landing-scrap/footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Plus, ArrowRight, Calendar, MapPin, Package, Sparkles } from "lucide-react";
+import {
+  Plus,
+  ArrowRight,
+  Calendar,
+  MapPin,
+  Package,
+  Sparkles,
+} from "lucide-react";
 import Link from "next/link";
 import { format } from "date-fns";
 
@@ -44,7 +51,7 @@ const MOCK_ENQUIRIES = [
 export default function EnquiryListPage() {
   const { t } = useLanguage();
   const { user } = useAuthStore();
-  
+
   const userName = user?.name || "User";
 
   return (
@@ -59,7 +66,9 @@ export default function EnquiryListPage() {
               <Sparkles size={20} />
             </div>
             <div>
-              <p className="text-[10px] font-black text-primary uppercase tracking-widest">Active Account</p>
+              <p className="text-[10px] font-black text-primary uppercase tracking-widest">
+                Active Account
+              </p>
               <h2 className="text-xl font-black text-foreground">
                 Hi, <span className="text-primary">{userName}</span>
               </h2>
@@ -77,7 +86,10 @@ export default function EnquiryListPage() {
               My Enquiries
             </h1>
             <Link href="/enquiry/create">
-              <Button size="lg" className="font-bold shadow-lg shadow-primary/20 rounded-xl px-8">
+              <Button
+                size="lg"
+                className="font-bold shadow-lg shadow-primary/20 rounded-xl px-8"
+              >
                 <Plus className="mr-2 size-5" /> {t("enquiry_section_cta")}
               </Button>
             </Link>
@@ -98,7 +110,9 @@ export default function EnquiryListPage() {
                   <div className="flex justify-between items-start">
                     <div>
                       <Badge
-                        variant={enq.status === "OPEN" ? "default" : "secondary"}
+                        variant={
+                          enq.status === "OPEN" ? "default" : "secondary"
+                        }
                         className="mb-2 font-black rounded-lg"
                       >
                         {enq.status}
@@ -150,7 +164,10 @@ export default function EnquiryListPage() {
             ))}
 
             {/* New Enquiry Promo Card */}
-            <Link href="/enquiry/create" className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-primary/20 rounded-2xl bg-primary/5 hover:bg-primary/10 transition-all cursor-pointer text-center gap-4 group">
+            <Link
+              href="/enquiry/create"
+              className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-primary/20 rounded-2xl bg-primary/5 hover:bg-primary/10 transition-all cursor-pointer text-center gap-4 group"
+            >
               <div className="bg-white p-5 rounded-full shadow-lg group-hover:scale-110 transition-transform">
                 <Plus className="size-8 text-primary" />
               </div>
