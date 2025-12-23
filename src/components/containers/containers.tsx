@@ -11,9 +11,10 @@ export default function Container({ size, children }: Props) {
       className={twJoin(
         "mx-auto",
         !size && "container",
-        size === "md" && "max-w-lg",
-        size === "sm" && "max-w-xl",
-        size === "lg" && "max-w-4xl",
+        size === "sm" && "max-w-2xl",
+        size === "md" && "max-w-4xl",
+        size === "lg" && "max-w-6xl",
+        // size === "lg" && "max-w-8xl" something liike this is needed.,
         "px-responsive"
       )}
     >

@@ -1,6 +1,9 @@
 "use client";
 
 import Container from "@/components/containers/containers";
+import { FeaturesSection } from "@/components/layouts/landing-scrap/features-section";
+import { Hero } from "@/components/layouts/landing-scrap/hero";
+import { ProblemSection } from "@/components/layouts/landing-scrap/problem-section";
 import Break from "@/components/spacing/break";
 import {
   Accordion,
@@ -28,11 +31,18 @@ import {
   Users,
 } from "lucide-react";
 import Image from "next/image";
+import { Navbar } from "@/components/layouts/landing-scrap/navbar";
 
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-white-background">
+      <Navbar />
       {/* Existing Header/Banner would go here */}
+      <Hero />
+      <Container size="lg">
+        <ProblemSection />
+      </Container>
+      {/* <FeaturesSection /> */}
 
       {/* WHAT IS EBC? SECTION */}
       <section className="bg-blue-50/50 py-responsive">
