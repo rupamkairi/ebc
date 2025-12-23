@@ -36,7 +36,7 @@ export default function PostRequirementPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] pb-32">
+    <div className="min-h-screen bg-background pb-32">
       <BuyerHeader />
 
       <main className="container mx-auto px-4 py-8">
