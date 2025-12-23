@@ -1,13 +1,6 @@
 "use client";
 
 import { useLanguage } from "@/hooks/useLanguage";
-import { Card, CardContent } from "@/components/ui/card";
-import { 
-  Tags, 
-  Users,
-  HelpCircle,
-  TrendingDown
-} from "lucide-react";
 import Image from "next/image";
 
 export function ProblemSection() {
@@ -16,85 +9,93 @@ export function ProblemSection() {
   const problems = [
     {
       title: t("problem_1_desc"),
-      icon: <TrendingDown className="size-5 text-orange-600" />,
-      image: "https://images.unsplash.com/photo-1578575437130-527eed3abbec?q=80&w=800",
-      iconBg: "bg-white",
+      image: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?q=80&w=800",
+      icon: "🤔",
     },
     {
       title: t("problem_2_desc"),
-      icon: <TrendingDown className="size-5 text-blue-600" />,
-      image: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=800",
-      iconBg: "bg-white",
+      image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=800",
+      icon: "🏃",
     },
     {
       title: t("problem_3_desc"),
-      icon: <Tags className="size-5 text-red-600" />, // 'Hidded' tag style in image
-      image: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=800",
-      iconBg: "bg-white",
+      image: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=800",
+      icon: "🏷️",
     },
     {
       title: t("problem_4_desc"),
-      icon: <HelpCircle className="size-5 text-amber-600" />,
-      image: "https://images.unsplash.com/photo-1544377193-33dcf4d68fb5?q=80&w=800",
-      iconBg: "bg-white",
+      image: "https://images.unsplash.com/photo-1554224154-26032ffc0d07?q=80&w=800",
+      icon: "👷",
     },
     {
       title: t("problem_5_desc"),
-      icon: <Users className="size-5 text-primary" />,
-      image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=800",
-      iconBg: "bg-white",
+      image: "https://images.unsplash.com/photo-1542744094-24638eff58bb?q=80&w=800",
+      icon: "🏠",
     },
   ];
 
   return (
-    <section className="py-24 bg-background overflow-hidden font-sans">
+    <section className="py-24 relative overflow-hidden bg-white/50">
+      {/* Soft gradient background */}
+      <div className="absolute inset-0 bg-linear-to-tr from-[#f0f9ff] via-white to-[#fff7ed] -z-10" />
+      
       <div className="container mx-auto px-4 md:px-6">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-4xl md:text-5xl font-black text-primary tracking-tight mb-4">
-            {t("problems_title")}
-          </h2>
-          <div className="h-1.5 w-32 bg-secondary mx-auto rounded-full" />
-        </div>
+        <h2 className="text-3xl md:text-4xl font-black text-center text-slate-900 mb-16 tracking-tight">
+          {t("problems_title")}
+        </h2>
         
-        <div className="flex flex-wrap justify-center gap-10 mb-20">
-          {problems.map((problem, index) => (
-            <Card key={index} className="w-full sm:w-[280px] border-none shadow-xl rounded-4xl bg-white group hover:scale-[1.02] transition-all duration-500">
-              {/* Image Container - Removed overflow-hidden to allow icon to float out */}
+        {/* Main Grid for first 4 cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-8">
+          {problems.slice(0, 4).map((problem, index) => (
+            <div key={index} className="flex flex-col bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-slate-100">
               <div className="relative h-48 w-full">
-                <div className="relative h-full w-full overflow-hidden rounded-t-4xl">
-                  <Image 
-                    src={problem.image} 
-                    alt="problem image" 
-                    fill 
-                    className="object-cover group-hover:scale-110 transition-transform duration-700 grayscale-[0.2] group-hover:grayscale-0"
-                  />
-                  <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
-                </div>
-                
-                {/* Floating Icon Circle - Positioned absolutely relative to the image container */}
-                <div className="absolute -bottom-6 left-8 z-20 size-14 rounded-full bg-white shadow-2xl flex items-center justify-center border-4 border-white transition-transform duration-300 group-hover:scale-110">
-                  <div className="size-10 rounded-full bg-slate-50 flex items-center justify-center">
-                    {problem.icon}
-                  </div>
+                <Image 
+                  src={problem.image} 
+                  alt="problem" 
+                  fill 
+                  className="object-cover"
+                />
+                {/* Floating Icon */}
+                <div className="absolute -bottom-5 left-5 size-10 rounded-full bg-white shadow-lg flex items-center justify-center border-2 border-slate-50 text-xl">
+                  {problem.icon}
                 </div>
               </div>
-              
-              <CardContent className="pt-12 pb-10 px-8">
-                <p className="text-lg font-black text-foreground/80 leading-snug">
+              <div className="pt-8 pb-8 px-6 text-center">
+                <p className="text-base font-bold text-slate-800 leading-tight">
                   {problem.title}
                 </p>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
-        
-        <div className="text-center">
-          <div className="inline-flex flex-col items-center">
-            <div className="text-2xl md:text-4xl font-black text-foreground tracking-tight py-4 px-10 bg-white border border-border shadow-sm rounded-3xl md:rounded-full">
-              {t("gamble_text")}
+
+        {/* Centered 5th card */}
+        <div className="flex justify-center mb-16">
+          <div className="w-full sm:w-[320px] lg:w-[350px] flex flex-col bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-slate-100">
+            <div className="relative h-48 w-full">
+              <Image 
+                src={problems[4].image} 
+                alt="problem" 
+                fill 
+                className="object-cover"
+              />
+              {/* Floating Icon */}
+              <div className="absolute -bottom-5 left-5 size-10 rounded-full bg-white shadow-lg flex items-center justify-center border-2 border-slate-50 text-xl">
+                {problems[4].icon}
+              </div>
             </div>
-            <div className="h-4 w-4 bg-white border-b border-r border-border rotate-45 -mt-2 shadow-sm" />
+            <div className="pt-8 pb-8 px-6 text-center">
+              <p className="text-base font-bold text-slate-800 leading-tight">
+                {problems[4].title}
+              </p>
+            </div>
           </div>
+        </div>
+        
+        <div className="text-center mt-20">
+          <p className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">
+            {t("gamble_text")}
+          </p>
         </div>
       </div>
     </section>
