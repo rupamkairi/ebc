@@ -34,7 +34,7 @@ export function Footer() {
             </p>
           </div>
           <div>
-            <h4 className="font-black text-secondary uppercase tracking-widest text-xs mb-6">Quick Links</h4>
+            <h4 className="font-black text-secondary uppercase tracking-widest text-xs mb-6">{t("quick_links")}</h4>
             <ul className="space-y-3 text-sm font-bold text-slate-300">
               <li><Link href="#" className="hover:text-primary transition-colors">{t("materials")}</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors">{t("services")}</Link></li>
@@ -43,16 +43,16 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="font-black text-secondary uppercase tracking-widest text-xs mb-6">Company</h4>
+            <h4 className="font-black text-secondary uppercase tracking-widest text-xs mb-6">{t("company")}</h4>
             <ul className="space-y-3 text-sm font-bold text-slate-300">
-              <li><Link href="#" className="hover:text-primary transition-colors">About Us</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">Contact</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">Terms of Service</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors">{t("about_us")}</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors">{t("contact_us")}</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors">{t("privacy_policy")}</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors">{t("terms_of_service")}</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-black text-secondary uppercase tracking-widest text-xs mb-6">Contact Info</h4>
+            <h4 className="font-black text-secondary uppercase tracking-widest text-xs mb-6">{t("contact_info")}</h4>
             <div className="space-y-4">
               <p className="text-sm font-bold text-slate-300">info@ebc.com</p>
               <p className="text-sm font-bold text-slate-300">+91 98765 43210</p>
@@ -65,7 +65,7 @@ export function Footer() {
           </div>
         </div>
         <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-bold text-slate-500 uppercase tracking-widest">
-          <p>© {new Date().getFullYear()} ECON Building Centre. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} ECON Building Centre. {t("rights_reserved")}</p>
           <div className="flex gap-6">
             <Link href="#" className="hover:text-white transition-colors">Facebook</Link>
             <Link href="#" className="hover:text-white transition-colors">Twitter</Link>

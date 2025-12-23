@@ -18,7 +18,7 @@ import { useAuthStore } from "@/store/authStore";
 import { useCreateAdminExecutiveMutation } from "@/queries/adminQueries";
 import { toast } from "sonner";
 import { ApiError } from "@/lib/api-client";
-import { useAuthStore } from "@/store/authStore";
+
 import {
   Tooltip,
   TooltipContent,

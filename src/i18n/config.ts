@@ -21,7 +21,7 @@ const english = {
   home_title: "Build Your Dream Home with Confidence. Not Confusion.",
   home_subtitle: "Fair material prices • Trusted workers • Engineer guidance — all in one place.",
   home_cta_primary: "Plan My Home with an Expert (Free)",
-  home_cta_secondary: "How it Works",
+  home_cta_secondary: "Get Free Material Quotations",
   serving_families: "Serving Indian families since 2004",
   problems_title: "Every home builder faces these problems...",
   problem_1_title: "Price Variation",
@@ -109,6 +109,15 @@ const english = {
   enquiry_step_3: "Sellers will review and send you their best quotations.",
   enquiry_dashboard_link: "View your enquiries in Buyer Dashboard",
   enquiry_dashboard_desc: "Manage all your active enquiries and compare incoming quotations in one place.",
+  home_journey_cta: "Start Your Home Journey",
+  // Footer
+  quick_links: "Quick Links",
+  company: "Company",
+  about_us: "About Us",
+  privacy_policy: "Privacy Policy",
+  terms_of_service: "Terms of Service",
+  contact_info: "Contact Info",
+  rights_reserved: "All rights reserved.",
   // Add more translations as needed
 };
 
@@ -130,7 +139,7 @@ const hinglish = {
   home_title: "Apna sapno ka ghar banayein confidence ke saath.",
   home_subtitle: "Sahi material rates • Bharosemand workers • Engineer ki salah — sab ek jagah.",
   home_cta_primary: "Expert ke saath ghar plan karein (Free)",
-  home_cta_secondary: "Kaise kaam karta hai",
+  home_cta_secondary: "Free Material Quotations Payein",
   serving_families: "2004 se Indian parivaron ki seva mein",
   problems_title: "Ghar banane waale har kisi ko ye dikkat hoti hai...",
   problem_1_title: "Rates ka antar",
@@ -218,6 +227,15 @@ const hinglish = {
   enquiry_step_3: "Sellers aapko apne sabse acche rates bhejenge.",
   enquiry_dashboard_link: "Buyer Dashboard mein apni enquiries dekhein",
   enquiry_dashboard_desc: "Apni saari active enquiries aur quotations ko ek hi jagah manage karein.",
+  home_journey_cta: "Apna Ghar banana shuru karein",
+  // Footer
+  quick_links: "Zaroori Links",
+  company: "Company",
+  about_us: "Humare Baare Mein (About Us)",
+  privacy_policy: "Privacy Policy",
+  terms_of_service: "Terms of Service",
+  contact_info: "Sampark Karein",
+  rights_reserved: "All rights reserved.",
   // Add more translations as needed
 };
 
