@@ -52,4 +52,7 @@ export const API_ENDPOINTS = {
     },
     UPLOAD: "/catalog/upload",
   },
+  PINCODE_DIRECTORY: {
+    LIST: "/pincode-directory/list",
+  },
 } as const;

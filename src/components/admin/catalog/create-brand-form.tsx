@@ -186,8 +186,8 @@ export function BrandForm() {
                           setPreviewUrl(uploadedFiles[0].url);
                         }
                       }}
-                      // maxFiles={2}
-                      // endpoint="/media/upload/multiple"
+                      variant="single"
+                      crop={true}
                       label={field.state.value ? "Change Logo" : "Upload Logo"}
                     />
                   </div>

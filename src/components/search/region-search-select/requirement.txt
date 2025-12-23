@@ -1,0 +1,26 @@
+region-search-select
+  create a advanced region search component.
+  multi stage component - 
+    1.1 search & select state (create autocomplete component)
+    1.2 checkbox for select whole state
+    2.1 search & select district (create autocomplete component)
+    2.2 checkbox for select whole district
+    3 search & select pincode (input field)
+    
+
+Use `POST /api/pincode-directory/list` API to fetch pincode records based on state, district, or pincode.
+  - Body:
+    ```json
+    {
+      "state": "maharashtra",
+      "district": "mumbai",
+      "pincode": "400001"
+    }
+    ```
+same api is used to fetch state, district & pincode.
+
+to show results show a list of items (regions) with pincode, district & state name
+& next to each item there should be a checkbox to select & remove the region.
+
+there should be a text to show the pincode (selected regions) & count of selected regions.
+there should be another button to submit the selected regions.

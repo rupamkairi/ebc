@@ -71,7 +71,11 @@ export default function AdminDashboardHeader() {
           </div>
         </div>
         <div className="flex items-center gap-3 pr-3">
-          <Button variant="ghost" size="icon" className="relative text-slate-500 hover:text-blue-600">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="relative text-slate-500 hover:text-blue-600"
+          >
             <Bell className="h-5 w-5" />
             <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-950" />
           </Button>
