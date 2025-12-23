@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingBag, Bell, UserCircle } from "lucide-react";
+import { PhoneCall } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function BuyerHeader() {
@@ -48,20 +48,20 @@ export function BuyerHeader() {
             >
               My Quotes
             </Link>
+            <Link
+              href="#"
+              className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors"
+            >
+              Support
+            </Link>
           </nav>
         </div>
 
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" className="relative text-foreground/60">
-            <Bell size={20} />
-            <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white" />
-          </Button>
-          <div className="h-8 w-px bg-border hidden sm:block" />
-          <Button variant="ghost" className="flex items-center gap-2 text-foreground/70 hover:text-primary">
-            <UserCircle size={24} />
-            <span className="hidden sm:inline font-bold">My Account</span>
-          </Button>
-        </div>
+        <Button className="bg-secondary hover:bg-secondary/90 text-white rounded-full px-6 flex items-center gap-2">
+          <PhoneCall size={18} />
+          <span className="hidden sm:inline">Talk to Support Team</span>
+          <span className="sm:hidden">Support</span>
+        </Button>
       </div>
     </header>
   );
