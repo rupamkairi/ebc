@@ -9,33 +9,28 @@ export function ProblemSection() {
   const problems = [
     {
       title: t("problem_1_desc"),
-      image:
-        "https://images.unsplash.com/photo-1729077555348-4ab768b4a90e?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      image: "/images/problems/price-confusion.png",
       icon: "🤔",
     },
     {
       title: t("problem_2_desc"),
-      image:
-        "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=800",
+      image: "/images/problems/commission-run.png",
       icon: "🏃",
     },
     {
       title: t("problem_3_desc"),
-      image:
-        "https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=800",
-      icon: "🏷️",
+      image: "/images/problems/quality-warning.png",
+      icon: "⚠️",
     },
     {
       title: t("problem_4_desc"),
-      image:
-        "https://images.unsplash.com/photo-1554224154-26032ffc0d07?q=80&w=800",
+      image: "/images/problems/vague-quotes.jpg",
       icon: "👷",
     },
     {
       title: t("problem_5_desc"),
-      image:
-        "https://images.unsplash.com/photo-1542744094-24638eff58bb?q=80&w=800",
-      icon: "🏠",
+      image: "/images/problems/family-help.jpg",
+      icon: "👨‍👩‍👧‍👦",
     },
   ];
 
@@ -60,7 +55,7 @@ export function ProblemSection() {
                 src={problem.image}
                 alt="problem"
                 fill
-                className="object-cover"
+                className="object-contain p-6"
               />
               {/* Floating Icon */}
               <div className="absolute -bottom-5 left-5 size-10 rounded-full bg-white shadow-lg flex items-center justify-center border-2 border-slate-50 text-xl">
