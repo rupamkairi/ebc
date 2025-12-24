@@ -53,7 +53,7 @@ export default function HomePage() {
               What is EBC?
             </TypographyH1>
             <Break className="h-4" />
-            <TypographyP className="text-muted-foreground text-lg">
+            <TypographyP className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">
               It&apos;s a Local Marketplace. No Commission. No Hidden Charges.
             </TypographyP>
           </div>
