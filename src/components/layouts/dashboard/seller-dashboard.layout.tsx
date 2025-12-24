@@ -1,5 +1,15 @@
 "use client";
 
-export default function SellerDashboardLayout() {
-  return <div>Seller Dashboard Layout</div>;
+export default function SellerDashboardLayoutComponent({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <header>header</header>
+      <div>{children}</div>
+      <footer>footer</footer>
+    </div>
+  );
 }
