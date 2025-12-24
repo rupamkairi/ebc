@@ -60,7 +60,7 @@ export function StepsSection() {
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center mb-20 space-y-2">
           <p className="text-base font-bold text-slate-900 tracking-wider uppercase">
-            How it works —
+            How it works
           </p>
           <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">
             3 Simple Steps

@@ -126,18 +126,40 @@ export default function HomePage() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
               <StepItem
-                icon={<Compass className="w-12 h-12 text-primary mx-auto" />}
+                icon={
+                  <Image
+                    src="/icons/house-hand.png"
+                    alt="Requirement"
+                    width={48}
+                    height={48}
+                    className="object-contain"
+                  />
+                }
                 title="1 Tell us your requirement"
                 description="Plot size or renovation work"
               />
               <StepItem
-                icon={<LayoutList className="w-12 h-12 text-primary mx-auto" />}
+                icon={
+                  <Image
+                    src="/icons/compare-quotes.png"
+                    alt="Compare"
+                    width={48}
+                    height={48}
+                    className="object-contain"
+                  />
+                }
                 title="2 Compare quotations & professionals"
                 description="Choose what fits budget and trust"
               />
               <StepItem
                 icon={
-                  <ShieldCheck className="w-12 h-12 text-primary mx-auto" />
+                  <Image
+                    src="/icons/quality-check.png"
+                    alt="Quality Check"
+                    width={48}
+                    height={48}
+                    className="object-contain"
+                  />
                 }
                 title="3 Build with support and quality checks"
                 description="EBC tracks & assists throughout"
