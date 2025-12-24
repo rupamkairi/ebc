@@ -2,8 +2,8 @@
 
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAuthStore } from "@/store/authStore";
-import { Navbar } from "@/components/layouts/landing-scrap/navbar";
-import { Footer } from "@/components/layouts/landing-scrap/footer";
+import { Navbar } from "@/components/shared/navbar";
+import { Footer } from "@/components/shared/footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {

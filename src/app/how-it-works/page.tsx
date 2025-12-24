@@ -12,8 +12,8 @@ import {
   Sparkles,
 } from "lucide-react";
 import Link from "next/link";
-import { Navbar } from "@/components/layouts/landing-scrap/navbar";
-import { Footer } from "@/components/layouts/landing-scrap/footer";
+import { Navbar } from "@/components/shared/navbar";
+import { Footer } from "@/components/shared/footer";
 
 export default function HowItWorksPage() {
   const { t } = useLanguage();

@@ -1,11 +1,12 @@
 import { twJoin } from "tailwind-merge";
 
 type Props = {
-  size?: "md" | "sm" | "lg";
+  size?: "md" | "sm" | "lg" | "xl";
   children?: React.ReactNode;
+  className?: string;
 };
 
-export default function Container({ size, children }: Props) {
+export default function Container({ size, children, className }: Props) {
   return (
     <div
       className={twJoin(
@@ -14,8 +15,9 @@ export default function Container({ size, children }: Props) {
         size === "sm" && "max-w-2xl",
         size === "md" && "max-w-4xl",
         size === "lg" && "max-w-6xl",
-        // size === "lg" && "max-w-8xl" something liike this is needed.,
-        "px-responsive"
+        size === "xl" && "max-w-7xl",
+        "px-responsive",
+        className
       )}
     >
       {children}

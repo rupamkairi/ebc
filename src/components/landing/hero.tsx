@@ -1,7 +1,10 @@
 "use client";
 
-import { useLanguage } from "@/hooks/useLanguage";
+import Container from "@/components/containers/containers";
+import Break from "@/components/spacing/break";
 import { Button } from "@/components/ui/button";
+import { TypographyH1, TypographyLarge } from "@/components/ui/typography";
+import { useLanguage } from "@/hooks/useLanguage";
 import { ArrowRight, ShieldCheck } from "lucide-react";
 import Image from "next/image";
 
@@ -23,36 +26,44 @@ export function Hero() {
         <div className="absolute inset-0 bg-linear-to-r from-white via-white/80 to-transparent md:from-white md:via-white/40 md:to-transparent" />
       </div>
 
-      <div className="container relative z-10 mx-auto px-4 md:px-6 py-16 md:py-24">
+      <Container className="relative z-10 py-16 md:py-24">
         <div className="max-w-xl md:max-w-2xl flex flex-col space-y-8 animate-in fade-in slide-in-from-left duration-700">
-          
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-[#024caa] leading-tight">
+          <TypographyH1 className="text-4xl md:text-5xl lg:text-6xl text-[#024caa] leading-tight">
             Build Your Dream Home with Confidence. Not Confusion.
-          </h1>
-          
-          <p className="text-lg md:text-xl text-slate-900 font-bold max-w-[550px]">
+          </TypographyH1>
+
+          <TypographyLarge className="text-slate-900 font-bold max-w-[550px]">
             {t("home_subtitle")}
-          </p>
-          
+          </TypographyLarge>
+
           <div className="flex flex-col sm:flex-row gap-5 pt-2">
-            <Button size="lg" className="bg-[#024caa] hover:bg-[#023b8a] h-16 px-10 text-lg font-black rounded-xl gap-3 shadow-lg group">
+            <Button
+              size="lg"
+              className="bg-[#024caa] hover:bg-[#023b8a] h-16 px-10 text-lg font-black rounded-xl gap-3 shadow-lg group"
+            >
               {t("home_cta_primary")}
               <ArrowRight className="size-5 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Button size="lg" variant="outline" className="h-16 px-10 text-lg font-bold border-[#024caa] text-[#024caa] border-2 rounded-xl hover:bg-primary/5 transition-all gap-3">
+            <Button
+              size="lg"
+              variant="outline"
+              className="h-16 px-10 text-lg font-bold border-[#024caa] text-[#024caa] border-2 rounded-xl hover:bg-primary/5 transition-all gap-3"
+            >
               {t("home_cta_secondary")}
               <ArrowRight className="size-5" />
             </Button>
           </div>
 
-          <div className="pt-12 md:pt-20">
+          <Break />
+
+          <div>
             <div className="inline-flex items-center gap-2 rounded-full bg-slate-100/80 backdrop-blur-sm border border-slate-200 px-5 py-2.5 text-sm font-bold text-slate-800 shadow-sm">
               <ShieldCheck className="size-5 text-[#024caa] fill-[#024caa]/20" />
               {t("serving_families")}
             </div>
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }
