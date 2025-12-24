@@ -49,7 +49,7 @@ export function FeaturesSection() {
           </div>
         </div>
       ),
-      bullets: ["BOQ & quantity check", "Site quality visits", "Construction stage guidance"],
+      bullets: ["Estimate & quantity check", "Site quality visits", "Construction stage guidance"],
     },
   ];
 

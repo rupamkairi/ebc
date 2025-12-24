@@ -83,7 +83,7 @@ export default function HomePage() {
               icon={<HardHat className="w-8 h-8 text-primary" />}
               title="③ Engineer Support (Optional)"
               items={[
-                "BOQ & quantity check",
+                "Estimate & quantity check",
                 "Site quality visits",
                 "Construction stage guidance",
               ]}
