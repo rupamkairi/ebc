@@ -1,5 +1,6 @@
 "use client";
 
+
 import Container from "@/components/containers/containers";
 import { Hero } from "@/components/layouts/landing-scrap/hero";
 import { Navbar } from "@/components/layouts/landing-scrap/navbar";
