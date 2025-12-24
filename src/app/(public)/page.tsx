@@ -53,9 +53,7 @@ export default function HomePage() {
             </TypographyH1>
             <Break className="h-4" />
             <TypographyP className="text-muted-foreground text-lg">
-              ECON Building Centre (EBC) is a trusted construction marketplace
-              where families get everything needed to build a home — with
-              clarity and support.
+              It&apos;s a Local Marketplace. No Commission. No Hidden Charges.
             </TypographyP>
           </div>
 
