@@ -8,6 +8,7 @@ import "@/app/globals-admin.css";
 
 // import { AppSidebar } from "@/components/app-sidebar";
 import AdminDashboardHeader from "@/components/layouts/dashboard/admin-dashboard-header";
+import LayoutProvider from "@/components/layouts/dashboard/layout-provider";
 
 export default function AdminDashboardLayout({
   children,
@@ -15,12 +16,14 @@ export default function AdminDashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <AuthGuard>
-      <AdminDashboardSidebar />
-      <SidebarInset>
-        <AdminDashboardHeader />
-        <main>{children}</main>
-      </SidebarInset>
-    </AuthGuard>
+    <LayoutProvider>
+      <AuthGuard>
+        <AdminDashboardSidebar />
+        <SidebarInset>
+          <AdminDashboardHeader />
+          <main>{children}</main>
+        </SidebarInset>
+      </AuthGuard>
+    </LayoutProvider>
   );
 }

@@ -1,5 +1,3 @@
-import LayoutProvider from "@/components/layouts/dashboard/layout-provider";
-
 export default function DashboardLayout({
   children,
 }: {
@@ -7,10 +5,5 @@ export default function DashboardLayout({
 }) {
   // session verification happens here.
 
-  return (
-    <LayoutProvider>
-      {/*<h1>Dashboard Layout</h1>*/}
-      {children}
-    </LayoutProvider>
-  );
+  return <>{children}</>;
 }

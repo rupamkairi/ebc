@@ -1,5 +1,7 @@
 "use client";
 
+// import { Navbar } from "@/components/shared/navbar";
+
 export default function SellerDashboardLayoutComponent({
   children,
 }: {
@@ -7,9 +9,11 @@ export default function SellerDashboardLayoutComponent({
 }) {
   return (
     <div>
-      <header>header</header>
-      <div>{children}</div>
-      <footer>footer</footer>
+      <main className="min-h-screen bg-white-background">
+        {/* <Navbar /> */}
+        {children}
+        {/* <Footer /> */}
+      </main>
     </div>
   );
 }
