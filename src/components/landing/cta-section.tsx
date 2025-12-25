@@ -18,7 +18,7 @@ export function CtaSection() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button size="2xl" className="bg-primary font-bold">
-            Plan My Home with an Expert (Free){" "}
+            Consult with an Expert (Free){" "}
             <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
           </Button>
           <Button
@@ -26,7 +26,7 @@ export function CtaSection() {
             size="2xl"
             className="border-primary/20 bg-white text-lg font-bold hover:bg-blue-50 text-foreground"
           >
-            Compare Material Prices <ArrowRight className="ml-2 h-5 w-5" />
+            Compare material rate (Free) <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
         </div>
       </Container>

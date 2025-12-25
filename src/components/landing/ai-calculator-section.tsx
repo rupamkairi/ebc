@@ -66,7 +66,7 @@ export function AiCalculatorSection() {
             asChild
           >
             <a href="#">
-              Check EBC AI Calculator{" "}
+              Calculate cost of work{" "}
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </a>
           </Button>

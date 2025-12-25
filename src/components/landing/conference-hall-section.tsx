@@ -81,7 +81,7 @@ export function ConferenceHallSection() {
             asChild
           >
             <a href="#">
-              Check EBC Conference Hall{" "}
+              Check discounts & offers{" "}
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </a>
           </Button>
