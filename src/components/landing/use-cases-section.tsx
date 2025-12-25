@@ -18,22 +18,22 @@ export function UseCasesSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <DisplayCard
-            image="https://placehold.co/600x400?text=G+1+building"
+            image="images/use-cases/building-on-ancestral-land.jpg"
             title="G+1 building on ancestral land"
             aspectRatio="3/2"
           />
           <DisplayCard
-            image="https://placehold.co/600x400?text=Floor+extension"
+            image="images/use-cases/floor-extension.jpg"
             title="Floor extension"
             aspectRatio="3/2"
           />
           <DisplayCard
-            image="https://placehold.co/600x400?text=Renovation"
+            image="images/use-cases/kitchen.jpg"
             title="Bathroom & kitchen renovation"
             aspectRatio="3/2"
           />
           <DisplayCard
-            image="https://placehold.co/600x400?text=Home+monitoring"
+            image="images/use-cases/monitoring-from-outside.jpeg"
             title="Home monitoring from outside Bengal"
             aspectRatio="3/2"
           />
