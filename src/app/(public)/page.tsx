@@ -42,10 +42,10 @@ export default function HomePage() {
       {/* USE CASES SECTION */}
       <UseCasesSection />
 
-      {/* Conference Hall Section */}
+      {/* CONFERWENCE HALL SECTION */}
       <ConferenceHallSection />
 
-      {/* AI Calculator Section */}
+      {/* AI CALCULATOR SECTION */}
       <AiCalculatorSection />
 
       {/* PRICING SECTION */}
