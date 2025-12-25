@@ -9,9 +9,11 @@ import {
   TypographyResponsiveSmall,
 } from "@/components/ui/typography";
 
+import { ReactNode } from "react";
+
 type AccordionItemData = {
   question: string;
-  answer: string;
+  answer: ReactNode;
 };
 
 interface AccordionBaseProps {

@@ -44,12 +44,12 @@ export function ProblemSection() {
 
       <Container size="lg">
         <div className="text-center">
-          <TypographyH2>{t("problems_title")}</TypographyH2>
+          <TypographyH1>{t("problems_title")}</TypographyH1>
           <Break className="h-4 sm:h-6" />
         </div>
 
         {/* Main Grid for first 4 cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {problems.slice(0, 4).map((problem, index) => (
             <DisplayCard
               key={index}
@@ -63,8 +63,8 @@ export function ProblemSection() {
           ))}
         </div>
         <br />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-8 gap-6 mb-6">
-          <div className="col-span-3"></div>
+        <div className="grid grid-cols-4 sm:grid-cols-4 lg:grid-cols-8 gap-6 mb-6">
+          <div className="col-span-1 sm:col-span-1 lg:col-span-3"></div>
           {problems.slice(4).map((problem, index) => (
             <DisplayCard
               className="col-span-2"
@@ -77,15 +77,13 @@ export function ProblemSection() {
               footerClassName="pt-8 pb-6 px-6 z-[5]"
             />
           ))}
-          <div className="col-span-3"></div>
+          <div className="col-span-1 sm:col-span-1 lg:col-span-3"></div>
         </div>
 
         <Break />
 
         <div className="text-center">
-          <TypographyH1 className="leading-tight">
-            {t("gamble_text")}
-          </TypographyH1>
+          <TypographyH2>{t("gamble_text")}</TypographyH2>
         </div>
       </Container>
     </section>

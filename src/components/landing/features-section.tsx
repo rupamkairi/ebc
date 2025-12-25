@@ -6,6 +6,7 @@ import Break from "@/components/spacing/break";
 import { Button } from "@/components/ui/button";
 import { TypographyH1, TypographyH2 } from "@/components/ui/typography";
 import { ArrowRight, Banknote, HardHat, Users } from "lucide-react";
+import Image from "next/image";
 import React from "react";
 
 export function FeaturesSection() {
@@ -13,7 +14,7 @@ export function FeaturesSection() {
     <section className="bg-blue-50/50 py-responsive">
       <Container size="lg">
         <div className="text-center">
-          <TypographyH1>What is EBC?</TypographyH1>
+          <TypographyH1>What is ECON Building Centre (EBC)?</TypographyH1>
           <br />
           <TypographyH2>
             It&apos;s a Local Marketplace. No Commission. No Hidden Charges.
@@ -22,10 +23,17 @@ export function FeaturesSection() {
 
         <Break />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <DisplayCard2
-            icon={<Banknote className="w-8 h-8 text-primary" />}
-            title="① Fair Material Prices"
+            icon={
+              <Image
+                src="/images/featured/material-depot.png"
+                width={64}
+                height={64}
+                alt="Material Depo"
+              />
+            }
+            title="Material Depo"
             items={[
               "Multiple quotations",
               "Verified dealers",
@@ -33,20 +41,109 @@ export function FeaturesSection() {
             ]}
           />
           <DisplayCard2
-            icon={<Users className="w-8 h-8 text-primary" />}
-            title="② Trusted Service Providers"
+            icon={
+              <Image
+                src="/images/featured/technical-cabin.png"
+                width={64}
+                height={64}
+                alt="Technical Cabin"
+              />
+            }
+            title="Technical Cabin"
             items={[
               "Mason, plumber, electrician, painter etc.",
               "Ratings & reviews",
             ]}
           />
           <DisplayCard2
-            icon={<HardHat className="w-8 h-8 text-primary" />}
-            title="③ Engineer Support (Optional)"
+            icon={
+              <Image
+                src="/images/featured/manpower-hub.png"
+                width={64}
+                height={64}
+                alt="Manpower Hub"
+              />
+            }
+            title="Manpower Hub"
             items={[
               "Estimate & quantity check",
               "Site quality visits",
               "Construction stage guidance",
+            ]}
+          />
+          <DisplayCard2
+            icon={
+              <Image
+                src="/images/featured/fabricator-area.png"
+                width={64}
+                height={64}
+                alt="Fabricator Area"
+              />
+            }
+            title="Fabricator Area"
+            items={[
+              "Mason, plumber, electrician, painter etc.",
+              "Ratings & reviews",
+            ]}
+          />
+          <DisplayCard2
+            icon={
+              <Image
+                src="/images/featured/hiring-terminal.png"
+                width={64}
+                height={64}
+                alt="Hiring Terminal"
+              />
+            }
+            title="Hiring Terminal"
+            items={[
+              "Mason, plumber, electrician, painter etc.",
+              "Ratings & reviews",
+            ]}
+          />
+          <DisplayCard2
+            icon={
+              <Image
+                src="/images/featured/contract-desk.png"
+                width={64}
+                height={64}
+                alt="Contract Desk"
+              />
+            }
+            title="Contract Desk"
+            items={[
+              "Mason, plumber, electrician, painter etc.",
+              "Ratings & reviews",
+            ]}
+          />
+          <DisplayCard2
+            icon={
+              <Image
+                src="/images/featured/offers-zone.png"
+                width={64}
+                height={64}
+                alt="Offers Zone"
+              />
+            }
+            title="Offers Zone"
+            items={[
+              "Mason, plumber, electrician, painter etc.",
+              "Ratings & reviews",
+            ]}
+          />
+          <DisplayCard2
+            icon={
+              <Image
+                src="/images/featured/cost-calculator.png"
+                width={64}
+                height={64}
+                alt="Cost Calculator"
+              />
+            }
+            title="Cost Calculator"
+            items={[
+              "Mason, plumber, electrician, painter etc.",
+              "Ratings & reviews",
             ]}
           />
         </div>

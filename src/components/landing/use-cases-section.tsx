@@ -19,22 +19,22 @@ export function UseCasesSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <DisplayCard
             image="images/use-cases/building-on-ancestral-land.jpg"
-            title="G+1 building on ancestral land"
+            title="Public or private projects of any size"
             aspectRatio="3/2"
           />
           <DisplayCard
             image="images/use-cases/floor-extension.jpg"
-            title="Floor extension"
+            title="Floor extension or upgradation"
             aspectRatio="3/2"
           />
           <DisplayCard
             image="images/use-cases/kitchen.jpg"
-            title="Bathroom & kitchen renovation"
+            title="Building repair or renovation"
             aspectRatio="3/2"
           />
           <DisplayCard
             image="images/use-cases/monitoring-from-outside.jpeg"
-            title="Home monitoring from outside Bengal"
+            title="Work Monitoring from anywhere"
             aspectRatio="3/2"
           />
         </div>

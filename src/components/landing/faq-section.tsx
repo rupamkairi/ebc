@@ -10,19 +10,43 @@ import { ArrowRight } from "lucide-react";
 export function FaqSection() {
   const faqItems = [
     {
-      question: "How does EBC ensure material quality?",
+      question: "What exactly does EBC do?",
       answer:
-        "We work with verified suppliers and provide detailed material specifications to ensure you get the best quality for your construction.",
+        "EBC helps you get fair material prices, trusted service providers, and engineer guidance for building or renovating your home — all in one place.",
     },
     {
-      question: "Are the workers verified?",
+      question: "I am building my house in a small town — will you support me?",
       answer:
-        "Yes, all workers and contractors on our platform go through a verification process and their past work is vetted by our engineers.",
+        "Yes. EBC is designed especially for Tier 2 & Tier 3 towns  — including every digitally aware peoples of urban, semi-urban and rural zones in India.",
     },
     {
-      question: "What is the cost of engineer support?",
-      answer:
-        "Engineer support costs vary based on the extent of assistance required. You can choose specific services as per your project needs.",
+      question: "I already have a contractor/mason. Can I still use EBC?",
+      answer: [
+        "Yes! You can use EBC for:",
+        <br key={1} />,
+        "✓ Material price comparison",
+        <br key={2} />,
+        "✓ Engineer BOQ verification",
+        <br key={3} />,
+        "✓ Quality check visits",
+        <br key={4} />,
+        "✓ Tracking overall project budget",
+        <br key={5} />,
+        "Your contractor continues working — EBC adds transparency & support.",
+      ],
+    },
+    {
+      question: "Is this more expensive than my local shop?",
+      answer: [
+        "Usually NO — you pay similar or better market prices, and save money by:",
+        <br key={1} />,
+        "· Avoiding over-buying materials",
+        <br key={2} />,
+        "· Reducing rework costs",
+        <br key={3} />,
+        "· Getting better material–work match",
+        "Overall budget control improves.",
+      ],
     },
   ];
 
