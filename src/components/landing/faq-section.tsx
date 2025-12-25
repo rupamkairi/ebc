@@ -6,55 +6,63 @@ import Break from "@/components/spacing/break";
 import { Button } from "@/components/ui/button";
 import { TypographyH1 } from "@/components/ui/typography";
 import { ArrowRight } from "lucide-react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function FaqSection() {
+  const { t } = useLanguage();
+
   const faqItems = [
     {
-      question: "What exactly does EBC do?",
-      answer:
-        "EBC helps you get fair material prices, trusted service providers, and engineer guidance for building or renovating your home — all in one place.",
+      question: t("faq_1_q"),
+      answer: t("faq_1_a"),
     },
     {
-      question: "I am building my house in a small town — will you support me?",
-      answer:
-        "Yes. EBC is designed especially for Tier 2 & Tier 3 towns  — including every digitally aware peoples of urban, semi-urban and rural zones in India.",
+      question: t("faq_2_q"),
+      answer: t("faq_2_a"),
     },
     {
-      question: "I already have a contractor/mason. Can I still use EBC?",
-      answer: [
-        "Yes! You can use EBC for:",
-        <br key={1} />,
-        "✓ Material price comparison",
-        <br key={2} />,
-        "✓ Engineer BOQ verification",
-        <br key={3} />,
-        "✓ Quality check visits",
-        <br key={4} />,
-        "✓ Tracking overall project budget",
-        <br key={5} />,
-        "Your contractor continues working — EBC adds transparency & support.",
-      ],
+      question: t("faq_3_q"),
+      answer: t("faq_3_a"),
     },
     {
-      question: "Is this more expensive than my local shop?",
-      answer: [
-        "Usually NO — you pay similar or better market prices, and save money by:",
-        <br key={1} />,
-        "· Avoiding over-buying materials",
-        <br key={2} />,
-        "· Reducing rework costs",
-        <br key={3} />,
-        "· Getting better material–work match",
-        "Overall budget control improves.",
-      ],
+      question: t("faq_4_q"),
+      answer: t("faq_4_a"),
+    },
+    {
+      question: t("faq_5_q"),
+      answer: t("faq_5_a"),
+    },
+    {
+      question: t("faq_6_q"),
+      answer: t("faq_6_a"),
+    },
+    {
+      question: t("faq_7_q"),
+      answer: t("faq_7_a"),
+    },
+    {
+      question: t("faq_8_q"),
+      answer: t("faq_8_a"),
+    },
+    {
+      question: t("faq_9_q"),
+      answer: t("faq_9_a"),
+    },
+    {
+      question: t("faq_10_q"),
+      answer: t("faq_10_a"),
+    },
+    {
+      question: t("faq_bonus_q"),
+      answer: t("faq_bonus_a"),
     },
   ];
 
   return (
     <section className="py-responsive">
       <div className="text-center">
-        <TypographyH1>FAQs</TypographyH1>
-        <Break />
+        <TypographyH1>{t("faq_title")}</TypographyH1>
+        <Break size="sm" />
       </div>
       <Container size="md">
         <div className="space-y-4">
@@ -69,7 +77,7 @@ export function FaqSection() {
             variant="default"
             className="bg-primary hover:bg-primary/90 group"
           >
-            Still Have Questions? Talk to Us{" "}
+            {t("faq_still_questions")}{" "}
             <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>
