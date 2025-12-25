@@ -46,7 +46,7 @@ const english = {
   how_it_works_title: "How It Works — 3 Simple Steps",
   step_1_title: "Tell us your requirement",
   step_1_desc: "Plot size or renovation work",
-  step_2_title: "Compare quotations & professionals",
+  step_2_title: "Compare quotations & hire manpower",
   step_2_desc: "Choose what fits budget and trust",
   step_3_title: "Build with support & quality checks",
   step_3_desc: "EBC tracks & assists throughout",

@@ -63,7 +63,7 @@ export default function HomePage() {
           <div className="text-center">
             <div className="space-y-2">
               <TypographyLarge className="font-bold">
-                EBC — Powered by Engineers. Trusted by Families.
+                E-CON Building Centre — Powered by Engineers. Trusted by Families.
               </TypographyLarge>
               <TypographyMuted>Made in India • Built for ALL.</TypographyMuted>
             </div>

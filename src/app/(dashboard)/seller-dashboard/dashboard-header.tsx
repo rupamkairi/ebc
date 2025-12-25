@@ -9,25 +9,14 @@ export function DashboardHeader() {
     <header className="sticky top-0 z-50 w-full border-b border-border bg-white py-3 shadow-sm">
       <div className="container mx-auto flex items-center justify-between px-4">
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-              {/* Simple SVG Logo representation of EBC */}
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                className="h-6 w-6 text-white"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                <polyline points="9 22 9 12 15 12 15 22" />
-              </svg>
+          <Link href="/" className="flex items-center">
+            <div className="relative h-10 w-28">
+              <img
+                src="/logo.svg"
+                alt="E-CON Building Centre"
+                className="h-full w-full object-contain"
+              />
             </div>
-            <span className="text-2xl font-bold tracking-tight text-primary">
-              EBC
-            </span>
           </Link>
 
           <nav className="hidden lg:flex items-center gap-6">

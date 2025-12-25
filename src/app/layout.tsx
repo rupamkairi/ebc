@@ -1,21 +1,9 @@
+import type { Metadata } from "next";
 import I18NProvider from "@/i18n/I18NProvider";
 import QueryClientProvider from "@/queries/QueryClientProvider";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
 
-// Define Metadata type for Next.js
-type Metadata = {
-  title: string;
-  description: string;
-};
-
-// const sans = Open_Sans({
-//   weight: ["400", "500", "600", "700", "800"],
-//   style: ["normal", "italic"],
-//   variable: "--font-open-sans",
-//   subsets: ["latin"],
-//   display: "swap",
-// });
 const sansFont = Open_Sans({
   variable: "--font-open-sans",
   subsets: ["latin"],
@@ -23,8 +11,11 @@ const sansFont = Open_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "EBC Marketplace",
-  description: "",
+  title: "E-CON Building Centre",
+  description: "E-CON Precast System - Powered by Engineers. Trusted by Families.",
+  icons: {
+    icon: "/logo.svg",
+  },
 };
 
 export default function RootLayout({

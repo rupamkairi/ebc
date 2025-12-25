@@ -60,7 +60,7 @@ export function HowItWorksSection() {
                   className="object-contain"
                 />
               }
-              title="2 Compare quotations & professionals"
+              title="2 Compare quotations & hire manpower"
               description="Choose what fits budget and trust"
             />
             <StepItem

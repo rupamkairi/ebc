@@ -169,8 +169,12 @@ export function AdminDashboardSidebar({
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
               <a href="#">
-                <IconInnerShadowTop className="size-5!" />
-                <span className="text-base font-semibold">EBC Marketplace</span>
+                <img
+                  src="/logo.svg"
+                  alt="E-CON Building Centre"
+                  className="size-6 object-contain"
+                />
+                <span className="text-base font-semibold">E-CON Building Centre</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
