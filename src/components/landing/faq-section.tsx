@@ -6,31 +6,63 @@ import Break from "@/components/spacing/break";
 import { Button } from "@/components/ui/button";
 import { TypographyH1 } from "@/components/ui/typography";
 import { ArrowRight } from "lucide-react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function FaqSection() {
+  const { t } = useLanguage();
+
   const faqItems = [
     {
-      question: "How does EBC ensure material quality?",
-      answer:
-        "We work with verified suppliers and provide detailed material specifications to ensure you get the best quality for your construction.",
+      question: t("faq_1_q"),
+      answer: t("faq_1_a"),
     },
     {
-      question: "Are the workers verified?",
-      answer:
-        "Yes, all workers and contractors on our platform go through a verification process and their past work is vetted by our engineers.",
+      question: t("faq_2_q"),
+      answer: t("faq_2_a"),
     },
     {
-      question: "What is the cost of engineer support?",
-      answer:
-        "Engineer support costs vary based on the extent of assistance required. You can choose specific services as per your project needs.",
+      question: t("faq_3_q"),
+      answer: t("faq_3_a"),
+    },
+    {
+      question: t("faq_4_q"),
+      answer: t("faq_4_a"),
+    },
+    {
+      question: t("faq_5_q"),
+      answer: t("faq_5_a"),
+    },
+    {
+      question: t("faq_6_q"),
+      answer: t("faq_6_a"),
+    },
+    {
+      question: t("faq_7_q"),
+      answer: t("faq_7_a"),
+    },
+    {
+      question: t("faq_8_q"),
+      answer: t("faq_8_a"),
+    },
+    {
+      question: t("faq_9_q"),
+      answer: t("faq_9_a"),
+    },
+    {
+      question: t("faq_10_q"),
+      answer: t("faq_10_a"),
+    },
+    {
+      question: t("faq_bonus_q"),
+      answer: t("faq_bonus_a"),
     },
   ];
 
   return (
     <section className="py-responsive">
       <div className="text-center">
-        <TypographyH1>FAQs</TypographyH1>
-        <Break />
+        <TypographyH1>{t("faq_title")}</TypographyH1>
+        <Break size="sm" />
       </div>
       <Container size="md">
         <div className="space-y-4">
@@ -45,7 +77,7 @@ export function FaqSection() {
             variant="default"
             className="bg-primary hover:bg-primary/90 group"
           >
-            Still Have Questions? Talk to Us{" "}
+            {t("faq_still_questions")}{" "}
             <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>
