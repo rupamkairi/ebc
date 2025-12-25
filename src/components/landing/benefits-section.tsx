@@ -17,27 +17,27 @@ export function BenefitsSection() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           <DisplayCard
-            image="https://placehold.co/400x300?text=Savings"
+            image="/images/benefits/savings.jpg"
             title="Save ₹50,000–₹3,00,000 by avoiding wrong purchases"
           />
           <DisplayCard
-            image="https://placehold.co/400x300?text=Convenience"
+            image="/images/benefits/convenience.jpg"
             title="No running around — everything online"
           />
           <DisplayCard
-            image="https://placehold.co/400x300?text=Accuracy"
+            image="/images/benefits/accuracy.jpg"
             title="Engineer help = fewer mistakes"
           />
           <DisplayCard
-            image="https://placehold.co/400x300?text=Renovation"
+            image="/images/benefits/renovation.jpg"
             title="Bathroom & kitchen renovation"
           />
           <DisplayCard
-            image="https://placehold.co/400x300?text=Verification"
+            image="/images/benefits/verification.png"
             title="Verified workers — not random labour"
           />
           <DisplayCard
-            image="https://placehold.co/400x300?text=Documentation"
+            image="/images/benefits/documentation.jpg"
             title="Documentation for future proof"
           />
         </div>
