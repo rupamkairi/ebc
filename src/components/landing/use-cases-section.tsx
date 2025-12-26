@@ -18,7 +18,7 @@ export function UseCasesSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <DisplayCard
-            image="images/use-cases/building-on-ancestral-land.jpg"
+            image="images/use-cases/public-private-projects.jpg"
             title="Public or private projects of any size"
             aspectRatio="3/2"
           />
@@ -28,12 +28,12 @@ export function UseCasesSection() {
             aspectRatio="3/2"
           />
           <DisplayCard
-            image="images/use-cases/kitchen.jpg"
+            image="images/use-cases/repair-renovation.jpg"
             title="Building repair or renovation"
             aspectRatio="3/2"
           />
           <DisplayCard
-            image="images/use-cases/monitoring-from-outside.jpeg"
+            image="images/use-cases/monitoring-from-outside.jpg"
             title="Work Monitoring from anywhere"
             aspectRatio="3/2"
           />

@@ -15,7 +15,7 @@ export function BenefitsSection() {
 
         <Break />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <DisplayCard
             image="/images/benefits/savings.jpg"
             title="Save ₹50,000–₹3,00,000 by avoiding wrong purchases"
@@ -28,18 +28,18 @@ export function BenefitsSection() {
             image="/images/benefits/accuracy.jpg"
             title="Engineer help = fewer mistakes"
           />
-          <DisplayCard
+          {/* <DisplayCard
             image="/images/benefits/renovation.jpg"
             title="Bathroom & kitchen renovation"
-          />
+          /> */}
           <DisplayCard
-            image="/images/benefits/verification.png"
-            title="Verified workers — not random labour"
+            image="/images/benefits/past-review-of-workers.jpg"
+            title="Get past review & comments - No random workers"
           />
-          <DisplayCard
+          {/* <DisplayCard
             image="/images/benefits/documentation.jpg"
             title="Documentation for future proof"
-          />
+          /> */}
         </div>
 
         <Break />

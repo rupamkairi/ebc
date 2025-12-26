@@ -12,22 +12,22 @@ export function ProblemSection() {
   const problems = [
     {
       title: t("problem_1_desc"),
-      image: "/images/problems/price-confusion.png",
+      image: "/images/problems/price-confusion.jpg",
       icon: "🤔",
     },
     {
       title: t("problem_2_desc"),
-      image: "/images/problems/commission-run.png",
+      image: "/images/problems/commission-run.jpg",
       icon: "🏃",
     },
     {
       title: t("problem_3_desc"),
-      image: "/images/problems/quality-warning.png",
+      image: "/images/problems/quality-warning.jpg",
       icon: "⚠️",
     },
     {
       title: t("problem_4_desc"),
-      image: "/images/problems/vague-quotes.png",
+      image: "/images/problems/vague-quotes.jpg",
       icon: "👷",
     },
     {
@@ -49,7 +49,7 @@ export function ProblemSection() {
         </div>
 
         {/* Main Grid for first 4 cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {problems.slice(0, 4).map((problem, index) => (
             <DisplayCard
               key={index}
@@ -70,7 +70,7 @@ export function ProblemSection() {
               className="col-span-2"
               key={index}
               title={problem.title}
-              imageClassName="object-contain scale-115 group-hover:scale-120"
+              imageClassName="object-contain scale-100 group-hover:scale-120"
               image={problem.image}
               floatingIcon={problem.icon}
               aspectRatio="square"

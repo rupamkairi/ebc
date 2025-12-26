@@ -16,7 +16,8 @@ export function Hero() {
       {/* Background Image Container */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/ebc-hero.png"
+          // src="/ebc-hero.png"
+          src="/ebc-hero.jpg"
           alt="EBC Hero Background"
           fill
           className="object-cover object-right md:object-center"

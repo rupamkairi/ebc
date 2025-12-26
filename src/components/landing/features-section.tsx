@@ -5,9 +5,8 @@ import { DisplayCard2 } from "@/components/shared/cards/display-card-2";
 import Break from "@/components/spacing/break";
 import { Button } from "@/components/ui/button";
 import { TypographyH1, TypographyH2 } from "@/components/ui/typography";
-import { ArrowRight, Banknote, HardHat, Users } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Image from "next/image";
-import React from "react";
 
 export function FeaturesSection() {
   return (
@@ -23,7 +22,7 @@ export function FeaturesSection() {
 
         <Break />
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <DisplayCard2
             icon={
               <Image
