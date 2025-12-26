@@ -6,7 +6,7 @@ import { BenefitsSection } from "@/components/landing/benefits-section";
 import { ConferenceHallSection } from "@/components/landing/conference-hall-section";
 import { CtaSection } from "@/components/landing/cta-section";
 import { FaqSection } from "@/components/landing/faq-section";
-import { FeaturesSection } from "@/components/landing/features-section";
+import { WhatSection } from "@/components/landing/what-section";
 import { Hero } from "@/components/landing/hero";
 import { HowItWorksSection } from "@/components/landing/how-it-works-section";
 import { PricingSection } from "@/components/landing/pricing-section";
@@ -21,6 +21,7 @@ import {
   TypographyResponsiveSmall,
 } from "@/components/ui/typography";
 import { IconBrandWhatsapp } from "@tabler/icons-react";
+import { WhySection } from "@/components/landing/why-section";
 
 export default function HomePage() {
   return (
@@ -31,7 +32,9 @@ export default function HomePage() {
       <ProblemSection />
 
       {/* WHAT IS EBC? SECTION */}
-      <FeaturesSection />
+      <WhatSection />
+      {/* WHY JOIN EBC? SECTION */}
+      <WhySection />
 
       {/* HOW IT WORKS SECTION */}
       <HowItWorksSection />
@@ -63,7 +66,8 @@ export default function HomePage() {
           <div className="text-center">
             <div className="space-y-2">
               <TypographyLarge className="font-bold">
-                E-CON Building Centre — Powered by Engineers. Trusted by Families.
+                E-CON Building Centre — Powered by Engineers. Trusted by
+                Families.
               </TypographyLarge>
               <TypographyMuted>Made in India • Built for ALL.</TypographyMuted>
             </div>

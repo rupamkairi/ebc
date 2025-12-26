@@ -3,7 +3,7 @@
 import { Navbar } from "../shared/navbar";
 import { Hero } from "./hero";
 import { ProblemSection } from "./problem-section";
-import { FeaturesSection } from "./features-section";
+import { WhatSection } from "./what-section";
 import { StepsSection } from "./steps-section";
 import { BenefitsSection } from "./benefits-section";
 import { EnquiryCtaSection } from "./enquiry-cta-section";
@@ -16,7 +16,7 @@ export function LandingPage() {
       <main className="flex-1">
         <Hero />
         <ProblemSection />
-        <FeaturesSection />
+        <WhatSection />
         <EnquiryCtaSection />
         <StepsSection />
         <BenefitsSection />

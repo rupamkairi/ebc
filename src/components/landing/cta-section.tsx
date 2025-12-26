@@ -8,7 +8,7 @@ import { ArrowRight } from "lucide-react";
 
 export function CtaSection() {
   return (
-    <section className="bg-blue-50/50 text-center py-xl">
+    <section className="bg-primary/5 text-center py-xl">
       <Container size="lg">
         <TypographyH1>
           You are building your life&apos;s biggest asset. Don&apos;t leave it

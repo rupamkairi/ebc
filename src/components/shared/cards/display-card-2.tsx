@@ -1,16 +1,25 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { TypographyLarge } from "@/components/ui/typography";
 import React from "react";
+import { twJoin } from "tailwind-merge";
 
 interface DisplayCard2Props {
+  className?: string;
   icon: React.ReactNode;
   title: string;
   items: string[];
 }
 
-export function DisplayCard2({ icon, title, items }: DisplayCard2Props) {
+export function DisplayCard2({
+  className,
+  icon,
+  title,
+  items,
+}: DisplayCard2Props) {
   return (
-    <Card className="shadow-lg border-none rounded-3xl h-full">
+    <Card
+      className={twJoin("shadow-lg border-none rounded-3xl h-full", className)}
+    >
       <CardContent className="flex flex-col items-center text-center p-6 sm:p-8">
         <div className="mb-4">{icon}</div>
         <TypographyLarge className="font-bold mb-4">{title}</TypographyLarge>

@@ -1,17 +1,11 @@
 "use client";
 
 import Container from "@/components/containers/containers";
-import { DisplayCard2 } from "@/components/shared/cards/display-card-2";
 import Break from "@/components/spacing/break";
 import { TypographyH1 } from "@/components/ui/typography";
-import {
-  ArrowRight,
-  Calculator,
-  FileText,
-  LayoutTemplate,
-  Settings,
-} from "lucide-react";
-import { Button } from "../ui/button";
+import { Card } from "@/components/ui/card";
+import Image from "next/image";
+import Link from "next/link";
 
 export function AiCalculatorSection() {
   return (
@@ -23,7 +17,19 @@ export function AiCalculatorSection() {
 
         <Break />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <Link href="/features/conference-hall">
+          <Card className="border-none p-0 overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-101">
+            <Image
+              className="aspect-3/2"
+              width={1500}
+              height={10000}
+              src="/images/ai-calculator.png"
+              alt="AI Calculator"
+            />
+          </Card>
+        </Link>
+
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <DisplayCard2
             icon={<Calculator className="w-10 h-10 text-primary" />}
             title="Accurate & Dynamic Estimations"
@@ -55,11 +61,11 @@ export function AiCalculatorSection() {
               "Easily export detailed estimations to PDF format for use in professional bids and planning.",
             ]}
           />
-        </div>
+        </div> */}
 
-        <Break />
+        {/* <Break /> */}
 
-        <div className="flex justify-center">
+        {/* <div className="flex justify-center">
           <Button
             size="xl"
             className="bg-primary hover:bg-primary/90 group"
@@ -70,7 +76,7 @@ export function AiCalculatorSection() {
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </a>
           </Button>
-        </div>
+        </div> */}
       </Container>
     </section>
   );

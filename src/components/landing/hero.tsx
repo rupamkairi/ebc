@@ -16,15 +16,15 @@ export function Hero() {
       {/* Background Image Container */}
       <div className="absolute inset-0 z-0">
         <Image
-          // src="/ebc-hero.png"
-          src="/ebc-hero.jpg"
+          src="/ebc-hero.png"
+          // src="/ebc-hero.jpg"
           alt="EBC Hero Background"
           fill
-          className="object-cover object-right md:object-center"
+          className="object-cover object-right md:object-right"
           priority
         />
         {/* Subtle white-to-transparent gradient from left to right */}
-        <div className="absolute inset-0 bg-linear-to-r from-white via-white/80 to-transparent md:from-white md:via-white/40 md:to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-r from-white via-white/50 to-transparent md:from-white md:via-white/25 md:to-transparent" />
       </div>
 
       <Container className="relative z-10 py-16 md:py-24">

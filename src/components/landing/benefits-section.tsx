@@ -7,7 +7,7 @@ import { TypographyH1, TypographyH2 } from "@/components/ui/typography";
 
 export function BenefitsSection() {
   return (
-    <section className="bg-blue-50/50 py-responsive ">
+    <section className="bg-primary/5 py-responsive ">
       <Container size="lg">
         <div className="text-center">
           <TypographyH1>Most Loved Benefits</TypographyH1>

@@ -49,7 +49,7 @@ export function DisplayCard({
             fill
             unoptimized
             className={cn(
-              "object-center object-cover group-hover:scale-105 transition-transform duration-500",
+              "object-center object-cover transition-transform duration-500 scale-100 group-hover:scale-120",
               imageClassName
             )}
           />
@@ -63,7 +63,7 @@ export function DisplayCard({
 
       <CardFooter
         className={cn(
-          "inner-p bg-white text-center flex items-center justify-center min-h-20",
+          "inner-p bg-white text-center flex items-center justify-center min-h-20 z-[5]",
           footerClassName
         )}
       >

@@ -1,11 +1,11 @@
 "use client";
 
 import Container from "@/components/containers/containers";
-import { DisplayCard2 } from "@/components/shared/cards/display-card-2";
 import Break from "@/components/spacing/break";
+import { Card } from "@/components/ui/card";
 import { TypographyH1 } from "@/components/ui/typography";
-import { ArrowRight, BookOpen, Handshake, Lightbulb, Mic2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import Link from "next/link";
 
 export function ConferenceHallSection() {
   return (
@@ -17,7 +17,19 @@ export function ConferenceHallSection() {
 
         <Break />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <Link href="/features/conference-hall">
+          <Card className="border-none p-0 overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-101">
+            <Image
+              className="scale-100 aspect-3/2"
+              width={1500}
+              height={10000}
+              src="/images/conference-hall.png"
+              alt="Conference Hall"
+            />
+          </Card>
+        </Link>
+
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <DisplayCard2
             icon={<BookOpen className="w-10 h-10 text-primary" />}
             title="1. Access Exclusive Knowledge & Training"
@@ -25,11 +37,6 @@ export function ConferenceHallSection() {
               "Searchable repository of documents, videos, & webinars with semantic search & auto-summaries.",
               "Learn from curated content & recorded demos.",
             ]}
-            // action={
-            //   <Button variant="outline" className="rounded-full font-bold">
-            //     Explore Knowledge Bank
-            //   </Button>
-            // }
           />
           <DisplayCard2
             icon={<Handshake className="w-10 h-10 text-primary" />}
@@ -38,11 +45,6 @@ export function ConferenceHallSection() {
               "Schedule live meetings & invite selective user groups.",
               "Manage RSVPs & attendance logs for events.",
             ]}
-            // action={
-            //   <Button variant="outline" className="rounded-full font-bold">
-            //     Schedule a Meeting
-            //   </Button>
-            // }
           />
           <DisplayCard2
             icon={<Lightbulb className="w-10 h-10 text-primary" />}
@@ -51,11 +53,6 @@ export function ConferenceHallSection() {
               "Attend live product launch events.",
               "Watch recorded product demos to stay updated on solutions.",
             ]}
-            // action={
-            //   <Button variant="outline" className="rounded-full font-bold">
-            //     View Product Launches
-            //   </Button>
-            // }
           />
           <DisplayCard2
             icon={<Mic2 className="w-10 h-10 text-primary" />}
@@ -64,17 +61,12 @@ export function ConferenceHallSection() {
               "Participate in community Q&A sessions.",
               "Join webinars & interact directly with experts.",
             ]}
-            // action={
-            //   <Button variant="outline" className="rounded-full font-bold">
-            //     Join Community Q&A
-            //   </Button>
-            // }
           />
-        </div>
+        </div> */}
 
-        <Break />
+        {/* <Break /> */}
 
-        <div className="flex justify-center">
+        {/* <div className="flex justify-center">
           <Button
             size="xl"
             className="bg-primary hover:bg-primary/90 group"
@@ -85,7 +77,7 @@ export function ConferenceHallSection() {
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </a>
           </Button>
-        </div>
+        </div> */}
       </Container>
     </section>
   );

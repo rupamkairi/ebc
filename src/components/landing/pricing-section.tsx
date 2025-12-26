@@ -11,15 +11,15 @@ import {
 
 export function PricingSection() {
   return (
-    <section className="bg-blue-50/50 py-responsive">
+    <section className="bg-primary/5 py-responsive">
       <div className="text-center">
         <TypographyH1>Pricing</TypographyH1>
         <Break />
       </div>
       <Container size="md">
-        <div className="overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-sm ring-1 ring-blue-50">
+        <div className="overflow-hidden rounded-2xl border border-primary/50  bg-white shadow-sm ring-1 ring-primary/50">
           <div className="grid grid-cols-2">
-            <div className="inner-p text-center border-r border-blue-50">
+            <div className="inner-p text-center border-r border-b border-primary/50">
               <TypographyLarge className="font-bold">
                 Available Services
               </TypographyLarge>
@@ -31,8 +31,8 @@ export function PricingSection() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 divide-x divide-blue-50">
-            <div className="divide-y divide-blue-50">
+          <div className="grid grid-cols-2 divide-x divide-primary/50">
+            <div className="divide-y divide-primary/50">
               <PricingRow text="Latest rate quotation from local material dealers" />
               <PricingRow text="Consultation with Technical Professionals" />
               <PricingRow text="Site visit by rated skilled workers & technicians" />
@@ -42,7 +42,7 @@ export function PricingSection() {
               <PricingRow text="Latest information, guidance, discount & offers" />
               <PricingRow text="AI-powered, highly predicted project cost calculation" />
             </div>
-            <div className="divide-y divide-blue-50">
+            <div className="divide-y divide-primary/50">
               <PricingRow text="Free" />
               <PricingRow text="Free" />
               <PricingRow text="Free" />

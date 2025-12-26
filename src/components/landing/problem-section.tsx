@@ -54,11 +54,11 @@ export function ProblemSection() {
             <DisplayCard
               key={index}
               title={problem.title}
-              imageClassName="object-contain"
+              imageClassName="object-contain scale-110 group-hover:scale-120"
               image={problem.image}
               floatingIcon={problem.icon}
               aspectRatio="square"
-              footerClassName="pt-8 pb-6 px-6"
+              footerClassName="pt-8 pb-6 px-6 z-[5]"
             />
           ))}
         </div>

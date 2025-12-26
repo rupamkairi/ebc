@@ -8,9 +8,9 @@ import { TypographyH1, TypographyH2 } from "@/components/ui/typography";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 
-export function FeaturesSection() {
+export function WhatSection() {
   return (
-    <section className="bg-blue-50/50 py-responsive">
+    <section className="bg-primary/5 py-responsive">
       <Container size="lg">
         <div className="text-center">
           <TypographyH1>What is ECON Building Centre (EBC)?</TypographyH1>
