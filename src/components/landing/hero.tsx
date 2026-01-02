@@ -18,9 +18,10 @@ export function Hero() {
         <Image
           src="/ebc-hero.png"
           // src="/ebc-hero.jpg"
+          // src="/ebc-hero.jpeg"
           alt="EBC Hero Background"
           fill
-          className="object-cover object-right md:object-right"
+          className="object-cover object-top-right md:object-top-right"
           priority
         />
         {/* Subtle white-to-transparent gradient from left to right */}
