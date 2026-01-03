@@ -9,12 +9,27 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  BuyerDetails,
-  EnquiryItem,
-} from "../../app/(enquiry)/enquiry/store/enquiry-store";
 import { format } from "date-fns";
 import { MapPin, Calendar, Phone, Mail, User, StickyNote } from "lucide-react";
+
+export interface BuyerDetails {
+  name: string;
+  phone: string;
+  email?: string;
+  address?: string;
+  pincode: string;
+  expectedDate?: Date | string;
+  remarks?: string;
+}
+
+export interface EnquiryItem {
+  name: string;
+  brandName?: string;
+  categoryName?: string;
+  quantity: number;
+  unit: string;
+  remarks?: string;
+}
 
 interface EnquiryDetailsViewProps {
   buyerDetails: BuyerDetails;
