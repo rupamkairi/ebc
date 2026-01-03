@@ -58,7 +58,7 @@ export function Navbar() {
             <div className="hidden md:flex items-center gap-4">
               <Button
                 variant="outline"
-                className="border-primary text-primary hover:bg-primary/5 font-bold rounded-xl px-8 py-6 text-base border-2"
+                className="cursor-pointer border-primary text-primary hover:bg-primary/5 font-bold rounded-xl px-8 py-6 text-base border-2"
               >
                 {t("contact_us")}
               </Button>
