@@ -1,24 +1,23 @@
 "use client";
 
-import React, { useState } from "react";
 import { ItemSearch } from "@/components/advanced-forms/item-search/item-search";
-import { AddToEnquiryModal } from "@/components/browse/add-to-enquiry-modal";
-import { Product } from "@/queries/browse.queries"; // Assuming ItemSearch returns similar structure or I map it
+import { AddToAppointmentModal } from "@/components/browse/add-to-appointment-modal";
+import { Product } from "@/queries/browse.queries";
+import { useState } from "react";
 
-export function AddItemWrapper() {
+import { Item } from "@/types/catalog";
+
+export function AddAppointmentItemWrapper() {
   const [selectedItem, setSelectedItem] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleItemSelect = (item: any) => {
-    // Adapter to match Product interface expected by Modal
-    // The ItemSearch returns items from catalog catalogQueries
-    // We need to map `item` to `Product` interface for the modal
+  const handleItemSelect = (item: Item) => {
     const product: Product = {
       id: item.id,
       title: item.name,
       description: item.description,
-      price: 0, // Price might not be visible in search or relevant for enquiry
-      image: item.image || "https://placehold.co/300x300",
+      price: 0,
+      image: "https://placehold.co/300x300", // Catalog Item doesn't have image
       category: item.category?.name || "Unknown",
       brand: item.brand?.name || "Unknown",
       rating: 0,
@@ -34,7 +33,9 @@ export function AddItemWrapper() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">Add More Items</h2>
+        <h2 className="text-xl font-semibold">
+          Select an Item for Appointment
+        </h2>
       </div>
 
       <ItemSearch
@@ -43,7 +44,7 @@ export function AddItemWrapper() {
       />
 
       {selectedItem && (
-        <AddToEnquiryModal
+        <AddToAppointmentModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           product={selectedItem}

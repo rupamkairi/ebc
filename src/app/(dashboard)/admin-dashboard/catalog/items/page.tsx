@@ -2,7 +2,7 @@
 
 import { ItemTable } from "@/components/admin/catalog/item-table";
 import { ItemForm } from "@/components/admin/catalog/create-item-form";
-import { ItemSearch } from "@/components/search/item-search/item-search";
+import { ItemSearch } from "@/components/advanced-forms/item-search/item-search";
 import {
   Dialog,
   DialogContent,
