@@ -24,11 +24,14 @@ import {
   useEnquiriesQuery,
   useAppointmentsQuery,
 } from "@/queries/activityQueries";
+import { useSessionQuery } from "@/queries/authQueries";
+import { ProfileCard } from "@/components/dashboard/seller/profile-card";
 import { useMemo } from "react";
 
 export default function BuyerDashboardPage() {
   const { data: enquiries } = useEnquiriesQuery({});
   const { data: appointments } = useAppointmentsQuery({});
+  const { data: session } = useSessionQuery();
 
   const stats = useMemo(() => {
     const pendingEnquiries =
@@ -54,6 +57,17 @@ export default function BuyerDashboardPage() {
   return (
     <Container>
       <div className="flex flex-col gap-8 py-6">
+        {/* User Profile Card */}
+        {session?.user && (
+          <ProfileCard
+            user={{
+              name: session.user.name,
+              role: session.user.role || "Buyer",
+              avatarUrl: session.user.image || undefined,
+            }}
+          />
+        )}
+
         {/* 1. Rooms Section */}
         <section>
           <div className="flex items-center justify-between mb-4">

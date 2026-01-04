@@ -5,7 +5,7 @@ import { ItemSearch } from "@/components/advanced-forms/item-search/item-search"
 import { AddToEnquiryModal } from "@/components/browse/add-to-enquiry-modal";
 import { Product } from "@/queries/browse.queries"; // Assuming ItemSearch returns similar structure or I map it
 
-export function AddItemWrapper() {
+export function AddEnquiryItemWrapper() {
   const [selectedItem, setSelectedItem] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 

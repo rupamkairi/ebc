@@ -9,11 +9,14 @@ import { useAppointmentStore } from "@/store/appointmentStore";
 import { AppointmentLineItemWrapper } from "@/components/appointment/appointment-line-item";
 import { DateTimeSlotSelect } from "@/components/advanced-forms/date-time-slot-select/date-time-slot-select";
 import { AppointmentDetailsForm } from "@/components/appointment/appointment-details-form";
+import { useSessionQuery } from "@/queries/authQueries";
+import { ProfileCard } from "@/components/dashboard/seller/profile-card";
 
 export default function CreateAppointmentPage() {
   const router = useRouter();
   const { item, timeSlots, buyerDetails, addTimeSlot, removeTimeSlot } =
     useAppointmentStore();
+  const { data: session } = useSessionQuery();
 
   const handleNext = () => {
     // 1. Validate Item
@@ -39,9 +42,20 @@ export default function CreateAppointmentPage() {
 
   return (
     <div className="container mx-auto space-y-8 py-8 px-4">
+      {/* Session Profile Card */}
+      {session?.user && (
+        <ProfileCard
+          user={{
+            name: session.user.name,
+            role: session.user.role || "Buyer",
+            avatarUrl: session.user.image || undefined,
+          }}
+        />
+      )}
+
       <div>
         <h1 className="text-3xl font-bold tracking-tight">
-          Schedule Appointment
+          Create New Appointment
         </h1>
         <p className="text-muted-foreground">
           Select an item and choose your preferred time slots.

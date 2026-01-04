@@ -4,7 +4,7 @@ import { BuyerDetails } from "@/store/enquiryStore";
 
 export interface TimeSlot {
   id: string;
-  date: Date;
+  date: string; // ISO Date String
   startTime: string; // HH:mm
   endTime: string; // HH:mm
 }

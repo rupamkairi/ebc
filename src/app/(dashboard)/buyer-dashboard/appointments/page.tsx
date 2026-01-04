@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { CalendarDays, MapPin, Search } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
+import Link from "next/link";
 
 // Removed hardcoded appointments
 // const appointments = [...];
@@ -38,7 +39,9 @@ export default function AppointmentsPage() {
               View and manage your scheduled appointments.
             </p>
           </div>
-          <Button>Schedule Appointment</Button>
+          <Link href="/appointment/create">
+            <Button>Create New Appointment</Button>
+          </Link>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">

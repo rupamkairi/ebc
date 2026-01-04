@@ -64,7 +64,6 @@ export function AppointmentReview({
 
           <Separator />
 
-          {/* Selected Item */}
           <div className="space-y-3">
             <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">
               Appointment For

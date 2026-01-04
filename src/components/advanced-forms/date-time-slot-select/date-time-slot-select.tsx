@@ -61,7 +61,7 @@ export function DateTimeSlotSelect({
 
     onAddSlot({
       id: nanoid(),
-      date: date,
+      date: date.toISOString(),
       startTime,
       endTime,
     });
@@ -123,10 +123,10 @@ export function DateTimeSlotSelect({
               onChange={(e) => setEndTime(e.target.value)}
             />
           </div>
-          <Button onClick={handleAddSlot} disabled={timeSlots.length >= 3}>
-            <Plus className="h-4 w-4 mr-2" /> Add Slot
-          </Button>
         </div>
+        <Button onClick={handleAddSlot} disabled={timeSlots.length >= 3}>
+          <Plus className="h-4 w-4 mr-2" /> Add Slot
+        </Button>
 
         {/* List of Slots */}
         <div className="space-y-3">

@@ -14,7 +14,7 @@ import { Trash2, Package } from "lucide-react";
 import { useEnquiryStore } from "@/store/enquiryStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export function EnquiryItemsList() {
+export function EnquiryLineItems() {
   const { items, removeItem } = useEnquiryStore();
 
   if (items.length === 0) {

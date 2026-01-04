@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
+import Link from "next/link";
 
 // Removed hardcoded enquiries
 // const enquiries = [...];
@@ -41,7 +42,9 @@ export default function EnquiriesPage() {
               Manage and track your product enquiries.
             </p>
           </div>
-          <Button>Create New Enquiry</Button>
+          <Link href="/enquiry/create">
+            <Button>Create New Enquiry</Button>
+          </Link>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">

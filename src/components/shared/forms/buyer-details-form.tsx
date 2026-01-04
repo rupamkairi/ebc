@@ -82,16 +82,6 @@ export function BuyerDetailsForm({
       if (hasChanged) {
         form.reset(defaultValues as BuyerDetailsSchema);
       }
-    } else {
-      // On initial mount if no values, set mock only if form is currently empty
-      const currentValues = form.getValues();
-      if (!currentValues.name && !currentValues.email) {
-        form.reset({
-          ...MOCK_USER,
-          description: "",
-          purpose: "",
-        });
-      }
     }
   }, [defaultValues, form]);
 
