@@ -13,6 +13,13 @@ import {
   ItemListParams,
   CreateItemRequest,
   UpdateItemRequest,
+  // New Imports
+  CreateItemListingRequest,
+  ItemListingListParams,
+  CreateItemRateRequest,
+  ItemRateListParams,
+  CreateItemRegionRequest,
+  ItemRegionListParams,
 } from "@/types/catalog";
 import { keepPreviousData } from "@tanstack/react-query";
 
@@ -26,6 +33,12 @@ export const catalogKeys = {
     [...catalogKeys.all, "specifications", params] as const,
   items: (params: ItemListParams) =>
     [...catalogKeys.all, "items", params] as const,
+  itemListings: (params: ItemListingListParams) =>
+    [...catalogKeys.all, "listings", params] as const,
+  itemRates: (params: ItemRateListParams) =>
+    [...catalogKeys.all, "rates", params] as const,
+  itemRegions: (params: ItemRegionListParams) =>
+    [...catalogKeys.all, "regions", params] as const,
 };
 
 // Categories
@@ -182,6 +195,66 @@ export function useDeleteItemMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => catalogService.deleteItem(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: catalogKeys.all });
+    },
+  });
+}
+
+// Item Listings
+export function useItemListingsQuery(params: ItemListingListParams = {}) {
+  return useQuery({
+    queryKey: catalogKeys.itemListings(params),
+    queryFn: () => catalogService.getItemListings(params),
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useCreateItemListingMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreateItemListingRequest) =>
+      catalogService.createItemListing(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: catalogKeys.all });
+    },
+  });
+}
+
+// Item Rates
+export function useItemRatesQuery(params: ItemRateListParams) {
+  return useQuery({
+    queryKey: catalogKeys.itemRates(params),
+    queryFn: () => catalogService.getItemRates(params),
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useCreateItemRateMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreateItemRateRequest) =>
+      catalogService.createItemRate(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: catalogKeys.all });
+    },
+  });
+}
+
+// Item Regions
+export function useItemRegionsQuery(params: ItemRegionListParams) {
+  return useQuery({
+    queryKey: catalogKeys.itemRegions(params),
+    queryFn: () => catalogService.getItemRegions(params),
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useCreateItemRegionMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreateItemRegionRequest) =>
+      catalogService.createItemRegion(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: catalogKeys.all });
     },

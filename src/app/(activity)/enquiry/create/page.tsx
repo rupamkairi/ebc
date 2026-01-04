@@ -39,7 +39,7 @@ export default function CreateEnquiryPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 py-8 px-4">
+    <div className="container mx-auto space-y-8 py-8 px-4">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">
           Create New Enquiry

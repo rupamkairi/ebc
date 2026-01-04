@@ -151,3 +151,73 @@ export interface ItemListParams {
   sort?: string;
   order?: "asc" | "desc";
 }
+
+export interface ItemRate {
+  id?: string;
+  itemListingId?: string;
+  minQuantity: number;
+  unitType: string;
+  rate: number;
+  isNegotiable?: boolean;
+}
+
+export interface ItemRegion {
+  id?: string;
+  itemListingId?: string;
+  state?: string;
+  district?: string;
+  pincodeId?: string;
+  wholeState?: boolean;
+  wholeDistrict?: boolean;
+}
+
+export interface ItemListing {
+  id: string;
+  itemId: string;
+  entityId: string;
+  isActive?: boolean;
+  item_rate?: ItemRate;
+  item_region?: ItemRegion[];
+}
+
+export interface CreateItemListingRequest {
+  item_listing: {
+    itemId: string;
+    entityId: string;
+    item_rate: Omit<ItemRate, "id" | "itemListingId">;
+    item_region: Omit<ItemRegion, "id" | "itemListingId">[];
+  };
+}
+
+export interface ItemListingListParams {
+  itemId?: string;
+  entityId?: string;
+  search?: string;
+}
+
+export interface CreateItemRateRequest {
+  itemListingId: string;
+  minQuantity: number;
+  unitType: string;
+  rate: number;
+  isNegotiable?: boolean;
+}
+
+export interface CreateItemRegionRequest {
+  itemListingId: string;
+  regions: {
+    state?: string;
+    district?: string;
+    pincodeId?: string;
+    wholeState?: boolean;
+    wholeDistrict?: boolean;
+  }[];
+}
+
+export interface ItemRateListParams {
+  itemListingId: string;
+}
+
+export interface ItemRegionListParams {
+  itemListingId: string;
+}

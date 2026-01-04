@@ -72,7 +72,12 @@ export const useEnquiryStore = create<EnquiryState>()(
             i.itemId === itemId ? { ...i, ...updates } : i
           ),
         })),
-      setBuyerDetails: (details) => set({ buyerDetails: details }),
+      setBuyerDetails: (details) =>
+        set((state) => {
+          if (JSON.stringify(state.buyerDetails) === JSON.stringify(details))
+            return state;
+          return { buyerDetails: details };
+        }),
       clearEnquiry: () => set({ items: [] }), // Just clears items
       resetEnquiry: () => set({ items: [], buyerDetails: null }), // Clears everything
     }),

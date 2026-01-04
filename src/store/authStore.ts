@@ -24,7 +24,7 @@ export const useAuthStore = create<AuthState>()(
     {
       name: "ebc_auth_storage", // unique name
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ token: state.token }), // only persist token, maybe user too? Plan said token. Let's persist token.
+      partialize: (state) => ({ token: state.token, user: state.user }),
       // If we persist user, we might show stale data. But usually better to persist both for fast load, then revalidate.
       // The original code only persisted token manually: localStorage.setItem("ebc_token", token);
       // So sticking to token only for parity, but let's check if we should persist user.

@@ -44,13 +44,39 @@ export const API_ENDPOINTS = {
       DELETE: "/catalog/item",
       LIST: "/catalog/item/list",
     },
+    ITEM_LISTING: {
+      CREATE: "/catalog/item-listing",
+      UPDATE: "/catalog/item-listing",
+      DELETE: "/catalog/item-listing",
+      LIST: "/catalog/item-listing/list",
+    },
     ITEM_RATE: {
-      CREATE: "/catalog/itemrate",
-      UPDATE: "/catalog/itemrate",
-      DELETE: "/catalog/itemrate",
-      LIST: "/catalog/itemrate/list",
+      CREATE: "/catalog/item-rate",
+      UPDATE: "/catalog/item-rate",
+      DELETE: "/catalog/item-rate",
+      LIST: "/catalog/item-rate/list",
+    },
+    ITEM_REGION: {
+      CREATE: "/catalog/item-region",
+      UPDATE: "/catalog/item-region",
+      DELETE: "/catalog/item-region",
+      LIST: "/catalog/item-region/list",
     },
     UPLOAD: "/catalog/upload",
+  },
+  ACTIVITY: {
+    ENQUIRY: {
+      CREATE: "/activity/enquiry",
+      GET: "/activity/enquiry", // :id
+      DELETE: "/activity/enquiry", // :id
+      LIST: "/activity/enquiry/list",
+    },
+    APPOINTMENT: {
+      CREATE: "/activity/appointment",
+      GET: "/activity/appointment", // :id
+      DELETE: "/activity/appointment", // :id
+      LIST: "/activity/appointment/list",
+    },
   },
   PINCODE_DIRECTORY: {
     LIST: "/pincode-directory/list",

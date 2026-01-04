@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,13 +23,85 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { cn } from "@/lib/utils";
+import { authService } from "@/services/authService";
+import { useAuthStore } from "@/store/authStore";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 export function UserLoginMobileOtpForm({
   className,
-  role,
+  role: initialRole,
   ...props
 }: React.ComponentProps<"div"> & { role?: string }) {
-  const displayRole = role ? role.charAt(0).toUpperCase() + role.slice(1) : "";
+  const router = useRouter();
+  const setToken = useAuthStore((state) => state.setToken);
+  const setUser = useAuthStore((state) => state.setUser);
+
+  const [mobile, setMobile] = useState("");
+  const [otp, setOtp] = useState("");
+  const [step, setStep] = useState<"phone" | "otp">("phone");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const displayRole = initialRole
+    ? initialRole.charAt(0).toUpperCase() + initialRole.slice(1)
+    : "";
+
+  const handleSendOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!mobile || mobile.length < 10) {
+      toast.error("Please enter a valid mobile number");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      // Ensure mobile has prefix if not present, though API docs didn't specify.
+      // Let's stick to what user enters for now.
+      const phone = mobile.startsWith("+") ? mobile : `+91${mobile}`;
+      await authService.sendOtp({ phone });
+      toast.success("OTP sent successfully");
+      setStep("otp");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to send OTP");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!otp || otp.length < 6) {
+      toast.error("Please enter a valid 6-digit OTP");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const phone = mobile.startsWith("+") ? mobile : `+91${mobile}`;
+      const { token } = await authService.verifyOtp({ phone, otp });
+      setToken(token);
+
+      // Fetch session to get user role
+      const { user } = await authService.getSession();
+      setUser(user);
+
+      toast.success("Login successful");
+
+      // Redirection logic
+      const role = user.role?.toUpperCase() || "";
+      if (role.includes("SELLER")) {
+        router.push("/seller-dashboard");
+      } else if (role.includes("ADMIN") && !role.startsWith("USER_")) {
+        router.push("/admin-dashboard");
+      } else {
+        router.push("/buyer-dashboard");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Invalid OTP");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -33,51 +109,86 @@ export function UserLoginMobileOtpForm({
         <CardHeader>
           <CardTitle>Login as {displayRole || "User"}</CardTitle>
           <CardDescription>
-            Enter your mobile below to login to your {displayRole.toLowerCase() || "user"} account
+            Enter your mobile below to login to your{" "}
+            {displayRole.toLowerCase() || "user"} account
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
-            <FieldGroup>
-              <Field>
-                <FieldLabel htmlFor="mobile">Mobile</FieldLabel>
-                <Input
-                  id="mobile"
-                  type="mobile"
-                  placeholder="9876543210"
-                  required
-                />
-              </Field>
-              <Field>
-                <Button type="submit">Send OTP</Button>
-              </Field>
-
-              <Field>
-                <FieldLabel htmlFor="otp">Verification code</FieldLabel>
-                <InputOTP
-                  containerClassName="justify-around"
-                  maxLength={6}
-                  id="otp"
-                  required
-                >
-                  <InputOTPGroup className="gap-2.5 *:data-[slot=input-otp-slot]:rounded-md *:data-[slot=input-otp-slot]:border">
-                    <InputOTPSlot index={0} />
-                    <InputOTPSlot index={1} />
-                    <InputOTPSlot index={2} />
-                    <InputOTPSlot index={3} />
-                    <InputOTPSlot index={4} />
-                    <InputOTPSlot index={5} />
-                  </InputOTPGroup>
-                </InputOTP>
-                <FieldDescription className="text-center">
-                  Enter the 6-digit code sent to your mobile.
-                </FieldDescription>
-              </Field>
-              <Field>
-                <Button type="submit">Verify</Button>
-              </Field>
-            </FieldGroup>
-          </form>
+          {step === "phone" ? (
+            <form onSubmit={handleSendOtp}>
+              <FieldGroup>
+                <Field>
+                  <FieldLabel htmlFor="mobile">Mobile</FieldLabel>
+                  <div className="flex gap-2">
+                    <span className="flex items-center px-3 border rounded-md bg-muted text-muted-foreground">
+                      +91
+                    </span>
+                    <Input
+                      id="mobile"
+                      type="tel"
+                      placeholder="9876543210"
+                      value={mobile}
+                      onChange={(e) => setMobile(e.target.value)}
+                      required
+                    />
+                  </div>
+                </Field>
+                <Field>
+                  <Button type="submit" disabled={isLoading} className="w-full">
+                    {isLoading && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    Send OTP
+                  </Button>
+                </Field>
+              </FieldGroup>
+            </form>
+          ) : (
+            <form onSubmit={handleVerifyOtp}>
+              <FieldGroup>
+                <Field>
+                  <FieldLabel htmlFor="otp">Verification code</FieldLabel>
+                  <InputOTP
+                    containerClassName="justify-around"
+                    maxLength={6}
+                    id="otp"
+                    value={otp}
+                    onChange={(val) => setOtp(val)}
+                    required
+                  >
+                    <InputOTPGroup className="gap-2.5 *:data-[slot=input-otp-slot]:rounded-md *:data-[slot=input-otp-slot]:border">
+                      <InputOTPSlot index={0} />
+                      <InputOTPSlot index={1} />
+                      <InputOTPSlot index={2} />
+                      <InputOTPSlot index={3} />
+                      <InputOTPSlot index={4} />
+                      <InputOTPSlot index={5} />
+                    </InputOTPGroup>
+                  </InputOTP>
+                  <FieldDescription className="text-center pt-2">
+                    Enter the 6-digit code sent to +91{mobile}.
+                  </FieldDescription>
+                </Field>
+                <div className="flex flex-col gap-2">
+                  <Button type="submit" disabled={isLoading} className="w-full">
+                    {isLoading && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    Verify
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => setStep("phone")}
+                    disabled={isLoading}
+                    className="w-full"
+                  >
+                    Change Number
+                  </Button>
+                </div>
+              </FieldGroup>
+            </form>
+          )}
         </CardContent>
       </Card>
     </div>

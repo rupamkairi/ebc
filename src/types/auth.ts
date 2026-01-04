@@ -22,6 +22,15 @@ export interface CreateAdminSubordinateRequest {
   password?: string;
 }
 
+export interface SendOtpRequest {
+  phone: string;
+}
+
+export interface VerifyOtpRequest {
+  phone: string;
+  otp: string;
+}
+
 export interface SessionResponse {
   session: {
     id: string;
@@ -45,4 +54,11 @@ export interface SessionResponse {
     phoneNumber?: string | null;
     phoneVerified?: boolean;
   };
+}
+
+export interface UpdateProfileRequest {
+  name?: string;
+  email?: string;
+  phoneNumber?: string;
+  // Others?
 }

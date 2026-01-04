@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { authService } from "@/services/authService";
 import { useAuthStore } from "@/store/authStore";
 import { useEffect } from "react";
@@ -30,4 +30,16 @@ export function useSessionQuery() {
 export function useRefreshSession() {
   const queryClient = useQueryClient();
   return () => queryClient.invalidateQueries({ queryKey: authKeys.session() });
+}
+
+export function useUpdateProfileMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: Parameters<typeof authService.updateProfile>[0]) =>
+      authService.updateProfile(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: authKeys.session() });
+    },
+  });
 }

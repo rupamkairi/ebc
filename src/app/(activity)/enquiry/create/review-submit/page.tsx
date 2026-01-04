@@ -2,24 +2,54 @@
 
 import { EnquiryReview } from "@/components/enquiry/enquiry-review";
 import { useEnquiryStore } from "@/store/enquiryStore";
+import { useCreateEnquiryMutation } from "@/queries/activityQueries";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
 export default function ReviewSubmitPage() {
   const router = useRouter();
-  const resetEnquiry = useEnquiryStore((state) => state.resetEnquiry);
+  const { items, buyerDetails, resetEnquiry } = useEnquiryStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async () => {
-    setIsSubmitting(true);
-    // Simulate API submission
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+  const createEnquiry = useCreateEnquiryMutation();
 
-    // On success
-    setIsSubmitting(false);
-    resetEnquiry(); // Clear store
-    router.replace("/enquiry/create/submit-success");
+  const handleSubmit = async () => {
+    if (!buyerDetails || items.length === 0) {
+      toast.error("Missing details or items");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    const payload = {
+      lineItems: items.map((item) => ({
+        itemId: item.itemId,
+        quantity: item.quantity,
+        unitType: item.unit || "Piece",
+        remarks: item.remarks || "",
+        flexibleWithBrands: true, // Defaulting to true as per common flow
+      })),
+      details: {
+        address: buyerDetails.address,
+        remarks: "Enquiry via Web", // Or add a field in store for this
+        // pincodeDirectoryId: ... we might need to look this up or separate flow
+      },
+    };
+
+    createEnquiry.mutate(payload, {
+      onSuccess: () => {
+        toast.success("Enquiry submitted successfully");
+        setIsSubmitting(false);
+        resetEnquiry();
+        router.replace("/enquiry/create/submit-success");
+      },
+      onError: (error) => {
+        toast.error("Failed to submit enquiry");
+        console.error(error);
+        setIsSubmitting(false);
+      },
+    });
   };
 
   return (

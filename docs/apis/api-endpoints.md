@@ -317,7 +317,7 @@ Base URL: `/api/catalog`
   {
     "name": "Cement & Binders",
     "type": "PRODUCT",
-    "categoryIconId": "UUID"
+    "categoryIconId": "UUID?"
   }
   ```
   And for Sub-Category
@@ -326,7 +326,7 @@ Base URL: `/api/catalog`
     "name": "Cement",
     "type": "PRODUCT",
     "parentCategoryId": "f224e3b3-82e0-43ab-a374-cd6ce81f457f",
-    "categoryIconId": "UUID"
+    "categoryIconId": "UUID?"
   }
   ```
 - **Update**: `PATCH /category`
@@ -346,14 +346,15 @@ Base URL: `/api/catalog`
     {
       "type": "PRODUCT",
       "isSubCategory": true,
-      "parentCategoryId": "UUID"
+      "parentCategoryId": "UUID",
+      "search": "String"
     }
     ```
 
 ## Brand
 
 - **Create**: `POST /brand`
-  - Body: `{ "name": "String", "brandLogoId": "UUID" }`
+  - Body: `{ "name": "String", "brandLogoId": "UUID?" }`
 - **Update**: `PATCH /brand`
   - Body: `{ "id": "UUID", "name": "String" }`
 - **Delete**: `DELETE /brand`
@@ -412,6 +413,7 @@ Base URL: `/api/catalog`
   - Body:
     ```json
     {
+      "search": "String",
       "categoryId": "UUID",
       "brandId": "UUID",
       "specificationId": "UUID",
@@ -419,44 +421,88 @@ Base URL: `/api/catalog`
     }
     ```
 
-## Item Rate
+## Item Listing
 
-- **Create**: `POST /itemrate`
+- **Composite Create**: `POST /item-listing`
   - Body:
   ```json
   {
-    "itemId": "b9cacaae-b2e5-472c-9410-92738972a2fb",
-    "entityId": "8e789b10-6224-4d27-b328-e3497476d7bb",
-    "minQuantity": 50,
-    "unitType": "Kilogram",
-    "rate": 400
+    "item_listing": {
+      "itemId": "b9cacaae-b2e5-472c-9410-92738972a2fb",
+      "entityId": "8e789b10-6224-4d27-b328-e3497476d7bb",
+      "item_rate": {
+        "minQuantity": 50,
+        "unitType": "Kilogram",
+        "rate": 400,
+        "isNegotiable": false
+      },
+      "item_region": [
+        {
+          "state": "Delhi",
+          "wholeState": true,
+          "pincodeId": "550e8400-e29b-41d4-a716-446655440000"
+        }
+      ]
+    }
   }
   ```
-  Or,
-  ```json
-  {
-    "itemId": "b9cacaae-b2e5-472c-9410-92738972a2fb",
-    "entityId": "8e789b10-6224-4d27-b328-e3497476d7bb",
-    "minQuantity": 5,
-    "unitType": "Bag",
-    "secondaryQuantity": 50,
-    "secondaryUnitType": "Kilogram",
-    "rate": 2000,
-    "isNegotiable": true
-  }
-  ```
-- **Update**: `PATCH /itemrate`
-  - Body: `{ "id": "UUID", ... }`
-- **Delete**: `DELETE /itemrate`
-  - Body: `{ "id": "UUID" }`
-- **List**: `POST /itemrate/list`
+- **Update**: `PATCH /item-listing/:id`
+  - Body: `{ "isActive": boolean }`
+- **Delete**: `DELETE /item-listing/:id`
+- **List**: `POST /item-listing/list`
   - Body:
     ```json
     {
       "itemId": "UUID",
-      "entityId": "UUID"
+      "entityId": "UUID",
+      "search": "String"
     }
     ```
+
+## Item Rate (Granular)
+
+- **Create**: `POST /item-rate`
+  - Body:
+  ```json
+  {
+    "itemListingId": "UUID",
+    "minQuantity": 50,
+    "unitType": "Kilogram",
+    "rate": 400,
+    "isNegotiable": true
+  }
+  ```
+- **Update**: `PATCH /item-rate/:id`
+  - Body: `{ "rate": 450, ... }`
+- **Delete**: `DELETE /item-rate/:id`
+- **List**: `POST /item-rate/list`
+  - Body: `{ "itemListingId": "UUID" }`
+
+## Item Region (Granular)
+
+- **Create**: `POST /item-region`
+  - Body:
+  ```json
+  {
+    "itemListingId": "UUID",
+    "regions": [
+      {
+        "state": "Maharashtra",
+        "wholeState": true
+      },
+      {
+        "state": "Karnataka",
+        "district": "Bangalore",
+        "wholeDistrict": true
+      }
+    ]
+  }
+  ```
+- **Update**: `PATCH /item-region/:id`
+  - Body: `{ "isAvailable": false, ... }`
+- **Delete**: `DELETE /item-region/:id`
+- **List**: `POST /item-region/list`
+  - Body: `{ "itemListingId": "UUID" }`
 
 ## Bulk Upload
 
@@ -477,3 +523,107 @@ Base URL: `/api/catalog`
   ]
   ```
 - This does not account for finding (category, brand & specification) & link or create & link.
+
+# Miscellaneous API Endpoints
+
+Base URL: `/api/pincode-directory`
+
+## Pincode Directory
+
+- **Search**: `POST /list`
+  - Fetch pincode records based on state, district, or pincode.
+  - Body:
+    ```json
+    {
+      "state": "maharashtra",
+      "district": "mumbai",
+      "pincode": "400001"
+    }
+    ```
+  - Response (Success):
+    ```json
+    [
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440000",
+        "state": "Maharashtra",
+        "district": "Mumbai",
+        "pincode": "400001"
+      }
+    ]
+    ```
+  - Note: All fields are optional. Partial matches are supported for `state` and `district` (case-insensitive). `id` is a UUID.
+
+# Activity API Endpoints
+
+Base URL: `/api/activity`
+
+## Enquiry
+
+- **Create**: `POST /enquiry`
+  - Body:
+  ```json
+  {
+    "lineItems": [
+      {
+        "itemId": "b9cacaae-b2e5-472c-9410-92738972a2fb",
+        "quantity": 10,
+        "unitType": "Piece",
+        "remarks": "Urgent requirement",
+        "flexibleWithBrands": true
+      }
+    ],
+    "details": {
+      "expectedDate": "2024-12-30T00:00:00.000Z",
+      "remarks": "Delivery at site A",
+      "address": "123 Street Name",
+      "pincodeDirectoryId": "uuid-of-pincode"
+    }
+  }
+  ```
+- **Get Details**: `GET /enquiry/:id`
+- **Delete**: `DELETE /enquiry/:id`
+- **List**: `POST /enquiry/list`
+  - Body:
+  ```json
+  {
+    "createdById": "UUID?",
+    "itemId": "UUID?",
+    "search": "String?"
+  }
+  ```
+
+---
+
+## Appointment
+
+- **Create**: `POST /appointment`
+  - Body:
+  ```json
+  {
+    "lineItems": [
+      {
+        "itemId": "b9cacaae-b2e5-472c-9410-92738972a2fb",
+        "remarks": "Sample inspection"
+      }
+    ],
+    "details": {
+      "remarks": "Meeting at main office"
+    },
+    "slots": [
+      {
+        "remarks": "Prefers morning"
+      }
+    ]
+  }
+  ```
+- **Get Details**: `GET /appointment/:id`
+- **Delete**: `DELETE /appointment/:id`
+- **List**: `POST /appointment/list`
+  - Body:
+  ```json
+  {
+    "createdById": "UUID?",
+    "itemId": "UUID?",
+    "search": "String?"
+  }
+  ```

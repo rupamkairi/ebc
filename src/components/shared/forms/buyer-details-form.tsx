@@ -68,13 +68,30 @@ export function BuyerDetailsForm({
   // Pre-fill form
   useEffect(() => {
     if (defaultValues) {
-      form.reset(defaultValues as BuyerDetailsSchema);
-    } else {
-      form.reset({
-        ...MOCK_USER,
-        description: "",
-        purpose: "",
+      // Only reset if values are different to avoid loop
+      const currentValues = form.getValues();
+      const hasChanged = (
+        Object.keys(buyerDetailsSchema.shape) as Array<
+          keyof typeof buyerDetailsSchema.shape
+        >
+      ).some((key) => {
+        const dvValue = (defaultValues as Record<string, unknown>)[key];
+        const cvValue = (currentValues as Record<string, unknown>)[key];
+        return dvValue !== cvValue;
       });
+      if (hasChanged) {
+        form.reset(defaultValues as BuyerDetailsSchema);
+      }
+    } else {
+      // On initial mount if no values, set mock only if form is currently empty
+      const currentValues = form.getValues();
+      if (!currentValues.name && !currentValues.email) {
+        form.reset({
+          ...MOCK_USER,
+          description: "",
+          purpose: "",
+        });
+      }
     }
   }, [defaultValues, form]);
 
@@ -82,11 +99,27 @@ export function BuyerDetailsForm({
   useEffect(() => {
     const subscription = form.watch((value) => {
       if (value.name) {
-        onChange(value as BuyerDetails);
+        // Only trigger onChange if value is actually different from defaultValues
+        // to avoid infinite loop with reset()
+        const hasChanged =
+          !defaultValues ||
+          (
+            Object.keys(buyerDetailsSchema.shape) as Array<
+              keyof typeof buyerDetailsSchema.shape
+            >
+          ).some((key) => {
+            const val = (value as Record<string, unknown>)[key];
+            const dv = (defaultValues as Record<string, unknown>)[key];
+            return val !== dv;
+          });
+
+        if (hasChanged) {
+          onChange(value as BuyerDetails);
+        }
       }
     });
     return () => subscription.unsubscribe();
-  }, [form, onChange]);
+  }, [form, onChange, defaultValues]);
 
   return (
     <Card>

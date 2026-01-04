@@ -1,26 +1,59 @@
 "use client";
 
 import { useAppointmentStore } from "@/store/appointmentStore";
+import { useCreateAppointmentMutation } from "@/queries/activityQueries";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { AppointmentReview } from "@/components/appointment/appointment-review";
+import { toast } from "sonner";
 
 export default function AppointmentReviewSubmitPage() {
   const router = useRouter();
-  const resetAppointment = useAppointmentStore(
-    (state) => state.resetAppointment
-  );
+  const { item, timeSlots, buyerDetails, resetAppointment } =
+    useAppointmentStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async () => {
-    setIsSubmitting(true);
-    // Simulate API submission
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+  const createAppointment = useCreateAppointmentMutation();
 
-    // On success
-    setIsSubmitting(false);
-    resetAppointment();
-    router.replace("/appointment/create/submit-success");
+  const handleSubmit = async () => {
+    if (!buyerDetails || !item || timeSlots.length === 0) {
+      toast.error("Missing details or slots");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    // Construct payload
+    const payload = {
+      lineItems: [
+        {
+          itemId: item.itemId,
+          // remarks: item.description || "", // If definitions line up
+        },
+      ],
+      details: {
+        remarks: "Web Appointment Request",
+        address: buyerDetails.address, // Assuming buyerDetails has address
+        // pincodeDirectoryId: ...
+      },
+      slots: timeSlots.map((slot) => ({
+        remarks: `${slot.date} ${slot.startTime}-${slot.endTime}`,
+      })),
+    };
+
+    createAppointment.mutate(payload, {
+      onSuccess: () => {
+        toast.success("Appointment request submitted");
+        setIsSubmitting(false);
+        resetAppointment();
+        router.replace("/appointment/create/submit-success");
+      },
+      onError: (error) => {
+        toast.error("Failed to submit appointment");
+        console.error(error);
+        setIsSubmitting(false);
+      },
+    });
   };
 
   return (
