@@ -21,7 +21,7 @@ export function DashboardHeader() {
 
           <nav className="hidden lg:flex items-center gap-6">
             <Link
-              href="#"
+              href="/seller-dashboard"
               className="text-sm font-semibold text-primary border-b-2 border-primary py-1"
             >
               Home
@@ -39,7 +39,7 @@ export function DashboardHeader() {
               Enquiries
             </Link>
             <Link
-              href="#"
+              href="/seller-dashboard/support"
               className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors"
             >
               Support

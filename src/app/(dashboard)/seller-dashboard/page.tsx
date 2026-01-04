@@ -3,167 +3,233 @@ import { DashboardCard } from "@/components/dashboard/seller/dashboard-card";
 import { DashboardContainerCard } from "@/components/dashboard/seller/dashboard-container-card";
 import { NotificationCard } from "@/components/dashboard/seller/notification-card";
 import { ProfileCard } from "@/components/dashboard/seller/profile-card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   CalendarDays,
   FileText,
   Megaphone,
-  UploadCloud,
   Users,
+  Wallet,
+  Receipt,
+  MessageSquare,
+  FileSearch,
+  MapPin,
+  Star,
+  Headphones,
+  Settings,
+  TrendingUp,
+  ArrowUpRight
 } from "lucide-react";
-import Image from "next/image";
+import Link from "next/link";
+import { BottomNav } from "./bottom-nav";
+import { DashboardHeader } from "./dashboard-header";
 
 export default function SellerDashboardPage() {
   return (
-    <Container>
-      <div className="space-y-6">
-        <ProfileCard
-          user={{ name: "Rupam Kairi", role: "Super Seller", avatarUrl: "" }}
-        />
+    <div className="min-h-screen bg-[#F8F9FA] pb-32">
+      <DashboardHeader/>
+      <Container>
+        <div className="flex flex-col gap-8 py-8">
+          {/* Top Profile Section */}
+          <ProfileCard
+            user={{ name: "Rajesh Kumar", role: "Super Seller", avatarUrl: "" }}
+          />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Main Dashboard Container - Spans 9 cols */}
-          <div className="lg:col-span-9">
-            <DashboardContainerCard
-              title="Actions"
-              className="h-full border-none shadow-none p-4"
-            >
-              <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                {/* Catalog Upload Card - Spans 4 cols */}
-                <DashboardCard
-                  title="Catalog"
-                  subtext="Create & Manage Product & Services"
-                  className="md:col-span-4 bg-muted/30"
-                  iconComponent={
-                    <Image
-                      width={64}
-                      height={64}
-                      src="/images/dashboard/manage-product-services.png"
-                      alt="Manage Product & Services"
-                      className="h-10 w-10"
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Main Content Area */}
+            <div className="lg:col-span-9 space-y-8">
+              
+              {/* 1. Core Actions & High Urgency */}
+              <DashboardContainerCard title="Active Business" className="border-none shadow-sm bg-white p-6">
+                <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                  <Link href="/seller-dashboard/catalog" className="md:col-span-4 group">
+                    <DashboardCard
+                      title="Product Catalog"
+                      subtext="Manage your listings & prices"
+                      className="bg-primary/5 border-primary/10 group-hover:border-primary/30 transition-all cursor-pointer h-full"
+                      iconComponent={<FileText className="text-primary" />}
+                      contentComponent={
+                        <p className="text-sm text-foreground/60 italic mt-2 leading-relaxed">
+                          Apna pura product range, specs aur technical sheets upload karein.
+                        </p>
+                      }
                     />
-                  }
-                  contentComponent={
-                    <div className="flex flex-row items-center gap-4 h-full">
-                      <div className="relative h-16 w-16 shrink-0 bg-background rounded-md flex items-center justify-center border">
-                        <FileText className="h-8 w-8 text-muted-foreground" />
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        <p className="text-sm text-muted-foreground leading-relaxed">
-                          Apna pura product range, specs aur technical sheets
-                          upload karein.
-                        </p>
-                      </div>
-                    </div>
-                  }
-                />
+                  </Link>
 
-                {/* Enquiry Card - Spans 2 cols, 2 rows */}
-                <DashboardCard
-                  title="Customer Enquiries"
-                  className="md:col-span-2 md:row-span-2 border-primary/20 border-2"
-                  iconComponent={<Users className="h-5 w-5 text-primary" />}
-                  contentComponent={
-                    <div className="flex flex-col gap-6">
-                      <div className="flex flex-col">
-                        <span className="text-4xl font-bold text-primary">
-                          15
-                        </span>
-                        <span className="font-semibold text-muted-foreground">
-                          New Leads
-                        </span>
-                      </div>
-                      <div className="flex flex-col gap-2 text-sm text-muted-foreground">
-                        <p>
-                          <strong className="text-foreground">
-                            Amit Sharma
-                          </strong>{" "}
-                          - Cement (50 bags)
-                        </p>
-                        <p>
-                          <strong className="text-foreground">
-                            Priya Verma
-                          </strong>{" "}
-                          - Bricks (5000 pcs)
-                        </p>
-                        <p>
-                          <strong className="text-foreground">
-                            Amit Sharma
-                          </strong>{" "}
-                          - Cement (500 bags)
-                        </p>
-                        <p>
-                          <strong className="text-foreground">
-                            Priya Verma
-                          </strong>{" "}
-                          - Bricks (5000 pcs)
-                        </p>
-                      </div>
-                    </div>
-                  }
-                  footerComponent={
-                    <Button
-                      className="w-full font-semibold text-md h-11"
-                      size="lg"
-                    >
-                      View Leads & Quote Now
-                    </Button>
-                  }
-                />
+                  <Link href="/seller-dashboard/enquiries" className="md:col-span-2 md:row-span-2 group">
+                    <DashboardCard
+                      title="New Enquiries"
+                      className="border-blue-500/20 border-2 group-hover:border-blue-500/40 transition-all cursor-pointer h-full"
+                      iconComponent={<Users className="h-5 w-5 text-blue-500" />}
+                      contentComponent={
+                        <div className="flex flex-col gap-6 mt-4">
+                          <div className="flex flex-col">
+                            <span className="text-5xl font-black text-blue-600 tracking-tighter italic">15</span>
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">Active Leads</span>
+                          </div>
+                          <div className="space-y-2">
+                             <div className="h-1 w-full bg-muted rounded-full overflow-hidden">
+                                <div className="h-full bg-blue-500 w-[60%]" />
+                             </div>
+                             <p className="text-[10px] font-bold text-blue-600 italic">4 leads expiring soon!</p>
+                          </div>
+                        </div>
+                      }
+                      footerComponent={
+                        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black h-12 rounded-xl mt-4">
+                          Open Leads
+                        </Button>
+                      }
+                    />
+                  </Link>
 
-                {/* Appointment Card - Spans 2 cols */}
-                <DashboardCard
-                  title="New Appointment Requests"
-                  className="md:col-span-2"
-                  iconComponent={<CalendarDays className="h-5 w-5" />}
-                  contentComponent={
-                    <div className="flex flex-col items-start gap-2 mt-4">
-                      <Badge variant="secondary" className="font-normal">
-                        1 New Request
-                      </Badge>
-                    </div>
-                  }
-                  footerComponent={
-                    <div className="flex items-center justify-between w-full pt-2">
-                      <span className="text-muted-foreground text-sm">
-                        Count
-                      </span>
-                      <Button variant="outline" size="sm" className="px-6">
-                        View
-                      </Button>
-                    </div>
-                  }
-                />
+                  <Link href="/seller-dashboard/appointments" className="md:col-span-2 group">
+                    <DashboardCard
+                      title="Appointments"
+                      className="group-hover:bg-muted/50 transition-all cursor-pointer"
+                      iconComponent={<CalendarDays size={20} className="text-foreground/40" />}
+                      contentComponent={
+                        <div className="flex items-center gap-2 mt-4 text-xs font-bold text-foreground/40 italic">
+                          <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                          1 Site Visit Request
+                        </div>
+                      }
+                    />
+                  </Link>
 
-                {/* Promotion Card - Spans 2 cols */}
-                <DashboardCard
-                  title="Promotions (Conference Hall)"
-                  className="md:col-span-2 bg-muted/30"
-                  iconComponent={
-                    <div className="bg-background p-1.5 rounded-md border">
-                      <Megaphone className="h-4 w-4" />
+                  <Link href="/seller-dashboard/quotations" className="md:col-span-2 group">
+                    <DashboardCard
+                      title="Quotations"
+                      className="group-hover:bg-muted/50 transition-all cursor-pointer"
+                      iconComponent={<FileSearch size={20} className="text-foreground/40" />}
+                      contentComponent={
+                        <div className="flex items-center gap-2 mt-4 text-xs font-bold text-foreground/40 italic">
+                           8 Sent · 3 Pending
+                        </div>
+                      }
+                    />
+                  </Link>
+                </div>
+              </DashboardContainerCard>
+
+              {/* 2. Financials & Operations */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Financial Manager */}
+                <DashboardContainerCard title="Finances" className="border-none shadow-sm bg-white p-6">
+                  <div className="grid grid-cols-1 gap-4">
+                    <Link href="/seller-dashboard/wallet" className="group">
+                      <div className="p-6 rounded-3xl bg-emerald-50 border border-emerald-100 group-hover:border-emerald-300 transition-all flex items-center justify-between">
+                        <div className="flex items-center gap-5">
+                          <div className="h-14 w-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-emerald-600">
+                             <Wallet size={28} />
+                          </div>
+                          <div>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800/40">Wallet Balance</p>
+                            <h4 className="text-2xl font-black text-emerald-900 leading-tight tracking-tight italic">₹12,450.00</h4>
+                          </div>
+                        </div>
+                        <div className="h-10 w-10 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-lg shadow-emerald-200">
+                           <TrendingUp size={18} />
+                        </div>
+                      </div>
+                    </Link>
+                    <div className="grid grid-cols-2 gap-4">
+                      <Link href="/seller-dashboard/invoices" className="group">
+                        <DashboardCard 
+                          title="Invoices" 
+                          subtext="Billing History"
+                          iconComponent={<Receipt className="text-foreground/30" />}
+                          className="group-hover:bg-muted/30 transition-all cursor-pointer h-full" 
+                        />
+                      </Link>
+                      <Link href="/seller-dashboard/locations" className="group">
+                        <DashboardCard 
+                          title="Delivery Area" 
+                          subtext="Pincode Setup"
+                          iconComponent={<MapPin className="text-foreground/30" />}
+                          className="group-hover:bg-muted/30 transition-all cursor-pointer h-full" 
+                        />
+                      </Link>
                     </div>
-                  }
-                  contentComponent={
-                    <div className="flex flex-row justify-between items-end mt-4">
-                      <p className="text-sm text-muted-foreground max-w-[70%] leading-relaxed">
-                        Dealer network ke liye offers, announcements...
-                      </p>
-                      <Megaphone className="h-10 w-10 text-muted-foreground/20 rotate-[-15deg]" />
-                    </div>
-                  }
-                />
+                  </div>
+                </DashboardContainerCard>
+
+                {/* Relationship & Support */}
+                <DashboardContainerCard title="Relations" className="border-none shadow-sm bg-white p-6">
+                   <div className="grid grid-cols-2 gap-4 h-full">
+                      <Link href="/seller-dashboard/customers" className="group">
+                        <DashboardCard 
+                          title="Customers" 
+                          subtext="My Buyers"
+                          iconComponent={<Users className="text-foreground/30" />}
+                          className="group-hover:bg-muted/30 transition-all cursor-pointer h-full" 
+                        />
+                      </Link>
+                      <Link href="/seller-dashboard/messages" className="group">
+                        <DashboardCard 
+                          title="Messages" 
+                          subtext="Direct Chat"
+                          iconComponent={<MessageSquare className="text-foreground/30" />}
+                          className="group-hover:bg-muted/30 transition-all cursor-pointer h-full" 
+                        />
+                      </Link>
+                      <Link href="/seller-dashboard/reviews" className="group">
+                        <DashboardCard 
+                          title="Reviews" 
+                          subtext="Feedback"
+                          iconComponent={<Star className="text-foreground/30" />}
+                          className="group-hover:bg-muted/30 transition-all cursor-pointer h-full" 
+                        />
+                      </Link>
+                      <Link href="/seller-dashboard/support" className="group">
+                        <DashboardCard 
+                          title="Support" 
+                          subtext="Help Desk"
+                          iconComponent={<Headphones className="text-foreground/30" />}
+                          className="group-hover:bg-muted/30 transition-all cursor-pointer h-full" 
+                        />
+                      </Link>
+                   </div>
+                </DashboardContainerCard>
               </div>
-            </DashboardContainerCard>
-          </div>
 
-          {/* Notifications Card - Spans 3 cols */}
-          <div className="lg:col-span-3 h-full">
-            <NotificationCard className="h-full border-none shadow-none bg-transparent p-0" />
+              {/* 3. Global Settings Shortcut */}
+              <Link href="/seller-dashboard/settings" className="block group">
+                <div className="p-6 rounded-3xl bg-white border border-border group-hover:border-primary transition-all flex items-center justify-between">
+                   <div className="flex items-center gap-4">
+                      <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center text-foreground/40">
+                         <Settings size={20} />
+                      </div>
+                      <span className="font-black text-sm uppercase tracking-widest text-foreground/60 italic">Store Preferences & Configuration</span>
+                   </div>
+                   <ArrowUpRight size={20} className="text-foreground/20 group-hover:text-primary transition-colors" />
+                </div>
+              </Link>
+
+            </div>
+
+            {/* Sidebar / Secondary Info */}
+            <div className="lg:col-span-3 space-y-8">
+              <NotificationCard className="h-full border-none shadow-none bg-transparent p-0" />
+              
+              <div className="p-8 rounded-4xl bg-indigo-600 text-white space-y-6 relative overflow-hidden">
+                 <Megaphone className="absolute -top-4 -right-4 h-24 w-24 text-white/10 rotate-15" />
+                 <div className="relative z-10">
+                    <h3 className="text-xl font-black italic mb-2">Conference Hall</h3>
+                    <p className="text-xs font-medium text-white/70 leading-relaxed mb-6">
+                      Advertise your latest products directly to verified dealer networks and get higher visibility.
+                    </p>
+                    <Button className="w-full bg-white text-indigo-600 font-black h-12 rounded-xl hover:bg-white/90">
+                      Broadcast Now
+                    </Button>
+                 </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </Container>
+      </Container>
+      <BottomNav />
+    </div>
   );
 }
+
