@@ -40,7 +40,7 @@ export default function SellerDashboardPage() {
             <div className="lg:col-span-9 space-y-8">
               
               {/* 1. Core Actions & High Urgency */}
-              <DashboardContainerCard title="Active Business" className="border-none shadow-sm bg-white p-6">
+              <DashboardContainerCard title="Active Business" className="border-none shadow-sm bg-white">
                 <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
                   <Link href="/seller-dashboard/catalog" className="md:col-span-4 group">
                     <DashboardCard
@@ -115,7 +115,7 @@ export default function SellerDashboardPage() {
               {/* 2. Financials & Operations */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Financial Manager */}
-                <DashboardContainerCard title="Finances" className="border-none shadow-sm bg-white p-6">
+                <DashboardContainerCard title="Finances" className="border-none shadow-sm bg-white">
                   <div className="grid grid-cols-1 gap-4">
                     <Link href="/seller-dashboard/wallet" className="group">
                       <div className="p-6 rounded-3xl bg-emerald-50 border border-emerald-100 group-hover:border-emerald-300 transition-all flex items-center justify-between">
@@ -155,7 +155,7 @@ export default function SellerDashboardPage() {
                 </DashboardContainerCard>
 
                 {/* Relationship & Support */}
-                <DashboardContainerCard title="Relations" className="border-none shadow-sm bg-white p-6">
+                <DashboardContainerCard title="Relations" className="border-none shadow-sm bg-white">
                    <div className="grid grid-cols-2 gap-4 h-full">
                       <Link href="/seller-dashboard/customers" className="group">
                         <DashboardCard 

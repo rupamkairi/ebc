@@ -16,7 +16,7 @@ export function DashboardContainerCard({
   ...props
 }: DashboardContainerCardProps) {
   return (
-    <Card className={cn("w-full h-full flex flex-col", className)} {...props}>
+    <Card className={cn("w-full flex flex-col", className)} {...props}>
       {(title || action) && (
         <CardHeader className="flex flex-row items-center">
           {title && <CardTitle>{title}</CardTitle>}
