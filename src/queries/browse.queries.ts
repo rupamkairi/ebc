@@ -11,7 +11,7 @@ export interface Product {
   category: string;
   brand: string;
   rating: number;
-  type: "product" | "service";
+  type: "PRODUCT" | "SERVICE";
 }
 
 export interface Facet {
@@ -52,7 +52,7 @@ const MOCK_PRODUCTS: Product[] = Array.from({ length: 50 }).map((_, i) => {
         ? "brand-c"
         : "brand-d",
     rating: Number((Math.random() * 2 + 3).toFixed(1)),
-    type: isService ? "service" : "product",
+    type: isService ? "SERVICE" : "PRODUCT",
   };
 });
 

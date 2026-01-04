@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,13 +34,38 @@ export function UserLoginMobileOtpForm({
   ...props
 }: React.ComponentProps<"div"> & { role?: string }) {
   const router = useRouter();
-  const setToken = useAuthStore((state) => state.setToken);
-  const setUser = useAuthStore((state) => state.setUser);
-
+  const { token, user, setToken, setUser } = useAuthStore();
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"phone" | "otp">("phone");
   const [isLoading, setIsLoading] = useState(false);
+
+  // Auto-login check
+  useEffect(() => {
+    if (token && user) {
+      const role = user.role?.toUpperCase() || "";
+      // Only redirect if it's a User/Seller role (not Admin trying to use user login,
+      // though admins might want to be redirected too?
+      // User instructions said "not to mix up".
+      // If I am an Admin, I shouldn't be auto-redirected by the User Login form
+      // unless I want to access the app.
+      // Safer to redirect *only* if the role is relevant to this form?
+      // Actually, if I am logged in, I am logged in.
+      // Detailed logic:
+      // If role is SELLER -> seller-dashboard
+      // If role is BUYER/Default -> buyer-dashboard
+      // If role is ADMIN -> admin-dashboard (Valid session is valid session)
+
+      if (role.includes("SELLER")) {
+        router.push("/seller-dashboard");
+      } else if (role.includes("ADMIN") && !role.startsWith("USER_")) {
+        // If an admin is here, they are authenticated. Redirect them to their place.
+        router.push("/admin-dashboard");
+      } else {
+        router.push("/buyer-dashboard");
+      }
+    }
+  }, [token, user, router]);
 
   const displayRole = initialRole
     ? initialRole.charAt(0).toUpperCase() + initialRole.slice(1)
@@ -61,8 +86,10 @@ export function UserLoginMobileOtpForm({
       await authService.sendOtp({ phone });
       toast.success("OTP sent successfully");
       setStep("otp");
-    } catch (error: any) {
-      toast.error(error.message || "Failed to send OTP");
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to send OTP";
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -96,8 +123,10 @@ export function UserLoginMobileOtpForm({
       } else {
         router.push("/buyer-dashboard");
       }
-    } catch (error: any) {
-      toast.error(error.message || "Invalid OTP");
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Invalid OTP";
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

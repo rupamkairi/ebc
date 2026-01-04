@@ -155,6 +155,12 @@ export const catalogService = {
     });
   },
 
+  async getItem(id: string) {
+    return fetchClient<Item>(`${API_ENDPOINTS.CATALOG.ITEM.GET}/${id}`, {
+      method: "GET",
+    });
+  },
+
   // Item Listing
   async createItemListing(data: CreateItemListingRequest) {
     return fetchClient<ItemListing>(API_ENDPOINTS.CATALOG.ITEM_LISTING.CREATE, {

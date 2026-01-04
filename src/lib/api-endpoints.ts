@@ -43,6 +43,7 @@ export const API_ENDPOINTS = {
       UPDATE: "/catalog/item",
       DELETE: "/catalog/item",
       LIST: "/catalog/item/list",
+      GET: "/catalog/item", // :id attached in service
     },
     ITEM_LISTING: {
       CREATE: "/catalog/item-listing",

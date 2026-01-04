@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -33,6 +33,20 @@ export function AdminLoginForm({
   const router = useRouter();
   const setToken = useAuthStore((state) => state.setToken);
   const setUser = useAuthStore((state) => state.setUser);
+  const token = useAuthStore((state) => state.token);
+  const user = useAuthStore((state) => state.user);
+
+  useEffect(() => {
+    if (token && user) {
+      const role = user.role?.toUpperCase() || "";
+      // Strict check: Only redirect if it is an actual ADMIN role
+      if (role.includes("ADMIN") && !role.startsWith("USER_")) {
+        router.push("/admin-dashboard");
+      }
+      // If user is a Buyer/Seller, do NOT redirect.
+      // This allows them to login as Admin if they want to switch/elevate.
+    }
+  }, [token, user, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

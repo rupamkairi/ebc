@@ -1,3 +1,5 @@
+"use client";
+
 import Container from "@/components/containers/containers";
 import { AICalculator } from "@/components/dashboard/buyer/ai-calculator";
 import { DashboardCard } from "@/components/dashboard/seller/dashboard-card";
@@ -60,24 +62,24 @@ export default function BuyerDashboardPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             {[
               {
-                title: "Living Room",
+                title: "Material cepo.",
                 icon: <Armchair className="h-6 w-6" />,
-                href: "/browse?category=living-room",
+                href: "/browse?categoryId=",
               },
               {
-                title: "Bedroom",
+                title: "Technical cabin",
                 icon: <Bed className="h-6 w-6" />,
-                href: "/browse?category=bedroom",
+                href: "/browse?categoryId=",
               },
               {
-                title: "Bathroom",
+                title: "Fabricator area",
                 icon: <Bath className="h-6 w-6" />,
-                href: "/browse?category=bathroom",
+                href: "/browse?categoryId=",
               },
               {
-                title: "Entertainment",
+                title: "Contract desk",
                 icon: <Tv className="h-6 w-6" />,
-                href: "/browse?category=entertainment",
+                href: "/browse?categoryId=",
               },
             ].map((room) => (
               <Link key={room.title} href={room.href} className="block h-full">

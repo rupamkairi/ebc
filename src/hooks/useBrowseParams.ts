@@ -5,7 +5,7 @@ import { useCallback, useMemo } from "react";
 
 export type SortOption = "relevance" | "price_asc" | "price_desc" | "newest";
 
-export type BrowseType = "product" | "service";
+export type BrowseType = "PRODUCT" | "SERVICE";
 
 export interface BrowseParams {
   q: string;
@@ -25,7 +25,8 @@ export const useBrowseParams = () => {
   const params: BrowseParams = useMemo(() => {
     return {
       q: searchParams.get("q") || "",
-      type: (searchParams.get("type") as BrowseType) || "product",
+      type:
+        (searchParams.get("type")?.toUpperCase() as BrowseType) || "PRODUCT",
       category: searchParams.getAll("category"),
       brand: searchParams.getAll("brand"),
       sort: (searchParams.get("sort") as SortOption) || "relevance",

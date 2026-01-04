@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { AddToEnquiryModal } from "./add-to-enquiry-modal";
 
 interface ItemCardProps {
@@ -18,11 +19,19 @@ interface ItemCardProps {
 }
 
 export function ItemCard({ product }: ItemCardProps) {
+  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleCardClick = () => {
+    router.push(`/browse/${product.id}`);
+  };
 
   return (
     <>
-      <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full">
+      <Card
+        className="overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full cursor-pointer hover:border-primary/50"
+        onClick={handleCardClick}
+      >
         <div className="relative aspect-square w-full">
           <Image
             src={product.image}
@@ -52,13 +61,18 @@ export function ItemCard({ product }: ItemCardProps) {
               {product.brand}
             </span>
           </div>
-          <Button
-            className="w-full"
-            size="sm"
-            onClick={() => setIsModalOpen(true)}
-          >
-            Add to Enquiry
-          </Button>
+          {product.type === "PRODUCT" && (
+            <Button
+              className="w-full"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsModalOpen(true);
+              }}
+            >
+              Add to Enquiry
+            </Button>
+          )}
         </CardFooter>
       </Card>
 

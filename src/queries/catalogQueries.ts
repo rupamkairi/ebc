@@ -171,6 +171,14 @@ export function useItemsQuery(params: ItemListParams = {}) {
   });
 }
 
+export function useItemQuery(id: string) {
+  return useQuery({
+    queryKey: [...catalogKeys.all, "item", id],
+    queryFn: () => catalogService.getItem(id),
+    enabled: !!id,
+  });
+}
+
 export function useCreateItemMutation() {
   const queryClient = useQueryClient();
   return useMutation({
