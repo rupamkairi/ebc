@@ -17,29 +17,24 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { User, Mail, Phone, MapPin } from "lucide-react";
 import { BuyerDetails } from "@/store/enquiryStore";
+import { PincodeSearchAutocomplete } from "@/components/autocompletes/pincode-search-autocomplete";
 
 export const buyerDetailsSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
-  phone: z.string().min(10, { message: "Phone number must be valid." }),
+  phoneNumber: z.string().min(10, { message: "Phone number must be valid." }),
   address: z
     .string()
     .min(5, { message: "Address must be at least 5 characters." }),
   pincode: z.string().min(4, { message: "Pincode is required." }),
+  pincodeDirectoryId: z
+    .string()
+    .min(1, { message: "Pincode selection is required." }),
   description: z.string().optional(),
   purpose: z.string().optional(),
 });
 
 export type BuyerDetailsSchema = z.infer<typeof buyerDetailsSchema>;
-
-// Mock user fetch (simulate logged in user)
-export const MOCK_USER = {
-  name: "John Doe",
-  email: "john.doe@example.com",
-  phone: "+1 234 567 8900",
-  address: "123 Main St, Tech City",
-  pincode: "10001",
-};
 
 interface BuyerDetailsFormProps {
   defaultValues?: Partial<BuyerDetails> | null;
@@ -57,9 +52,10 @@ export function BuyerDetailsForm({
     defaultValues: {
       name: "",
       email: "",
-      phone: "",
+      phoneNumber: "",
       address: "",
       pincode: "",
+      pincodeDirectoryId: "",
       description: "",
       purpose: "",
     },
@@ -158,7 +154,7 @@ export function BuyerDetailsForm({
               />
               <FormField
                 control={form.control}
-                name="phone"
+                name="phoneNumber"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Phone Number</FormLabel>
@@ -178,17 +174,20 @@ export function BuyerDetailsForm({
               />
               <FormField
                 control={form.control}
-                name="pincode"
+                name="pincodeDirectoryId"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Pincode</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input
+                        <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground z-10" />
+                        <PincodeSearchAutocomplete
+                          value={field.value}
+                          onRecordSelect={(record) => {
+                            field.onChange(record.id);
+                            form.setValue("pincode", record.pincode);
+                          }}
                           className="pl-9"
-                          placeholder="10001"
-                          {...field}
                         />
                       </div>
                     </FormControl>

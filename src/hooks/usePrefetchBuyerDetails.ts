@@ -34,16 +34,17 @@ export function usePrefetchBuyerDetails(
       !currentDetails ||
       (!currentDetails.name &&
         !currentDetails.email &&
-        !currentDetails.phone &&
+        !currentDetails.phoneNumber &&
         !currentDetails.address);
 
     if (isEmpty) {
       setBuyerDetails({
         name: user.name || "",
         email: user.email || "",
-        phone: user.phoneNumber || "",
+        phoneNumber: user.phoneNumber || "",
         address: "",
         pincode: "",
+        pincodeDirectoryId: "",
         description: "",
         purpose: "",
       });

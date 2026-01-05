@@ -136,7 +136,9 @@ User login uses Phone/OTP.
 
 ```json
 {
-  "phone": "+919876543210"
+  "phone": "+919876543210",
+  "name": "Buyer",
+  "type": "BUYER"
 }
 ```
 

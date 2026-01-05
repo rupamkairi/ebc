@@ -9,7 +9,7 @@ import { useAppointmentStore } from "@/store/appointmentStore";
 import { AppointmentLineItemWrapper } from "@/components/appointment/appointment-line-item";
 import { DateTimeSlotSelect } from "@/components/advanced-forms/date-time-slot-select/date-time-slot-select";
 import { AppointmentDetailsForm } from "@/components/appointment/appointment-details-form";
-import { useSessionQuery } from "@/queries/authQueries";
+import { useSessionQuery, useSendOtpMutation } from "@/queries/authQueries";
 import { ProfileCard } from "@/components/dashboard/seller/profile-card";
 
 export default function CreateAppointmentPage() {
@@ -17,8 +17,9 @@ export default function CreateAppointmentPage() {
   const { item, timeSlots, buyerDetails, addTimeSlot, removeTimeSlot } =
     useAppointmentStore();
   const { data: session } = useSessionQuery();
+  const sendOtp = useSendOtpMutation();
 
-  const handleNext = () => {
+  const handleNext = async () => {
     // 1. Validate Item
     if (!item) {
       toast.error("Please select an item for the appointment.");
@@ -32,12 +33,34 @@ export default function CreateAppointmentPage() {
     }
 
     // 3. Validate Details (Basic check)
-    if (!buyerDetails || !buyerDetails.name || !buyerDetails.phone) {
+    if (
+      !buyerDetails ||
+      !buyerDetails.name ||
+      !buyerDetails.phoneNumber ||
+      !buyerDetails.pincodeDirectoryId
+    ) {
       toast.error("Please fill in your contact details.");
       return;
     }
 
-    router.push("/appointment/create/otp-verify");
+    // If no active session, initiate silent registration/login
+    if (!session?.user) {
+      try {
+        await sendOtp.mutateAsync({
+          phone: buyerDetails.phoneNumber,
+          name: buyerDetails.name,
+          type: "BUYER",
+        });
+        toast.info("Verification code sent to your phone.");
+        router.push("/appointment/create/otp-verify");
+      } catch (error) {
+        toast.error("Failed to send verification code. Please try again.");
+        console.error(error);
+      }
+      return;
+    }
+
+    router.push("/appointment/create/review-submit");
   };
 
   return (

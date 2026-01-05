@@ -11,27 +11,33 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ShieldCheck } from "lucide-react";
+import { toast } from "sonner";
+
+import { useVerifyOtpMutation } from "@/queries/authQueries";
 
 interface OTPVerificationFormProps {
+  phoneNumber: string;
   onVerify: () => void;
 }
 
-export function OTPVerificationForm({ onVerify }: OTPVerificationFormProps) {
+export function OTPVerificationForm({
+  phoneNumber,
+  onVerify,
+}: OTPVerificationFormProps) {
   const [otp, setOtp] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const verifyOtp = useVerifyOtpMutation();
 
-  const handleVerify = () => {
-    setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      if (otp === "123456") {
-        // Mock OTP
-        onVerify();
-      } else {
-        alert("Invalid OTP. Try 123456");
-      }
-    }, 1000);
+  const handleVerify = async () => {
+    try {
+      await verifyOtp.mutateAsync({
+        phone: phoneNumber,
+        otp,
+      });
+      onVerify();
+    } catch (error) {
+      toast.error("Invalid OTP or verification failed.");
+      console.error(error);
+    }
   };
 
   return (
@@ -60,13 +66,10 @@ export function OTPVerificationForm({ onVerify }: OTPVerificationFormProps) {
         <Button
           className="w-full"
           onClick={handleVerify}
-          disabled={otp.length !== 6 || isLoading}
+          disabled={otp.length !== 6 || verifyOtp.isPending}
         >
-          {isLoading ? "Verifying..." : "Verify OTP"}
+          {verifyOtp.isPending ? "Verifying..." : "Verify OTP"}
         </Button>
-        <div className="text-center text-xs text-muted-foreground">
-          Mock OTP is 123456
-        </div>
       </CardContent>
     </Card>
   );

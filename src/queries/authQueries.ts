@@ -45,3 +45,24 @@ export function useUpdateProfileMutation() {
     },
   });
 }
+
+export function useSendOtpMutation() {
+  return useMutation({
+    mutationFn: (data: Parameters<typeof authService.sendOtp>[0]) =>
+      authService.sendOtp(data),
+  });
+}
+
+export function useVerifyOtpMutation() {
+  const setToken = useAuthStore((state) => state.setToken);
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: Parameters<typeof authService.verifyOtp>[0]) =>
+      authService.verifyOtp(data),
+    onSuccess: (data) => {
+      setToken(data.token);
+      queryClient.invalidateQueries({ queryKey: authKeys.session() });
+    },
+  });
+}

@@ -3,13 +3,17 @@
 import { useEffect, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
-import { useSyncSession } from "@/hooks/api/use-auth-admin";
+import { toast } from "sonner";
 
-export function AuthGuard({ children }: { children: React.ReactNode }) {
+interface AuthGuardProps {
+  children: React.ReactNode;
+  allowedRoles?: string[];
+}
+
+export function AuthGuard({ children, allowedRoles }: AuthGuardProps) {
   const router = useRouter();
-  useSyncSession();
-  const token = useAuthStore((state) => state.token);
-  // const user = useAuthStore((state) => state.user); // Unused for now
+  const { token, user } = useAuthStore();
+
   const mounted = useSyncExternalStore(
     () => () => {},
     () => true,
@@ -17,14 +21,35 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   );
 
   useEffect(() => {
-    if (mounted && !token) {
-      router.push("/auth/admin-login");
+    if (!mounted) return;
+
+    // 1. Check if authenticated
+    if (!token) {
+      router.push("/auth/login");
+      return;
     }
-  }, [token, mounted, router]);
 
-  if (!mounted) return null; // or a loading spinner
+    // 2. Check Role
+    if (allowedRoles && allowedRoles.length > 0) {
+      const userRole = user?.role || "";
+      if (!allowedRoles.includes(userRole)) {
+        toast.error("You do not have permission to access this page.");
+        router.push("/");
+      }
+    }
+  }, [token, user, router, allowedRoles, mounted]);
 
-  if (!token) return null; // will redirect
+  if (!mounted) return null;
+
+  // Render logic derived from state
+  if (!token) return null;
+
+  if (allowedRoles && allowedRoles.length > 0) {
+    const userRole = user?.role || "";
+    if (!allowedRoles.includes(userRole)) {
+      return null;
+    }
+  }
 
   return <>{children}</>;
 }
