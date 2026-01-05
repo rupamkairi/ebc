@@ -24,9 +24,10 @@ export interface EnquiryItem {
 export interface BuyerDetails {
   name: string;
   email: string;
-  phone: string;
+  phoneNumber: string;
   address: string;
   pincode: string;
+  pincodeDirectoryId: string;
   description?: string;
   purpose?: string;
   attachments?: string[]; // URLs or IDs

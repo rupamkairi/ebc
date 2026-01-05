@@ -39,7 +39,7 @@ export function EnquiryReview({ onSubmit, isSubmitting }: EnquiryReviewProps) {
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4 text-muted-foreground" />
-                <span>{buyerDetails.phone}</span>
+                <span>{buyerDetails.phoneNumber}</span>
               </div>
             </div>
 

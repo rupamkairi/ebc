@@ -33,8 +33,8 @@ export default function AppointmentReviewSubmitPage() {
       ],
       details: {
         remarks: "Web Appointment Request",
-        address: buyerDetails.address, // Assuming buyerDetails has address
-        // pincodeDirectoryId: ...
+        address: buyerDetails.address,
+        pincodeDirectoryId: buyerDetails.pincodeDirectoryId,
       },
       slots: timeSlots.map((slot) => ({
         remarks: `${slot.date} ${slot.startTime}-${slot.endTime}`,
