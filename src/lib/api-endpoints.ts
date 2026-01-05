@@ -82,4 +82,10 @@ export const API_ENDPOINTS = {
   PINCODE_DIRECTORY: {
     LIST: "/pincode-directory/list",
   },
+  ENTITY: {
+    CREATE: "/entity",
+    GET_ALL: "/entity",
+    UPDATE: "/entity", // :id attached in service
+    VERIFY: "/entity", // :id/verify attached in service
+  },
 } as const;

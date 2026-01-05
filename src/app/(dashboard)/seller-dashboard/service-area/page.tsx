@@ -44,7 +44,7 @@ const locations = [
   },
 ];
 
-export default function LocationsPage() {
+export default function ServiceAreaPage() {
   return (
     <div className="min-h-screen bg-[#F8F9FA] pb-32">
       <DashboardHeader />
@@ -54,7 +54,7 @@ export default function LocationsPage() {
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-1">
-              <h1 className="text-3xl font-black text-foreground tracking-tight">Service Locations</h1>
+              <h1 className="text-3xl font-black text-foreground tracking-tight">Service Area Management</h1>
               <p className="text-foreground/60 font-medium">Manage areas where you provide delivery and services.</p>
             </div>
             <Button className="rounded-2xl h-12 px-6 bg-secondary hover:bg-secondary/90 text-white font-black shadow-lg shadow-secondary/20 flex items-center gap-2 text-sm">

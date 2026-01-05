@@ -1,13 +1,13 @@
 "use client";
 
-import { Home, Package, MessageSquare, Star, Headphones } from "lucide-react";
+import { Home, Package, Users, Star, Headphones } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navItems = [
   { icon: Home, label: "Home", href: "/seller-dashboard" },
   { icon: Package, label: "My Catalog", href: "/seller-dashboard/catalog" },
-  { icon: MessageSquare, label: "Enquiries", href: "/seller-dashboard/enquiries" },
+  { icon: Users, label: "Enquiries", href: "/seller-dashboard/enquiries" },
   { icon: Star, label: "Reviews", href: "/seller-dashboard/reviews" },
   { icon: Headphones, label: "Support", href: "/seller-dashboard/support" },
 ];

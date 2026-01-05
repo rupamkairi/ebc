@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,28 +34,13 @@ export function UserLoginMobileOtpForm({
   ...props
 }: React.ComponentProps<"div"> & { role?: string }) {
   const router = useRouter();
-  const { token, user, setToken, setUser } = useAuthStore();
+  const { setToken, setUser } = useAuthStore();
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"phone" | "otp">("phone");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Auto-login check
-  useEffect(() => {
-    if (token && user) {
-      const role = user.role?.toUpperCase() || "";
-      const requestedRole = initialRole?.toLowerCase();
-
-      // If they are a Seller, OR they are an Admin but specifically asked for the Seller portal
-      if (role.includes("SELLER") || (role.includes("ADMIN") && requestedRole === "seller")) {
-        router.push("/seller-dashboard");
-      } else if (role.includes("ADMIN") && !role.startsWith("USER_")) {
-        router.push("/admin-dashboard");
-      } else {
-        router.push("/buyer-dashboard");
-      }
-    }
-  }, [token, user, initialRole, router]);
+  // Auto-login removed to prevent redirection traps during session issues.
 
   const displayRole = initialRole
     ? initialRole.charAt(0).toUpperCase() + initialRole.slice(1)
@@ -70,8 +55,6 @@ export function UserLoginMobileOtpForm({
 
     setIsLoading(true);
     try {
-      // Ensure mobile has prefix if not present, though API docs didn't specify.
-      // Let's stick to what user enters for now.
       const phone = mobile.startsWith("+") ? mobile : `+91${mobile}`;
       await authService.sendOtp({ phone });
       toast.success("OTP sent successfully");
@@ -120,23 +103,6 @@ export function UserLoginMobileOtpForm({
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleDemoLogin = () => {
-    setToken("demo-token-12345");
-    setUser({
-      id: "demo-seller-001",
-      email: "seller@ebcenter.com",
-      name: "Rajesh Kumar (Demo)",
-      role: "SELLER",
-      emailVerified: true,
-      phoneNumber: "+91 99999 88888",
-      phoneVerified: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    });
-    toast.success("Logged in with Demo Seller account");
-    router.push("/seller-dashboard");
   };
 
   return (
@@ -226,18 +192,6 @@ export function UserLoginMobileOtpForm({
                 </FieldGroup>
               </form>
             )}
-
-            {/* Development / Dummy Bypass */}
-            <div className="pt-4 border-t border-dashed">
-              <p className="text-[10px] font-black uppercase tracking-widest text-foreground/30 text-center mb-3">Development Only</p>
-              <Button 
-                onClick={handleDemoLogin}
-                variant="outline" 
-                className="w-full border-primary/20 hover:bg-primary/5 text-primary font-bold text-xs h-12 rounded-xl"
-              >
-                Login with Demo Seller Account
-              </Button>
-            </div>
           </div>
         </CardContent>
       </Card>

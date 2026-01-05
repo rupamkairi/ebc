@@ -1,0 +1,28 @@
+export interface Entity {
+  id: string;
+  name: string;
+  legalName?: string;
+  description?: string;
+  status: 'PENDING' | 'VERIFIED' | 'REJECTED';
+  remark?: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateEntityRequest {
+  name: string;
+  legalName?: string;
+  description?: string;
+}
+
+export interface UpdateEntityRequest {
+  name?: string;
+  legalName?: string;
+  description?: string;
+}
+
+export interface VerifyEntityRequest {
+  status: 'VERIFIED' | 'REJECTED';
+  remark?: string;
+}

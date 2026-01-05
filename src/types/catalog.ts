@@ -1,3 +1,5 @@
+import { Entity } from "./entity";
+
 export interface Media {
   id: string;
   url: string;
@@ -171,13 +173,18 @@ export interface ItemRegion {
   wholeDistrict?: boolean;
 }
 
+
 export interface ItemListing {
   id: string;
   itemId: string;
   entityId: string;
-  isActive?: boolean;
+  isActive: boolean;
+  item?: Item;
+  entity?: Entity;
   item_rate?: ItemRate;
   item_region?: ItemRegion[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateItemListingRequest {

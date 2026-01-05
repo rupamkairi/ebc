@@ -9,17 +9,19 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useItemsQuery } from "@/queries/catalogQueries";
+import { Item } from "@/types/catalog";
 import { Loader2, Search, Package, Info, CheckCircle2 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 interface ItemSearchProps {
-  onItemSelect?: (item: any) => void;
+  onItemSelect?: (item: Item) => void;
   className?: string;
+  type?: "PRODUCT" | "SERVICE";
 }
 
-export function ItemSearch({ onItemSelect, className }: ItemSearchProps) {
+export function ItemSearch({ onItemSelect, className, type = "PRODUCT" }: ItemSearchProps) {
   const [categoryId, setCategoryId] = useState<string>("");
   const [brandId, setBrandId] = useState<string>("");
   const [specificationId, setSpecificationId] = useState<string>("");
@@ -32,10 +34,10 @@ export function ItemSearch({ onItemSelect, className }: ItemSearchProps) {
     brandId: brandId || undefined,
     specificationId: specificationId || undefined,
     search: isSearchValid ? search : undefined,
-    type: "PRODUCT",
+    type: type,
   });
 
-  const handleSelectItem = (item: any) => {
+  const handleSelectItem = (item: Item) => {
     if (onItemSelect) {
       onItemSelect(item);
     } else {

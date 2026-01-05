@@ -2,14 +2,15 @@
 
 import { 
   Wallet, 
-  IndianRupee, 
+  CircleDollarSign, 
   ArrowUpRight, 
   ArrowDownLeft, 
   History,
   Plus,
   ChevronRight,
   TrendingUp,
-  CreditCard
+  FileSearch,
+  CalendarDays
 } from "lucide-react";
 import { DashboardHeader } from "../dashboard-header";
 import { BottomNav } from "../bottom-nav";
@@ -21,35 +22,39 @@ import Link from "next/link";
 const transactions = [
   {
     id: "TXN-101",
-    description: "Inquiry Fee - Amit Sharma",
-    amount: "50",
+    description: "Quotation Unlocked - Amit Sharma",
+    amount: "5 coins",
     type: "Debit",
     date: "24 Dec 2025, 10:30 AM",
     status: "Success",
+    icon: FileSearch
   },
   {
     id: "TXN-102",
-    description: "Added to Wallet - UPI",
-    amount: "2,000",
+    description: "Added Coins - UPI",
+    amount: "500 coins",
     type: "Credit",
     date: "22 Dec 2025, 04:15 PM",
     status: "Success",
+    icon: Plus
   },
   {
     id: "TXN-103",
-    description: "Commission Payout - Order #992",
-    amount: "1,250",
-    type: "Credit",
+    description: "Appointment Fee - Site Visit #992",
+    amount: "10 coins",
+    type: "Debit",
     date: "20 Dec 2025, 11:00 AM",
     status: "Success",
+    icon: CalendarDays
   },
   {
     id: "TXN-104",
-    description: "Withdrawal to Bank",
-    amount: "5,000",
+    description: "Quotation Unlock - Metro Projects",
+    amount: "5 coins",
     type: "Debit",
     date: "15 Dec 2025, 02:30 PM",
-    status: "Pending",
+    status: "Success",
+    icon: FileSearch
   },
 ];
 
@@ -60,44 +65,33 @@ export default function WalletPage() {
 
       <main className="container mx-auto px-4 py-8">
         <div className="flex flex-col gap-8">
-          {/* Balance Card */}
+          {/* Coin Balance Card */}
           <div className="relative group">
-            <div className="absolute -inset-1 bg-linear-to-r from-primary via-indigo-500 to-secondary rounded-[2.5rem] blur opacity-10 group-hover:opacity-25 transition duration-1000 group-hover:duration-200" />
-            <div className="relative bg-white border border-border rounded-[2.5rem] p-8 md:p-12 overflow-hidden shadow-sm">
+            <div className="absolute -inset-1 bg-linear-to-r from-amber-400 via-amber-500 to-amber-600 rounded-[2.5rem] blur opacity-10 group-hover:opacity-25 transition duration-1000 group-hover:duration-200" />
+            <div className="relative bg-white border border-border rounded-[2.5rem] p-8 md:p-12 overflow-hidden shadow-sm text-center md:text-left">
               <div className="absolute top-0 right-0 p-8 opacity-5">
-                <Wallet size={120} className="text-primary" />
+                <CircleDollarSign size={120} className="text-amber-500" />
               </div>
               
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 relative z-10">
                 <div className="space-y-4">
-                  <div className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-foreground/40 italic">
-                    <TrendingUp size={16} className="text-emerald-500" />
-                    Available Coins / Balance
+                  <div className="flex items-center justify-center md:justify-start gap-2 text-sm font-black uppercase tracking-widest text-foreground/40 italic">
+                    <TrendingUp size={16} className="text-amber-500" />
+                    Available Coin Balance
                   </div>
-                  <div className="flex items-center gap-2 text-5xl md:text-6xl font-black text-foreground tracking-tight">
-                    <IndianRupee className="md:size-12 size-10" />
-                    12,450.00
+                  <div className="flex items-center justify-center md:justify-start gap-3 text-5xl md:text-7xl font-black text-foreground tracking-tight">
+                    <CircleDollarSign className="md:size-16 size-12 text-amber-500" />
+                    1,245
                   </div>
-                  <div className="flex items-center gap-4 text-xs font-bold text-foreground/40 italic">
-                    <span className="flex items-center gap-1">
-                      <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                      ₹2,500 Added this month
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <div className="h-1.5 w-1.5 rounded-full bg-rose-500" />
-                      ₹450 Spent this month
-                    </span>
-                  </div>
+                  <p className="text-xs font-bold text-foreground/40 italic">
+                    Use coins to unlock enquiries and premium appointments.
+                  </p>
                 </div>
 
-                <div className="flex flex-wrap gap-4">
-                  <Button className="h-16 px-10 bg-secondary hover:bg-secondary/90 text-white font-black text-lg rounded-2xl shadow-xl shadow-secondary/20 flex items-center gap-3 group">
-                    Add Money
+                <div className="flex flex-wrap justify-center gap-4">
+                  <Button className="h-16 px-10 bg-amber-600 hover:bg-amber-700 text-white font-black text-lg rounded-2xl shadow-xl shadow-amber-200 flex items-center gap-3 group">
+                    Add Coins
                     <Plus size={20} className="group-hover:rotate-90 transition-transform" />
-                  </Button>
-                  <Button variant="outline" className="h-16 px-10 border-border text-foreground font-black text-lg rounded-2xl bg-white hover:bg-muted flex items-center gap-3">
-                    Withdraw
-                    <ArrowUpRight size={20} />
                   </Button>
                 </div>
               </div>
@@ -109,28 +103,28 @@ export default function WalletPage() {
             <div className="lg:col-span-2 space-y-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="bg-primary/10 p-2.5 rounded-xl text-primary">
+                  <div className="bg-amber-100/50 p-2.5 rounded-xl text-amber-700">
                     <History size={24} />
                   </div>
                   <h2 className="text-2xl font-black text-foreground">Transaction History</h2>
                 </div>
-                <Button variant="ghost" className="text-primary font-black hover:bg-primary/5 rounded-xl">
+                <Button variant="ghost" className="text-amber-700 font-black hover:bg-amber-50 rounded-xl">
                   View All
                 </Button>
               </div>
 
               <div className="grid gap-3">
                 {transactions.map((txn) => (
-                  <Card key={txn.id} className="border-none shadow-sm hover:shadow-md transition-all">
+                  <Card key={txn.id} className="border-none shadow-sm hover:shadow-md transition-all group/card">
                     <CardContent className="p-5 flex items-center justify-between gap-4">
                       <div className="flex items-center gap-4">
                         <div className={`h-12 w-12 rounded-2xl flex items-center justify-center shadow-sm ${
-                          txn.type === 'Credit' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'
+                          txn.type === 'Credit' ? 'bg-amber-50 text-amber-600' : 'bg-slate-50 text-slate-400'
                         }`}>
-                          {txn.type === 'Credit' ? <ArrowDownLeft size={24} /> : <ArrowUpRight size={24} />}
+                          <txn.icon size={24} />
                         </div>
                         <div>
-                          <h4 className="font-bold text-foreground leading-snug">{txn.description}</h4>
+                          <h4 className="font-bold text-foreground leading-snug group-hover/card:text-amber-600 transition-colors">{txn.description}</h4>
                           <div className="flex items-center gap-3 mt-1">
                             <span className="text-[10px] font-black uppercase tracking-widest text-foreground/30">{txn.id}</span>
                             <span className="text-[10px] font-bold text-foreground/30 italic">{txn.date}</span>
@@ -139,10 +133,9 @@ export default function WalletPage() {
                       </div>
                       <div className="text-right">
                         <div className={`text-xl font-black flex items-center justify-end ${
-                          txn.type === 'Credit' ? 'text-emerald-600' : 'text-rose-600'
+                          txn.type === 'Credit' ? 'text-amber-600' : 'text-foreground'
                         }`}>
                           {txn.type === 'Credit' ? '+' : '-'}
-                          <IndianRupee size={16} />
                           {txn.amount}
                         </div>
                         <Badge variant="outline" className={`text-[9px] font-black uppercase tracking-tighter mt-1 outline-none border-none py-0 h-4 ${
@@ -157,50 +150,35 @@ export default function WalletPage() {
               </div>
             </div>
 
-            {/* Saved Accounts / Info */}
+            {/* Why use coins? */}
             <div className="space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="bg-amber-100/50 p-2.5 rounded-xl text-amber-700">
-                  <CreditCard size={24} />
-                </div>
-                <h2 className="text-2xl font-black text-foreground">Withdrawal Method</h2>
-              </div>
-
-              <Card className="border-none shadow-sm bg-white overflow-hidden relative group cursor-pointer">
-                <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                  <CreditCard size={64} className="text-primary" />
-                </div>
-                <CardContent className="p-6 space-y-4">
-                  <div className="flex justify-between items-start">
-                    <div className="h-10 w-14 bg-slate-900 rounded-lg flex items-center justify-center">
-                      <div className="h-6 w-8 bg-amber-500/20 rounded-sm" />
-                    </div>
-                    <Badge className="bg-primary/10 text-primary hover:bg-primary/10 font-black tracking-tighter uppercase text-[9px]">Primary</Badge>
+               <div className="bg-white p-8 rounded-4xl border border-border space-y-6">
+                  <div className="h-14 w-14 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-600 shadow-sm">
+                    <CircleDollarSign size={28} />
                   </div>
-                  <div>
-                    <h4 className="font-black text-foreground uppercase tracking-wider">HDFC BANK</h4>
-                    <p className="text-xl font-mono font-bold text-foreground/40 mt-1">**** **** 9012</p>
+                  <div className="space-y-2">
+                    <h3 className="text-xl font-black text-foreground italic">Why EBC Coins?</h3>
+                    <p className="text-sm font-medium text-foreground/60 leading-relaxed">
+                      Our secure coin system ensures faster unlocks and seamless appointment management without needing external payment every time.
+                    </p>
                   </div>
-                  <div className="pt-2">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-foreground/30">Acc Holder</p>
-                    <p className="text-sm font-bold text-foreground">RAJESH KUMAR ENTERPRISES</p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Button variant="outline" className="w-full h-12 border-dashed border-2 border-border text-foreground/40 hover:text-primary hover:border-primary font-black rounded-xl bg-transparent">
-                <Plus size={18} className="mr-2" />
-                Add New Bank Account
-              </Button>
-
-              <div className="bg-primary/5 p-6 rounded-3xl space-y-3">
-                <h4 className="font-black text-primary italic">Why use EBC Wallet?</h4>
-                <p className="text-xs font-medium text-primary/60 leading-relaxed">Faster inquiry unlocking, automatic invoice settlements, and exclusive rewards for high-balance sellers.</p>
-                <Link href="#" className="inline-flex items-center text-xs font-black text-primary group underline underline-offset-4">
-                  Learn About Coins
-                  <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </div>
+                  <ul className="space-y-3">
+                    {[
+                      "Unlock Quotations Instantly",
+                      "Priority Site Visit Requests",
+                      "Featured Search Visibility",
+                      "Exclusive Seller Rewards"
+                    ].map((benefit) => (
+                      <li key={benefit} className="flex items-center gap-2 text-xs font-bold text-foreground/70 italic">
+                        <div className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                        {benefit}
+                      </li>
+                    ))}
+                  </ul>
+                  <Button variant="outline" className="w-full h-12 border-amber-600/20 text-amber-700 font-black rounded-xl hover:bg-amber-50">
+                    Learn More
+                  </Button>
+               </div>
             </div>
           </div>
         </div>

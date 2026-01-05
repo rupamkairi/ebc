@@ -39,7 +39,7 @@ export default function SellerDashboardPage() {
             {/* Main Content Area */}
             <div className="lg:col-span-9 space-y-8">
               
-              {/* 1. Core Actions & High Urgency */}
+              {/* 1. Core Business Functions */}
               <DashboardContainerCard title="Active Business" className="border-none shadow-sm bg-white">
                 <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
                   <Link href="/seller-dashboard/catalog" className="md:col-span-4 group">
@@ -112,49 +112,59 @@ export default function SellerDashboardPage() {
                 </div>
               </DashboardContainerCard>
 
-              {/* 2. Financials & Operations */}
+              {/* 2. Wallet & Coins */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Financial Manager */}
                 <DashboardContainerCard title="Finances" className="border-none shadow-sm bg-white">
                   <div className="grid grid-cols-1 gap-4">
                     <Link href="/seller-dashboard/wallet" className="group">
-                      <div className="p-6 rounded-3xl bg-emerald-50 border border-emerald-100 group-hover:border-emerald-300 transition-all flex items-center justify-between">
+                      <div className="p-6 rounded-3xl bg-amber-50 border border-amber-100 group-hover:border-amber-300 transition-all flex items-center justify-between">
                         <div className="flex items-center gap-5">
-                          <div className="h-14 w-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-emerald-600">
+                          <div className="h-14 w-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-amber-600">
                              <Wallet size={28} />
                           </div>
                           <div>
-                            <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800/40">Wallet Balance</p>
-                            <h4 className="text-2xl font-black text-emerald-900 leading-tight tracking-tight italic">₹12,450.00</h4>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-amber-800/40">Coin Balance</p>
+                            <h4 className="text-2xl font-black text-amber-900 leading-tight tracking-tight italic">1,245 Coins</h4>
                           </div>
                         </div>
-                        <div className="h-10 w-10 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-lg shadow-emerald-200">
+                        <div className="h-10 w-10 rounded-full bg-amber-600 text-white flex items-center justify-center shadow-lg shadow-amber-200">
                            <TrendingUp size={18} />
                         </div>
                       </div>
                     </Link>
-                    <div className="grid grid-cols-2 gap-4">
-                      <Link href="/seller-dashboard/invoices" className="group">
+                    <Link href="/seller-dashboard/wallet" className="group">
+                      <Button className="w-full bg-amber-600 hover:bg-amber-700 text-white font-black h-12 rounded-xl">
+                        Add Coins
+                      </Button>
+                    </Link>
+                  </div>
+                </DashboardContainerCard>
+
+                {/* Operations & Service Area */}
+                <DashboardContainerCard title="Operations" className="border-none shadow-sm bg-white">
+                   <div className="grid grid-cols-1 gap-4 h-full">
+                      <Link href="/seller-dashboard/service-area" className="group">
                         <DashboardCard 
-                          title="Invoices" 
-                          subtext="Billing History"
-                          iconComponent={<Receipt className="text-foreground/30" />}
-                          className="group-hover:bg-muted/30 transition-all cursor-pointer h-full" 
-                        />
-                      </Link>
-                      <Link href="/seller-dashboard/locations" className="group">
-                        <DashboardCard 
-                          title="Delivery Area" 
-                          subtext="Pincode Setup"
+                          title="Service Area Management" 
+                          subtext="Manage coverage pincodes"
                           iconComponent={<MapPin className="text-foreground/30" />}
                           className="group-hover:bg-muted/30 transition-all cursor-pointer h-full" 
                         />
                       </Link>
-                    </div>
-                  </div>
+                      <Link href="/seller-dashboard/settings" className="group">
+                         <DashboardCard 
+                          title="Store Settings" 
+                          subtext="Business preferences"
+                          iconComponent={<Settings className="text-foreground/30" />}
+                          className="group-hover:bg-muted/30 transition-all cursor-pointer h-full" 
+                        />
+                      </Link>
+                   </div>
                 </DashboardContainerCard>
+              </div>
 
-                {/* Relationship & Support */}
+              {/* 3. Relations & Feedback */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <DashboardContainerCard title="Relations" className="border-none shadow-sm bg-white">
                    <div className="grid grid-cols-2 gap-4 h-full">
                       <Link href="/seller-dashboard/customers" className="group">
@@ -162,14 +172,6 @@ export default function SellerDashboardPage() {
                           title="Customers" 
                           subtext="My Buyers"
                           iconComponent={<Users className="text-foreground/30" />}
-                          className="group-hover:bg-muted/30 transition-all cursor-pointer h-full" 
-                        />
-                      </Link>
-                      <Link href="/seller-dashboard/messages" className="group">
-                        <DashboardCard 
-                          title="Messages" 
-                          subtext="Direct Chat"
-                          iconComponent={<MessageSquare className="text-foreground/30" />}
                           className="group-hover:bg-muted/30 transition-all cursor-pointer h-full" 
                         />
                       </Link>
@@ -181,30 +183,22 @@ export default function SellerDashboardPage() {
                           className="group-hover:bg-muted/30 transition-all cursor-pointer h-full" 
                         />
                       </Link>
-                      <Link href="/seller-dashboard/support" className="group">
-                        <DashboardCard 
-                          title="Support" 
-                          subtext="Help Desk"
-                          iconComponent={<Headphones className="text-foreground/30" />}
-                          className="group-hover:bg-muted/30 transition-all cursor-pointer h-full" 
-                        />
-                      </Link>
                    </div>
                 </DashboardContainerCard>
-              </div>
 
-              {/* 3. Global Settings Shortcut */}
-              <Link href="/seller-dashboard/settings" className="block group">
-                <div className="p-6 rounded-3xl bg-white border border-border group-hover:border-primary transition-all flex items-center justify-between">
-                   <div className="flex items-center gap-4">
-                      <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center text-foreground/40">
-                         <Settings size={20} />
-                      </div>
-                      <span className="font-black text-sm uppercase tracking-widest text-foreground/60 italic">Store Preferences & Configuration</span>
-                   </div>
-                   <ArrowUpRight size={20} className="text-foreground/20 group-hover:text-primary transition-colors" />
-                </div>
-              </Link>
+                <DashboardContainerCard title="Help & Support" className="border-none shadow-sm bg-white">
+                  <div className="grid grid-cols-1 gap-4 h-full">
+                    <Link href="/seller-dashboard/support" className="group">
+                      <DashboardCard 
+                        title="Technical Support" 
+                        subtext="Help Desk & Tickets"
+                        iconComponent={<Headphones className="text-foreground/30" />}
+                        className="group-hover:bg-muted/30 transition-all cursor-pointer h-full" 
+                      />
+                    </Link>
+                  </div>
+                </DashboardContainerCard>
+              </div>
 
             </div>
 
