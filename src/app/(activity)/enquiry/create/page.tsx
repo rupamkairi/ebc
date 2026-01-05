@@ -9,35 +9,56 @@ import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
-import { useSessionQuery } from "@/queries/authQueries";
+import { useSessionQuery, useSendOtpMutation } from "@/queries/authQueries";
 import { ProfileCard } from "@/components/dashboard/seller/profile-card";
 
 export default function CreateEnquiryPage() {
   const router = useRouter();
   const { items, buyerDetails } = useEnquiryStore();
   const { data: session } = useSessionQuery();
+  const sendOtp = useSendOtpMutation();
 
-  const handleNext = () => {
+  const handleNext = async () => {
     // Validate that items exist
     if (items.length === 0) {
       toast.error("Please add at least one item to your enquiry.");
       return;
     }
 
-    // Validate form details (Basic check since form syncs to store)
-    // For robust validation, we should ideally trigger form validation here via ref
-    // But since we sync deeply, simple check on store works for this scope.
+    // Validate form details
     if (
       !buyerDetails ||
       !buyerDetails.name ||
-      !buyerDetails.phone ||
-      !buyerDetails.pincode
+      !buyerDetails.phoneNumber ||
+      !buyerDetails.pincodeDirectoryId
     ) {
       toast.error("Please fill in all required buyer details.");
       return;
     }
 
-    router.push("/enquiry/create/otp-verify");
+    // If no active session, initiate silent registration/login
+    if (!session?.user) {
+      try {
+        await sendOtp.mutateAsync({
+          phone: buyerDetails.phoneNumber,
+          name: buyerDetails.name,
+          type: "BUYER",
+        });
+        toast.info("Verification code sent to your phone.");
+        router.push("/enquiry/create/otp-verify");
+      } catch (error) {
+        toast.error("Failed to send verification code. Please try again.");
+        console.error(error);
+      }
+      return;
+    }
+
+    // If session exists, proceed to review or verify (depending on if we want to skip OTP)
+    // For now, let's proceed to review if already logged in?
+    // Or does the user always want OTP verify?
+    // Prompt says: "If there is not active session found... Create the user silently & verify in the otp step, then later move to review-submit page."
+    // This implies if session FOUND, we skip OTP.
+    router.push("/enquiry/create/review-submit");
   };
 
   return (

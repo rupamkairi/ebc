@@ -32,8 +32,8 @@ export default function ReviewSubmitPage() {
       })),
       details: {
         address: buyerDetails.address,
-        remarks: "Enquiry via Web", // Or add a field in store for this
-        // pincodeDirectoryId: ... we might need to look this up or separate flow
+        remarks: "Enquiry via Web",
+        pincodeDirectoryId: buyerDetails.pincodeDirectoryId,
       },
     };
 

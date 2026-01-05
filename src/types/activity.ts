@@ -4,7 +4,7 @@ import { Item } from "./catalog";
 export interface LineItem {
   id?: string;
   itemId: string;
-  remarks?: string;
+  remarks?: string | null;
   item?: Item;
 }
 
@@ -29,13 +29,19 @@ export interface CreateEnquiryRequest {
 
 export interface Enquiry {
   id: string;
-  lineItems: EnquiryLineItem[];
-  details: EnquiryDetails;
+  enquiryLineItems: EnquiryLineItem[];
+  enquiryDetails: EnquiryDetails[];
   status: string; // "PENDING", "APPROVED", "REJECTED" etc.
   createdAt: string;
   updatedAt: string;
   createdById: string;
-  // Add other fields as per response if known
+  createdBy?: {
+    id: string;
+    name: string;
+    phone: string;
+    email?: string | null;
+    role: string;
+  };
 }
 
 export interface EnquiryListParams {
@@ -47,15 +53,18 @@ export interface EnquiryListParams {
 }
 
 // Appointment Specifics
-export interface AppointmentLineItem extends LineItem {}
+export interface AppointmentLineItem extends LineItem {
+  remarks?: string | null;
+}
 
 export interface AppointmentDetails {
   remarks?: string;
 }
 
 export interface AppointmentSlot {
+  id?: string;
   remarks?: string;
-  // Add date/time if defined in future, currently just remarks in docs example
+  appointmentId?: string;
 }
 
 export interface CreateAppointmentRequest {
@@ -66,13 +75,20 @@ export interface CreateAppointmentRequest {
 
 export interface Appointment {
   id: string;
-  lineItems: AppointmentLineItem[];
-  details: AppointmentDetails;
-  slots: AppointmentSlot[];
+  appointmentLineItems: AppointmentLineItem[];
+  appointmentDetails: AppointmentDetails[];
+  appointmentSlots: AppointmentSlot[];
   status: string;
   createdAt: string;
   updatedAt: string;
   createdById: string;
+  createdBy?: {
+    id: string;
+    name: string;
+    phone: string;
+    email?: string | null;
+    role: string;
+  };
 }
 
 export interface AppointmentListParams {

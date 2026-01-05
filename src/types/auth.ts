@@ -24,6 +24,8 @@ export interface CreateAdminSubordinateRequest {
 
 export interface SendOtpRequest {
   phone: string;
+  name?: string;
+  type?: string;
 }
 
 export interface VerifyOtpRequest {
