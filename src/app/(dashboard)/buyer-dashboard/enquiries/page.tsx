@@ -4,15 +4,11 @@ import Container from "@/components/containers/containers";
 import { useEnquiriesQuery } from "@/queries/activityQueries";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useState } from "react";
-import { format } from "date-fns";
 import Link from "next/link";
-
-// Removed hardcoded enquiries
-// const enquiries = [...];
+import { EnquiryCard } from "@/components/dashboard/buyer/enquiry-card";
 
 const filters = ["All", "Pending", "Approved", "Rejected"];
 
@@ -26,10 +22,7 @@ export default function EnquiriesPage() {
 
   const filteredEnquiries = (enquiries || []).filter((e) => {
     if (activeFilter === "All") return true;
-    return e.status === activeFilter; // Ensure case matches API (usually uppercase in backend, titlecase in UI?)
-    // If backend returns UPPERCASE, we might need normalization.
-    // Docs example used "Pending", "Approved" in the list example? No, docs didn't specify status values in list response example.
-    // The "Verify Entity" had "APPROVED"/"REJECTED". Let's assume title case for now or normalize.
+    return (e.status || "").toUpperCase() === activeFilter.toUpperCase();
   });
 
   return (
@@ -74,58 +67,18 @@ export default function EnquiriesPage() {
 
         <div className="grid grid-cols-1 gap-4">
           {isLoading ? (
-            <div>Loading...</div>
+            <div className="flex justify-center py-12">
+              <p className="text-muted-foreground animate-pulse">
+                Loading enquiries...
+              </p>
+            </div>
           ) : (
             filteredEnquiries.map((enquiry) => (
-              <Card key={enquiry.id}>
-                <CardHeader className="pb-2">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <CardTitle className="text-lg font-bold">
-                        {enquiry.lineItems?.[0]?.item?.name || "Enquiry Items"}
-                        {enquiry.lineItems?.length > 1 &&
-                          ` +${enquiry.lineItems.length - 1} more`}
-                      </CardTitle>
-                      <p className="text-sm text-muted-foreground">
-                        ID: {enquiry.id} •{" "}
-                        {enquiry.createdAt
-                          ? format(new Date(enquiry.createdAt), "PPP")
-                          : "N/A"}
-                      </p>
-                    </div>
-                    <Badge
-                      variant={
-                        enquiry.status === "Approved"
-                          ? "default" // or success if available, defaulting to default (usually black/primary)
-                          : enquiry.status === "Rejected"
-                          ? "destructive"
-                          : "secondary"
-                      }
-                    >
-                      {enquiry.status}
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex justify-between items-center">
-                    <p className="text-sm">
-                      {/* Backend might not return vendor name directly yet */}
-                      Quantity:{" "}
-                      <span className="font-medium">
-                        {enquiry.lineItems?.[0]?.quantity}{" "}
-                        {enquiry.lineItems?.[0]?.unitType}
-                      </span>
-                    </p>
-                    <Button variant="link" size="sm">
-                      View Details
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <EnquiryCard key={enquiry.id} enquiry={enquiry} />
             ))
           )}
-          {filteredEnquiries.length === 0 && (
-            <div className="text-center py-12 text-muted-foreground">
+          {!isLoading && filteredEnquiries.length === 0 && (
+            <div className="text-center py-12 text-muted-foreground bg-muted/20 border border-dashed rounded-lg">
               No enquiries found.
             </div>
           )}
