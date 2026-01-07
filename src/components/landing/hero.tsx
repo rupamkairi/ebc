@@ -41,7 +41,7 @@ export function Hero() {
           <div className="flex flex-col sm:flex-row gap-5 pt-2">
             <Button
               size="lg"
-              className="bg-[#024caa] hover:bg-[#023b8a] h-16 px-10 text-lg font-black rounded-xl gap-3 shadow-lg group"
+              className="cursor-pointer bg-[#024caa] hover:bg-[#023b8a] h-16 px-10 text-lg font-black rounded-xl gap-3 shadow-lg group"
             >
               {t("home_cta_primary")}
               <ArrowRight className="size-5 group-hover:translate-x-1 transition-transform" />
@@ -49,7 +49,7 @@ export function Hero() {
             <Button
               size="lg"
               variant="outline"
-              className="h-16 px-10 text-lg font-bold border-[#024caa] text-[#024caa] border-2 rounded-xl hover:bg-primary/5 transition-all gap-3"
+              className="cursor-pointer h-16 px-10 text-lg font-bold border-[#024caa] text-[#024caa] border-2 rounded-xl hover:bg-primary/5 transition-all gap-3"
             >
               {t("home_cta_secondary")}
               <ArrowRight className="size-5" />
