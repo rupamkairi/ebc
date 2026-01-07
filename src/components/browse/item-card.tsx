@@ -46,7 +46,6 @@ export function ItemCard({ product }: ItemCardProps) {
             <CardTitle className="text-base line-clamp-1">
               {product.title}
             </CardTitle>
-            <span className="font-semibold shrink-0">${product.price}</span>
           </div>
           <CardDescription className="line-clamp-2 text-xs mt-1">
             {product.description}

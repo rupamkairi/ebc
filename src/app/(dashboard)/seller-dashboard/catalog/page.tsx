@@ -7,7 +7,6 @@ import {
   Package, 
   MapPin, 
   Clock, 
-  IndianRupee,
   Loader2,
   AlertCircle,
 } from "lucide-react";
@@ -166,11 +165,10 @@ export default function CatalogPage() {
 
                               <div className="flex items-center gap-10">
                                 <div className="text-right">
-                                  <p className="text-[10px] font-black uppercase tracking-widest text-foreground/30 mb-1">Selling Rate</p>
+                                  <p className="text-[10px] font-black uppercase tracking-widest text-foreground/30 mb-1">Min. Order</p>
                                   <div className="flex items-center justify-end font-black text-primary text-3xl md:text-4xl tracking-tighter italic">
-                                    <IndianRupee size={24} className="mr-0.5" />
-                                    {listing.item_rate?.rate}
-                                    <span className="text-sm text-foreground/40 font-bold ml-1 not-italic">/ {listing.item_rate?.unitType}</span>
+                                    {listing.item_rate?.minQuantity}
+                                    <span className="text-sm text-foreground/40 font-bold ml-1 not-italic">{listing.item_rate?.unitType}</span>
                                   </div>
                                 </div>
                                 <Button variant="ghost" size="icon" className="rounded-2xl h-12 w-12 text-foreground/20 hover:text-primary hover:bg-primary/5 transition-all">
@@ -222,11 +220,10 @@ export default function CatalogPage() {
 
                               <div className="flex items-center gap-10">
                                 <div className="text-right">
-                                  <p className="text-[10px] font-black uppercase tracking-widest text-foreground/30 mb-1">Service Fee</p>
+                                  <p className="text-[10px] font-black uppercase tracking-widest text-foreground/30 mb-1">Min. Order</p>
                                   <div className="flex items-center justify-end font-black text-blue-600 text-3xl md:text-4xl tracking-tighter italic">
-                                    <IndianRupee size={24} className="mr-0.5" />
-                                    {listing.item_rate?.rate}
-                                    <span className="text-sm text-foreground/40 font-bold ml-1 not-italic">/ {listing.item_rate?.unitType}</span>
+                                    {listing.item_rate?.minQuantity}
+                                    <span className="text-sm text-foreground/40 font-bold ml-1 not-italic">{listing.item_rate?.unitType}</span>
                                   </div>
                                 </div>
                                 <Button variant="ghost" size="icon" className="rounded-2xl h-12 w-12 text-foreground/20 hover:text-primary hover:bg-primary/5 transition-all">

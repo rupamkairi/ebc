@@ -39,8 +39,6 @@ export function CreateListingModal({ isOpen, onClose, entityId, type }: CreateLi
   const [rate, setRate] = useState<Partial<ItemRate>>({
     minQuantity: 1,
     unitType: type === "PRODUCT" ? "Piece" : "Hour",
-    rate: 0,
-    isNegotiable: false,
   });
 
   // Region Selection State
@@ -87,8 +85,8 @@ export function CreateListingModal({ isOpen, onClose, entityId, type }: CreateLi
           item_rate: {
             minQuantity: rate.minQuantity || 1,
             unitType: rate.unitType || "Piece",
-            rate: rate.rate || 0,
-            isNegotiable: rate.isNegotiable || false,
+            rate: 0,
+            isNegotiable: false,
           },
           item_region: selectedRegions.map(r => ({
             pincodeId: r.id,
@@ -117,10 +115,10 @@ export function CreateListingModal({ isOpen, onClose, entityId, type }: CreateLi
                </div>
                <div>
                   <DialogTitle className="text-2xl font-black italic">
-                    {step === 1 ? "Select Item" : step === 2 ? "Pricing & Terms" : "Service Areas"}
+                    {step === 1 ? "Select Item" : step === 2 ? "Listing Details" : "Service Areas"}
                   </DialogTitle>
                   <DialogDescription className="font-bold text-foreground/40 italic">
-                    {step === 1 ? "Pick an item from the master catalog" : step === 2 ? "Define your rates and unit types" : "Select where you can deliver or provide service"}
+                    {step === 1 ? "Pick an item from the master catalog" : step === 2 ? "Define your quantity and unit types" : "Select where you can deliver or provide service"}
                   </DialogDescription>
                </div>
             </div>
@@ -155,15 +153,6 @@ export function CreateListingModal({ isOpen, onClose, entityId, type }: CreateLi
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label className="font-black italic">Rate (₹)</Label>
-                  <Input 
-                    type="number" 
-                    value={rate.rate} 
-                    onChange={e => setRate(r => ({ ...r, rate: Number(e.target.value) }))}
-                    className="h-14 rounded-2xl font-black text-lg"
-                  />
-                </div>
-                <div className="space-y-2">
                   <Label className="font-black italic">Unit Type (e.g. Bag, Ton, Hour)</Label>
                   <Input 
                     value={rate.unitType} 
@@ -179,14 +168,6 @@ export function CreateListingModal({ isOpen, onClose, entityId, type }: CreateLi
                     onChange={e => setRate(r => ({ ...r, minQuantity: Number(e.target.value) }))}
                     className="h-14 rounded-2xl font-black text-lg"
                   />
-                </div>
-                <div className="flex items-center gap-3 pt-8">
-                  <Checkbox 
-                    id="negotiable" 
-                    checked={rate.isNegotiable}
-                    onCheckedChange={(val) => setRate(r => ({ ...r, isNegotiable: !!val }))}
-                  />
-                  <Label htmlFor="negotiable" className="font-black italic cursor-pointer">Rate is Negotiable</Label>
                 </div>
               </div>
 
