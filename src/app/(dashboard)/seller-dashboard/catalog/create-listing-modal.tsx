@@ -132,13 +132,17 @@ export function CreateListingModal({ isOpen, onClose, entityId, type }: CreateLi
                 type={type} 
                 onItemSelect={(item) => {
                   setSelectedItem(item);
-                  handleNext();
+                  if (type === "SERVICE") {
+                    setStep(3);
+                  } else {
+                    handleNext();
+                  }
                 }} 
               />
             </div>
           )}
 
-          {step === 2 && (
+          {step === 2 && type === "PRODUCT" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-right-4">
               <div className="bg-muted/30 p-6 rounded-3xl border border-border flex items-center gap-4">
                 <div className="h-16 w-16 rounded-2xl bg-white shadow-sm flex items-center justify-center text-primary">
@@ -160,15 +164,17 @@ export function CreateListingModal({ isOpen, onClose, entityId, type }: CreateLi
                     className="h-14 rounded-2xl font-black text-lg"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label className="font-black italic">Min Quantity</Label>
-                  <Input 
-                    type="number" 
-                    value={rate.minQuantity} 
-                    onChange={e => setRate(r => ({ ...r, minQuantity: Number(e.target.value) }))}
-                    className="h-14 rounded-2xl font-black text-lg"
-                  />
-                </div>
+                {type === "PRODUCT" && (
+                  <div className="space-y-2">
+                    <Label className="font-black italic">Min Quantity</Label>
+                    <Input 
+                      type="number" 
+                      value={rate.minQuantity} 
+                      onChange={e => setRate(r => ({ ...r, minQuantity: Number(e.target.value) }))}
+                      className="h-14 rounded-2xl font-black text-lg"
+                    />
+                  </div>
+                )}
               </div>
 
               <div className="flex justify-between pt-8">
@@ -299,7 +305,11 @@ export function CreateListingModal({ isOpen, onClose, entityId, type }: CreateLi
               </div>
 
               <div className="flex justify-between pt-8 border-t">
-                <Button variant="outline" onClick={handleBack} className="rounded-2xl h-14 px-8 font-black gap-2">
+                <Button 
+                  variant="outline" 
+                  onClick={() => type === "SERVICE" ? setStep(1) : handleBack()} 
+                  className="rounded-2xl h-14 px-8 font-black gap-2"
+                >
                   <ChevronLeft size={20} /> Back
                 </Button>
                 <Button 
