@@ -62,5 +62,5 @@ export interface UpdateProfileRequest {
   name?: string;
   email?: string;
   phoneNumber?: string;
-  // Others?
+  role?: string;
 }

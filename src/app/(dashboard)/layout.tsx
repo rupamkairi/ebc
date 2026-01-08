@@ -1,9 +1,13 @@
+import { OnboardingProvider } from "@/components/auth/onboarding-provider";
+
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // session verification happens here.
-
-  return <>{children}</>;
+  return (
+    <OnboardingProvider>
+      {children}
+    </OnboardingProvider>
+  );
 }

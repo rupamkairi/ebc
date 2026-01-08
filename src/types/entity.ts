@@ -8,12 +8,14 @@ export interface Entity {
   userId: string;
   createdAt: string;
   updatedAt: string;
+  op_type?: 'PRODUCT' | 'SERVICE';
 }
 
 export interface CreateEntityRequest {
   name: string;
   legalName?: string;
   description?: string;
+  op_type: 'PRODUCT' | 'SERVICE';
 }
 
 export interface UpdateEntityRequest {

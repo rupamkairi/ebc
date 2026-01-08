@@ -89,7 +89,7 @@ export function UserLoginMobileOtpForm({
 
       // Redirection logic
       const role = user.role?.toUpperCase() || "";
-      if (role.includes("SELLER")) {
+      if (role === "UNASSIGNED" || role.includes("SELLER") || role.includes("SERVICE")) {
         router.push("/seller-dashboard");
       } else if (role.includes("ADMIN") && !role.startsWith("USER_")) {
         router.push("/admin-dashboard");
