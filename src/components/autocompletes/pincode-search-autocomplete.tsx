@@ -7,6 +7,7 @@ import { PincodeRecord } from "@/types/region";
 
 interface PincodeSearchAutocompleteProps {
   value?: string; // This will be the pincode directory ID
+  initialRecord?: PincodeRecord;
   onRecordSelect?: (record: PincodeRecord) => void;
   onValueChange?: (value: string) => void;
   placeholder?: string;
@@ -17,6 +18,7 @@ interface PincodeSearchAutocompleteProps {
 
 export function PincodeSearchAutocomplete({
   value,
+  initialRecord,
   onRecordSelect,
   onValueChange,
   placeholder = "Search pincode...",
@@ -39,13 +41,25 @@ export function PincodeSearchAutocomplete({
   });
 
   const options = React.useMemo(() => {
-    return (data || [])
+    const baseOptions = (data || [])
       .filter((record) => record.pincode && record.pincode.trim() !== "")
       .map((record) => ({
         label: `${record.pincode} - ${record.district}, ${record.state}`,
         value: record.id,
       }));
-  }, [data]);
+
+    if (
+      initialRecord &&
+      !baseOptions.find((o) => o.value === initialRecord.id)
+    ) {
+      baseOptions.unshift({
+        label: `${initialRecord.pincode} - ${initialRecord.district}, ${initialRecord.state}`,
+        value: initialRecord.id,
+      });
+    }
+
+    return baseOptions;
+  }, [data, initialRecord]);
 
   const handleValueChange = (val: string) => {
     const selectedRecord = data?.find((r) => r.id === val);

@@ -26,7 +26,6 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { attachmentService } from "@/services/attachmentService";
 
 interface UserDetailsModalProps {
   user: AdminUser | null;
@@ -195,15 +194,14 @@ export function UserDetailsModal({
                       Verification Documents
                     </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {entity.verificationDocuments &&
-                      entity.verificationDocuments.length > 0 ? (
-                        entity.verificationDocuments.map((docId, idx) => (
+                      {entity.documents && entity.documents.length > 0 ? (
+                        entity.documents.map((docId, idx) => (
                           <a
                             key={docId}
                             href={`${
                               process.env.NEXT_PUBLIC_API_URL ||
                               "http://localhost:10000/api"
-                            }${attachmentService.document.getUrl(docId)}`}
+                            }/attachment/document/url/${docId}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors group"

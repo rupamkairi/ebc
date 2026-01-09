@@ -13,6 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { PincodeSearchAutocomplete } from "@/components/autocompletes/pincode-search-autocomplete";
+import { PincodeRecord } from "@/types/region";
 import {
   useUpdateEntityMutation,
   useEntitiesQuery,
@@ -23,7 +24,7 @@ import {
 } from "@/components/upload/media-uploader";
 import { toast } from "sonner";
 import { Loader2, Save, FileText, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { UpdateEntityRequest } from "@/types/entity";
 
 export function EntitySettingsForm() {
@@ -31,8 +32,6 @@ export function EntitySettingsForm() {
     useEntitiesQuery();
   const updateEntityMutation = useUpdateEntityMutation();
   const entity = entities[0];
-
-  const [uploadedDocs, setUploadedDocs] = useState<string[]>([]);
 
   const form = useForm({
     defaultValues: {
@@ -47,17 +46,14 @@ export function EntitySettingsForm() {
       addressLine2: "",
       city: "",
       pincodeId: "",
-      verificationDocuments: [] as string[],
+      documents: [] as string[],
     },
     onSubmit: async ({ value }) => {
       if (!entity) return;
       try {
         await updateEntityMutation.mutateAsync({
           id: entity.id,
-          data: {
-            ...value,
-            verificationDocuments: uploadedDocs,
-          } as UpdateEntityRequest,
+          data: value as UpdateEntityRequest,
         });
         toast.success("Business profile updated successfully!");
       } catch {
@@ -68,8 +64,7 @@ export function EntitySettingsForm() {
 
   useEffect(() => {
     if (entity) {
-      const docs = entity.verificationDocuments || [];
-      setUploadedDocs(docs);
+      const docs = entity.documents || [];
       form.reset({
         name: entity.name || "",
         legalName: entity.legalName || "",
@@ -82,7 +77,7 @@ export function EntitySettingsForm() {
         addressLine2: entity.addressLine2 || "",
         city: entity.city || "",
         pincodeId: entity.pincodeId || "",
-        verificationDocuments: docs,
+        documents: docs,
       });
     }
   }, [entity, form]);
@@ -285,6 +280,7 @@ export function EntitySettingsForm() {
                       <Label htmlFor={field.name}>Pincode</Label>
                       <PincodeSearchAutocomplete
                         value={field.state.value}
+                        initialRecord={entity.pincode as PincodeRecord}
                         onValueChange={field.handleChange}
                         placeholder="Search pincode..."
                       />
@@ -294,64 +290,97 @@ export function EntitySettingsForm() {
               </div>
             </div>
 
-            <div className="md:col-span-2 space-y-4">
-              <div className="flex items-center justify-between border-b pb-2">
-                <h3 className="text-sm font-semibold">
-                  Verification Documents
-                </h3>
-                <FileUploader
-                  type="document"
-                  variant="multiple"
-                  label="Add Documents"
-                  onUploadSuccess={(newFiles: FileUploadResponse[]) => {
-                    const newIds = newFiles.map((f) => f.id);
-                    setUploadedDocs((prev) => [...prev, ...newIds]);
-                  }}
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {uploadedDocs.length === 0 ? (
-                  <div className="col-span-full py-8 text-center border-2 border-dashed rounded-lg bg-muted/20">
-                    <FileText className="size-8 mx-auto text-muted-foreground opacity-50 mb-2" />
-                    <p className="text-sm text-muted-foreground">
-                      No verification documents uploaded yet.
-                    </p>
+            <form.Field name="documents">
+              {(field) => (
+                <div className="md:col-span-2 space-y-4">
+                  <div className="flex items-center justify-between border-b pb-2">
+                    <h3 className="text-sm font-semibold">
+                      Verification Documents
+                    </h3>
+                    <FileUploader
+                      type="document"
+                      variant="multiple"
+                      label="Add Documents"
+                      onUploadSuccess={(newFiles: FileUploadResponse[]) => {
+                        const newIds = newFiles.map((f) => f.id);
+                        field.handleChange([
+                          ...(field.state.value || []),
+                          ...newIds,
+                        ]);
+                      }}
+                    />
                   </div>
-                ) : (
-                  uploadedDocs.map((docId) => (
-                    <div
-                      key={docId}
-                      className="flex items-center justify-between p-3 border rounded-lg bg-card"
-                    >
-                      <div className="flex items-center gap-2 overflow-hidden">
-                        <FileText className="size-4 shrink-0 text-primary" />
-                        <span className="text-xs font-medium truncate">
-                          Document ID: {docId}
-                        </span>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {!field.state.value || field.state.value.length === 0 ? (
+                      <div className="col-span-full py-8 text-center border-2 border-dashed rounded-lg bg-muted/20">
+                        <FileText className="size-8 mx-auto text-muted-foreground opacity-50 mb-2" />
+                        <p className="text-sm text-muted-foreground">
+                          No verification documents uploaded yet.
+                        </p>
                       </div>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="size-7 text-destructive"
-                        onClick={() =>
-                          setUploadedDocs((prev) =>
-                            prev.filter((id) => id !== docId)
-                          )
-                        }
-                      >
-                        <X className="size-4" />
-                      </Button>
-                    </div>
-                  ))
-                )}
-              </div>
-              <p className="text-[10px] text-muted-foreground italic">
-                Upload business registration, tax certificates, and other
-                verification materials.
-              </p>
-            </div>
+                    ) : (
+                      (field.state.value as string[]).map((docId, idx) => (
+                        <div
+                          key={docId}
+                          className="flex items-center justify-between p-3 border rounded-lg bg-card group"
+                        >
+                          <div className="flex items-center gap-2 overflow-hidden">
+                            <FileText className="size-4 shrink-0 text-primary" />
+                            <div className="flex flex-col">
+                              <span className="text-xs font-semibold truncate text-primary">
+                                Document {idx + 1}
+                              </span>
+                              <span className="text-[10px] text-muted-foreground truncate">
+                                ID: {docId}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="size-7"
+                              onClick={() => {
+                                window.open(
+                                  `${
+                                    process.env.NEXT_PUBLIC_API_URL ||
+                                    "http://localhost:10000/api"
+                                  }/attachment/document/url/${docId}`,
+                                  "_blank"
+                                );
+                              }}
+                            >
+                              <FileText className="size-4" />
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="size-7 text-destructive"
+                              onClick={() =>
+                                field.handleChange(
+                                  (field.state.value as string[]).filter(
+                                    (id) => id !== docId
+                                  )
+                                )
+                              }
+                            >
+                              <X className="size-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  <p className="text-[10px] text-muted-foreground italic">
+                    Upload business registration, tax certificates, and other
+                    verification materials.
+                  </p>
+                </div>
+              )}
+            </form.Field>
           </div>
 
           <div className="flex justify-end pt-4">
