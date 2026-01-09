@@ -88,4 +88,16 @@ export const API_ENDPOINTS = {
     UPDATE: "/entity", // :id attached in service
     VERIFY: "/entity", // :id/verify attached in service
   },
+  ATTACHMENT: {
+    MEDIA: {
+      UPLOAD_SINGLE: "/attachment/media/upload/single",
+      UPLOAD_MULTIPLE: "/attachment/media/upload/multiple",
+      GET_URL: "/attachment/media/url", // :id
+    },
+    DOCUMENT: {
+      UPLOAD_SINGLE: "/attachment/document/upload/single",
+      UPLOAD_MULTIPLE: "/attachment/document/upload/multiple",
+      GET_URL: "/attachment/document/url", // :id
+    },
+  },
 } as const;

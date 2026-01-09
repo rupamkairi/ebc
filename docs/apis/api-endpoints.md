@@ -576,6 +576,56 @@ Base URL: `/api/pincode-directory`
     ```
   - Note: All fields are optional. Partial matches are supported for `state` and `district` (case-insensitive). `id` is a UUID.
 
+# Attachment API Endpoints
+
+Base URL: `/api/attachment`
+
+## Media Routes
+
+Handled at `/api/attachment/media`
+
+### 1. Single Media Upload
+
+**POST** `/upload/single`
+
+- **Body**: `file` (Multipart)
+- **Roles**: Authenticated Users
+
+### 2. Multiple Media Upload
+
+**POST** `/upload/multiple`
+
+- **Body**: `files` (Multipart, max 10)
+- **Roles**: Authenticated Users
+
+### 3. Get Media URL
+
+**GET** `/url/:id`
+
+## Document Routes
+
+Handled at `/api/attachment/document`
+
+### 1. Single Document Upload
+
+**POST** `/upload/single`
+
+- **Body**: `file` (Multipart)
+- **Supported Types**: PDF, Doc, Docx, txt, md
+- **Roles**: Authenticated Users
+
+### 2. Multiple Document Upload
+
+**POST** `/upload/multiple`
+
+- **Body**: `files` (Multipart, max 10)
+- **Supported Types**: PDF, Doc, Docx, txt, md
+- **Roles**: Authenticated Users
+
+### 3. Get Document URL
+
+**GET** `/url/:id`
+
 # Activity API Endpoints
 
 Base URL: `/api/activity`

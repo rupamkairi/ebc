@@ -15,9 +15,18 @@ import { Label } from "@/components/ui/label";
 import { AdminUser } from "@/types/auth";
 import { useVerifyEntityMutation } from "@/queries/entityQueries";
 import { toast } from "sonner";
-import { Loader2, CheckCircle, XCircle, Building2, User2 } from "lucide-react";
+import {
+  Loader2,
+  CheckCircle,
+  XCircle,
+  Building2,
+  User2,
+  FileText,
+  ExternalLink,
+} from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { attachmentService } from "@/services/attachmentService";
 
 interface UserDetailsModalProps {
   user: AdminUser | null;
@@ -177,6 +186,44 @@ export function UserDetailsModal({
                           "No address provided."
                         )}
                       </p>
+                    </div>
+                  </div>
+
+                  {/* Verification Documents Section */}
+                  <div className="space-y-3">
+                    <h4 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
+                      Verification Documents
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {entity.verificationDocuments &&
+                      entity.verificationDocuments.length > 0 ? (
+                        entity.verificationDocuments.map((docId, idx) => (
+                          <a
+                            key={docId}
+                            href={`${
+                              process.env.NEXT_PUBLIC_API_URL ||
+                              "http://localhost:10000/api"
+                            }${attachmentService.document.getUrl(docId)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors group"
+                          >
+                            <div className="flex items-center gap-2 overflow-hidden">
+                              <FileText className="size-4 text-primary shrink-0" />
+                              <span className="text-xs font-medium truncate">
+                                Document {idx + 1}
+                              </span>
+                            </div>
+                            <ExternalLink className="size-3 text-muted-foreground group-hover:text-primary" />
+                          </a>
+                        ))
+                      ) : (
+                        <div className="col-span-full p-4 text-center border border-dashed rounded-lg bg-muted/20">
+                          <p className="text-xs text-muted-foreground italic">
+                            No verification documents uploaded.
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </section>

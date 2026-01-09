@@ -14,11 +14,12 @@ import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   UploadCloud,
-  FileIcon,
   X,
   CheckCircle2,
   AlertCircle,
   Loader2,
+  FileText,
+  Image as ImageIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/authStore";
@@ -34,7 +35,7 @@ interface UploadFileItem {
   id: string;
 }
 
-interface MediaUploadResponse {
+export interface FileUploadResponse {
   id: string;
   url: string;
   name: string;
@@ -42,27 +43,32 @@ interface MediaUploadResponse {
   size: number;
 }
 
-interface MediaUploaderProps {
-  onUploadSuccess?: (files: MediaUploadResponse[]) => void;
+interface FileUploaderProps {
+  onUploadSuccess?: (files: FileUploadResponse[]) => void;
   maxFiles?: number;
   label?: string;
   variant?: "single" | "multiple";
   buttonVariant?: "default" | "outline" | "ghost" | "secondary";
   showTrigger?: boolean;
   crop?: boolean;
+  type?: "media" | "document";
 }
 
-export function MediaUploader({
+export function FileUploader({
   onUploadSuccess,
   maxFiles: propMaxFiles,
-  label = "Upload Media",
+  label,
   variant = "single",
   buttonVariant = "outline",
   showTrigger = true,
   crop = variant === "single",
-}: MediaUploaderProps) {
+  type = "media",
+}: FileUploaderProps) {
   const isSingle = variant === "single";
   const maxFiles = isSingle ? 1 : propMaxFiles || 10;
+
+  const defaultLabel =
+    label || (type === "media" ? "Upload Media" : "Upload Document");
 
   const [isOpen, setIsOpen] = useState(false);
   const [files, setFiles] = useState<UploadFileItem[]>([]);
@@ -70,7 +76,7 @@ export function MediaUploader({
   const [overallProgress, setOverallProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Cropping state
+  // Cropping state (only for images)
   const [cropSrc, setCropSrc] = useState<string | null>(null);
   const [isCropOpen, setIsCropOpen] = useState(false);
 
@@ -86,8 +92,13 @@ export function MediaUploader({
         return;
       }
 
-      if (isSingle && crop && selectedFiles[0].type.startsWith("image/")) {
-        const file = selectedFiles[0];
+      const file = selectedFiles[0];
+      if (
+        type === "media" &&
+        isSingle &&
+        crop &&
+        file.type.startsWith("image/")
+      ) {
         const reader = new FileReader();
         reader.onload = () => {
           setCropSrc(reader.result as string);
@@ -135,9 +146,13 @@ export function MediaUploader({
     const apiBaseUrl =
       process.env.NEXT_PUBLIC_API_URL || "http://localhost:10000/api";
     const token = useAuthStore.getState().token;
+
+    // Updated endpoints based on docs
+    const basePath =
+      type === "media" ? "attachment/media" : "attachment/document";
     const endpoint = isSingle
-      ? "/media/upload/single"
-      : "/media/upload/multiple";
+      ? `${basePath}/upload/single`
+      : `${basePath}/upload/multiple`;
 
     const formData = new FormData();
     idleFiles.forEach((f) => {
@@ -151,7 +166,12 @@ export function MediaUploader({
     try {
       const response = (await new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", `${apiBaseUrl}${endpoint}`);
+        xhr.open(
+          "POST",
+          `${apiBaseUrl}/${
+            endpoint.startsWith("/") ? endpoint.substring(1) : endpoint
+          }`
+        );
 
         if (token) {
           xhr.setRequestHeader("Authorization", `Bearer ${token}`);
@@ -177,8 +197,12 @@ export function MediaUploader({
           if (xhr.status >= 200 && xhr.status < 300) {
             try {
               const res = JSON.parse(xhr.responseText);
+              // Handle different response structures gracefully
               const data =
-                res.media || res.data || (Array.isArray(res) ? res : [res]);
+                res.data ||
+                res.media ||
+                res.document ||
+                (Array.isArray(res) ? res : [res]);
               resolve(Array.isArray(data) ? data : [data]);
             } catch {
               reject(new Error("Invalid response from server"));
@@ -187,7 +211,8 @@ export function MediaUploader({
             let errorMessage = "Upload failed";
             try {
               const errorResponse = JSON.parse(xhr.responseText);
-              errorMessage = errorResponse.message || errorMessage;
+              errorMessage =
+                errorResponse.message || errorResponse.error || errorMessage;
             } catch {}
             reject(new Error(errorMessage));
           }
@@ -195,7 +220,7 @@ export function MediaUploader({
 
         xhr.onerror = () => reject(new Error("Network error"));
         xhr.send(formData);
-      })) as MediaUploadResponse[];
+      })) as FileUploadResponse[];
 
       setFiles((prev) =>
         prev.map((f) =>
@@ -240,6 +265,9 @@ export function MediaUploader({
     fileInputRef.current?.click();
   };
 
+  const acceptString =
+    type === "media" ? "image/*,video/*" : ".pdf,.doc,.docx,.txt,.md";
+
   return (
     <>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -247,16 +275,20 @@ export function MediaUploader({
           <DialogTrigger asChild>
             <Button variant={buttonVariant} size="sm" className="gap-2">
               <UploadCloud className="size-4" />
-              <span className="hidden sm:inline">{label}</span>
+              <span className="hidden sm:inline">{defaultLabel}</span>
             </Button>
           </DialogTrigger>
         )}
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Upload Media</DialogTitle>
+            <DialogTitle>
+              Upload {type === "media" ? "Media" : "Document"}
+            </DialogTitle>
             <DialogDescription>
               {isSingle
-                ? "Upload a single file. Images can be cropped before upload."
+                ? `Upload a single ${
+                    type === "media" ? "media file" : "document"
+                  }.`
                 : `Upload multiple files. Maximum ${maxFiles} files per batch.`}
             </DialogDescription>
           </DialogHeader>
@@ -277,15 +309,16 @@ export function MediaUploader({
                 <p className="text-sm font-medium">
                   Click to select {isSingle ? "a file" : "files"}
                 </p>
-                <p className="text-xs text-muted-foreground">
-                  {isSingle
-                    ? "Images can be cropped"
-                    : "Drag and drop or browse files"}
+                <p className="text-xs text-muted-foreground text-center px-4">
+                  {type === "media"
+                    ? "PNG, JPG, GIF or Video files"
+                    : "PDF, DOC, DOCX, TXT, or MD files"}
                 </p>
               </div>
               <input
                 type="file"
                 multiple={!isSingle}
+                accept={acceptString}
                 className="hidden"
                 ref={fileInputRef}
                 onChange={onFileChange}
@@ -303,7 +336,11 @@ export function MediaUploader({
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 overflow-hidden">
-                          <FileIcon className="size-4 shrink-0 text-muted-foreground" />
+                          {type === "media" ? (
+                            <ImageIcon className="size-4 shrink-0 text-muted-foreground" />
+                          ) : (
+                            <FileText className="size-4 shrink-0 text-muted-foreground" />
+                          )}
                           <span className="truncate text-sm font-medium">
                             {file.name}
                           </span>
@@ -404,3 +441,8 @@ export function MediaUploader({
     </>
   );
 }
+
+// Alias for backward compatibility
+export const MediaUploader = (props: Omit<FileUploaderProps, "type">) => (
+  <FileUploader {...props} type="media" />
+);

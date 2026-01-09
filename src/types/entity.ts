@@ -18,6 +18,7 @@ export interface Entity {
   verificationStatus: "PENDING" | "APPROVED" | "REJECTED";
   verificaitonRemark?: string | null;
   verifiedById?: string | null;
+  verificationDocuments?: string[] | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -50,6 +51,7 @@ export interface UpdateEntityRequest {
   addressLine2?: string;
   city?: string;
   pincodeId?: string;
+  verificationDocuments?: string[];
 }
 
 export interface VerifyEntityRequest {
