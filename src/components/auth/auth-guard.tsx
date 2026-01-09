@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useSyncExternalStore } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import { toast } from "sonner";
 
@@ -12,6 +12,7 @@ interface AuthGuardProps {
 
 export function AuthGuard({ children, allowedRoles }: AuthGuardProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const { token, user } = useAuthStore();
 
   const mounted = useSyncExternalStore(
@@ -25,7 +26,11 @@ export function AuthGuard({ children, allowedRoles }: AuthGuardProps) {
 
     // 1. Check if authenticated
     if (!token) {
-      router.push("/auth/login");
+      if (pathname.includes("/admin-dashboard")) {
+        router.push("/auth/admin-login");
+      } else {
+        router.push("/auth/login");
+      }
       return;
     }
 
@@ -37,7 +42,7 @@ export function AuthGuard({ children, allowedRoles }: AuthGuardProps) {
         router.push("/");
       }
     }
-  }, [token, user, router, allowedRoles, mounted]);
+  }, [token, user, router, allowedRoles, mounted, pathname]);
 
   if (!mounted) return null;
 

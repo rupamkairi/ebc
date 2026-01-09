@@ -14,11 +14,11 @@ import { useState } from "react";
 import { DataTable } from "@/components/datatable/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/datatable/data-table-column-header";
-import { SessionResponse } from "@/types/auth";
+import { AdminUser } from "@/types/auth";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 
-type User = SessionResponse["user"];
+type User = AdminUser;
 
 const columns: ColumnDef<User>[] = [
   {
@@ -34,9 +34,9 @@ const columns: ColumnDef<User>[] = [
     ),
   },
   {
-    accessorKey: "phoneNumber",
+    accessorKey: "phone",
     header: "Phone",
-    cell: ({ row }) => row.original.phoneNumber || "-",
+    cell: ({ row }) => row.original.phone || "-",
   },
   {
     accessorKey: "role",

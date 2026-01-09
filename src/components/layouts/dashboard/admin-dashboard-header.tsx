@@ -60,16 +60,7 @@ export default function AdminDashboardHeader() {
             </BreadcrumbList>
           </Breadcrumb>
         </div>
-        <div className="flex flex-1 items-center gap-4 px-3 md:px-6">
-          <div className="relative hidden w-full max-w-sm md:flex">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-400" />
-            <input
-              type="search"
-              placeholder="Search products, orders, users..."
-              className="w-full rounded-xl bg-slate-100 py-2 pl-9 pr-4 text-sm outline-none transition-all focus:bg-white focus:ring-2 focus:ring-blue-500/20 dark:bg-slate-800"
-            />
-          </div>
-        </div>
+
         <div className="flex items-center gap-3 pr-3">
           <Button
             variant="ghost"

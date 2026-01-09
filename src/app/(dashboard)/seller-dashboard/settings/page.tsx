@@ -1,138 +1,219 @@
 "use client";
 
-import { 
-  Settings, 
-  Bell, 
-  Lock, 
-  Languages, 
-  Smartphone, 
-  Moon, 
-  ChevronRight,
-  ShieldCheck,
+import {
+  Bell,
+  Lock,
   Zap,
-  LogOut
+  Clock,
+  XCircle,
+  ShieldCheck,
+  AlertCircle,
 } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
+import { EntitySettingsForm } from "@/components/dashboard/seller/entity-settings-form";
+import { useEntitiesQuery } from "@/queries/entityQueries";
+import { cn } from "@/lib/utils";
+import Container from "@/components/containers/containers";
 
 const settingGroups = [
   {
     title: "Notifications",
     icon: Bell,
-    className: "text-blue-500 bg-blue-50",
     items: [
-      { id: "notif-1", label: "New Lead Alerts", desc: "Get notified when a buyer sends an inquiry.", active: true },
-      { id: "notif-2", label: "Quotation Updates", desc: "Know when a quote is accepted or rejected.", active: true },
-      { id: "notif-3", label: "Marketing Tips", desc: "Receive tips to grow your business.", active: false },
-    ]
+      {
+        id: "notif-1",
+        label: "New Lead Alerts",
+        desc: "Get notified when a buyer sends an inquiry.",
+        active: true,
+      },
+      {
+        id: "notif-2",
+        label: "Quotation Updates",
+        desc: "Know when a quote is accepted or rejected.",
+        active: true,
+      },
+      {
+        id: "notif-3",
+        label: "Marketing Tips",
+        desc: "Receive tips to grow your business.",
+        active: false,
+      },
+    ],
   },
   {
     title: "Preferences",
     icon: Zap,
-    className: "text-amber-500 bg-amber-50",
     items: [
-      { id: "pref-1", label: "Hinglish Mode", desc: "Show dashboard text in a mix of Hindi and English.", active: true },
-      { id: "pref-2", label: "Auto-respond to inquiries", desc: "Send a welcome message automatically.", active: false },
-    ]
+      {
+        id: "pref-1",
+        label: "Hinglish Mode",
+        desc: "Show dashboard text in a mix of Hindi and English.",
+        active: true,
+      },
+      {
+        id: "pref-2",
+        label: "Auto-respond to inquiries",
+        desc: "Send a welcome message automatically.",
+        active: false,
+      },
+    ],
   },
 ];
 
 export default function SettingsPage() {
+  const { data: entities = [] } = useEntitiesQuery();
+  const mainEntity = entities[0];
+  const status = mainEntity?.verificationStatus;
+
   return (
-    <div className="flex flex-col gap-8">
+    <Container className="py-8 space-y-8">
       {/* Header */}
       <div className="space-y-1">
-        <h1 className="text-3xl font-black text-foreground tracking-tight">Settings</h1>
-        <p className="text-foreground/60 font-medium">Control your dashboard experience and security.</p>
+        <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
+        <p className="text-muted-foreground">
+          Manage your business profile and dashboard preferences.
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-8">
-          {settingGroups.map((group, i) => (
-            <div key={i} className="space-y-4">
-              <div className="flex items-center gap-3 px-2">
-                <div className={`p-2 rounded-xl ${group.className}`}>
-                  <group.icon size={20} />
-                </div>
-                <h2 className="text-xl font-black text-foreground">{group.title}</h2>
+      {/* Verification Status Banner */}
+      {status && status !== "APPROVED" && (
+        <Card
+          className={cn(
+            "border-2",
+            status === "PENDING" && "bg-amber-50/50 border-amber-200",
+            status === "REJECTED" && "bg-destructive/5 border-destructive/20"
+          )}
+        >
+          <CardContent className="p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {status === "PENDING" ? (
+                <Clock className="size-5 text-amber-600" />
+              ) : (
+                <XCircle className="size-5 text-destructive" />
+              )}
+              <div>
+                <p
+                  className={cn(
+                    "text-sm font-bold",
+                    status === "PENDING" && "text-amber-900",
+                    status === "REJECTED" && "text-destructive"
+                  )}
+                >
+                  {status === "PENDING"
+                    ? "Verification Pending"
+                    : "Verification Rejected"}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {status === "PENDING"
+                    ? "Our team is reviewing your business profile. Some features may be restricted until approved."
+                    : mainEntity.verificaitonRemark ||
+                      "Your business profile was rejected. Please contact support for more information."}
+                </p>
               </div>
-              
-              <Card className="border-none shadow-sm">
+            </div>
+            <Button variant="outline" size="sm">
+              {status === "PENDING" ? "View Details" : "Contact Support"}
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Main Content: Entity Details */}
+        <div className="lg:col-span-2 space-y-8">
+          <EntitySettingsForm />
+        </div>
+
+        {/* Sidebar: Platform Settings (Disabled) */}
+        <div className="space-y-8 opacity-60">
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold px-1 flex items-center gap-2">
+              <AlertCircle className="size-4 text-muted-foreground" />
+              Platform Settings
+              <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded uppercase tracking-wider font-bold">
+                Soon
+              </span>
+            </h3>
+
+            {settingGroups.map((group, i) => (
+              <Card key={i} className="pointer-events-none grayscale-[0.5]">
+                <CardHeader className="py-4 px-6 border-b">
+                  <div className="flex items-center gap-2">
+                    <group.icon className="size-4 text-muted-foreground" />
+                    <CardTitle className="text-sm">{group.title}</CardTitle>
+                  </div>
+                </CardHeader>
                 <CardContent className="p-0">
                   {group.items.map((item, idx) => (
-                    <div key={item.id} className={`p-6 flex items-center justify-between gap-6 ${
-                      idx !== group.items.length - 1 ? 'border-b border-border' : ''
-                    }`}>
-                      <div className="space-y-1">
-                        <h4 className="font-bold text-foreground">{item.label}</h4>
-                        <p className="text-xs font-medium text-foreground/40 italic">{item.desc}</p>
+                    <div
+                      key={item.id}
+                      className={cn(
+                        "p-4 flex items-center justify-between gap-4",
+                        idx !== group.items.length - 1 && "border-b"
+                      )}
+                    >
+                      <div className="space-y-0.5">
+                        <p className="text-sm font-medium">{item.label}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {item.desc}
+                        </p>
                       </div>
-                      <Switch defaultChecked={item.active} />
+                      <Switch disabled checked={item.active} />
                     </div>
                   ))}
                 </CardContent>
               </Card>
-            </div>
-          ))}
+            ))}
 
-          <div className="space-y-4">
-            <div className="flex items-center gap-3 px-2">
-              <div className="p-2 rounded-xl text-emerald-500 bg-emerald-50">
-                <Lock size={20} />
-              </div>
-              <h2 className="text-xl font-black text-foreground">Security</h2>
-            </div>
-            <Card className="border-none shadow-sm overflow-hidden">
-              <CardContent className="p-0">
-                <button className="w-full p-6 flex items-center justify-between hover:bg-muted/30 transition-colors text-left border-b border-border">
-                  <div className="space-y-1">
-                    <h4 className="font-bold text-foreground">Change Password</h4>
-                    <p className="text-xs font-medium text-foreground/40 italic">Update your login security regularly.</p>
-                  </div>
-                  <ChevronRight size={18} className="text-foreground/20" />
-                </button>
-                <button className="w-full p-6 flex items-center justify-between hover:bg-muted/30 transition-colors text-left">
-                  <div className="space-y-1">
-                    <h4 className="font-bold text-foreground">Login Session Management</h4>
-                    <p className="text-xs font-medium text-foreground/40 italic">See all devices logged into your account.</p>
-                  </div>
-                  <ChevronRight size={18} className="text-foreground/20" />
-                </button>
+            {/* Security Section */}
+            <Card className="pointer-events-none grayscale-[0.5]">
+              <CardHeader className="py-4 px-6 border-b">
+                <div className="flex items-center gap-2">
+                  <Lock className="size-4 text-muted-foreground" />
+                  <CardTitle className="text-sm">Security</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="p-4 space-y-2">
+                <Button
+                  variant="outline"
+                  disabled
+                  className="w-full justify-start text-xs h-9"
+                >
+                  Change Password
+                </Button>
+                <Button
+                  variant="outline"
+                  disabled
+                  className="w-full justify-start text-xs h-9"
+                >
+                  Session Management
+                </Button>
               </CardContent>
             </Card>
           </div>
-        </div>
 
-        <div className="space-y-8">
-          <Card className="border-none shadow-sm bg-slate-900 text-white overflow-hidden relative group">
-            <div className="absolute inset-0 bg-linear-to-br from-primary/20 to-transparent opacity-50" />
-            <CardContent className="p-8 space-y-6 relative z-10">
-              <div className="h-12 w-12 rounded-2xl bg-white/10 flex items-center justify-center">
-                <ShieldCheck size={28} className="text-primary" />
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-xl font-black italic">Account Status</h3>
-                <p className="text-sm font-medium text-white/50 leading-relaxed">Your account is fully verified and compliant with EBC seller policies.</p>
-              </div>
-              <div className="pt-2">
-                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400 flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                    Premium Business Account
-                 </span>
-              </div>
+          <Card className="border-dashed">
+            <CardContent className="p-6 text-center space-y-2">
+              <ShieldCheck className="size-8 mx-auto text-muted-foreground/40" />
+              <p className="text-xs font-medium text-muted-foreground">
+                Account verification ensures a safe marketplace for everyone.
+              </p>
             </CardContent>
           </Card>
 
-          <div className="space-y-4">
-             <Button variant="outline" className="w-full h-14 border-border rounded-2xl font-bold bg-white text-rose-500 hover:bg-rose-50 hover:border-rose-100 flex items-center justify-center gap-3">
-                <LogOut size={20} />
-                Log Out of Account
-             </Button>
-             <p className="text-[10px] font-bold text-center text-foreground/20 italic uppercase tracking-widest">Version 1.0.4-Beta • EBC Team</p>
-          </div>
+          <Button variant="destructive" className="w-full" disabled>
+            Log Out
+          </Button>
         </div>
       </div>
-    </div>
+    </Container>
   );
 }

@@ -10,12 +10,16 @@ export const adminKeys = {
 
 import { keepPreviousData } from "@tanstack/react-query";
 
-export function useAdminManagersQuery(params: UserListParams = {}) {
+export function useUsersQuery(params: UserListParams = {}) {
   return useQuery({
     queryKey: adminKeys.users(params),
     queryFn: () => adminService.getUsers(params),
     placeholderData: keepPreviousData,
   });
+}
+
+export function useAdminManagersQuery(params: UserListParams = {}) {
+  return useUsersQuery(params);
 }
 
 export function useCreateAdminManagerMutation() {

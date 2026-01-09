@@ -38,6 +38,28 @@ export interface VerifyOtpRequest {
   otp: string;
 }
 
+import { Entity } from "./entity";
+
+export interface AdminUser {
+  id: string;
+  email: string | null;
+  emailVerified: boolean;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  image?: string | null;
+  role?: string;
+  banned?: boolean;
+  banReason?: string;
+  banExpires?: string;
+  phone?: string | null;
+  phoneVerified?: boolean;
+  username?: string | null;
+  staffAtEntityId?: string | null;
+  createdEntities?: Entity[];
+  staffAt?: Entity | null;
+}
+
 export interface SessionResponse {
   session: {
     id: string;
@@ -46,21 +68,7 @@ export interface SessionResponse {
     ipAddress?: string;
     userAgent?: string;
   };
-  user: {
-    id: string;
-    email: string;
-    emailVerified: boolean;
-    name: string;
-    createdAt: string;
-    updatedAt: string;
-    image?: string | null;
-    role?: string;
-    banned?: boolean;
-    banReason?: string;
-    banExpires?: string;
-    phoneNumber?: string | null;
-    phoneVerified?: boolean;
-  };
+  user: AdminUser;
 }
 
 export interface UpdateProfileRequest {

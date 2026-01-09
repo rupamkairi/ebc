@@ -1,5 +1,5 @@
 import SellerDashboardLayoutComponent from "@/components/layouts/dashboard/seller-dashboard.layout";
-import { SellerGuard } from "@/components/auth/seller-guard";
+import { OnboardingGuard } from "@/components/auth/onboarding-guard";
 
 export default function SellerDashboardLayout({
   children,
@@ -7,8 +7,10 @@ export default function SellerDashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <SellerGuard>
-      <SellerDashboardLayoutComponent>{children}</SellerDashboardLayoutComponent>
-    </SellerGuard>
+    <OnboardingGuard>
+      <SellerDashboardLayoutComponent>
+        {children}
+      </SellerDashboardLayoutComponent>
+    </OnboardingGuard>
   );
 }

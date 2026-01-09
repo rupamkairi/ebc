@@ -1,6 +1,6 @@
 import fetchClient from "@/lib/api-client";
 import { API_ENDPOINTS } from "@/lib/api-endpoints";
-import { CreateAdminSubordinateRequest, SessionResponse } from "@/types/auth";
+import { CreateAdminSubordinateRequest, AdminUser } from "@/types/auth";
 
 export interface UserListParams {
   role?: string;
@@ -35,13 +35,9 @@ export const adminService = {
   },
 
   async getUsers(params: UserListParams = {}) {
-    return fetchClient<SessionResponse["user"][]>(
-      API_ENDPOINTS.AUTH.ADMIN.LIST_USERS,
-      {
-        method: "POST",
-        body: params as Record<string, string | number | boolean>,
-        // query: params as Record<string, string | number | boolean>,
-      }
-    );
+    return fetchClient<AdminUser[]>(API_ENDPOINTS.AUTH.ADMIN.LIST_USERS, {
+      method: "POST",
+      body: params as Record<string, string | number | boolean>,
+    });
   },
 };

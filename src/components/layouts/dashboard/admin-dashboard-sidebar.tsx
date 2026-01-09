@@ -61,8 +61,14 @@ const data = {
       icon: Store,
       color: "text-foreground",
       items: [
-        { title: "Product Sellers", url: "#" },
-        { title: "Service Providers", url: "#" },
+        {
+          title: "Product Sellers",
+          url: "/admin-dashboard/sellers/product-sellers",
+        },
+        {
+          title: "Service Providers",
+          url: "/admin-dashboard/sellers/service-providers",
+        },
       ],
     },
     {
@@ -70,7 +76,7 @@ const data = {
       url: "#",
       icon: Users,
       color: "text-foreground",
-      items: [{ title: "Buyers", url: "#" }],
+      items: [{ title: "Buyers", url: "/admin-dashboard/buyers" }],
     },
     {
       title: "Catalog",

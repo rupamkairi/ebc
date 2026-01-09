@@ -25,18 +25,18 @@ export default function SellerDashboardLayoutComponent({
   return (
     <div className="min-h-screen bg-[#F8F9FA] pb-32">
       <DashboardHeader />
+      <br />
       <Container>
-        <div className="flex flex-col gap-8 py-8">
-          <ProfileCard
-            user={{
-              name: businessName,
-              role: businessRole,
-              avatarUrl: "",
-            }}
-          />
-          {children}
-        </div>
+        <ProfileCard
+          user={{
+            name: businessName,
+            role: businessRole,
+            avatarUrl: "",
+          }}
+        />
       </Container>
+      <br />
+      <Container>{children}</Container>
       <BottomNav />
     </div>
   );
