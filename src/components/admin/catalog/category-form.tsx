@@ -19,7 +19,7 @@ import {
 } from "@/queries/catalogQueries";
 import { toast } from "sonner";
 import { ApiError } from "@/lib/api-client";
-import { useSubCategoryStore } from "@/store/subCategoryStore";
+import { useCategoryStore } from "@/store/categoryStore";
 import {
   Select,
   SelectContent,
@@ -32,15 +32,16 @@ import { CategorySearchAutocomplete } from "@/components/autocompletes/category-
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { CreateCategoryRequest } from "@/types/catalog";
+import { Switch } from "@/components/ui/switch";
 
-export function SubCategoryForm() {
+export function CategoryForm() {
   const {
     isCreateOpen,
     setCreateOpen,
     isEditOpen,
     setEditOpen,
     selectedCategory,
-  } = useSubCategoryStore();
+  } = useCategoryStore();
   const createMutation = useCreateCategoryMutation();
   const updateMutation = useUpdateCategoryMutation();
 
@@ -52,13 +53,14 @@ export function SubCategoryForm() {
     defaultValues: {
       name: selectedCategory?.name || "",
       type: selectedCategory?.type || "PRODUCT",
+      isSubCategory: !!selectedCategory?.parentCategoryId,
       parentCategoryId: selectedCategory?.parentCategoryId || "",
       categoryIconId: selectedCategory?.categoryIconId || "",
     },
     onSubmit: async ({ value }) => {
       const payload = {
         ...value,
-        parentCategoryId: value.parentCategoryId || null,
+        parentCategoryId: value.isSubCategory ? value.parentCategoryId : null,
       };
 
       if (isEditing) {
@@ -68,13 +70,13 @@ export function SubCategoryForm() {
             onSuccess: () => {
               setEditOpen(false);
               form.reset();
-              toast.success("SubCategory updated successfully");
+              toast.success("Category updated successfully");
             },
             onError: (error) => {
               const msg =
                 error instanceof ApiError
                   ? error.message
-                  : "Failed to update sub-category";
+                  : "Failed to update category";
               toast.error(msg);
             },
           }
@@ -84,13 +86,13 @@ export function SubCategoryForm() {
           onSuccess: () => {
             setCreateOpen(false);
             form.reset();
-            toast.success("SubCategory created successfully");
+            toast.success("Category created successfully");
           },
           onError: (error) => {
             const msg =
               error instanceof ApiError
                 ? error.message
-                : "Failed to create sub-category";
+                : "Failed to create category";
             toast.error(msg);
           },
         });
@@ -103,6 +105,7 @@ export function SubCategoryForm() {
       form.reset({
         name: selectedCategory.name,
         type: selectedCategory.type,
+        isSubCategory: !!selectedCategory.parentCategoryId,
         parentCategoryId: selectedCategory.parentCategoryId || "",
         categoryIconId: selectedCategory.categoryIconId || "",
       });
@@ -110,6 +113,7 @@ export function SubCategoryForm() {
       form.reset({
         name: "",
         type: "PRODUCT",
+        isSubCategory: false,
         parentCategoryId: "",
         categoryIconId: "",
       });
@@ -129,18 +133,18 @@ export function SubCategoryForm() {
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       {!isEditing && (
         <DialogTrigger asChild>
-          <Button onClick={() => setCreateOpen(true)}>Add SubCategory</Button>
+          <Button onClick={() => setCreateOpen(true)}>Add Category</Button>
         </DialogTrigger>
       )}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            {isEditing ? "Edit SubCategory" : "Add SubCategory"}
+            {isEditing ? "Edit Category" : "Add Category"}
           </DialogTitle>
           <DialogDescription>
             {isEditing
-              ? "Update sub-category information."
-              : "Create a new sub-category under a parent category."}
+              ? "Update category information."
+              : "Create a new category or sub-category."}
           </DialogDescription>
         </DialogHeader>
         <form
@@ -253,35 +257,60 @@ export function SubCategoryForm() {
             )}
           </form.Field>
 
-          <form.Field
-            name="parentCategoryId"
-            validators={{
-              onChange: ({ value }) =>
-                !value ? "Parent Category is required" : undefined,
-            }}
-          >
+          <form.Field name="isSubCategory">
             {(field) => (
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor={field.name} className="text-right">
-                  Parent
+                  Is Sub-category
                 </Label>
                 <div className="col-span-3">
-                  <CategorySearchAutocomplete
-                    value={field.state.value}
-                    onValueChange={field.handleChange}
-                    placeholder="Select parent"
-                    label="Parent Category"
-                    additionalParams={{ isSubCategory: false }}
+                  <Switch
+                    id={field.name}
+                    checked={field.state.value}
+                    onCheckedChange={field.handleChange}
                   />
-                  {field.state.meta.errors ? (
-                    <p className="text-sm text-red-500 mt-1">
-                      {field.state.meta.errors.join(", ")}
-                    </p>
-                  ) : null}
                 </div>
               </div>
             )}
           </form.Field>
+
+          <form.Subscribe selector={(state) => [state.values.isSubCategory]}>
+            {([isSubCategory]) =>
+              isSubCategory ? (
+                <form.Field
+                  name="parentCategoryId"
+                  validators={{
+                    onChange: ({ value }) =>
+                      isSubCategory && !value
+                        ? "Parent Category is required"
+                        : undefined,
+                  }}
+                >
+                  {(field) => (
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor={field.name} className="text-right">
+                        Parent
+                      </Label>
+                      <div className="col-span-3">
+                        <CategorySearchAutocomplete
+                          value={field.state.value}
+                          onValueChange={field.handleChange}
+                          placeholder="Select parent"
+                          label="Parent Category"
+                          additionalParams={{ isSubCategory: false }}
+                        />
+                        {field.state.meta.errors ? (
+                          <p className="text-sm text-red-500 mt-1">
+                            {field.state.meta.errors.join(", ")}
+                          </p>
+                        ) : null}
+                      </div>
+                    </div>
+                  )}
+                </form.Field>
+              ) : null
+            }
+          </form.Subscribe>
 
           <DialogFooter>
             <form.Subscribe
@@ -294,8 +323,8 @@ export function SubCategoryForm() {
                       ? "Updating..."
                       : "Creating..."
                     : isEditing
-                    ? "Update SubCategory"
-                    : "Create SubCategory"}
+                    ? "Update Category"
+                    : "Create Category"}
                 </Button>
               )}
             </form.Subscribe>

@@ -48,7 +48,7 @@ const data = {
       url: "#",
       icon: ShieldCheck,
       isActive: true,
-      color: "text-purple-500",
+      color: "text-foreground",
       items: [
         { title: "Managers", url: "/admin-dashboard/admin-managers" },
         { title: "Accountants", url: "/admin-dashboard/admin-accountants" },
@@ -59,7 +59,7 @@ const data = {
       title: "Sellers & Providers",
       url: "#",
       icon: Store,
-      color: "text-blue-500",
+      color: "text-foreground",
       items: [
         { title: "Product Sellers", url: "#" },
         { title: "Service Providers", url: "#" },
@@ -69,20 +69,16 @@ const data = {
       title: "Buyers & Consumers",
       url: "#",
       icon: Users,
-      color: "text-emerald-500",
+      color: "text-foreground",
       items: [{ title: "Buyers", url: "#" }],
     },
     {
       title: "Catalog",
       url: "#",
       icon: FileBox,
-      color: "text-orange-500",
+      color: "text-foreground",
       items: [
         { title: "Categories", url: "/admin-dashboard/catalog/categories" },
-        {
-          title: "Sub Categories",
-          url: "/admin-dashboard/catalog/sub-categories",
-        },
         { title: "Brands", url: "/admin-dashboard/catalog/brands" },
         {
           title: "Specifications",
@@ -95,19 +91,14 @@ const data = {
       title: "Reports",
       url: "#",
       icon: BarChart3,
-      color: "text-indigo-500",
-      items: [
-        { title: "General", url: "#" },
-        { title: "Team", url: "#" },
-        { title: "Billing", url: "#" },
-        { title: "Limits", url: "#" },
-      ],
+      color: "text-foreground",
+      items: [{ title: "General", url: "#" }],
     },
     {
       title: "AI",
       url: "#",
       icon: Sparkles,
-      color: "text-rose-500",
+      color: "text-foreground",
       items: [
         { title: "Conference Hall", url: "#" },
         { title: "Calculators", url: "#" },
@@ -117,7 +108,7 @@ const data = {
       title: "Settings",
       url: "#",
       icon: Settings,
-      color: "text-slate-500",
+      color: "text-foreground",
     },
   ],
 };
@@ -174,7 +165,9 @@ export function AdminDashboardSidebar({
                   alt="E-CON Building Centre"
                   className="size-6 object-contain"
                 />
-                <span className="text-base font-semibold">E-CON Building Centre</span>
+                <span className="text-base font-semibold">
+                  E-CON Building Centre
+                </span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
