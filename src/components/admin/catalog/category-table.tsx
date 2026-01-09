@@ -12,6 +12,13 @@ import { Badge } from "@/components/ui/badge";
 
 import { ActionColumn } from "./action-column";
 import { useCategoryStore } from "@/store/categoryStore";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function CategoryTable() {
   const [pagination, setPagination] = useState<PaginationState>({
@@ -19,9 +26,14 @@ export function CategoryTable() {
     pageSize: 10,
   });
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [levelFilter, setLevelFilter] = useState<"ALL" | "TOP" | "SUB">("ALL");
   const { setEditOpen } = useCategoryStore();
 
+  const isSubCategoryParam =
+    levelFilter === "TOP" ? false : levelFilter === "SUB" ? true : undefined;
+
   const { data, isLoading } = useCategoriesQuery({
+    isSubCategory: isSubCategoryParam,
     page: pagination.pageIndex + 1,
     perPage: pagination.pageSize,
     sort: sorting[0]?.id,
@@ -71,15 +83,37 @@ export function CategoryTable() {
   ];
 
   return (
-    <DataTable
-      columns={columns}
-      data={categories}
-      pageCount={-1}
-      pagination={pagination}
-      onPaginationChange={setPagination}
-      sorting={sorting}
-      onSortingChange={setSorting}
-      loading={isLoading}
-    />
+    <div className="space-y-4">
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium">Showing: </span>
+          <Select
+            value={levelFilter}
+            onValueChange={(value: "ALL" | "TOP" | "SUB") =>
+              setLevelFilter(value)
+            }
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select level" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">All</SelectItem>
+              <SelectItem value="TOP">Categories Only</SelectItem>
+              <SelectItem value="SUB">Sub Categories Only</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      <DataTable
+        columns={columns}
+        data={categories}
+        pageCount={-1}
+        pagination={pagination}
+        onPaginationChange={setPagination}
+        sorting={sorting}
+        onSortingChange={setSorting}
+        loading={isLoading}
+      />
+    </div>
   );
 }

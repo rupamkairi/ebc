@@ -58,6 +58,7 @@ export interface Item {
 export interface CreateCategoryRequest {
   name: string;
   type: string;
+  isSubCategory: boolean;
   parentCategoryId?: string;
   categoryIconId?: string;
 }
@@ -66,6 +67,7 @@ export interface UpdateCategoryRequest {
   id: string;
   name?: string;
   type?: string;
+  isSubCategory?: boolean;
   parentCategoryId?: string | null;
   categoryIconId?: string | null;
 }
@@ -172,7 +174,6 @@ export interface ItemRegion {
   wholeState?: boolean;
   wholeDistrict?: boolean;
 }
-
 
 export interface ItemListing {
   id: string;
