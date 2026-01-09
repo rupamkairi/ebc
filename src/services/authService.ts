@@ -5,6 +5,7 @@ import {
   AuthResponse,
   SessionResponse,
   SendOtpRequest,
+  SendOtpResponse,
   VerifyOtpRequest,
   UpdateProfileRequest,
 } from "@/types/auth";
@@ -23,8 +24,8 @@ export const authService = {
     return response;
   },
 
-  async sendOtp(data: SendOtpRequest): Promise<{ message: string }> {
-    return fetchClient<{ message: string }>(API_ENDPOINTS.AUTH.USER.SEND_OTP, {
+  async sendOtp(data: SendOtpRequest): Promise<SendOtpResponse> {
+    return fetchClient<SendOtpResponse>(API_ENDPOINTS.AUTH.USER.SEND_OTP, {
       method: "POST",
       body: data,
       auth: false,

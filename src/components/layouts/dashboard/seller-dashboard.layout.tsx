@@ -14,10 +14,13 @@ export default function SellerDashboardLayoutComponent({
 }) {
   const { user } = useAuthStore();
   const { data: entities } = useEntitiesQuery();
-  
+
   const entity = entities?.[0];
   const businessName = entity?.name || user?.name || "Member";
-  const businessRole = user?.role === "USER_SERVICE_ADMIN" ? "Service Provider" : "Material Seller";
+  const businessRole =
+    user?.role === "USER_SERVICE_PROVIDER_ADMIN"
+      ? "Service Provider"
+      : "Material Seller";
 
   return (
     <div className="min-h-screen bg-[#F8F9FA] pb-32">
@@ -25,11 +28,11 @@ export default function SellerDashboardLayoutComponent({
       <Container>
         <div className="flex flex-col gap-8 py-8">
           <ProfileCard
-             user={{ 
-               name: businessName, 
-               role: businessRole, 
-               avatarUrl: "" 
-             }}
+            user={{
+              name: businessName,
+              role: businessRole,
+              avatarUrl: "",
+            }}
           />
           {children}
         </div>

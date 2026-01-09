@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -23,50 +22,39 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { authService } from "@/services/authService";
 import { useAuthStore } from "@/store/authStore";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
-export function UserLoginMobileOtpForm({
+export function UserRegisterForm({
   className,
-  role: initialRole,
   ...props
-}: React.ComponentProps<"div"> & { role?: string }) {
+}: React.ComponentProps<"div">) {
   const router = useRouter();
   const { setToken, setUser } = useAuthStore();
+  const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
+  const [type, setType] = useState<string>("BUYER");
   const [otp, setOtp] = useState("");
-  const [step, setStep] = useState<"phone" | "otp">("phone");
+  const [step, setStep] = useState<"info" | "otp">("info");
+  const [isNewUser, setIsNewUser] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  // Handle redirect from register
-  React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const phoneParam = params.get("phone");
-      const otpSentParam = params.get("otp_sent");
-
-      if (phoneParam) {
-        // Remove +91 if present as the input group already has it
-        const cleanPhone = phoneParam.replace(/^\+91/, "");
-        setMobile(cleanPhone);
-      }
-      if (otpSentParam === "true") {
-        setStep("otp");
-      }
-    }
-  }, []);
-
-  // Auto-login removed to prevent redirection traps during session issues.
-
-  const displayRole = initialRole
-    ? initialRole.charAt(0).toUpperCase() + initialRole.slice(1)
-    : "";
 
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!name || name.length < 2) {
+      toast.error("Please enter a valid name");
+      return;
+    }
     if (!mobile || mobile.length < 10) {
       toast.error("Please enter a valid mobile number");
       return;
@@ -75,12 +63,22 @@ export function UserLoginMobileOtpForm({
     setIsLoading(true);
     try {
       const phone = mobile.startsWith("+") ? mobile : `+91${mobile}`;
-      await authService.sendOtp({ phone });
+      const response = await authService.sendOtp({ phone, name, type });
+
+      if (response.isNewUser === false) {
+        toast.info("User already exists. Redirecting to login...");
+        router.push(
+          `/auth/login?phone=${encodeURIComponent(phone)}&otp_sent=true`
+        );
+        return;
+      }
+
+      setIsNewUser(true);
       toast.success("OTP sent successfully");
       setStep("otp");
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : "Failed to send OTP";
+        error instanceof Error ? error.message : "Failed to register";
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
@@ -100,15 +98,16 @@ export function UserLoginMobileOtpForm({
       const { token } = await authService.verifyOtp({ phone, otp });
       setToken(token);
 
-      // Fetch session to get user role
       const { user } = await authService.getSession();
       setUser(user);
 
-      toast.success("Login successful");
+      toast.success("Registration successful");
 
       // Redirection logic
       const role = user.role?.toUpperCase() || "";
-      if (
+      if (isNewUser && (role.includes("SELLER") || role.includes("SERVICE"))) {
+        router.push("/auth/register/onboarding");
+      } else if (
         role === "UNASSIGNED" ||
         role.includes("SELLER") ||
         role.includes("SERVICE")
@@ -132,21 +131,30 @@ export function UserLoginMobileOtpForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle>Login as {displayRole || "User"}</CardTitle>
+          <CardTitle>Create an account</CardTitle>
           <CardDescription>
-            Enter your mobile below to login to your{" "}
-            {displayRole.toLowerCase() || "user"} account
+            Enter your details below to create your account
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
-            {step === "phone" ? (
+            {step === "info" ? (
               <form onSubmit={handleSendOtp}>
                 <FieldGroup>
                   <Field>
+                    <FieldLabel htmlFor="name">Full Name</FieldLabel>
+                    <Input
+                      id="name"
+                      placeholder="John Doe"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                    />
+                  </Field>
+                  <Field>
                     <FieldLabel htmlFor="mobile">Mobile</FieldLabel>
                     <div className="flex gap-2">
-                      <span className="flex items-center px-3 border rounded-md bg-muted text-muted-foreground">
+                      <span className="flex items-center px-3 border rounded-md bg-muted text-muted-foreground text-sm">
                         +91
                       </span>
                       <Input
@@ -160,6 +168,21 @@ export function UserLoginMobileOtpForm({
                     </div>
                   </Field>
                   <Field>
+                    <FieldLabel htmlFor="type">I am a</FieldLabel>
+                    <Select value={type} onValueChange={setType}>
+                      <SelectTrigger id="type">
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="PRODUCT">Product Seller</SelectItem>
+                        <SelectItem value="SERVICE">
+                          Service Provider
+                        </SelectItem>
+                        <SelectItem value="BUYER">Buyer / Customer</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </Field>
+                  <Field>
                     <Button
                       type="submit"
                       disabled={isLoading}
@@ -168,7 +191,7 @@ export function UserLoginMobileOtpForm({
                       {isLoading && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
-                      Send OTP
+                      Continue
                     </Button>
                   </Field>
                 </FieldGroup>
@@ -208,16 +231,16 @@ export function UserLoginMobileOtpForm({
                       {isLoading && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
-                      Verify
+                      Verify & Register
                     </Button>
                     <Button
                       type="button"
                       variant="ghost"
-                      onClick={() => setStep("phone")}
+                      onClick={() => setStep("info")}
                       disabled={isLoading}
                       className="w-full"
                     >
-                      Change Number
+                      Change Details
                     </Button>
                   </div>
                 </FieldGroup>

@@ -3,19 +3,28 @@ export interface Entity {
   name: string;
   legalName?: string;
   description?: string;
-  status: 'PENDING' | 'VERIFIED' | 'REJECTED';
+  status: "PENDING" | "VERIFIED" | "REJECTED";
   remark?: string;
   userId: string;
   createdAt: string;
   updatedAt: string;
-  op_type?: 'PRODUCT' | 'SERVICE';
+  op_type?: "PRODUCT" | "SERVICE";
 }
 
 export interface CreateEntityRequest {
   name: string;
   legalName?: string;
   description?: string;
-  op_type: 'PRODUCT' | 'SERVICE';
+  primaryContactNumber?: string;
+  secondaryContactNumber?: string;
+  contactEmail?: string;
+  supportEmail?: string;
+  addressLine1?: string;
+  addressLine2?: string;
+  city?: string;
+  pincodeId?: string;
+  type: "MANUFACTURER" | "WHOLESALER" | "RETAILER" | "SERVICE_PROVIDER";
+  op_type: "PRODUCT" | "SERVICE";
 }
 
 export interface UpdateEntityRequest {
@@ -25,6 +34,6 @@ export interface UpdateEntityRequest {
 }
 
 export interface VerifyEntityRequest {
-  status: 'VERIFIED' | 'REJECTED';
+  status: "VERIFIED" | "REJECTED";
   remark?: string;
 }

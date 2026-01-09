@@ -116,7 +116,7 @@ _Requires ADMIN, ADMIN_MANAGER, or ADMIN_EXECUTIVE role._
 
 ```json
 {
-  "role": "USER_SELLER_ADMIN", // Optional
+  "role": "USER_PRODUCT_SELLER_ADMIN", // Optional
   "phoneVerified": true, // Optional
   "search": "john" // Optional search text
 }
@@ -137,8 +137,8 @@ User login uses Phone/OTP.
 ```json
 {
   "phone": "+919876543210",
-  "name": "Buyer",
-  "type": "BUYER"
+  "name": "John Doe",
+  "type": "PRODUCT" // "PRODUCT" | "SERVICE" | "BUYER"
 }
 ```
 
@@ -146,9 +146,12 @@ User login uses Phone/OTP.
 
 ```json
 {
-  "message": "OTP sent"
+  "message": "User created successfully and OTP sent to the phone number",
+  "isNewUser": true
 }
 ```
+
+_Note: `isNewUser` will be `true` if a new user record was created, and `false` if an existing user was found and their OTP was updated._
 
 _Check server console logs for the OTP._
 
@@ -173,8 +176,8 @@ Only accessible by specific roles.
 
 **Endpoints:**
 
-- **POST** `/user/create-user-seller-staff` (Requires USER_SELLER_ADMIN)
-- **POST** `/user/create-user-service-staff` (Requires USER_SERVICE_ADMIN)
+- **POST** `/user/create-user-seller-staff` (Requires USER_PRODUCT_SELLER_ADMIN)
+- **POST** `/user/create-user-service-staff` (Requires USER_SERVICE_PROVIDER_ADMIN)
 
 **Request Body:**
 
@@ -211,7 +214,7 @@ All routes require `Authorization: Bearer <token>` header.
 
 **POST** `/`
 
-**Roles:** `USER_SELLER_ADMIN`, `USER_SERVICE_ADMIN`.
+**Roles:** `USER_PRODUCT_SELLER_ADMIN`, `USER_SERVICE_PROVIDER_ADMIN`.
 **Constraint:** Limit 1 entity per user.
 
 **Request Body:**
@@ -220,9 +223,19 @@ All routes require `Authorization: Bearer <token>` header.
 {
   "name": "My Business",
   "legalName": "My Business Pvt Ltd",
-  "description": "A description of the business."
+  "description": "A description of the business.",
+  "primaryContactNumber": "+919876543210",
+  "secondaryContactNumber": "+919876543211",
+  "contactEmail": "contact@business.com",
+  "supportEmail": "support@business.com",
+  "addressLine1": "123 Business Street",
+  "addressLine2": "Industrial Area",
+  "city": "Mumbai",
+  "pincodeId": "uuid-of-pincode"
 }
 ```
+
+**Note:** `op_type` is automatically assigned based on the user's role (`PRODUCT` for `USER_PRODUCT_SELLER_ADMIN` or `SERVICE` for `USER_SERVICE_PROVIDER_ADMIN`).
 
 **Response:**
 
@@ -238,7 +251,7 @@ All routes require `Authorization: Bearer <token>` header.
 
 **GET** `/`
 
-**Roles:** `USER_SELLER_ADMIN`, `USER_SERVICE_ADMIN` (Fetch own), `ADMIN_MANAGER`, `ADMIN_EXECUTIVE` (Fetch all).
+**Roles:** `USER_PRODUCT_SELLER_ADMIN`, `USER_SERVICE_PROVIDER_ADMIN` (Fetch own), `ADMIN_MANAGER`, `ADMIN_EXECUTIVE` (Fetch all).
 
 **Response:**
 
@@ -248,6 +261,12 @@ All routes require `Authorization: Bearer <token>` header.
     "id": "uuid",
     "name": "My Business",
     "createdById": "user-uuid",
+    "pincode": {
+      "id": "uuid",
+      "pincode": "400001",
+      "state": "Maharashtra",
+      "district": "Mumbai"
+    },
     ...
   }
 ]
@@ -257,7 +276,7 @@ All routes require `Authorization: Bearer <token>` header.
 
 **PATCH** `/:id`
 
-**Roles:** `USER_SELLER_ADMIN`, `USER_SERVICE_ADMIN`.
+**Roles:** `USER_PRODUCT_SELLER_ADMIN`, `USER_SERVICE_PROVIDER_ADMIN`.
 Updates the entity with the specified ID. Must be owned by the user.
 
 **Request Body:**
@@ -266,7 +285,9 @@ Updates the entity with the specified ID. Must be owned by the user.
 {
   "name": "Updated Name",
   "legalName": "Updated Legal Name",
-  "description": "Updated description"
+  "description": "Updated description",
+  "primaryContactNumber": "+919876543212",
+  "city": "Pune"
 }
 ```
 

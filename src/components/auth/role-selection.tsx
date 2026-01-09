@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Package, Truck, ArrowRight, Loader2 } from "lucide-react";
 import { authService } from "@/services/authService";
@@ -13,18 +19,21 @@ export function RoleSelection() {
   const { setUser } = useAuthStore();
   const [isLoading, setIsLoading] = useState<string | null>(null);
 
-  const handleRoleSelection = async (role: "USER_SELLER_ADMIN" | "USER_SERVICE_ADMIN") => {
+  const handleRoleSelection = async (
+    role: "USER_PRODUCT_SELLER_ADMIN" | "USER_SERVICE_PROVIDER_ADMIN"
+  ) => {
     setIsLoading(role);
     try {
       await authService.updateProfile({ role });
-      
+
       // Fetch fresh session to update local state
       const { user } = await authService.getSession();
       setUser(user);
-      
+
       toast.success("Role updated successfully!");
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to update role";
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to update role";
       toast.error(errorMessage);
     } finally {
       setIsLoading(null);
@@ -42,16 +51,19 @@ export function RoleSelection() {
             CHOOSE YOUR <span className="text-primary">PATH</span>
           </h1>
           <p className="text-muted-foreground font-medium text-lg max-w-2xl mx-auto italic">
-            Tell us about your business so we can tailor the dashboard experience for you.
+            Tell us about your business so we can tailor the dashboard
+            experience for you.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Product Seller Option */}
-          <Card 
+          <Card
             className={cn(
               "group relative overflow-hidden border-2 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/10",
-              isLoading === "USER_SELLER_ADMIN" ? "border-primary ring-2 ring-primary/20" : "hover:border-primary/50"
+              isLoading === "USER_PRODUCT_SELLER_ADMIN"
+                ? "border-primary ring-2 ring-primary/20"
+                : "hover:border-primary/50"
             )}
           >
             <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity">
@@ -62,9 +74,12 @@ export function RoleSelection() {
                 <Package size={32} />
               </div>
               <div className="space-y-2">
-                <CardTitle className="text-2xl font-black tracking-tight italic">Product Seller</CardTitle>
+                <CardTitle className="text-2xl font-black tracking-tight italic">
+                  Product Seller
+                </CardTitle>
                 <CardDescription className="text-base font-medium">
-                  I want to list and sell physical construction materials and products.
+                  I want to list and sell physical construction materials and
+                  products.
                 </CardDescription>
               </div>
             </CardHeader>
@@ -74,25 +89,31 @@ export function RoleSelection() {
                   "Inventory Management",
                   "Direct Product Inquiries",
                   "Bulk Listing Tools",
-                  "Verified Seller Badge"
+                  "Verified Seller Badge",
                 ].map((feature) => (
-                  <li key={feature} className="flex items-center gap-3 text-sm font-bold text-foreground/70 italic">
+                  <li
+                    key={feature}
+                    className="flex items-center gap-3 text-sm font-bold text-foreground/70 italic"
+                  >
                     <div className="h-1.5 w-1.5 rounded-full bg-primary" />
                     {feature}
                   </li>
                 ))}
               </ul>
-              <Button 
-                onClick={() => handleRoleSelection("USER_SELLER_ADMIN")}
+              <Button
+                onClick={() => handleRoleSelection("USER_PRODUCT_SELLER_ADMIN")}
                 disabled={!!isLoading}
                 className="w-full h-14 rounded-2xl bg-foreground text-background hover:bg-primary hover:text-white transition-all duration-300 font-black text-xs uppercase tracking-widest group/btn"
               >
-                {isLoading === "USER_SELLER_ADMIN" ? (
+                {isLoading === "USER_PRODUCT_SELLER_ADMIN" ? (
                   <Loader2 className="animate-spin mr-2" />
                 ) : (
                   <>
                     Select Product Path
-                    <ArrowRight className="ml-2 group-hover/btn:translate-x-1 transition-transform" size={16} />
+                    <ArrowRight
+                      className="ml-2 group-hover/btn:translate-x-1 transition-transform"
+                      size={16}
+                    />
                   </>
                 )}
               </Button>
@@ -100,10 +121,12 @@ export function RoleSelection() {
           </Card>
 
           {/* Service Provider Option */}
-          <Card 
+          <Card
             className={cn(
               "group relative overflow-hidden border-2 transition-all duration-300 hover:shadow-2xl hover:shadow-secondary/10",
-              isLoading === "USER_SERVICE_ADMIN" ? "border-secondary ring-2 ring-secondary/20" : "hover:border-secondary/50"
+              isLoading === "USER_SERVICE_PROVIDER_ADMIN"
+                ? "border-secondary ring-2 ring-secondary/20"
+                : "hover:border-secondary/50"
             )}
           >
             <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity">
@@ -114,9 +137,12 @@ export function RoleSelection() {
                 <Truck size={32} />
               </div>
               <div className="space-y-2">
-                <CardTitle className="text-2xl font-black tracking-tight italic">Service Provider</CardTitle>
+                <CardTitle className="text-2xl font-black tracking-tight italic">
+                  Service Provider
+                </CardTitle>
                 <CardDescription className="text-base font-medium">
-                  I want to offer specialized construction services or logistics.
+                  I want to offer specialized construction services or
+                  logistics.
                 </CardDescription>
               </div>
             </CardHeader>
@@ -126,32 +152,40 @@ export function RoleSelection() {
                   "Service Area Management",
                   "Appointment Scheduling",
                   "Portfolio Highlights",
-                  "Customer Reviews"
+                  "Customer Reviews",
                 ].map((feature) => (
-                  <li key={feature} className="flex items-center gap-3 text-sm font-bold text-foreground/70 italic">
+                  <li
+                    key={feature}
+                    className="flex items-center gap-3 text-sm font-bold text-foreground/70 italic"
+                  >
                     <div className="h-1.5 w-1.5 rounded-full bg-secondary" />
                     {feature}
                   </li>
                 ))}
               </ul>
-              <Button 
-                onClick={() => handleRoleSelection("USER_SERVICE_ADMIN")}
+              <Button
+                onClick={() =>
+                  handleRoleSelection("USER_SERVICE_PROVIDER_ADMIN")
+                }
                 disabled={!!isLoading}
                 className="w-full h-14 rounded-2xl bg-foreground text-background hover:bg-secondary hover:text-white transition-all duration-300 font-black text-xs uppercase tracking-widest group/btn"
               >
-                {isLoading === "USER_SERVICE_ADMIN" ? (
+                {isLoading === "USER_SERVICE_PROVIDER_ADMIN" ? (
                   <Loader2 className="animate-spin mr-2" />
                 ) : (
                   <>
                     Select Service Path
-                    <ArrowRight className="ml-2 group-hover/btn:translate-x-1 transition-transform" size={16} />
+                    <ArrowRight
+                      className="ml-2 group-hover/btn:translate-x-1 transition-transform"
+                      size={16}
+                    />
                   </>
                 )}
               </Button>
             </CardContent>
           </Card>
         </div>
-        
+
         <div className="mt-12 text-center">
           <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/30 italic">
             Secure Onboarding Powered by E-CON Systems

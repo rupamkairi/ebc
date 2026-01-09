@@ -1,0 +1,29 @@
+
+Page: auth/register/onboarding
+
+if auth/user/send-otp API gives isNewUser: true - redirect to auth/register/onboarding.
+onboarding page has a form that takes care of following form fields. (well check what are the mandatory ones & api request must go through without that.)
+```
+  name                   String
+  legalName              String?
+  description            String?
+  primaryContactNumber   String? (Pre poluate with User's phone number)
+  secondaryContactNumber String?
+  contactEmail           String? (Pre polulate with User's email) 
+  supportEmail           String?
+  addressLine1           String?
+  addressLine2           String?
+  city                   String?
+  pincodeId              String? (This should be used by pincode search autocomplete.)
+  type                   ENTITY_TYPE? (This is a dropdown if (MANUFACTURER,WHOLESALER,RETAILER,SERVICE_PROVIDER)) (Hint: This should not be changed later.)
+here SERVICE_PROVIDER will be disabled if User Role is USER_PRODUCT_SELLER_ADMIN & MANUFACTURER,WHOLESALER,RETAILER will be disabled if User Role is USER_SERVICE_PROVIDER_ADMIN.
+```
+Implement correct form validation for this.
+Use ... Entity API Endpoints to create the business.
+When you have successfully created the business, redirect to /seller-dashboard.
+
+You might want to use a onboarding-guard before /seller-dashboard to check if user has completed onboarding. if not then place them on /auth/register/onboarding.
+
+To Implement all this you need to correctly handle the state management of the user. reuse the store & create managable utilities that helps handling this whole process.
+
+remove business-setup, onboarding-provider, from directory @/components/auth & all their usecases.

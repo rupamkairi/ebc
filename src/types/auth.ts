@@ -22,6 +22,11 @@ export interface CreateAdminSubordinateRequest {
   password?: string;
 }
 
+export interface SendOtpResponse {
+  message: string;
+  isNewUser?: boolean;
+}
+
 export interface SendOtpRequest {
   phone: string;
   name?: string;

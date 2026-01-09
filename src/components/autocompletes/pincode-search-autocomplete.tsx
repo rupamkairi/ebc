@@ -8,6 +8,7 @@ import { PincodeRecord } from "@/types/region";
 interface PincodeSearchAutocompleteProps {
   value?: string; // This will be the pincode directory ID
   onRecordSelect?: (record: PincodeRecord) => void;
+  onValueChange?: (value: string) => void;
   placeholder?: string;
   label?: string;
   className?: string;
@@ -17,6 +18,7 @@ interface PincodeSearchAutocompleteProps {
 export function PincodeSearchAutocomplete({
   value,
   onRecordSelect,
+  onValueChange,
   placeholder = "Search pincode...",
   label = "Select Pincode",
   className,
@@ -49,6 +51,9 @@ export function PincodeSearchAutocomplete({
     const selectedRecord = data?.find((r) => r.id === val);
     if (selectedRecord && onRecordSelect) {
       onRecordSelect(selectedRecord);
+    }
+    if (onValueChange) {
+      onValueChange(val);
     }
   };
 
