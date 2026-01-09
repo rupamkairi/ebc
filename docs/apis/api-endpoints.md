@@ -469,7 +469,7 @@ Base URL: `/api/catalog`
   {
     "itemListingId": "UUID",
     "minQuantity": 50,
-    "unitType": "Kilogram",
+    "unitType": "Kilogram?",
     "rate": 400,
     "isNegotiable": true
   }
