@@ -52,6 +52,7 @@ interface FileUploaderProps {
   showTrigger?: boolean;
   crop?: boolean;
   type?: "media" | "document";
+  entityId?: string;
 }
 
 export function FileUploader({
@@ -63,6 +64,7 @@ export function FileUploader({
   showTrigger = true,
   crop = variant === "single",
   type = "media",
+  entityId,
 }: FileUploaderProps) {
   const isSingle = variant === "single";
   const maxFiles = isSingle ? 1 : propMaxFiles || 10;
@@ -154,6 +156,16 @@ export function FileUploader({
       ? `${basePath}/upload/single`
       : `${basePath}/upload/multiple`;
 
+    const uploadUrl = new URL(
+      `${apiBaseUrl}/${
+        endpoint.startsWith("/") ? endpoint.substring(1) : endpoint
+      }`
+    );
+
+    if (entityId) {
+      uploadUrl.searchParams.append("entityId", entityId);
+    }
+
     const formData = new FormData();
     idleFiles.forEach((f) => {
       formData.append(isSingle ? "file" : "files", f.file, f.name);
@@ -166,12 +178,7 @@ export function FileUploader({
     try {
       const response = (await new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.open(
-          "POST",
-          `${apiBaseUrl}/${
-            endpoint.startsWith("/") ? endpoint.substring(1) : endpoint
-          }`
-        );
+        xhr.open("POST", uploadUrl.toString());
 
         if (token) {
           xhr.setRequestHeader("Authorization", `Bearer ${token}`);

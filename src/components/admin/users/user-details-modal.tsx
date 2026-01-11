@@ -195,26 +195,46 @@ export function UserDetailsModal({
                     </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {entity.documents && entity.documents.length > 0 ? (
-                        entity.documents.map((docId, idx) => (
-                          <a
-                            key={docId}
-                            href={`${
+                        entity.documents.map((docId, idx) => {
+                          const attachment = entity.entityAttachments?.find(
+                            (a) => a.document.id === docId
+                          );
+                          const downloadUrl =
+                            attachment?.document.url ||
+                            `${
                               process.env.NEXT_PUBLIC_API_URL ||
                               "http://localhost:10000/api"
-                            }/attachment/document/url/${docId}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors group"
-                          >
-                            <div className="flex items-center gap-2 overflow-hidden">
-                              <FileText className="size-4 text-primary shrink-0" />
-                              <span className="text-xs font-medium truncate">
-                                Document {idx + 1}
-                              </span>
-                            </div>
-                            <ExternalLink className="size-3 text-muted-foreground group-hover:text-primary" />
-                          </a>
-                        ))
+                            }/attachment/document/url/${docId}`;
+
+                          return (
+                            <a
+                              key={docId}
+                              href={downloadUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors group"
+                            >
+                              <div className="flex items-center gap-2 overflow-hidden">
+                                <FileText className="size-4 text-primary shrink-0" />
+                                <div className="flex flex-col">
+                                  <span className="text-xs font-medium truncate">
+                                    {attachment?.document.name ||
+                                      `Document ${idx + 1}`}
+                                  </span>
+                                  {attachment && (
+                                    <span className="text-[10px] text-muted-foreground">
+                                      {(
+                                        attachment.document.size / 1024
+                                      ).toFixed(1)}{" "}
+                                      KB
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                              <ExternalLink className="size-3 text-muted-foreground group-hover:text-primary" />
+                            </a>
+                          );
+                        })
                       ) : (
                         <div className="col-span-full p-4 text-center border border-dashed rounded-lg bg-muted/20">
                           <p className="text-xs text-muted-foreground italic">

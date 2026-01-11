@@ -17,7 +17,9 @@ import { PincodeRecord } from "@/types/region";
 import {
   useUpdateEntityMutation,
   useEntitiesQuery,
+  entityKeys,
 } from "@/queries/entityQueries";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   FileUploader,
   FileUploadResponse,
@@ -31,6 +33,7 @@ export function EntitySettingsForm() {
   const { data: entities = [], isLoading: isLoadingEntity } =
     useEntitiesQuery();
   const updateEntityMutation = useUpdateEntityMutation();
+  const queryClient = useQueryClient();
   const entity = entities[0];
 
   const form = useForm({
@@ -64,7 +67,6 @@ export function EntitySettingsForm() {
 
   useEffect(() => {
     if (entity) {
-      const docs = entity.documents || [];
       form.reset({
         name: entity.name || "",
         legalName: entity.legalName || "",
@@ -77,7 +79,10 @@ export function EntitySettingsForm() {
         addressLine2: entity.addressLine2 || "",
         city: entity.city || "",
         pincodeId: entity.pincodeId || "",
-        documents: docs,
+        documents: [
+          ...((entity.documents as string[]) || []),
+          ...(entity.entityAttachments?.map((a) => a.document.id) || []),
+        ].filter((id, index, self) => self.indexOf(id) === index),
       });
     }
   }, [entity, form]);
@@ -301,12 +306,17 @@ export function EntitySettingsForm() {
                       type="document"
                       variant="multiple"
                       label="Add Documents"
+                      entityId={entity.id}
                       onUploadSuccess={(newFiles: FileUploadResponse[]) => {
                         const newIds = newFiles.map((f) => f.id);
                         field.handleChange([
                           ...(field.state.value || []),
                           ...newIds,
                         ]);
+                        // Invalidate query to get updated attachments from backend
+                        queryClient.invalidateQueries({
+                          queryKey: entityKeys.all,
+                        });
                       }}
                     />
                   </div>
@@ -328,12 +338,26 @@ export function EntitySettingsForm() {
                           <div className="flex items-center gap-2 overflow-hidden">
                             <FileText className="size-4 shrink-0 text-primary" />
                             <div className="flex flex-col">
-                              <span className="text-xs font-semibold truncate text-primary">
-                                Document {idx + 1}
-                              </span>
-                              <span className="text-[10px] text-muted-foreground truncate">
-                                ID: {docId}
-                              </span>
+                              {(() => {
+                                const attachment = entity.entityAttachments?.find(
+                                  (a) => a.document.id === docId
+                                );
+                                return (
+                                  <>
+                                    <span className="text-xs font-semibold truncate text-primary">
+                                      {attachment?.document.name ||
+                                        `Document ${idx + 1}`}
+                                    </span>
+                                    <span className="text-[10px] text-muted-foreground truncate">
+                                      {attachment
+                                        ? `${(
+                                            attachment.document.size / 1024
+                                          ).toFixed(1)} KB`
+                                        : `ID: ${docId}`}
+                                    </span>
+                                  </>
+                                );
+                              })()}
                             </div>
                           </div>
                           <div className="flex items-center gap-1">
@@ -343,13 +367,17 @@ export function EntitySettingsForm() {
                               size="icon"
                               className="size-7"
                               onClick={() => {
-                                window.open(
+                                const attachment = entity.entityAttachments?.find(
+                                  (a) => a.document.id === docId
+                                );
+                                const downloadUrl =
+                                  attachment?.document.url ||
                                   `${
                                     process.env.NEXT_PUBLIC_API_URL ||
                                     "http://localhost:10000/api"
-                                  }/attachment/document/url/${docId}`,
-                                  "_blank"
-                                );
+                                  }/attachment/document/url/${docId}`;
+
+                                window.open(downloadUrl, "_blank");
                               }}
                             >
                               <FileText className="size-4" />
