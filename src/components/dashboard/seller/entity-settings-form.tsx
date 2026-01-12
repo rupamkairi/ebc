@@ -339,19 +339,31 @@ export function EntitySettingsForm() {
                             <FileText className="size-4 shrink-0 text-primary" />
                             <div className="flex flex-col">
                               {(() => {
-                                const attachment = entity.entityAttachments?.find(
-                                  (a) => a.document.id === docId
-                                );
+                                const attachment =
+                                  entity.entityAttachments?.find(
+                                    (a) => a.document.id === docId
+                                  );
+                                const doc = attachment?.document;
+                                const fileName =
+                                  doc?.name ||
+                                  doc?.key
+                                    .split("/")
+                                    .pop()
+                                    ?.split("-")
+                                    .slice(2)
+                                    .join("-") ||
+                                  doc?.key.split("/").pop() ||
+                                  `Document ${idx + 1}`;
+
                                 return (
                                   <>
                                     <span className="text-xs font-semibold truncate text-primary">
-                                      {attachment?.document.name ||
-                                        `Document ${idx + 1}`}
+                                      {decodeURIComponent(fileName)}
                                     </span>
                                     <span className="text-[10px] text-muted-foreground truncate">
-                                      {attachment
+                                      {doc
                                         ? `${(
-                                            attachment.document.size / 1024
+                                            parseInt(doc.sizeBytes) / 1024
                                           ).toFixed(1)} KB`
                                         : `ID: ${docId}`}
                                     </span>
@@ -367,9 +379,10 @@ export function EntitySettingsForm() {
                               size="icon"
                               className="size-7"
                               onClick={() => {
-                                const attachment = entity.entityAttachments?.find(
-                                  (a) => a.document.id === docId
-                                );
+                                const attachment =
+                                  entity.entityAttachments?.find(
+                                    (a) => a.document.id === docId
+                                  );
                                 const downloadUrl =
                                   attachment?.document.url ||
                                   `${

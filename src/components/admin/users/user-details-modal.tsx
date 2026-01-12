@@ -194,22 +194,28 @@ export function UserDetailsModal({
                       Verification Documents
                     </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {entity.documents && entity.documents.length > 0 ? (
-                        entity.documents.map((docId, idx) => {
-                          const attachment = entity.entityAttachments?.find(
-                            (a) => a.document.id === docId
-                          );
-                          const downloadUrl =
-                            attachment?.document.url ||
-                            `${
-                              process.env.NEXT_PUBLIC_API_URL ||
-                              "http://localhost:10000/api"
-                            }/attachment/document/url/${docId}`;
+                      {entity.entityAttachments &&
+                      entity.entityAttachments.length > 0 ? (
+                        entity.entityAttachments.map((attachment, idx) => {
+                          const doc = attachment.document;
+                          const fileName =
+                            doc.name ||
+                            doc.key
+                              .split("/")
+                              .pop()
+                              ?.split("-")
+                              .slice(2)
+                              .join("-") ||
+                            doc.key.split("/").pop() ||
+                            `Document ${idx + 1}`;
+                          const sizeInKb = (
+                            parseInt(doc.sizeBytes) / 1024
+                          ).toFixed(1);
 
                           return (
                             <a
-                              key={docId}
-                              href={downloadUrl}
+                              key={attachment.id}
+                              href={doc.url}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors group"
@@ -217,18 +223,12 @@ export function UserDetailsModal({
                               <div className="flex items-center gap-2 overflow-hidden">
                                 <FileText className="size-4 text-primary shrink-0" />
                                 <div className="flex flex-col">
-                                  <span className="text-xs font-medium truncate">
-                                    {attachment?.document.name ||
-                                      `Document ${idx + 1}`}
+                                  <span className="text-xs font-medium truncate max-w-[180px]">
+                                    {decodeURIComponent(fileName)}
                                   </span>
-                                  {attachment && (
-                                    <span className="text-[10px] text-muted-foreground">
-                                      {(
-                                        attachment.document.size / 1024
-                                      ).toFixed(1)}{" "}
-                                      KB
-                                    </span>
-                                  )}
+                                  <span className="text-[10px] text-muted-foreground">
+                                    {sizeInKb} KB
+                                  </span>
                                 </div>
                               </div>
                               <ExternalLink className="size-3 text-muted-foreground group-hover:text-primary" />

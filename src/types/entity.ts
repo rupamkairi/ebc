@@ -19,16 +19,20 @@ export interface Entity {
   verificaitonRemark?: string | null;
   verifiedById?: string | null;
   documents?: string[] | null;
-  entityAttachments?: {
-    id: string;
-    document: {
-      id: string;
-      name: string;
-      url: string;
-      mimeType: string;
-      size: number;
-    };
-  }[] | null;
+  entityAttachments?:
+    | {
+        id: string;
+        documentId: string;
+        document: {
+          id: string;
+          key: string;
+          url: string;
+          mimeType: string;
+          sizeBytes: string;
+          name?: string;
+        };
+      }[]
+    | null;
   pincode?: {
     id: string;
     pincode: string;
