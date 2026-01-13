@@ -111,4 +111,17 @@ export const activityService = {
       body: params as Record<string, string | number | boolean>,
     });
   },
+
+  async updateQuotation(id: string, data: Partial<CreateQuotationRequest>) {
+    return fetchClient<Quotation>(
+      `${
+        API_ENDPOINTS.ACTIVITY.QUOTATION.UPDATE ||
+        API_ENDPOINTS.ACTIVITY.QUOTATION.GET
+      }/${id}`,
+      {
+        method: "PATCH",
+        body: data,
+      }
+    );
+  },
 };

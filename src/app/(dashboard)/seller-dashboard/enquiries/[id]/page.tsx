@@ -228,7 +228,7 @@ export default function EnquiryDetailsPage() {
             <CardContent>
               <Button className="w-full" variant="secondary" asChild>
                 <Link
-                  href={`/seller-dashboard/quotations/new?enquiryId=${enquiry.id}`}
+                  href={`/seller-dashboard/quotations/create?enquiryId=${enquiry.id}`}
                 >
                   <FileText className="mr-2 h-4 w-4" />
                   Create Quotation

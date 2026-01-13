@@ -4,6 +4,9 @@ import {
   CreateAppointmentRequest,
   CreateEnquiryRequest,
   EnquiryListParams,
+  AssignmentListParams,
+  QuotationListParams,
+  CreateQuotationRequest,
 } from "@/types/activity";
 import {
   keepPreviousData,
@@ -21,6 +24,11 @@ export const activityKeys = {
     [...activityKeys.all, "appointments", params] as const,
   appointment: (id: string) =>
     [...activityKeys.all, "appointment", id] as const,
+  assignments: (params: AssignmentListParams) =>
+    [...activityKeys.all, "assignments", params] as const,
+  quotations: (params: QuotationListParams) =>
+    [...activityKeys.all, "quotations", params] as const,
+  quotation: (id: string) => [...activityKeys.all, "quotation", id] as const,
 };
 
 // Enquiry Hooks
@@ -93,6 +101,69 @@ export function useDeleteAppointmentMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => activityService.deleteAppointment(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: activityKeys.all });
+    },
+  });
+}
+
+// Assignment Hooks
+export function useAssignmentsQuery(params: AssignmentListParams = {}) {
+  return useQuery({
+    queryKey: activityKeys.assignments(params),
+    queryFn: () => activityService.getAssignments(params),
+    placeholderData: keepPreviousData,
+  });
+}
+
+// Quotation Hooks
+export function useQuotationsQuery(params: QuotationListParams = {}) {
+  return useQuery({
+    queryKey: activityKeys.quotations(params),
+    queryFn: () => activityService.getQuotations(params),
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useQuotationQuery(id: string) {
+  return useQuery({
+    queryKey: activityKeys.quotation(id),
+    queryFn: () => activityService.getQuotation(id),
+    enabled: !!id,
+  });
+}
+
+export function useCreateQuotationMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreateQuotationRequest) =>
+      activityService.createQuotation(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: activityKeys.all });
+    },
+  });
+}
+
+export function useUpdateQuotationMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: Partial<CreateQuotationRequest>;
+    }) => activityService.updateQuotation(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: activityKeys.all });
+    },
+  });
+}
+
+export function useDeleteQuotationMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => activityService.deleteQuotation(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: activityKeys.all });
     },

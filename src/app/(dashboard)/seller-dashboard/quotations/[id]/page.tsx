@@ -1,0 +1,127 @@
+"use client";
+
+import { useParams, useRouter } from "next/navigation";
+import {
+  useQuotationQuery,
+  useUpdateQuotationMutation,
+  useEnquiryQuery,
+} from "@/queries/activityQueries";
+import { QuotationForm } from "@/components/dashboard/seller/quotation/quotation-form";
+import { Loader2, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { toast } from "sonner";
+import { useMemo } from "react";
+import { useItemListingsQuery } from "@/queries/catalogQueries";
+import { useEntitiesQuery } from "@/queries/entityQueries";
+import { CreateQuotationRequest } from "@/types/activity";
+import { QuotationState } from "@/store/quotationStore";
+
+export default function ViewQuotationPage() {
+  const params = useParams();
+  const id = params.id as string;
+  const router = useRouter();
+
+  const { data: quotation, isLoading: isQuotationLoading } =
+    useQuotationQuery(id);
+  const { data: enquiry, isLoading: isEnquiryLoading } = useEnquiryQuery(
+    quotation?.enquiryId || ""
+  );
+  const { data: entities } = useEntitiesQuery();
+  const sellerEntityId = entities?.[0]?.id;
+
+  const { data: listings } = useItemListingsQuery({ entityId: sellerEntityId });
+
+  const { mutate: updateQuotation, isPending: isUpdating } =
+    useUpdateQuotationMutation();
+
+  const killSwitchUpdateDisabled = true; // The Kill Switch
+
+  const initialData: Pick<QuotationState, "lineItems" | "details"> | null =
+    useMemo(() => {
+      if (!quotation || !listings || !enquiry) return null;
+
+      return {
+        lineItems: quotation.quotationLineItems.map((item) => {
+          // Match the item to a listing for the form
+          const matchedListing = listings.find((l) => l.itemId === item.itemId);
+          const enquiryItem = enquiry.enquiryLineItems.find(
+            (eli) => eli.itemId === item.itemId
+          );
+
+          return {
+            itemId: item.itemId,
+            itemListingId: matchedListing?.id || "",
+            rate: item.rate,
+            amount: item.amount,
+            isNegotiable: item.isNegotiable,
+            remarks: item.remarks || "",
+            quantity: enquiryItem?.quantity || 0,
+          };
+        }),
+        details: {
+          expectedDate: quotation.quotationDetails?.[0]?.expectedDate,
+          remarks: quotation.quotationDetails?.[0]?.remarks,
+          attachmentIds: quotation.quotationDetails?.[0]?.attachmentIds || [],
+        },
+      };
+    }, [quotation, listings, enquiry]);
+
+  if (isQuotationLoading || (quotation && (isEnquiryLoading || !listings))) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!quotation || !enquiry) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+        <p className="text-muted-foreground font-medium text-lg">
+          Quotation or Enquiry not found.
+        </p>
+        <Button variant="outline" asChild>
+          <Link href="/seller-dashboard/quotations">Back to Quotations</Link>
+        </Button>
+      </div>
+    );
+  }
+
+  const handleSubmit = (data: CreateQuotationRequest) => {
+    if (killSwitchUpdateDisabled) return;
+
+    updateQuotation(
+      { id, data },
+      {
+        onSuccess: () => {
+          toast.success("Quotation updated successfully!");
+          router.push("/seller-dashboard/quotations");
+        },
+        onError: (error: Error) => {
+          toast.error(error.message || "Failed to update quotation.");
+        },
+      }
+    );
+  };
+
+  return (
+    <div className="space-y-6">
+      <Link
+        href="/seller-dashboard/quotations"
+        className="flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-primary transition-colors"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back to Quotation list
+      </Link>
+      <QuotationForm
+        enquiry={enquiry}
+        onSubmit={handleSubmit}
+        isLoading={isUpdating}
+        isUpdate={true}
+        killSwitchUpdateDisabled={killSwitchUpdateDisabled}
+        initialData={initialData}
+      />
+    </div>
+  );
+}

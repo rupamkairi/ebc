@@ -1,0 +1,27 @@
+
+Against Enquiry there will be a Quotation.
+Can be Created from /enquiries/[id] 
+
+Create Page - quotations/create?enquiryId=
+Update/View Page - quotations/[id]
+
+Quotation LineItem Selection against Enquiry LineItems. 
+
+1. Display Enquiry LineItems, quantity & remarks.
+2. A dropdown with exact item listing pre-selected.
+This Dropdown should only fetch ItemListings under the same seller entity along with the same category, specification & brand filters.
+You may want to create a autocomplete component for this.
+if flexibleWithBrands then brand filter can be dropped.
+3. Beside each line item there should be Rate (seller will input)
+4. Amount should be calculated based on rate & quantity.
+5. Remark.
+With all the information Create the Quotation.
+
+Create Store & Queries & everything else that you need.
+
+View Page should allow to View & Update the Quotation.
+But I need a Kill Switch for it, cause Quotation Update is not allowed. (as of now. - will change soon. So Implement the feature but disable updating with a kill_switch.)
+
+Organize Components well. Use SOLID Principles. Keep end-to-end TypeSafety.
+
+---

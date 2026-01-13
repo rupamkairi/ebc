@@ -86,6 +86,7 @@ export const API_ENDPOINTS = {
     QUOTATION: {
       CREATE: "/activity/quotation",
       GET: "/activity/quotation", // :id
+      UPDATE: "/activity/quotation", // :id
       DELETE: "/activity/quotation", // :id
       LIST: "/activity/quotation/list",
     },
