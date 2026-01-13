@@ -1,159 +1,179 @@
 "use client";
 
-import { 
-  Search, 
-  ChevronRight,
-  Calendar,
-  MapPin
-} from "lucide-react";
+import { Search, ChevronRight, Calendar, MapPin, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Card, CardContent } from "@/components/ui/card";
-
-const enquiries = [
-  {
-    id: "ENQ-001",
-    customer: "Amit Sharma",
-    location: "Indore, MP",
-    items: "Cement (50 bags)",
-    date: "22 Dec 2025",
-    time: "10:30 AM",
-    status: "New",
-    priority: "High",
-  },
-  {
-    id: "ENQ-002",
-    customer: "Priya Verma",
-    location: "Ujjain, MP",
-    items: "Bricks (5000 pcs)",
-    date: "22 Dec 2025",
-    time: "11:45 AM",
-    status: "New",
-    priority: "Medium",
-  },
-  {
-    id: "ENQ-003",
-    customer: "Rahul Gupta",
-    location: "Bhopal, MP",
-    items: "Sariya (2 Ton)",
-    date: "21 Dec 2025",
-    time: "03:20 PM",
-    status: "Quoted",
-    priority: "High",
-  },
-  {
-    id: "ENQ-004",
-    customer: "Vivek Roy",
-    location: "Indore, MP",
-    items: "Marble (1200 Sqft)",
-    date: "21 Dec 2025",
-    time: "05:10 PM",
-    status: "New",
-    priority: "Low",
-  },
-];
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import { activityService } from "@/services/activityService";
+import { entityService } from "@/services/entityService";
+import { ActivityAssignment } from "@/types/activity";
+import { format } from "date-fns";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 
 export default function EnquiriesPage() {
+  const [assignments, setAssignments] = useState<ActivityAssignment[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const entities = await entityService.getAll();
+        if (entities && entities.length > 0) {
+          const sellerEntity = entities[0];
+          const assignmentData = await activityService.getAssignments({
+            toEntityId: sellerEntity.id,
+            type: "ENQUIRY_ASSIGNMENT",
+          });
+          setAssignments(assignmentData);
+        }
+      } catch (error) {
+        console.error("Error fetching enquiries:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status.toUpperCase()) {
+      case "PENDING":
+        return "bg-yellow-100 text-yellow-700 hover:bg-yellow-100";
+      case "APPROVED":
+        return "bg-green-100 text-green-700 hover:bg-green-100";
+      case "REJECTED":
+        return "bg-red-100 text-red-700 hover:bg-red-100";
+      default:
+        return "bg-blue-100 text-blue-700 hover:bg-blue-100";
+    }
+  };
+
   return (
-    <div className="flex flex-col gap-8">
-      {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div className="flex flex-col gap-6 p-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-black text-foreground tracking-tight italic">
+          <h1 className="text-3xl font-bold tracking-tight">
             Active Enquiries
           </h1>
-          <p className="text-foreground/60 font-bold italic mt-1">
-            New leads from buyers looking for your products & services.
+          <p className="text-muted-foreground">
+            Manage and respond to enquiries from potential buyers.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="relative flex-1 md:w-80">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/30" size={20} />
-            <input 
-              type="text" 
-              placeholder="Search leads by customer or item..." 
-              className="w-full bg-white border border-border rounded-2xl py-3.5 pl-12 pr-4 text-sm font-bold focus:ring-2 focus:ring-primary/20 outline-none transition-all shadow-sm"
-            />
-          </div>
+        <div className="relative w-full md:w-80">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            type="search"
+            placeholder="Search enquiries..."
+            className="pl-8"
+          />
         </div>
       </div>
 
-      {/* Enquiries List */}
-      <div className="grid gap-6">
-        {enquiries.map((enq) => (
-          <Card key={enq.id} className="border-none shadow-sm hover:shadow-xl transition-all overflow-hidden group bg-white rounded-4xl">
-            <CardContent className="p-0">
-              <div className="flex flex-col md:flex-row">
-                {/* Urgency/Status Marker */}
-                <div className={`w-full md:w-2 h-2 md:h-auto ${
-                  enq.status === 'New' ? 'bg-amber-500' : 'bg-primary/30'
-                }`} />
-                
-                <div className="flex-1 p-8 flex flex-col md:flex-row md:items-center justify-between gap-8">
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <span className="text-[10px] font-black uppercase tracking-[0.2em] bg-muted px-3 py-1 rounded-full text-foreground/40">
-                        LEAD {enq.id}
-                      </span>
-                      {enq.status === 'New' && (
-                        <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.15em] bg-amber-50 text-amber-600 px-3 py-1 rounded-full border border-amber-100">
-                          <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
-                          Premium Lead
-                        </span>
-                      )}
-                    </div>
-                    
-                    <div>
-                      <h3 className="text-2xl font-black text-foreground group-hover:text-primary transition-colors italic">
-                        {enq.customer}
-                      </h3>
-                      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-2 text-sm font-bold text-foreground/40 italic">
-                        <span className="flex items-center gap-2">
-                          <MapPin size={16} className="text-primary" />
-                          {enq.location}
-                        </span>
-                        <span className="flex items-center gap-2">
-                          <Calendar size={16} className="text-primary" />
-                          {enq.date}, {enq.time}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <div className="bg-primary/5 border border-primary/10 rounded-2xl px-5 py-3 shadow-inner">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-primary/40 mb-1">Buyer Requirement</p>
-                        <span className="text-lg font-black text-primary italic">
-                          {enq.items}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col items-center gap-4">
-                    {enq.status === 'New' ? (
-                      <div className="flex flex-col items-center gap-4 w-full md:w-auto">
-                        <div className="flex items-center gap-2 bg-amber-50 text-amber-700 font-black text-xs uppercase px-4 py-2 rounded-xl border border-amber-100 italic">
-                          Unlock for 5 Coins
-                        </div>
-                        <Button className="w-full md:w-auto bg-amber-600 hover:bg-amber-700 text-white font-black py-7 px-10 rounded-2xl flex items-center gap-3 group/btn shadow-xl shadow-amber-200">
-                          Unlock Lead
-                          <ChevronRight size={20} className="group-hover/btn:translate-x-1 transition-transform" />
-                        </Button>
-                      </div>
-                    ) : (
-                      <Link href={`/seller-dashboard/enquiries/${enq.id}`} className="w-full md:w-auto">
-                        <Button className="w-full md:w-auto bg-primary hover:bg-primary/90 text-white font-black py-7 px-10 rounded-2xl flex items-center gap-3 group/btn shadow-xl shadow-primary/20">
-                          Create Quotation
-                          <ChevronRight size={20} className="group-hover/btn:translate-x-1 transition-transform" />
-                        </Button>
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              </div>
+      <div className="grid gap-4">
+        {assignments.length === 0 ? (
+          <Card className="border-dashed">
+            <CardContent className="flex h-[200px] items-center justify-center">
+              <p className="text-muted-foreground">
+                No enquiries assigned yet.
+              </p>
             </CardContent>
           </Card>
-        ))}
+        ) : (
+          assignments.map((assignment) => {
+            const enq = assignment.enquiry;
+            if (!enq) return null;
+
+            const firstItem = enq.enquiryLineItems?.[0];
+            const details = enq.enquiryDetails?.[0];
+
+            return (
+              <Card
+                key={assignment.id}
+                className="hover:shadow-md transition-shadow"
+              >
+                <CardHeader className="pb-3 border-b bg-muted/5">
+                  <div className="flex justify-between items-start">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <Badge
+                          variant="outline"
+                          className="font-mono text-[10px]"
+                        >
+                          ID: {enq.id.slice(0, 8)}
+                        </Badge>
+                        {enq.status === "PENDING" && (
+                          <Badge className="bg-amber-500 hover:bg-amber-600">
+                            New
+                          </Badge>
+                        )}
+                      </div>
+                      <CardTitle className="text-xl">
+                        {enq.createdBy?.name || "Anonymous Buyer"}
+                      </CardTitle>
+                      <CardDescription className="flex items-center gap-4 mt-1">
+                        {details?.address && (
+                          <span className="flex items-center gap-1">
+                            <MapPin size={14} />
+                            {details.address}
+                          </span>
+                        )}
+                        <span className="flex items-center gap-1">
+                          <Calendar size={14} />
+                          {format(new Date(enq.createdAt), "PPP")}
+                        </span>
+                      </CardDescription>
+                    </div>
+                    <Badge className={getStatusColor(enq.status || "PENDING")}>
+                      {enq.status || "PENDING"}
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-4">
+                  <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+                        Requirement
+                      </p>
+                      <p className="text-base font-semibold">
+                        {firstItem?.item?.name || "Enquiry Items"}{" "}
+                        {enq?.enquiryLineItems?.length > 1
+                          ? `(+${enq.enquiryLineItems.length - 1} more)`
+                          : ""}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {firstItem?.quantity} {firstItem?.unitType} requested
+                      </p>
+                    </div>
+                    <Button asChild>
+                      <Link href={`/seller-dashboard/enquiries/${enq.id}`}>
+                        {enq.status === "PENDING" ? "Respond" : "View Details"}
+                        <ChevronRight className="ml-2 h-4 w-4" />
+                      </Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })
+        )}
       </div>
     </div>
   );

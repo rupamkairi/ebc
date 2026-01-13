@@ -7,6 +7,11 @@ import {
   CreateEnquiryRequest,
   Enquiry,
   EnquiryListParams,
+  ActivityAssignment,
+  AssignmentListParams,
+  Quotation,
+  QuotationListParams,
+  CreateQuotationRequest,
 } from "@/types/activity";
 
 export const activityService = {
@@ -62,6 +67,46 @@ export const activityService = {
 
   async getAppointments(params: AppointmentListParams = {}) {
     return fetchClient<Appointment[]>(API_ENDPOINTS.ACTIVITY.APPOINTMENT.LIST, {
+      method: "POST",
+      body: params as Record<string, string | number | boolean>,
+    });
+  },
+
+  async getAssignments(params: AssignmentListParams = {}) {
+    return fetchClient<ActivityAssignment[]>(
+      API_ENDPOINTS.ACTIVITY.ASSIGNMENT.LIST,
+      {
+        method: "POST",
+        body: params as Record<string, string | number | boolean>,
+      }
+    );
+  },
+
+  // Quotation
+  async createQuotation(data: CreateQuotationRequest) {
+    return fetchClient<Quotation>(API_ENDPOINTS.ACTIVITY.QUOTATION.CREATE, {
+      method: "POST",
+      body: data,
+    });
+  },
+
+  async getQuotation(id: string) {
+    return fetchClient<Quotation>(
+      `${API_ENDPOINTS.ACTIVITY.QUOTATION.GET}/${id}`,
+      {
+        method: "GET",
+      }
+    );
+  },
+
+  async deleteQuotation(id: string) {
+    return fetchClient(`${API_ENDPOINTS.ACTIVITY.QUOTATION.DELETE}/${id}`, {
+      method: "DELETE",
+    });
+  },
+
+  async getQuotations(params: QuotationListParams = {}) {
+    return fetchClient<Quotation[]>(API_ENDPOINTS.ACTIVITY.QUOTATION.LIST, {
       method: "POST",
       body: params as Record<string, string | number | boolean>,
     });

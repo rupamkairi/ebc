@@ -78,6 +78,17 @@ export const API_ENDPOINTS = {
       DELETE: "/activity/appointment", // :id
       LIST: "/activity/appointment/list",
     },
+    ASSIGNMENT: {
+      CREATE: "/activity/activity-assignment",
+      GET: "/activity/activity-assignment", // :id
+      LIST: "/activity/activity-assignment/list",
+    },
+    QUOTATION: {
+      CREATE: "/activity/quotation",
+      GET: "/activity/quotation", // :id
+      DELETE: "/activity/quotation", // :id
+      LIST: "/activity/quotation/list",
+    },
   },
   PINCODE_DIRECTORY: {
     LIST: "/pincode-directory/list",

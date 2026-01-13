@@ -98,3 +98,69 @@ export interface AppointmentListParams {
   page?: number;
   perPage?: number;
 }
+
+// Assignment Specifics
+export interface ActivityAssignment {
+  id: string;
+  type: "ENQUIRY_ASSIGNMENT" | "APPOINTMENT_ASSIGNMENT";
+  enquiryId?: string;
+  appointmentId?: string;
+  toEntityId: string;
+  createdAt: string;
+  updatedAt: string;
+  enquiry?: Enquiry;
+  appointment?: Appointment;
+}
+
+export interface AssignmentListParams {
+  type?: "ENQUIRY_ASSIGNMENT" | "APPOINTMENT_ASSIGNMENT";
+  toEntityId?: string;
+  enquiryId?: string;
+  appointmentId?: string;
+  page?: number;
+  perPage?: number;
+}
+
+// Quotation Specifics
+export interface QuotationLineItem extends LineItem {
+  rate: number;
+  amount: number;
+  isNegotiable: boolean;
+}
+
+export interface QuotationDetails {
+  expectedDate?: string;
+  remarks?: string;
+  attachmentIds?: string[];
+}
+
+export interface CreateQuotationRequest {
+  enquiryId: string;
+  lineItems: Omit<QuotationLineItem, "id" | "item">[];
+  details: QuotationDetails;
+}
+
+export interface Quotation {
+  id: string;
+  enquiryId: string;
+  quotationLineItems: QuotationLineItem[];
+  quotationDetails: QuotationDetails[];
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  createdById: string;
+  createdBy?: {
+    id: string;
+    name: string;
+    phone: string;
+    email?: string | null;
+    role: string;
+  };
+}
+
+export interface QuotationListParams {
+  enquiryId?: string;
+  createdById?: string;
+  page?: number;
+  perPage?: number;
+}

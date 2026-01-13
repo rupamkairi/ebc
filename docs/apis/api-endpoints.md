@@ -680,11 +680,39 @@ Base URL: `/api/activity`
       }
     ],
     "details": {
-      "remarks": "Meeting at main office"
+      "remarks": "Meeting at main office",
+      "address": "456 Office Road",
+      "pincodeDirectoryId": "uuid-of-pincode"
     },
     "slots": [
       {
-        "remarks": "Prefers morning"
+        "remarks": "Prefers morning",
+        "fromDateTime": "2024-12-30T09:00:00.000Z",
+        "toDateTime": "2024-12-30T11:00:00.000Z"
+      }
+    ]
+  }
+  ```
+- **Response (Example Fragment)**:
+  ```json
+  {
+    "id": "uuid",
+    "appointmentDetails": [
+      {
+        "id": "uuid",
+        "address": "456 Office Road",
+        "pincode": {
+          "id": "uuid",
+          "pincode": "400001",
+          ...
+        }
+      }
+    ],
+    "appointmentSlots": [
+      {
+        "id": "uuid",
+        "fromDateTime": "2024-12-30T09:00:00.000Z",
+        "toDateTime": "2024-12-30T11:00:00.000Z"
       }
     ]
   }
@@ -698,5 +726,66 @@ Base URL: `/api/activity`
     "createdById": "UUID?",
     "itemId": "UUID?",
     "search": "String?"
+  }
+  ```
+
+---
+
+## Quotation
+
+- **Create**: `POST /quotation`
+  - Body:
+  ```json
+  {
+    "enquiryId": "uuid-of-enquiry",
+    "lineItems": [
+      {
+        "itemId": "uuid-of-item",
+        "rate": 100.0,
+        "amount": 1000.0,
+        "isNegotiable": true,
+        "remarks": "Best price"
+      }
+    ],
+    "details": {
+      "expectedDate": "2024-12-30T00:00:00.000Z",
+      "remarks": "Delivery within 5 days",
+      "attachmentIds": ["uuid-of-attachment"]
+    }
+  }
+  ```
+- **Get Details**: `GET /quotation/:id`
+- **Delete**: `DELETE /quotation/:id`
+- **List**: `POST /quotation/list`
+  - Body:
+  ```json
+  {
+    "enquiryId": "UUID?",
+    "createdById": "UUID?"
+  }
+  ```
+
+---
+
+## Activity Assignment
+
+- **Create**: `POST /activity-assignment`
+  - Body:
+  ```json
+  {
+    "type": "ENQUIRY_ASSIGNMENT",
+    "enquiryId": "uuid-of-enquiry",
+    "toEntityId": "uuid-of-entity"
+  }
+  ```
+- **Get Details**: `GET /activity-assignment/:id`
+- **List**: `POST /activity-assignment/list`
+  - Body:
+  ```json
+  {
+    "type": "ENQUIRY_ASSIGNMENT",
+    "toEntityId": "UUID?",
+    "enquiryId": "UUID?",
+    "appointmentId": "UUID?"
   }
   ```
