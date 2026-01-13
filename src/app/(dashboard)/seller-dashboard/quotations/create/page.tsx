@@ -1,6 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
 import {
   useEnquiryQuery,
   useCreateQuotationMutation,
@@ -10,13 +11,15 @@ import { Loader2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { toast } from "sonner";
-import { Suspense } from "react";
 import { CreateQuotationRequest } from "@/types/activity";
+import { CoinDeductionModal } from "@/components/dashboard/seller/coin-deduction-modal";
 
 function CreateQuotationContent() {
   const searchParams = useSearchParams();
   const enquiryId = searchParams.get("enquiryId");
   const router = useRouter();
+  const [showDeductionModal, setShowDeductionModal] = useState(false);
+  const [pendingData, setPendingData] = useState<CreateQuotationRequest | null>(null);
 
   const { data: enquiry, isLoading: isEnquiryLoading } = useEnquiryQuery(
     enquiryId || ""
@@ -59,13 +62,21 @@ function CreateQuotationContent() {
   }
 
   const handleSubmit = (data: CreateQuotationRequest) => {
-    createQuotation(data, {
+    setPendingData(data);
+    setShowDeductionModal(true);
+  };
+
+  const handleConfirmDeduction = () => {
+    if (!pendingData) return;
+    
+    createQuotation(pendingData, {
       onSuccess: () => {
         toast.success("Quotation submitted successfully!");
         router.push("/seller-dashboard/quotations");
       },
       onError: (error: Error) => {
         toast.error(error.message || "Failed to submit quotation.");
+        setShowDeductionModal(false);
       },
     });
   };
@@ -79,6 +90,15 @@ function CreateQuotationContent() {
         <ArrowLeft className="h-4 w-4" />
         Back to Enquiry details
       </Link>
+      
+      <CoinDeductionModal
+        isOpen={showDeductionModal}
+        onClose={() => setShowDeductionModal(false)}
+        onConfirm={handleConfirmDeduction}
+        leadType="QUOTATION"
+        isProcessing={isSubmitting}
+      />
+
       <QuotationForm
         enquiry={enquiry}
         onSubmit={handleSubmit}

@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { PhoneCall } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CoinBalance } from "@/components/dashboard/seller/coin-balance";
 
 export function DashboardHeader() {
   return (
@@ -11,10 +13,11 @@ export function DashboardHeader() {
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center">
             <div className="relative h-10 w-28">
-              <img
+              <Image
                 src="/logo.svg"
                 alt="E-CON Building Centre"
-                className="h-full w-full object-contain"
+                fill
+                className="object-contain"
               />
             </div>
           </Link>
@@ -47,11 +50,14 @@ export function DashboardHeader() {
           </nav>
         </div>
 
-        <Button className="bg-secondary hover:bg-secondary/90 text-white rounded-full px-6 flex items-center gap-2">
-          <PhoneCall size={18} />
-          <span className="hidden sm:inline">Talk to Support Team</span>
-          <span className="sm:hidden">Support</span>
-        </Button>
+        <div className="flex items-center gap-4">
+          <CoinBalance className="hidden md:flex" />
+          <Button className="bg-secondary hover:bg-secondary/90 text-white rounded-full px-6 flex items-center gap-2">
+            <PhoneCall size={18} />
+            <span className="hidden sm:inline">Talk to Support Team</span>
+            <span className="sm:hidden">Support</span>
+          </Button>
+        </div>
       </div>
     </header>
   );

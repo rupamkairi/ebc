@@ -112,4 +112,12 @@ export const API_ENDPOINTS = {
       GET_URL: "/attachment/document/url", // :id
     },
   },
+  WALLET: {
+    PACKAGES: "/wallet/packages",
+    DETAILS: "/wallet/", // :entityId
+    PRICING: "/wallet/pricing/cost/", // :leadType
+    RECHARGE: "/wallet/recharge",
+    TRANSACTION: "/wallet/transaction",
+    VERIFY_PAYMENT: "/wallet/verify-payment",
+  },
 } as const;

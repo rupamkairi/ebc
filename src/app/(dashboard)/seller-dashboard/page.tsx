@@ -21,12 +21,14 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useEntitiesQuery } from "@/queries/entityQueries";
+import { useWalletDetails } from "@/queries/walletQueries";
 import { cn } from "@/lib/utils";
 
 export default function SellerDashboardPage() {
   const { data: entities = [] } = useEntitiesQuery();
   const mainEntity = entities[0];
   const status = mainEntity?.verificationStatus;
+  const { data: wallet, isLoading: isWalletLoading } = useWalletDetails(mainEntity?.id);
 
   return (
     <div className="flex flex-col gap-8">
@@ -195,7 +197,7 @@ export default function SellerDashboardPage() {
                           Coin Balance
                         </p>
                         <h4 className="text-2xl font-black text-amber-900 leading-tight tracking-tight italic">
-                          1,245 Coins
+                          {isWalletLoading ? "..." : (wallet?.balance ?? 0).toLocaleString()} Coins
                         </h4>
                       </div>
                     </div>
