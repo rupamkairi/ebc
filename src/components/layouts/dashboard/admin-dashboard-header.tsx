@@ -15,7 +15,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminDashboardUser } from "@/components/layouts/dashboard/admin-dashboard-user";
-import { MediaUploader } from "@/components/upload";
+import { MediaUploader } from "@/components/shared/upload";
 import { PATH_BREADCRUMBS } from "@/lib/path-breadcrumbs";
 import { Search, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";

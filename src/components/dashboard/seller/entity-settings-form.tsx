@@ -23,7 +23,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import {
   FileUploader,
   FileUploadResponse,
-} from "@/components/upload/media-uploader";
+} from "@/components/shared/upload/media-uploader";
 import { toast } from "sonner";
 import { Loader2, Save, FileText, X } from "lucide-react";
 import { useEffect } from "react";

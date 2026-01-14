@@ -20,7 +20,7 @@ import {
 import { toast } from "sonner";
 import { ApiError } from "@/lib/api-client";
 import { useBrandStore } from "@/store/brandStore";
-import { MediaUploader } from "@/components/upload/media-uploader";
+import { MediaUploader } from "@/components/shared/upload/media-uploader";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 

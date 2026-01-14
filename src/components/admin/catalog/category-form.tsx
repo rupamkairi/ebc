@@ -27,7 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MediaUploader } from "@/components/upload/media-uploader";
+import { MediaUploader } from "@/components/shared/upload/media-uploader";
 import { CategorySearchAutocomplete } from "@/components/autocompletes/category-search-autocomplete";
 import { useEffect, useState } from "react";
 import Image from "next/image";
