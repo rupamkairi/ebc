@@ -16,6 +16,40 @@ import { IndianRupee, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import Script from "next/script";
 
+interface RazorpayOptions {
+  key: string | undefined;
+  amount: number;
+  currency: string;
+  name: string;
+  description: string;
+  order_id: string;
+  handler: (response: {
+    razorpay_order_id: string;
+    razorpay_payment_id: string;
+    razorpay_signature: string;
+  }) => Promise<void>;
+  prefill?: {
+    name?: string;
+    email?: string;
+    contact?: string;
+  };
+  theme?: {
+    color?: string;
+  };
+  modal?: {
+    ondismiss?: () => void;
+  };
+}
+
+declare global {
+  interface Window {
+    Razorpay: new (options: RazorpayOptions) => {
+      open: () => void;
+    };
+  }
+}
+
+
 interface RechargeModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -36,13 +70,13 @@ export function RechargeModal({ isOpen, onClose }: RechargeModalProps) {
       setIsProcessing(true);
       const orderData = await createOrderMutation.mutateAsync({ packageId, entityId });
 
-      const options = {
-        key: orderData.key || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: orderData.amount,
+      const options: RazorpayOptions = {
+        key: orderData.key || process.env.RAZORPAY_KEY_ID,
+        amount: orderData.amount * 100, // Razorpay expects paise
         currency: orderData.currency,
         name: "E-CON Building Centre",
         description: "Coin Recharge",
-        order_id: orderData.orderId,
+        order_id: orderData.orderId || orderData.id || "",
         handler: async (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) => {
           try {
             await verifyPaymentMutation.mutateAsync({
@@ -71,7 +105,7 @@ export function RechargeModal({ isOpen, onClose }: RechargeModalProps) {
         },
       };
 
-      const rzp = new (window as any).Razorpay(options);
+      const rzp = new window.Razorpay(options);
       rzp.open();
     } catch (error) {
       console.error("Recharge error:", error);

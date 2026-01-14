@@ -25,6 +25,7 @@ export interface WalletDetails {
 }
 
 export interface RechargeResponse {
+  id?: string;
   orderId: string;
   amount: number;
   currency: string;
