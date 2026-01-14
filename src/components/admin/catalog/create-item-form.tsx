@@ -55,39 +55,26 @@ export function ItemForm() {
       specificationId: selectedItem?.specificationId || "",
     },
     onSubmit: async ({ value }) => {
-      if (isEditing) {
-        updateMutation.mutate(
-          { ...value, id: selectedItem.id },
-          {
-            onSuccess: () => {
-              setEditOpen(false);
-              form.reset();
-              toast.success("Item updated successfully");
-            },
-            onError: (error) => {
-              const msg =
-                error instanceof ApiError
-                  ? error.message
-                  : "Failed to update item";
-              toast.error(msg);
-            },
-          }
-        );
-      } else {
-        createMutation.mutate(value, {
-          onSuccess: () => {
-            setCreateOpen(false);
-            form.reset();
-            toast.success("Item created successfully");
-          },
-          onError: (error) => {
-            const msg =
-              error instanceof ApiError
-                ? error.message
-                : "Failed to create item";
-            toast.error(msg);
-          },
-        });
+      try {
+        if (isEditing) {
+          await updateMutation.mutateAsync({ ...value, id: selectedItem.id });
+          setEditOpen(false);
+          form.reset();
+          toast.success("Item updated successfully");
+        } else {
+          await createMutation.mutateAsync(value);
+          setCreateOpen(false);
+          form.reset();
+          toast.success("Item created successfully");
+        }
+      } catch (error) {
+        const msg =
+          error instanceof ApiError
+            ? error.message
+            : isEditing
+            ? "Failed to update item"
+            : "Failed to create item";
+        toast.error(msg);
       }
     },
   });
