@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuotationStore, QuotationState } from "@/store/quotationStore";
-import { CreateQuotationRequest, Enquiry } from "@/types/activity";
+import { CreateQuotationRequest, Enquiry, Quotation, REF_TYPE } from "@/types/activity";
 import { ItemListingAutocomplete } from "./item-listing-autocomplete";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useEntitiesQuery } from "@/queries/entityQueries";
-import { useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -25,11 +25,23 @@ import {
   Calendar,
   MessageSquare,
   AlertCircle,
+  Phone,
+  Mail,
+  Lock,
+  Coins,
+  ArrowRight,
+  Loader2,
 } from "lucide-react";
 import { format } from "date-fns";
+import { useAcceptQuotationMutation } from "@/queries/activityQueries";
+import { useWalletDetails, useLeadPricing } from "@/queries/walletQueries";
+import { RechargeModal } from "../../seller/recharge-modal";
+import { toast } from "sonner";
+
 
 interface QuotationFormProps {
   enquiry: Enquiry;
+  quotation?: Quotation;
   isUpdate?: boolean;
   killSwitchUpdateDisabled?: boolean;
   onSubmit: (data: CreateQuotationRequest) => void;
@@ -39,12 +51,14 @@ interface QuotationFormProps {
 
 export function QuotationForm({
   enquiry,
+  quotation,
   isUpdate = false,
   killSwitchUpdateDisabled = false,
   onSubmit,
   isLoading,
   initialData,
 }: QuotationFormProps) {
+  const [isRechargeModalOpen, setIsRechargeModalOpen] = useState(false);
   const {
     lineItems,
     details,
@@ -57,6 +71,10 @@ export function QuotationForm({
 
   const { data: entities } = useEntitiesQuery();
   const sellerEntityId = entities?.[0]?.id;
+
+  const { data: wallet } = useWalletDetails(sellerEntityId);
+  const { data: leadPricing } = useLeadPricing(REF_TYPE.QUOTATION);
+  const { mutate: acceptQuotation, isPending: isAccepting } = useAcceptQuotationMutation();
 
   const { data: listings } = useItemListingsQuery({ entityId: sellerEntityId });
 
@@ -132,9 +150,59 @@ export function QuotationForm({
           {isUpdate ? "Update Quotation" : "Create Quotation"}
         </h1>
         <p className="text-muted-foreground">
-          Provide your best pricing for the buyer's requirement.
+          Provide your best pricing for the buyer&apos;s requirement.
         </p>
       </div>
+
+      {isUpdate && quotation && !quotation.isActive && (
+        <div className="bg-amber-50 border border-amber-200 text-amber-900 rounded-4xl p-8 shadow-sm">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
+            <div className="flex items-start gap-5">
+              <div className="h-16 w-16 rounded-3xl bg-amber-100 flex items-center justify-center text-amber-600 shrink-0 shadow-inner">
+                <Lock size={32} />
+              </div>
+              <div className="space-y-1">
+                <h4 className="text-2xl font-black italic uppercase tracking-tight">Lead Locked</h4>
+                <p className="text-sm font-bold opacity-70 italic max-w-md leading-relaxed">
+                  Accept this lead to reveal the buyer&apos;s contact details. This will deduct <span className="text-amber-600 font-extrabold">{leadPricing?.cost || 50} coins</span> from your wallet.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-6">
+              <div className="text-right hidden md:block">
+                <p className="text-[10px] font-black uppercase opacity-40 tracking-widest mb-1">Your Balance</p>
+                <p className="text-2xl font-black text-amber-600 italic flex items-center justify-end gap-1.5">
+                  <Coins size={20} />
+                  {wallet?.balance || 0}
+                </p>
+              </div>
+              <Button 
+                type="button"
+                onClick={() => {
+                  if ((wallet?.balance || 0) < (leadPricing?.cost || 50)) {
+                    setIsRechargeModalOpen(true);
+                    return;
+                  }
+                  acceptQuotation(quotation.id, {
+                    onSuccess: () => toast.success("Lead accepted! Contact details revealed."),
+                    onError: (err: Error) => toast.error(err.message || "Failed to accept lead.")
+                  });
+                }}
+                disabled={isAccepting}
+                className="rounded-3xl h-16 px-10 bg-amber-600 hover:bg-amber-700 text-white font-black italic shadow-xl shadow-amber-200 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              >
+                {isAccepting ? (
+                  <Loader2 className="animate-spin mr-3" size={24} />
+                ) : (
+                  <Coins size={22} className="mr-3" />
+                )}
+                Accept Lead
+                <ArrowRight size={22} className="ml-3" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
@@ -167,6 +235,25 @@ export function QuotationForm({
                   <span className="font-medium line-clamp-1">
                     {enquiry.enquiryDetails?.[0]?.address || "N/A"}
                   </span>
+                </div>
+              </div>
+              <div className="space-y-1">
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Contact Details
+                </span>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Phone className="h-4 w-4 text-primary" />
+                    <span className={`font-medium ${quotation && !quotation.isActive ? 'blur-md select-none' : ''}`}>
+                      {quotation?.isActive ? enquiry.createdBy?.phone : "+91 ••••• •••••"}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Mail className="h-4 w-4 text-primary" />
+                    <span className={`font-medium ${quotation && !quotation.isActive ? 'blur-md select-none' : ''}`}>
+                      {quotation?.isActive ? (enquiry.createdBy?.email || "No email") : "••••••••@••••.com"}
+                    </span>
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -205,8 +292,8 @@ export function QuotationForm({
                     </div>
                     {eli.remarks && (
                       <div className="mt-2 flex items-start gap-2 text-sm text-muted-foreground bg-white/50 p-2 rounded italic">
-                        <MessageSquare className="h-4 w-4 shrink-0 mt-0.5" />"
-                        {eli.remarks}"
+                        <MessageSquare className="h-4 w-4 shrink-0 mt-0.5" />
+                        &quot;{eli.remarks}&quot;
                       </div>
                     )}
                   </CardHeader>
@@ -389,6 +476,11 @@ export function QuotationForm({
           </Card>
         </div>
       </div>
+
+      <RechargeModal 
+        isOpen={isRechargeModalOpen} 
+        onClose={() => setIsRechargeModalOpen(false)} 
+      />
     </form>
   );
 }

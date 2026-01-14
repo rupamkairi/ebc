@@ -7,6 +7,7 @@ import {
   AssignmentListParams,
   QuotationListParams,
   CreateQuotationRequest,
+  VisitListParams,
 } from "@/types/activity";
 import {
   keepPreviousData,
@@ -164,6 +165,35 @@ export function useDeleteQuotationMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => activityService.deleteQuotation(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: activityKeys.all });
+    },
+  });
+}
+
+export function useAcceptQuotationMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => activityService.acceptQuotation(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: activityKeys.all });
+    },
+  });
+}
+
+// Visit Hooks
+export function useVisitsQuery(params: VisitListParams = {}) {
+  return useQuery({
+    queryKey: [...activityKeys.all, "visits", params],
+    queryFn: () => activityService.getVisits(params),
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useAcceptVisitMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => activityService.acceptVisit(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: activityKeys.all });
     },

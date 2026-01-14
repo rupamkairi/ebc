@@ -116,6 +116,7 @@ export default function ViewQuotationPage() {
       </Link>
       <QuotationForm
         enquiry={enquiry}
+        quotation={quotation}
         onSubmit={handleSubmit}
         isLoading={isUpdating}
         isUpdate={true}

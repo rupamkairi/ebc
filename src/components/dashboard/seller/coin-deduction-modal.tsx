@@ -13,12 +13,13 @@ import { useWalletDetails, useLeadPricing } from "@/queries/walletQueries";
 import { useEntitiesQuery } from "@/queries/entityQueries";
 import { IndianRupee, AlertCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { REF_TYPE } from "@/types/activity";
 
 interface CoinDeductionModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  leadType: 'QUOTATION' | 'VISIT';
+  leadType: REF_TYPE;
   isProcessing?: boolean;
 }
 

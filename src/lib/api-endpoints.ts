@@ -89,6 +89,14 @@ export const API_ENDPOINTS = {
       UPDATE: "/activity/quotation", // :id
       DELETE: "/activity/quotation", // :id
       LIST: "/activity/quotation/list",
+      ACCEPT: "/activity/quotation/accept", // :id
+    },
+    VISIT: {
+      CREATE: "/activity/visit",
+      GET: "/activity/visit", // :id
+      DELETE: "/activity/visit", // :id
+      LIST: "/activity/visit/list",
+      ACCEPT: "/activity/visit/accept", // :id
     },
   },
   PINCODE_DIRECTORY: {

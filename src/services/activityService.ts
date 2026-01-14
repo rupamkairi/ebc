@@ -12,6 +12,8 @@ import {
   Quotation,
   QuotationListParams,
   CreateQuotationRequest,
+  Visit,
+  VisitListParams,
 } from "@/types/activity";
 
 export const activityService = {
@@ -123,5 +125,24 @@ export const activityService = {
         body: data,
       }
     );
+  },
+
+  async acceptQuotation(id: string) {
+    return fetchClient(`${API_ENDPOINTS.ACTIVITY.QUOTATION.ACCEPT}/${id}`, {
+      method: "POST",
+    });
+  },
+
+  async getVisits(params: VisitListParams = {}) {
+    return fetchClient<Visit[]>(API_ENDPOINTS.ACTIVITY.VISIT.LIST, {
+      method: "POST",
+      body: params as Record<string, string | number | boolean>,
+    });
+  },
+
+  async acceptVisit(id: string) {
+    return fetchClient(`${API_ENDPOINTS.ACTIVITY.VISIT.ACCEPT}/${id}`, {
+      method: "POST",
+    });
   },
 };

@@ -1,6 +1,11 @@
 import { Item } from "./catalog";
 
 // Shared definitions
+export enum REF_TYPE {
+  QUOTATION = "QUOTATION",
+  VISIT = "VISIT",
+}
+
 export interface LineItem {
   id?: string;
   itemId: string;
@@ -143,6 +148,7 @@ export interface CreateQuotationRequest {
 export interface Quotation {
   id: string;
   enquiryId: string;
+  isActive: boolean;
   quotationLineItems: QuotationLineItem[];
   quotationDetails: QuotationDetails[];
   status: string;
@@ -164,3 +170,28 @@ export interface QuotationListParams {
   page?: number;
   perPage?: number;
 }
+
+// Visit Specifics
+export interface Visit {
+  id: string;
+  appointmentId: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  createdById: string;
+  createdBy?: {
+    id: string;
+    name: string;
+    phone: string;
+    email?: string | null;
+    role: string;
+  };
+}
+
+export interface VisitListParams {
+  appointmentId?: string;
+  createdById?: string;
+  page?: number;
+  perPage?: number;
+}
+
