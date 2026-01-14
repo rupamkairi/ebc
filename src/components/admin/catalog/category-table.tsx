@@ -1,6 +1,9 @@
 "use client";
 
-import { useCategoriesQuery } from "@/queries/catalogQueries";
+import {
+  useCategoriesQuery,
+  useDeleteCategoryMutation,
+} from "@/queries/catalogQueries";
 import { PaginationState, SortingState } from "@tanstack/react-table";
 import { useState } from "react";
 import { DataTable } from "@/components/datatable/data-table";
@@ -19,6 +22,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 
 export function CategoryTable() {
   const [pagination, setPagination] = useState<PaginationState>({
@@ -27,7 +41,12 @@ export function CategoryTable() {
   });
   const [sorting, setSorting] = useState<SortingState>([]);
   const [levelFilter, setLevelFilter] = useState<"ALL" | "TOP" | "SUB">("ALL");
+  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(
+    null
+  );
   const { setEditOpen } = useCategoryStore();
+
+  const deleteMutation = useDeleteCategoryMutation();
 
   const isSubCategoryParam =
     levelFilter === "TOP" ? false : levelFilter === "SUB" ? true : undefined;
@@ -41,6 +60,20 @@ export function CategoryTable() {
   });
 
   const categories = data || [];
+
+  const handleDelete = async () => {
+    if (!categoryToDelete) return;
+
+    try {
+      await deleteMutation.mutateAsync(categoryToDelete.id);
+      toast.success("Category deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete category");
+      console.error(error);
+    } finally {
+      setCategoryToDelete(null);
+    }
+  };
 
   const columns: ColumnDef<Category>[] = [
     {
@@ -74,9 +107,7 @@ export function CategoryTable() {
       cell: ({ row }) => (
         <ActionColumn
           onEdit={() => setEditOpen(true, row.original)}
-          onDelete={() => {
-            // TODO: Implement delete
-          }}
+          onDelete={() => setCategoryToDelete(row.original)}
         />
       ),
     },
@@ -114,6 +145,37 @@ export function CategoryTable() {
         onSortingChange={setSorting}
         loading={isLoading}
       />
+
+      <AlertDialog
+        open={!!categoryToDelete}
+        onOpenChange={(open) => !open && setCategoryToDelete(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the
+              category &quot;{categoryToDelete?.name}&quot; and remove its data
+              from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteMutation.isPending}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                handleDelete();
+              }}
+              disabled={deleteMutation.isPending}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleteMutation.isPending ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

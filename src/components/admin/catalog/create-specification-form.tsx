@@ -43,39 +43,29 @@ export function SpecificationForm() {
       description: selectedSpecification?.description || "",
     },
     onSubmit: async ({ value }) => {
-      if (isEditing) {
-        updateMutation.mutate(
-          { ...value, id: selectedSpecification.id },
-          {
-            onSuccess: () => {
-              setEditOpen(false);
-              form.reset();
-              toast.success("Specification updated successfully");
-            },
-            onError: (error) => {
-              const msg =
-                error instanceof ApiError
-                  ? error.message
-                  : "Failed to update specification";
-              toast.error(msg);
-            },
-          }
-        );
-      } else {
-        createMutation.mutate(value, {
-          onSuccess: () => {
-            setCreateOpen(false);
-            form.reset();
-            toast.success("Specification created successfully");
-          },
-          onError: (error) => {
-            const msg =
-              error instanceof ApiError
-                ? error.message
-                : "Failed to create specification";
-            toast.error(msg);
-          },
-        });
+      try {
+        if (isEditing) {
+          await updateMutation.mutateAsync({
+            ...value,
+            id: selectedSpecification.id,
+          });
+          setEditOpen(false);
+          form.reset();
+          toast.success("Specification updated successfully");
+        } else {
+          await createMutation.mutateAsync(value);
+          setCreateOpen(false);
+          form.reset();
+          toast.success("Specification created successfully");
+        }
+      } catch (error) {
+        const msg =
+          error instanceof ApiError
+            ? error.message
+            : isEditing
+            ? "Failed to update specification"
+            : "Failed to create specification";
+        toast.error(msg);
       }
     },
   });

@@ -38,20 +38,18 @@ export function CreateAdminManagerForm() {
       password: "",
     },
     onSubmit: async ({ value }) => {
-      mutation.mutate(value, {
-        onSuccess: () => {
-          setOpen(false);
-          form.reset();
-          toast.success("Admin Manager created successfully");
-        },
-        onError: (error) => {
-          const msg =
-            error instanceof ApiError
-              ? error.message
-              : "Failed to create manager";
-          toast.error(msg);
-        },
-      });
+      try {
+        await mutation.mutateAsync(value);
+        setOpen(false);
+        form.reset();
+        toast.success("Admin Manager created successfully");
+      } catch (error) {
+        const msg =
+          error instanceof ApiError
+            ? error.message
+            : "Failed to create manager";
+        toast.error(msg);
+      }
     },
   });
 
