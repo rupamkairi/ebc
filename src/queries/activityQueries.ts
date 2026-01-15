@@ -1,4 +1,5 @@
 import { activityService } from "@/services/activityService";
+import { walletKeys } from "./walletQueries";
 import {
   AppointmentListParams,
   CreateAppointmentRequest,
@@ -141,6 +142,7 @@ export function useCreateQuotationMutation() {
       activityService.createQuotation(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: activityKeys.all });
+      queryClient.invalidateQueries({ queryKey: walletKeys.all });
     },
   });
 }
@@ -177,6 +179,7 @@ export function useAcceptQuotationMutation() {
     mutationFn: (id: string) => activityService.acceptQuotation(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: activityKeys.all });
+      queryClient.invalidateQueries({ queryKey: walletKeys.all });
     },
   });
 }
@@ -196,6 +199,7 @@ export function useAcceptVisitMutation() {
     mutationFn: (id: string) => activityService.acceptVisit(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: activityKeys.all });
+      queryClient.invalidateQueries({ queryKey: walletKeys.all });
     },
   });
 }
