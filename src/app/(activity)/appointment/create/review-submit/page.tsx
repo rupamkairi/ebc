@@ -4,7 +4,7 @@ import { useAppointmentStore } from "@/store/appointmentStore";
 import { useCreateAppointmentMutation } from "@/queries/activityQueries";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { AppointmentReview } from "@/components/appointment/appointment-review";
+import { AppointmentReview } from "@/components/dashboard/buyer/appointment/appointment-review";
 import { toast } from "sonner";
 
 export default function AppointmentReviewSubmitPage() {

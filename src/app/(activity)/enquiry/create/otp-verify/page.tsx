@@ -1,6 +1,6 @@
 "use client";
 
-import { OTPVerificationForm } from "@/components/enquiry/otp-verification-form";
+import { OTPVerificationForm } from "@/components/dashboard/buyer/enquiry/otp-verification-form";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";

@@ -1,6 +1,6 @@
 "use client";
 
-import { AddAppointmentItemWrapper } from "@/components/appointment/add-appointment-item-wrapper";
+import { AddAppointmentItemWrapper } from "@/components/dashboard/buyer/appointment/add-appointment-item-wrapper";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppointmentStore } from "@/store/appointmentStore";

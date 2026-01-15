@@ -1,6 +1,6 @@
 "use client";
 
-import { EnquiryReview } from "@/components/enquiry/enquiry-review";
+import { EnquiryReview } from "@/components/dashboard/buyer/enquiry/enquiry-review";
 import { useEnquiryStore } from "@/store/enquiryStore";
 import { useCreateEnquiryMutation } from "@/queries/activityQueries";
 import { useRouter } from "next/navigation";

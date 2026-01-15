@@ -1,8 +1,8 @@
 "use client";
 
-import { AddEnquiryItemWrapper } from "@/components/enquiry/add-enquiry-item-wrapper";
-import { EnquiryForm } from "@/components/enquiry/enquiry-form";
-import { EnquiryLineItems } from "@/components/enquiry/enquiry-line-items";
+import { AddEnquiryItemWrapper } from "@/components/dashboard/buyer/enquiry/add-enquiry-item-wrapper";
+import { EnquiryForm } from "@/components/dashboard/buyer/enquiry/enquiry-form";
+import { EnquiryLineItems } from "@/components/dashboard/buyer/enquiry/enquiry-line-items";
 import { Button } from "@/components/ui/button";
 import { useEnquiryStore } from "@/store/enquiryStore";
 import { ArrowRight } from "lucide-react";

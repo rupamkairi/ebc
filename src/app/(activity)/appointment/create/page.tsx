@@ -6,9 +6,9 @@ import { toast } from "sonner";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAppointmentStore } from "@/store/appointmentStore";
-import { AppointmentLineItemWrapper } from "@/components/appointment/appointment-line-item";
+import { AppointmentLineItemWrapper } from "@/components/dashboard/buyer/appointment/appointment-line-item";
 import { DateTimeSlotSelect } from "@/components/advanced-forms/date-time-slot-select/date-time-slot-select";
-import { AppointmentDetailsForm } from "@/components/appointment/appointment-details-form";
+import { AppointmentDetailsForm } from "@/components/dashboard/buyer/appointment/appointment-details-form";
 import { useSessionQuery, useSendOtpMutation } from "@/queries/authQueries";
 import { ProfileCard } from "@/components/dashboard/seller/profile-card";
 
