@@ -162,6 +162,7 @@ export interface Quotation {
     email?: string | null;
     role: string;
   };
+  enquiry?: Enquiry;
 }
 
 export interface QuotationListParams {

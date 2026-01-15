@@ -41,7 +41,7 @@ export default function QuotationsPage() {
         ...qut,
         displayAmount: totalAmount.toLocaleString("en-IN"),
         displayItems: itemCount > 1 ? `${mainItem} (+${itemCount - 1} more)` : mainItem,
-        customerName: (qut as any).enquiry?.createdBy?.name || `Enquiry #${qut.enquiryId.slice(0, 8)}`,
+        customerName: qut.enquiry?.createdBy?.name || `Enquiry #${qut.enquiryId.slice(0, 8)}`,
         displayDate: format(new Date(qut.createdAt), "dd MMM yyyy"),
         // Map isActive to a status label for the UI
         uiStatus: qut.isActive ? "Accepted" : "Sent"
