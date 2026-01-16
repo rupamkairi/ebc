@@ -16,6 +16,7 @@ import { useEntitiesQuery } from "@/queries/entityQueries";
 import { useAssignmentsQuery } from "@/queries/activityQueries";
 import { Loader2 } from "lucide-react";
 import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 
 export default function AppointmentsPage() {
