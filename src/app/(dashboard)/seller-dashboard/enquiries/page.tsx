@@ -10,40 +10,21 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { useEffect, useState } from "react";
-import { activityService } from "@/services/activityService";
-import { entityService } from "@/services/entityService";
+import { useEntitiesQuery } from "@/queries/entityQueries";
+import { useAssignmentsQuery } from "@/queries/activityQueries";
 import { ActivityAssignment } from "@/types/activity";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 
 export default function EnquiriesPage() {
-  const [assignments, setAssignments] = useState<ActivityAssignment[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: entities = [] } = useEntitiesQuery();
+  const mainEntity = entities[0];
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const entities = await entityService.getAll();
-        if (entities && entities.length > 0) {
-          const sellerEntity = entities[0];
-          const assignmentData = await activityService.getAssignments({
-            toEntityId: sellerEntity.id,
-            type: "ENQUIRY_ASSIGNMENT",
-          });
-          setAssignments(assignmentData);
-        }
-      } catch (error) {
-        console.error("Error fetching enquiries:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const { data: assignments = [], isLoading: loading } = useAssignmentsQuery({
+    toEntityId: mainEntity?.id,
+    type: "ENQUIRY_ASSIGNMENT",
+  });
 
   if (loading) {
     return (
