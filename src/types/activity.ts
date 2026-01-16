@@ -64,12 +64,16 @@ export interface AppointmentLineItem extends LineItem {
 
 export interface AppointmentDetails {
   remarks?: string;
+  address?: string;
+  pincodeDirectoryId?: string;
 }
 
 export interface AppointmentSlot {
   id?: string;
   remarks?: string;
   appointmentId?: string;
+  fromDateTime: string | Date;
+  toDateTime: string | Date;
 }
 
 export interface CreateAppointmentRequest {
