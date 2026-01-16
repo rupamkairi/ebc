@@ -42,6 +42,12 @@ export default function WalletPage() {
   const balance = wallet?.balance ?? 0;
   const transactions = wallet?.transactions ?? [];
 
+  const REASON_LABELS: Record<string, string> = {
+    VISIT_SUBMIT: "Site Visit Lead Unlock",
+    QUOTATION_SUBMIT: "Product Lead Unlock",
+    CREDIT_RECHARGE: "Wallet Recharge",
+  };
+
   return (
     <div className="flex flex-col gap-8">
       <RechargeModal 
@@ -117,7 +123,9 @@ export default function WalletPage() {
                         {txn.type === 'CREDIT' ? <ArrowUpRight size={24} /> : <ArrowDownLeft size={24} />}
                       </div>
                       <div>
-                        <h4 className="font-bold text-foreground leading-snug group-hover/card:text-amber-600 transition-colors uppercase text-sm tracking-tight">{txn.reason}</h4>
+                        <h4 className="font-bold text-foreground leading-snug group-hover/card:text-amber-600 transition-colors uppercase text-sm tracking-tight">
+                          {REASON_LABELS[txn.reason] || txn.reason}
+                        </h4>
                         <div className="flex items-center gap-3 mt-1">
                           <span className="text-[10px] font-black uppercase tracking-widest text-foreground/30">{txn.id}</span>
                           <span className="text-[10px] font-bold text-foreground/30 italic">

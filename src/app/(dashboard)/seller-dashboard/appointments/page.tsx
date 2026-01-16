@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { 
   Calendar, 
   Clock, 
@@ -8,15 +9,23 @@ import {
   XCircle, 
   MoreVertical,
   ChevronRight,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useEntitiesQuery } from "@/queries/entityQueries";
-import { useAssignmentsQuery } from "@/queries/activityQueries";
-import { Loader2 } from "lucide-react";
+import { 
+  useAssignmentsQuery, 
+  useCreateVisitMutation,
+  useRejectAppointmentMutation 
+} from "@/queries/activityQueries";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import { AppointmentDetailsModal } from "@/components/dashboard/seller/appointment-details-modal";
+import { CoinDeductionModal } from "@/components/dashboard/seller/coin-deduction-modal";
+import { ActivityAssignment, REF_TYPE } from "@/types/activity";
 
 
 export default function AppointmentsPage() {
@@ -27,6 +36,52 @@ export default function AppointmentsPage() {
     toEntityId: mainEntity?.id,
     type: "APPOINTMENT_ASSIGNMENT",
   });
+
+  const [selectedAssignment, setSelectedAssignment] = React.useState<ActivityAssignment | null>(null);
+  const [deductionModalOpen, setDeductionModalOpen] = React.useState(false);
+  const [pendingConfirmation, setPendingConfirmation] = React.useState<{
+    appointmentId: string;
+    slotId: string;
+  } | null>(null);
+
+  const createVisit = useCreateVisitMutation();
+  const rejectAppointment = useRejectAppointmentMutation();
+
+  const handleConfirm = (appointmentId: string, slotId: string) => {
+    setPendingConfirmation({ appointmentId, slotId });
+    setDeductionModalOpen(true);
+  };
+
+  const onFinalConfirm = () => {
+    if (!pendingConfirmation) return;
+
+    createVisit.mutate({ 
+      appointmentId: pendingConfirmation.appointmentId, 
+      visitSlotId: pendingConfirmation.slotId 
+    }, {
+      onSuccess: () => {
+        toast.success("Coins deducted and appointment confirmed!");
+        setDeductionModalOpen(false);
+        setPendingConfirmation(null);
+        setSelectedAssignment(null);
+      },
+      onError: (error) => {
+        toast.error("Failed to confirm appointment: " + (error as any).message);
+      }
+    });
+  };
+
+  const handleReject = (appointmentId: string) => {
+    rejectAppointment.mutate(appointmentId, {
+      onSuccess: () => {
+        toast.success("Appointment rejected.");
+        setSelectedAssignment(null);
+      },
+      onError: (error) => {
+        toast.error("Failed to reject appointment: " + (error as any).message);
+      }
+    });
+  };
 
   if (isLoading) {
     return (
@@ -69,7 +124,11 @@ export default function AppointmentsPage() {
             const slot = apt.appointmentSlots?.[0];
 
             return (
-              <Card key={assignment.id} className="border-none shadow-sm hover:shadow-xl transition-all overflow-hidden group bg-white rounded-4xl">
+              <Card 
+                key={assignment.id} 
+                onClick={() => setSelectedAssignment(assignment)}
+                className="border-none shadow-sm hover:shadow-xl transition-all cursor-pointer overflow-hidden group bg-white rounded-4xl"
+              >
                 <CardContent className="p-0">
                   <div className="flex flex-col md:flex-row">
                     {/* Urgency Stripe */}
@@ -106,9 +165,9 @@ export default function AppointmentsPage() {
                               <Clock size={16} className="text-primary" />
                               {slot ? format(new Date(slot.fromDateTime), "PPP p") : format(new Date(apt.createdAt), "PPP")}
                             </div>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-3">
                               <MapPin size={16} className="text-primary" />
-                              {details?.address || "Location not specified"}
+                              <span className="truncate max-w-[200px]">{details?.address || "Location Hidden"}</span>
                             </div>
                           </div>
                         </div>
@@ -120,26 +179,53 @@ export default function AppointmentsPage() {
                             <div className="flex items-center gap-2 bg-emerald-50 text-emerald-700 font-black text-xs uppercase px-4 py-2 rounded-xl border border-emerald-100 italic">
                               Confirm for 10 Coins
                             </div>
-                            <div className="flex items-center gap-3 w-full md:w-auto">
-                              <Button variant="outline" className="flex-1 md:flex-none border-rose-200 text-rose-500 hover:bg-rose-50 font-black rounded-2xl px-6 h-14 italic">
-                                <XCircle size={20} className="mr-2" />
+                            <div className="flex items-center gap-3 w-full md:w-auto" onClick={(e) => e.stopPropagation()}>
+                              <Button 
+                                variant="outline" 
+                                onClick={() => handleReject(apt.id)}
+                                disabled={rejectAppointment.isPending || createVisit.isPending}
+                                className="flex-1 md:flex-none border-rose-200 text-rose-500 hover:bg-rose-50 font-black rounded-2xl px-6 h-14 italic"
+                              >
+                                {rejectAppointment.isPending ? (
+                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                ) : (
+                                  <XCircle size={20} className="mr-2" />
+                                )}
                                 Reject
                               </Button>
-                              <Button className="flex-1 md:flex-none bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl px-10 h-14 shadow-xl shadow-emerald-100 group/btn">
-                                <CheckCircle2 size={20} className="mr-2" />
-                                Confirm
-                              </Button>
+                                <Button 
+                                  onClick={() => slot?.id && handleConfirm(apt.id, slot.id)} 
+                                  disabled={createVisit.isPending || !slot?.id}
+                                  className="flex-1 md:flex-none bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl px-10 h-14 shadow-xl shadow-emerald-100 group/btn"
+                                >
+                                  {createVisit.isPending ? (
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                  ) : (
+                                    <CheckCircle2 size={20} className="mr-2" />
+                                  )}
+                                  Confirm
+                                </Button>
                             </div>
                           </div>
                         ) : (
-                          <Button variant="outline" className="w-full md:w-auto border-border hover:border-primary hover:text-primary font-black rounded-2xl px-10 h-14 group/btn bg-white italic">
-                            View Directions
-                            <ChevronRight size={20} className="ml-2 group-hover/btn:translate-x-1 transition-transform" />
-                          </Button>
+                          <div onClick={(e) => e.stopPropagation()}>
+                            <Button 
+                              variant="outline" 
+                              onClick={() => {
+                                const address = details?.address;
+                                if (address) {
+                                  window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`, '_blank');
+                                } else {
+                                  toast.error("Address not available.");
+                                }
+                              }}
+                              className="w-full md:w-auto border-border hover:border-primary hover:text-primary font-black rounded-2xl px-10 h-14 group/btn bg-white italic"
+                            >
+                              View Directions
+                              <ChevronRight size={20} className="ml-2 group-hover/btn:translate-x-1 transition-transform" />
+                            </Button>
+                          </div>
                         )}
-                        <Button variant="ghost" size="icon" className="rounded-2xl h-12 w-12 text-foreground/20 hover:text-primary hidden md:flex">
-                          <MoreVertical size={24} />
-                        </Button>
                       </div>
                     </div>
                   </div>
@@ -149,6 +235,25 @@ export default function AppointmentsPage() {
           })
         )}
       </div>
+
+      <AppointmentDetailsModal
+        assignment={selectedAssignment}
+        isOpen={!!selectedAssignment}
+        onClose={() => setSelectedAssignment(null)}
+        onConfirm={handleConfirm}
+        onReject={handleReject}
+        isConfirming={createVisit.isPending}
+        isRejecting={rejectAppointment.isPending}
+      />
+
+      <CoinDeductionModal
+        isOpen={deductionModalOpen}
+        onClose={() => setDeductionModalOpen(false)}
+        onConfirm={onFinalConfirm}
+        leadType={REF_TYPE.VISIT}
+        isProcessing={createVisit.isPending}
+      />
     </div>
   );
 }
+

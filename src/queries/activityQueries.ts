@@ -109,6 +109,16 @@ export function useDeleteAppointmentMutation() {
   });
 }
 
+export function useRejectAppointmentMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => activityService.rejectAppointment(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: activityKeys.all });
+    },
+  });
+}
+
 // Assignment Hooks
 export function useAssignmentsQuery(params: AssignmentListParams = {}) {
   return useQuery({
@@ -197,6 +207,18 @@ export function useAcceptVisitMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => activityService.acceptVisit(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: activityKeys.all });
+      queryClient.invalidateQueries({ queryKey: walletKeys.all });
+    },
+  });
+}
+
+export function useCreateVisitMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { appointmentId: string; visitSlotId: string }) =>
+      activityService.createVisit(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: activityKeys.all });
       queryClient.invalidateQueries({ queryKey: walletKeys.all });
