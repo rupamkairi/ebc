@@ -21,12 +21,34 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useEntitiesQuery } from "@/queries/entityQueries";
+import { useWalletDetails } from "@/queries/walletQueries";
+import { useAssignmentsQuery, useQuotationsQuery } from "@/queries/activityQueries";
+import { useSessionQuery } from "@/queries/authQueries";
 import { cn } from "@/lib/utils";
 
 export default function SellerDashboardPage() {
+  const { data: user } = useSessionQuery();
   const { data: entities = [] } = useEntitiesQuery();
   const mainEntity = entities[0];
   const status = mainEntity?.verificationStatus;
+  const { data: wallet, isLoading: isWalletLoading } = useWalletDetails(mainEntity?.id);
+
+  const { data: enquiryAssignments = [] } = useAssignmentsQuery({
+    toEntityId: mainEntity?.id,
+    type: "ENQUIRY_ASSIGNMENT",
+  });
+
+  const { data: appointmentAssignments = [] } = useAssignmentsQuery({
+    toEntityId: mainEntity?.id,
+    type: "APPOINTMENT_ASSIGNMENT",
+  });
+
+  const { data: quotations = [] } = useQuotationsQuery({
+    createdById: user?.user?.id,
+  });
+
+  const pendingQuotations = quotations.filter(q => q.status === 'PENDING').length;
+  const sentQuotations = quotations.length;
 
   return (
     <div className="flex flex-col gap-8">
@@ -114,7 +136,7 @@ export default function SellerDashboardPage() {
                     <div className="flex flex-col gap-6 mt-4">
                       <div className="flex flex-col">
                         <span className="text-5xl font-black text-blue-600 tracking-tighter italic">
-                          15
+                          {enquiryAssignments.length}
                         </span>
                         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">
                           Active Leads
@@ -122,10 +144,20 @@ export default function SellerDashboardPage() {
                       </div>
                       <div className="space-y-2">
                         <div className="h-1 w-full bg-muted rounded-full overflow-hidden">
-                          <div className="h-full bg-blue-500 w-[60%]" />
+                          <div
+                            className="h-full bg-blue-500 transition-all duration-1000"
+                            style={{
+                              width: `${Math.min(
+                                100,
+                                (enquiryAssignments.length / 20) * 100
+                              )}%`,
+                            }}
+                          />
                         </div>
                         <p className="text-[10px] font-bold text-blue-600 italic">
-                          4 leads expiring soon!
+                          {enquiryAssignments.length > 0
+                            ? `${enquiryAssignments.length} leads to respond`
+                            : "No active leads"}
                         </p>
                       </div>
                     </div>
@@ -150,8 +182,11 @@ export default function SellerDashboardPage() {
                   }
                   contentComponent={
                     <div className="flex items-center gap-2 mt-4 text-xs font-bold text-foreground/40 italic">
-                      <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                      1 Site Visit Request
+                      <div className={cn(
+                        "h-2 w-2 rounded-full",
+                        appointmentAssignments.length > 0 ? "bg-emerald-500 animate-pulse" : "bg-muted"
+                      )} />
+                      {appointmentAssignments.length} Site Visit Request{appointmentAssignments.length !== 1 ? 's' : ''}
                     </div>
                   }
                 />
@@ -169,7 +204,7 @@ export default function SellerDashboardPage() {
                   }
                   contentComponent={
                     <div className="flex items-center gap-2 mt-4 text-xs font-bold text-foreground/40 italic">
-                      8 Sent · 3 Pending
+                      {sentQuotations} Sent · {pendingQuotations} Pending
                     </div>
                   }
                 />
@@ -195,7 +230,7 @@ export default function SellerDashboardPage() {
                           Coin Balance
                         </p>
                         <h4 className="text-2xl font-black text-amber-900 leading-tight tracking-tight italic">
-                          1,245 Coins
+                          {isWalletLoading ? "..." : (wallet?.balance ?? 0).toLocaleString()} Coins
                         </h4>
                       </div>
                     </div>

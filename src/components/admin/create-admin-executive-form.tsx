@@ -39,20 +39,18 @@ export function CreateAdminExecutiveForm() {
       password: "",
     },
     onSubmit: async ({ value }) => {
-      mutation.mutate(value, {
-        onSuccess: () => {
-          setOpen(false);
-          form.reset();
-          toast.success("Admin Executive created successfully");
-        },
-        onError: (error) => {
-          const msg =
-            error instanceof ApiError
-              ? error.message
-              : "Failed to create executive";
-          toast.error(msg);
-        },
-      });
+      try {
+        await mutation.mutateAsync(value);
+        setOpen(false);
+        form.reset();
+        toast.success("Admin Executive created successfully");
+      } catch (error) {
+        const msg =
+          error instanceof ApiError
+            ? error.message
+            : "Failed to create executive";
+        toast.error(msg);
+      }
     },
   });
 

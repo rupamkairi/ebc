@@ -38,20 +38,18 @@ export function CreateAdminAccountantForm() {
       password: "",
     },
     onSubmit: async ({ value }) => {
-      mutation.mutate(value, {
-        onSuccess: () => {
-          setOpen(false);
-          form.reset();
-          toast.success("Admin Accountant created successfully");
-        },
-        onError: (error) => {
-          const msg =
-            error instanceof ApiError
-              ? error.message
-              : "Failed to create accountant";
-          toast.error(msg);
-        },
-      });
+      try {
+        await mutation.mutateAsync(value);
+        setOpen(false);
+        form.reset();
+        toast.success("Admin Accountant created successfully");
+      } catch (error) {
+        const msg =
+          error instanceof ApiError
+            ? error.message
+            : "Failed to create accountant";
+        toast.error(msg);
+      }
     },
   });
 

@@ -7,6 +7,13 @@ import {
   CreateEnquiryRequest,
   Enquiry,
   EnquiryListParams,
+  ActivityAssignment,
+  AssignmentListParams,
+  Quotation,
+  QuotationListParams,
+  CreateQuotationRequest,
+  Visit,
+  VisitListParams,
 } from "@/types/activity";
 
 export const activityService = {
@@ -60,10 +67,95 @@ export const activityService = {
     });
   },
 
+  async rejectAppointment(id: string) {
+    return fetchClient(`${API_ENDPOINTS.ACTIVITY.APPOINTMENT.GET}/reject/${id}`, {
+      method: "POST",
+    });
+  },
+
   async getAppointments(params: AppointmentListParams = {}) {
     return fetchClient<Appointment[]>(API_ENDPOINTS.ACTIVITY.APPOINTMENT.LIST, {
       method: "POST",
       body: params as Record<string, string | number | boolean>,
+    });
+  },
+
+  async getAssignments(params: AssignmentListParams = {}) {
+    return fetchClient<ActivityAssignment[]>(
+      API_ENDPOINTS.ACTIVITY.ASSIGNMENT.LIST,
+      {
+        method: "POST",
+        body: params as Record<string, string | number | boolean>,
+      }
+    );
+  },
+
+  // Quotation
+  async createQuotation(data: CreateQuotationRequest) {
+    return fetchClient<Quotation>(API_ENDPOINTS.ACTIVITY.QUOTATION.CREATE, {
+      method: "POST",
+      body: data,
+    });
+  },
+
+  async getQuotation(id: string) {
+    return fetchClient<Quotation>(
+      `${API_ENDPOINTS.ACTIVITY.QUOTATION.GET}/${id}`,
+      {
+        method: "GET",
+      }
+    );
+  },
+
+  async deleteQuotation(id: string) {
+    return fetchClient(`${API_ENDPOINTS.ACTIVITY.QUOTATION.DELETE}/${id}`, {
+      method: "DELETE",
+    });
+  },
+
+  async getQuotations(params: QuotationListParams = {}) {
+    return fetchClient<Quotation[]>(API_ENDPOINTS.ACTIVITY.QUOTATION.LIST, {
+      method: "POST",
+      body: params as Record<string, string | number | boolean>,
+    });
+  },
+
+  async updateQuotation(id: string, data: Partial<CreateQuotationRequest>) {
+    return fetchClient<Quotation>(
+      `${
+        API_ENDPOINTS.ACTIVITY.QUOTATION.UPDATE ||
+        API_ENDPOINTS.ACTIVITY.QUOTATION.GET
+      }/${id}`,
+      {
+        method: "PATCH",
+        body: data,
+      }
+    );
+  },
+
+  async acceptQuotation(id: string) {
+    return fetchClient(`${API_ENDPOINTS.ACTIVITY.QUOTATION.ACCEPT}/${id}`, {
+      method: "POST",
+    });
+  },
+
+  async createVisit(data: { appointmentId: string; visitSlotId: string }) {
+    return fetchClient<Visit>(API_ENDPOINTS.ACTIVITY.VISIT.CREATE, {
+      method: "POST",
+      body: data,
+    });
+  },
+
+  async getVisits(params: VisitListParams = {}) {
+    return fetchClient<Visit[]>(API_ENDPOINTS.ACTIVITY.VISIT.LIST, {
+      method: "POST",
+      body: params as Record<string, string | number | boolean>,
+    });
+  },
+
+  async acceptVisit(id: string) {
+    return fetchClient(`${API_ENDPOINTS.ACTIVITY.VISIT.ACCEPT}/${id}`, {
+      method: "POST",
     });
   },
 };

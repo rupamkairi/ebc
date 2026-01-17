@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Package, Users, Star, Headphones } from "lucide-react";
+import { Home, Package, Users, Star, Headphones, Wallet } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -8,7 +8,8 @@ const navItems = [
   { icon: Home, label: "Home", href: "/seller-dashboard" },
   { icon: Package, label: "My Catalog", href: "/seller-dashboard/catalog" },
   { icon: Users, label: "Enquiries", href: "/seller-dashboard/enquiries" },
-  { icon: Star, label: "Reviews", href: "/seller-dashboard/reviews" },
+  // { icon: Star, label: "Reviews", href: "/seller-dashboard/reviews" },
+  { icon: Wallet, label: "Wallet", href: "/seller-dashboard/wallet" },
   { icon: Headphones, label: "Support", href: "/seller-dashboard/support" },
 ];
 

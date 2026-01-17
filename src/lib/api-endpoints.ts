@@ -78,6 +78,26 @@ export const API_ENDPOINTS = {
       DELETE: "/activity/appointment", // :id
       LIST: "/activity/appointment/list",
     },
+    ASSIGNMENT: {
+      CREATE: "/activity/activity-assignment",
+      GET: "/activity/activity-assignment", // :id
+      LIST: "/activity/activity-assignment/list",
+    },
+    QUOTATION: {
+      CREATE: "/activity/quotation",
+      GET: "/activity/quotation", // :id
+      UPDATE: "/activity/quotation", // :id
+      DELETE: "/activity/quotation", // :id
+      LIST: "/activity/quotation/list",
+      ACCEPT: "/activity/quotation/accept", // :id
+    },
+    VISIT: {
+      CREATE: "/activity/visit",
+      GET: "/activity/visit", // :id
+      DELETE: "/activity/visit", // :id
+      LIST: "/activity/visit/list",
+      ACCEPT: "/activity/visit/accept", // :id
+    },
   },
   PINCODE_DIRECTORY: {
     LIST: "/pincode-directory/list",
@@ -99,5 +119,13 @@ export const API_ENDPOINTS = {
       UPLOAD_MULTIPLE: "/attachment/document/upload/multiple",
       GET_URL: "/attachment/document/url", // :id
     },
+  },
+  WALLET: {
+    PACKAGES: "/wallet/packages",
+    DETAILS: "/wallet/", // :entityId
+    PRICING: "/wallet/pricing/cost/", // :leadType
+    RECHARGE: "/wallet/recharge",
+    TRANSACTION: "/wallet/transaction",
+    VERIFY_PAYMENT: "/wallet/verify-payment",
   },
 } as const;

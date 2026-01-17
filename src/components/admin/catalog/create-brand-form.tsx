@@ -45,39 +45,26 @@ export function BrandForm() {
       brandLogoId: selectedBrand?.brandLogoId || "",
     },
     onSubmit: async ({ value }) => {
-      if (isEditing) {
-        updateMutation.mutate(
-          { ...value, id: selectedBrand.id },
-          {
-            onSuccess: () => {
-              setEditOpen(false);
-              form.reset();
-              toast.success("Brand updated successfully");
-            },
-            onError: (error) => {
-              const msg =
-                error instanceof ApiError
-                  ? error.message
-                  : "Failed to update brand";
-              toast.error(msg);
-            },
-          }
-        );
-      } else {
-        createMutation.mutate(value, {
-          onSuccess: () => {
-            setCreateOpen(false);
-            form.reset();
-            toast.success("Brand created successfully");
-          },
-          onError: (error) => {
-            const msg =
-              error instanceof ApiError
-                ? error.message
-                : "Failed to create brand";
-            toast.error(msg);
-          },
-        });
+      try {
+        if (isEditing) {
+          await updateMutation.mutateAsync({ ...value, id: selectedBrand.id });
+          setEditOpen(false);
+          form.reset();
+          toast.success("Brand updated successfully");
+        } else {
+          await createMutation.mutateAsync(value);
+          setCreateOpen(false);
+          form.reset();
+          toast.success("Brand created successfully");
+        }
+      } catch (error) {
+        const msg =
+          error instanceof ApiError
+            ? error.message
+            : isEditing
+            ? "Failed to update brand"
+            : "Failed to create brand";
+        toast.error(msg);
       }
     },
   });

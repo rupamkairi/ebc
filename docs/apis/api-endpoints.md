@@ -1,702 +1,404 @@
-# Authentication API Endpoints
+# EBC API Documentation
 
-Base URL: `/api/auth`
+This document provides a consolidated view of all API endpoints available in the EBC Server.
 
-## Admin Routes
+## Table of Contents
+
+1. [Authentication](#1-authentication)
+2. [Business Entity](#2-business-entity)
+3. [Catalog](#3-catalog)
+4. [Activity (Enquiry, Appointment, etc.)](#4-activity)
+5. [Wallet](#5-wallet)
+6. [Notification](#6-notification)
+7. [Attachments](#7-attachments)
+8. [Miscellaneous (Pincode Directory)](#8-miscellaneous)
+
+---
+
+## 1. Authentication
+
+**Base URL:** `/api/auth`
+
+### Admin Routes
 
 All Admin creation and update routes require `Authorization: Bearer <token>` header (except `login` and `create-admin` if no admin exists).
 
-### 1. Admin Login
+#### 1.1 Admin Login
 
 **POST** `/admin/login`
 
-**Request Body:**
+- **Request Body:**
+  ```json
+  {
+    "email": "root@example.com",
+    "password": "password"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "id": "session-uuid",
+    "token": "jwt-token-string",
+    "userId": "user-uuid",
+    "expiresAt": "2024-12-25T00:00:00.000Z"
+  }
+  ```
 
-```json
-{
-  "email": "root@example.com",
-  "password": "password"
-}
-```
-
-**Response:**
-
-```json
-{
-  "id": "session-uuid",
-  "token": "jwt-token-string",
-  "userId": "user-uuid",
-  "expiresAt": "2024-12-25T00:00:00.000Z"
-}
-```
-
-### 2. Create Root Admin
+#### 1.2 Create Root Admin
 
 **POST** `/admin/create-admin`
 _Note: Publicly accessible only if no Admins exist in the system._
 
-**Request Body:**
+- **Request Body:**
+  ```json
+  {
+    "email": "root@example.com",
+    "name": "Root Admin",
+    "password": "password"
+  }
+  ```
 
-```json
-{
-  "email": "root@example.com",
-  "name": "Root Admin",
-  "password": "password"
-}
-```
-
-### 3. Create Admin Subordinates
+#### 1.3 Create Admin Subordinates
 
 Only accessible by specific roles (defined in `permissions.json`).
 
-**Endpoints:**
+- **Endpoints:**
+  - **POST** `/admin/create-admin-manager` (Requires ADMIN)
+  - **POST** `/admin/create-admin-accountant` (Requires ADMIN)
+  - **POST** `/admin/create-admin-executive` (Requires ADMIN_MANAGER)
+- **Request Body:**
+  ```json
+  {
+    "email": "manager@example.com",
+    "name": "Admin Manager",
+    "password": "password"
+  }
+  ```
 
-- **POST** `/admin/create-admin-manager` (Requires ADMIN)
-- **POST** `/admin/create-admin-accountant` (Requires ADMIN)
-- **POST** `/admin/create-admin-executive` (Requires ADMIN_MANAGER)
+#### 1.4 Admin Role Management
 
-**Request Body:**
+**PUT** `/admin/set-role` (Requires ADMIN role)
 
-```json
-{
-  "email": "manager@example.com",
-  "name": "Admin Manager",
-  "password": "password"
-}
-```
+- **Request Body:**
+  ```json
+  {
+    "userId": "target-user-uuid",
+    "role": "ADMIN_EXECUTIVE"
+  }
+  ```
+- **Valid Roles:** `ADMIN_MANAGER`, `ADMIN_ACCOUNTANT`, `ADMIN_EXECUTIVE`, `UNASSIGNED`.
 
-### 4. Admin Role Management
-
-**PUT** `/admin/set-role`
-_Requires ADMIN role._
-
-**Request Body:**
-
-```json
-{
-  "userId": "target-user-uuid",
-  "role": "ADMIN_EXECUTIVE"
-}
-```
-
-_Note: Valid roles: `ADMIN_MANAGER`, `ADMIN_ACCOUNTANT`, `ADMIN_EXECUTIVE`, `UNASSIGNED`._
-
-### 5. Update Profile (Self)
+#### 1.5 Update Profile (Self)
 
 **PUT** `/admin/update`
 
-**Request Body:**
+- **Request Body:**
+  ```json
+  {
+    "name": "Updated Name",
+    "password": "newpassword" // Optional
+  }
+  ```
 
-```json
-{
-  "name": "Updated Name",
-  "password": "newpassword" // Optional
-}
-```
-
-### 6. Get Current Session
+#### 1.6 Get Current Session
 
 **GET** `/session`
 
-**Response:**
+- **Response:**
+  ```json
+  {
+    "session": { ... },
+    "user": { ... }
+  }
+  ```
 
-```json
-{
-  "session": { ... },
-  "user": { ... }
-}
-```
+#### 1.7 List Users
 
-### 7. List Users
+**POST** `/admin/list-users` (Requires ADMIN, ADMIN_MANAGER, or ADMIN_EXECUTIVE)
 
-**POST** `/admin/list-users`
-_Requires ADMIN, ADMIN_MANAGER, or ADMIN_EXECUTIVE role._
+- **Request Body:**
+  ```json
+  {
+    "role": "USER_PRODUCT_SELLER_ADMIN", // Optional
+    "phoneVerified": true, // Optional
+    "search": "john" // Optional search text
+  }
+  ```
 
-**Request Body:**
+### User Routes (Phone/OTP)
 
-```json
-{
-  "role": "USER_PRODUCT_SELLER_ADMIN", // Optional
-  "phoneVerified": true, // Optional
-  "search": "john" // Optional search text
-}
-```
-
----
-
-## User Routes
-
-User login uses Phone/OTP.
-
-### 1. Send OTP
+#### 1.8 Send OTP
 
 **POST** `/user/send-otp`
 
-**Request Body:**
+- **Request Body:**
+  ```json
+  {
+    "phone": "+919876543210",
+    "name": "John Doe",
+    "type": "PRODUCT" // "PRODUCT" | "SERVICE" | "BUYER"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "message": "User created successfully and OTP sent to the phone number",
+    "isNewUser": true
+  }
+  ```
 
-```json
-{
-  "phone": "+919876543210",
-  "name": "John Doe",
-  "type": "PRODUCT" // "PRODUCT" | "SERVICE" | "BUYER"
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "User created successfully and OTP sent to the phone number",
-  "isNewUser": true
-}
-```
-
-_Note: `isNewUser` will be `true` if a new user record was created, and `false` if an existing user was found and their OTP was updated._
-
-_Check server console logs for the OTP._
-
-### 2. Verify OTP
+#### 1.9 Verify OTP
 
 **POST** `/user/verify-otp`
 
-**Request Body:**
+- **Request Body:**
+  ```json
+  {
+    "phone": "+919876543210",
+    "otp": "123456"
+  }
+  ```
+- **Response:** Same as Admin Login (Session Object).
 
-```json
-{
-  "phone": "+919876543210",
-  "otp": "123456"
-}
-```
-
-**Response:** (_Same as Admin Login - Session Object_)
-
-### 3. Create User Staff
+#### 1.10 Create User Staff
 
 Only accessible by specific roles.
 
-**Endpoints:**
+- **Endpoints:**
+  - **POST** `/user/create-user-seller-staff` (Requires USER_PRODUCT_SELLER_ADMIN)
+  - **POST** `/user/create-user-service-staff` (Requires USER_SERVICE_PROVIDER_ADMIN)
+- **Request Body:**
+  ```json
+  {
+    "name": "Staff Name",
+    "phone": "+919876543210"
+  }
+  ```
 
-- **POST** `/user/create-user-seller-staff` (Requires USER_PRODUCT_SELLER_ADMIN)
-- **POST** `/user/create-user-service-staff` (Requires USER_SERVICE_PROVIDER_ADMIN)
-
-**Request Body:**
-
-```json
-{
-  "name": "Staff Name",
-  "phone": "+919876543210"
-}
-```
-
-_Note: Newly created users must use "Send OTP" to login._
-
-### 4. Update Profile (Self)
+#### 1.11 Update Profile (Self)
 
 **PUT** `/user/update`
 
-**Request Body:**
-
-```json
-{
-  "name": "Updated Name"
-}
-```
-
-# Entity API Endpoints
-
-Base URL: `/api/entity`
-
-All routes require `Authorization: Bearer <token>` header.
-
-## Business Entity Management
-
-### 1. Create Entity
-
-**POST** `/`
-
-**Roles:** `USER_PRODUCT_SELLER_ADMIN`, `USER_SERVICE_PROVIDER_ADMIN`.
-**Constraint:** Limit 1 entity per user.
-
-**Request Body:**
-
-```json
-{
-  "name": "My Business",
-  "legalName": "My Business Pvt Ltd",
-  "description": "A description of the business.",
-  "primaryContactNumber": "+919876543210",
-  "secondaryContactNumber": "+919876543211",
-  "contactEmail": "contact@business.com",
-  "supportEmail": "support@business.com",
-  "addressLine1": "123 Business Street",
-  "addressLine2": "Industrial Area",
-  "city": "Mumbai",
-  "pincodeId": "uuid-of-pincode"
-}
-```
-
-**Note:** `op_type` is automatically assigned based on the user's role (`PRODUCT` for `USER_PRODUCT_SELLER_ADMIN` or `SERVICE` for `USER_SERVICE_PROVIDER_ADMIN`).
-
-**Response:**
-
-```json
-{
-  "id": "uuid",
-  "name": "My Business",
-  ...
-}
-```
-
-### 2. Get Entities
-
-**GET** `/`
-
-**Roles:** `USER_PRODUCT_SELLER_ADMIN`, `USER_SERVICE_PROVIDER_ADMIN` (Fetch own), `ADMIN_MANAGER`, `ADMIN_EXECUTIVE` (Fetch all).
-
-**Response:**
-
-```json
-[
-  {
-    "id": "uuid",
-    "name": "My Business",
-    "createdById": "user-uuid",
-    "pincode": {
-      "id": "uuid",
-      "pincode": "400001",
-      "state": "Maharashtra",
-      "district": "Mumbai"
-    },
-    ...
-  }
-]
-```
-
-### 3. Update Entity Details
-
-**PATCH** `/:id`
-
-**Roles:** `USER_PRODUCT_SELLER_ADMIN`, `USER_SERVICE_PROVIDER_ADMIN`.
-Updates the entity with the specified ID. Must be owned by the user.
-
-**Request Body:**
-
-```json
-{
-  "name": "Updated Name",
-  "legalName": "Updated Legal Name",
-  "description": "Updated description",
-  "primaryContactNumber": "+919876543212",
-  "city": "Pune"
-}
-```
-
-**Response:**
-
-```json
-{
-  "id": "uuid",
-  "name": "Updated Name",
-  ...
-}
-```
-
-### 4. Verify Entity
-
-**PATCH** `/:id/verify`
-
-**Roles:** `ADMIN_MANAGER`, `ADMIN_EXECUTIVE`.
-
-**Request Body:**
-
-```json
-{
-  "status": "APPROVED",
-  "remark": "All documents are valid."
-}
-```
-
-_Note: `status` must be either "APPROVED" or "REJECTED"._
-
-**Response:**
-
-```json
-{
-  "id": "uuid",
-  "verificationStatus": "APPROVED",
-  ...
-}
-```
-
-# Catalog API Endpoints
-
-Base URL: `/api/catalog`
-
-## Category
-
-- **Create**: `POST /category`
-  - Body:
+- **Request Body:**
   ```json
   {
-    "name": "Cement & Binders",
-    "type": "PRODUCT",
-    "categoryIconId": "UUID?"
-  }
-  ```
-  And for Sub-Category
-  ```json
-  {
-    "name": "Cement",
-    "type": "PRODUCT",
-    "parentCategoryId": "f224e3b3-82e0-43ab-a374-cd6ce81f457f",
-    "categoryIconId": "UUID?"
-  }
-  ```
-- **Update**: `PATCH /category`
-  - Body:
-  ```json
-  {
-    "id": "UUID",
-    "name": "String",
-    ...
-  }
-  ```
-- **Delete**: `DELETE /category`
-  - Body: `{ "id": "UUID" }`
-- **List**: `POST /category/list`
-  - Body:
-    ```json
-    {
-      "type": "PRODUCT",
-      "isSubCategory": true,
-      "parentCategoryId": "UUID",
-      "search": "String"
-    }
-    ```
-
-## Brand
-
-- **Create**: `POST /brand`
-  - Body: `{ "name": "String", "brandLogoId": "UUID?" }`
-- **Update**: `PATCH /brand`
-  - Body: `{ "id": "UUID", "name": "String" }`
-- **Delete**: `DELETE /brand`
-  - Body: `{ "id": "UUID" }`
-- **List**: `POST /brand/list`
-  - Body:
-    ```json
-    {
-      "search": "String"
-    }
-    ```
-
-## Specification
-
-- **Create**: `POST /specification`
-  - Body: `{ "name": "String", "description": "String?" }`
-- **Update**: `PATCH /specification`
-  - Body: `{ "id": "UUID", "name": "String", ... }`
-- **Delete**: `DELETE /specification`
-  - Body: `{ "id": "UUID" }`
-- **List**: `POST /specification/list`
-  - Body:
-    ```json
-    {
-      "search": "String"
-    }
-    ```
-
-## Item
-
-- **Create**: `POST /item`
-  - Body:
-  ```json
-  {
-    "name": "ACC 10kg Cement - Corrosion Resistant",
-    "description": "ACC 10kg Cement - Corrosion Resistant. Pack: 5 Meter. HSN: 2524. GST: 5%. Supplier: Manufacturer located in Telangana.",
-    "type": "PRODUCT",
-    "HSNCode": "2524",
-    "GSTPercentage": 5,
-    "categoryId": "c49c663b-6fac-4952-9a24-22a1f0d270d9",
-    "brandId": "c4968c03-f892-44fa-9f2e-50b473ac4e3a",
-    "specificationId": "5a9d9825-1c40-4a30-9aee-f9cb18ec6a9e"
-  }
-  ```
-- **Update**: `PATCH /item`
-  - Body:
-  ```json
-  {
-    "id": "UUID",
-    ...
-  }
-  ```
-- **Delete**: `DELETE /item`
-  - Body: `{ "id": "UUID" }`
-- **List**: `POST /item/list`
-  - Body:
-    ```json
-    {
-      "search": "String",
-      "categoryId": "UUID",
-      "brandId": "UUID",
-      "specificationId": "UUID",
-      "type": "PRODUCT"
-    }
-    ```
-
-## Item Listing
-
-- **Composite Create**: `POST /item-listing`
-  - Body:
-  ```json
-  {
-    "item_listing": {
-      "itemId": "b9cacaae-b2e5-472c-9410-92738972a2fb",
-      "entityId": "8e789b10-6224-4d27-b328-e3497476d7bb",
-      "item_rate": {
-        "minQuantity": 50,
-        "unitType": "Kilogram",
-        "rate": 400,
-        "isNegotiable": false
-      },
-      "item_region": [
-        {
-          "state": "Delhi",
-          "wholeState": true,
-          "pincodeId": "550e8400-e29b-41d4-a716-446655440000"
-        }
-      ]
-    }
-  }
-  ```
-- **Update**: `PATCH /item-listing/:id`
-  - Body: `{ "isActive": boolean }`
-- **Delete**: `DELETE /item-listing/:id`
-- **List**: `POST /item-listing/list`
-  - Body:
-    ```json
-    {
-      "itemId": "UUID",
-      "entityId": "UUID",
-      "search": "String"
-    }
-    ```
-
-## Item Rate (Granular)
-
-- **Create**: `POST /item-rate`
-  - Body:
-  ```json
-  {
-    "itemListingId": "UUID",
-    "minQuantity": 50,
-    "unitType": "Kilogram?",
-    "rate": 400,
-    "isNegotiable": true
-  }
-  ```
-- **Update**: `PATCH /item-rate/:id`
-  - Body: `{ "rate": 450, ... }`
-- **Delete**: `DELETE /item-rate/:id`
-- **List**: `POST /item-rate/list`
-  - Body: `{ "itemListingId": "UUID" }`
-
-## Item Region (Granular)
-
-- **Create**: `POST /item-region`
-  - Body:
-  ```json
-  {
-    "itemListingId": "UUID",
-    "regions": [
-      {
-        "state": "Maharashtra",
-        "wholeState": true
-      },
-      {
-        "state": "Karnataka",
-        "district": "Bangalore",
-        "wholeDistrict": true
-      }
-    ]
-  }
-  ```
-- **Update**: `PATCH /item-region/:id`
-  - Body: `{ "isAvailable": false, ... }`
-- **Delete**: `DELETE /item-region/:id`
-- **List**: `POST /item-region/list`
-  - Body: `{ "itemListingId": "UUID" }`
-
-## Bulk Upload
-
-- **Upload**: `POST /upload`
-  - Body: Array of Objects
-  ```json
-  [
-    {
-      "type": "PRODUCT",
-      "category": "Electronics",
-      "subCategory": "Laptops",
-      "brand": "Dell",
-      "specification": "Core i7",
-      "item": "XPS 15",
-      "HSNCode": "8471",
-      "GSTPercentage": "18"
-    }
-  ]
-  ```
-- This does not account for finding (category, brand & specification) & link or create & link.
-
-# Miscellaneous API Endpoints
-
-Base URL: `/api/pincode-directory`
-
-## Pincode Directory
-
-- **Search**: `POST /list`
-  - Fetch pincode records based on state, district, or pincode.
-  - Body:
-    ```json
-    {
-      "state": "maharashtra",
-      "district": "mumbai",
-      "pincode": "400001"
-    }
-    ```
-  - Response (Success):
-    ```json
-    [
-      {
-        "id": "550e8400-e29b-41d4-a716-446655440000",
-        "state": "Maharashtra",
-        "district": "Mumbai",
-        "pincode": "400001"
-      }
-    ]
-    ```
-  - Note: All fields are optional. Partial matches are supported for `state` and `district` (case-insensitive). `id` is a UUID.
-
-# Attachment API Endpoints
-
-Base URL: `/api/attachment`
-
-## Media Routes
-
-Handled at `/api/attachment/media`
-
-### 1. Single Media Upload
-
-**POST** `/upload/single`
-
-- **Body**: `file` (Multipart)
-- **Roles**: Authenticated Users
-
-### 2. Multiple Media Upload
-
-**POST** `/upload/multiple`
-
-- **Body**: `files` (Multipart, max 10)
-- **Roles**: Authenticated Users
-
-### 3. Get Media URL
-
-**GET** `/url/:id`
-
-## Document Routes
-
-Handled at `/api/attachment/document`
-
-### 1. Single Document Upload
-
-**POST** `/upload/single`
-
-- **Body**: `file` (Multipart)
-- **Supported Types**: PDF, Doc, Docx, txt, md
-- **Roles**: Authenticated Users
-
-### 2. Multiple Document Upload
-
-**POST** `/upload/multiple`
-
-- **Body**: `files` (Multipart, max 10)
-- **Supported Types**: PDF, Doc, Docx, txt, md
-- **Roles**: Authenticated Users
-
-### 3. Get Document URL
-
-**GET** `/url/:id`
-
-# Activity API Endpoints
-
-Base URL: `/api/activity`
-
-## Enquiry
-
-- **Create**: `POST /enquiry`
-  - Body:
-  ```json
-  {
-    "lineItems": [
-      {
-        "itemId": "b9cacaae-b2e5-472c-9410-92738972a2fb",
-        "quantity": 10,
-        "unitType": "Piece",
-        "remarks": "Urgent requirement",
-        "flexibleWithBrands": true
-      }
-    ],
-    "details": {
-      "expectedDate": "2024-12-30T00:00:00.000Z",
-      "remarks": "Delivery at site A",
-      "address": "123 Street Name",
-      "pincodeDirectoryId": "uuid-of-pincode"
-    }
-  }
-  ```
-- **Get Details**: `GET /enquiry/:id`
-- **Delete**: `DELETE /enquiry/:id`
-- **List**: `POST /enquiry/list`
-  - Body:
-  ```json
-  {
-    "createdById": "UUID?",
-    "itemId": "UUID?",
-    "search": "String?"
+    "name": "Updated Name"
   }
   ```
 
 ---
 
-## Appointment
+## 2. Business Entity
 
-- **Create**: `POST /appointment`
-  - Body:
+**Base URL:** `/api/entity`
+_All routes require `Authorization: Bearer <token>` header._
+
+### 2.1 Create Entity
+
+**POST** `/`
+
+- **Roles:** `USER_PRODUCT_SELLER_ADMIN`, `USER_SERVICE_PROVIDER_ADMIN`.
+- **Constraint:** Limit 1 entity per user.
+- **Request Body:**
   ```json
   {
-    "lineItems": [
-      {
-        "itemId": "b9cacaae-b2e5-472c-9410-92738972a2fb",
-        "remarks": "Sample inspection"
-      }
-    ],
-    "details": {
-      "remarks": "Meeting at main office"
-    },
-    "slots": [
-      {
-        "remarks": "Prefers morning"
-      }
-    ]
+    "name": "My Business",
+    "legalName": "My Business Pvt Ltd",
+    "description": "A description of the business.",
+    "primaryContactNumber": "+919876543210",
+    "secondaryContactNumber": "+919876543211",
+    "contactEmail": "contact@business.com",
+    "supportEmail": "support@business.com",
+    "addressLine1": "123 Business Street",
+    "addressLine2": "Industrial Area",
+    "city": "Mumbai",
+    "pincodeId": "uuid-of-pincode"
   }
   ```
-- **Get Details**: `GET /appointment/:id`
-- **Delete**: `DELETE /appointment/:id`
-- **List**: `POST /appointment/list`
-  - Body:
+
+### 2.2 Get Entities
+
+**GET** `/`
+
+- **Roles:** `USER_PRODUCT_SELLER_ADMIN`, `USER_SERVICE_PROVIDER_ADMIN` (Fetch own), `ADMIN_MANAGER`, `ADMIN_EXECUTIVE` (Fetch all).
+
+### 2.3 Update Entity Details
+
+**PATCH** `/:id`
+
+- **Roles:** `USER_PRODUCT_SELLER_ADMIN`, `USER_SERVICE_PROVIDER_ADMIN`.
+
+### 2.4 Verify Entity
+
+**PATCH** `/:id/verify`
+
+- **Roles:** `ADMIN_MANAGER`, `ADMIN_EXECUTIVE`.
+- **Request Body:**
   ```json
   {
-    "createdById": "UUID?",
-    "itemId": "UUID?",
-    "search": "String?"
+    "status": "APPROVED", // "APPROVED" | "REJECTED"
+    "remark": "All documents are valid."
+  }
+  ```
+
+---
+
+## 3. Catalog
+
+**Base URL:** `/api/catalog`
+
+### 3.1 Category
+
+- **Create:** `POST /category`
+- **Update:** `PATCH /category`
+- **Delete:** `DELETE /category`
+- **List:** `POST /category/list`
+
+### 3.2 Brand
+
+- **Create:** `POST /brand`
+- **Update:** `PATCH /brand`
+- **Delete:** `DELETE /brand`
+- **List:** `POST /brand/list`
+
+### 3.3 Specification
+
+- **Create:** `POST /specification`
+- **Update:** `PATCH /specification`
+- **Delete:** `DELETE /specification`
+- **List:** `POST /specification/list`
+
+### 3.4 Item
+
+- **Create:** `POST /item`
+- **Update:** `PATCH /item`
+- **Delete:** `DELETE /item`
+- **List:** `POST /item/list`
+
+### 3.5 Item Listing (Composite)
+
+- **Create:** `POST /item-listing`
+- **Update:** `PATCH /item-listing/:id`
+- **Delete:** `DELETE /item-listing/:id`
+- **List:** `POST /item-listing/list`
+
+### 3.6 Item Rate & Region (Granular)
+
+- **Rate Create/Update/Delete/List:** Under `/item-rate`
+- **Region Create/Update/Delete/List:** Under `/item-region`
+
+### 3.7 Bulk Upload
+
+- **POST** `/upload`
+- Accepts an array of objects to create categories, brands, specifications, and items in bulk.
+
+---
+
+## 4. Activity
+
+**Base URL:** `/api/activity`
+
+### 4.1 Enquiry
+
+- **Create:** `POST /enquiry`
+- **Get Details:** `GET /enquiry/:id`
+- **Delete:** `DELETE /enquiry/:id`
+- **List:** `POST /enquiry/list`
+
+### 4.2 Appointment
+
+- **Create:** `POST /appointment`
+- **Get Details:** `GET /appointment/:id`
+- **Delete:** `DELETE /appointment/:id`
+- **List:** `POST /appointment/list`
+
+### 4.3 Quotation
+
+- **Create:** `POST /quotation`
+- **Get Details:** `GET /quotation/:id`
+- **Delete:** `DELETE /quotation/:id`
+- **List:** `POST /quotation/list`
+
+### 4.4 Activity Assignment
+
+- **Create:** `POST /activity-assignment`
+- **Get Details:** `GET /activity-assignment/:id`
+- **List:** `POST /activity-assignment/list`
+
+### 4.5 Visit
+
+- **Create:** `POST /visit`
+- **Get Details:** `GET /visit/:id`
+- **Delete:** `DELETE /visit/:id`
+- **List:** `POST /visit/list`
+
+---
+
+## 5. Wallet
+
+**Base URL:** `/api/wallet`
+
+### 5.1 Get Wallet
+
+**GET** `/:entityId`
+
+- Returns balance and recent transactions.
+
+### 5.2 Process Transaction
+
+**POST** `/transaction`
+
+- **Reasons:** `QUOTATION_SUMBIT`, `VISIT_SUBMIT`
+- **Types:** `CREDIT`, `DEBIT`
+- **Ref Types:** `QUOTATION`, `VISIT`
+
+---
+
+## 6. Notification
+
+**Base URL:** `/api/notification`
+
+### 6.1 Management
+
+- **Create:** `POST /`
+- **Get Details:** `GET /:id`
+- **List:** `POST /list`
+- **Update:** `PATCH /:id`
+- **Delete:** `DELETE /:id`
+
+---
+
+## 7. Attachments
+
+**Base URL:** `/api/attachment`
+
+### 7.1 Media Routes (`/media`)
+
+- **Single Upload:** `POST /upload/single`
+- **Multiple Upload:** `POST /upload/multiple`
+- **Get URL:** `GET /url/:id`
+
+### 7.2 Document Routes (`/document`)
+
+- **Single Upload:** `POST /upload/single`
+- **Multiple Upload:** `POST /upload/multiple`
+- **Get URL:** `GET /url/:id`
+- **Supported Types:** PDF, Doc, Docx, txt, md
+
+---
+
+## 8. Miscellaneous
+
+**Base URL:** `/api/pincode-directory`
+
+### 8.1 Pincode Directory
+
+- **Search:** `POST /list`
+- **Body:**
+  ```json
+  {
+    "state": "maharashtra",
+    "district": "mumbai",
+    "pincode": "400001"
   }
   ```

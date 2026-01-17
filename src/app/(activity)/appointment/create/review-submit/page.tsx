@@ -36,9 +36,21 @@ export default function AppointmentReviewSubmitPage() {
         address: buyerDetails.address,
         pincodeDirectoryId: buyerDetails.pincodeDirectoryId,
       },
-      slots: timeSlots.map((slot) => ({
-        remarks: `${slot.date} ${slot.startTime}-${slot.endTime}`,
-      })),
+      slots: timeSlots.map((slot) => {
+        const fromDate = new Date(slot.date);
+        const [startH, startM] = slot.startTime.split(":").map(Number);
+        fromDate.setHours(startH, startM, 0, 0);
+
+        const toDate = new Date(slot.date);
+        const [endH, endM] = slot.endTime.split(":").map(Number);
+        toDate.setHours(endH, endM, 0, 0);
+
+        return {
+          remarks: `${slot.date} ${slot.startTime}-${slot.endTime}`,
+          fromDateTime: fromDate,
+          toDateTime: toDate,
+        };
+      }),
     };
 
     createAppointment.mutate(payload, {

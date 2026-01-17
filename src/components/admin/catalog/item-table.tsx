@@ -1,6 +1,6 @@
 "use client";
 
-import { useItemsQuery } from "@/queries/catalogQueries";
+import { useItemsQuery, useDeleteItemMutation } from "@/queries/catalogQueries";
 import { PaginationState, SortingState } from "@tanstack/react-table";
 import { useState } from "react";
 import { DataTable } from "@/components/datatable/data-table";
@@ -12,6 +12,17 @@ import { Badge } from "@/components/ui/badge";
 
 import { ActionColumn } from "./action-column";
 import { useItemStore } from "@/store/itemStore";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 
 export function ItemTable() {
   const [pagination, setPagination] = useState<PaginationState>({
@@ -19,7 +30,10 @@ export function ItemTable() {
     pageSize: 10,
   });
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [itemToDelete, setItemToDelete] = useState<Item | null>(null);
   const { setEditOpen } = useItemStore();
+
+  const deleteMutation = useDeleteItemMutation();
 
   const { data, isLoading } = useItemsQuery({
     page: pagination.pageIndex + 1,
@@ -29,6 +43,20 @@ export function ItemTable() {
   });
 
   const items = data || [];
+
+  const handleDelete = async () => {
+    if (!itemToDelete) return;
+
+    try {
+      await deleteMutation.mutateAsync(itemToDelete.id);
+      toast.success("Item deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete item");
+      console.error(error);
+    } finally {
+      setItemToDelete(null);
+    }
+  };
 
   const columns: ColumnDef<Item>[] = [
     {
@@ -81,24 +109,55 @@ export function ItemTable() {
       cell: ({ row }) => (
         <ActionColumn
           onEdit={() => setEditOpen(true, row.original)}
-          onDelete={() => {
-            // TODO: Implement delete
-          }}
+          onDelete={() => setItemToDelete(row.original)}
         />
       ),
     },
   ];
 
   return (
-    <DataTable
-      columns={columns}
-      data={items}
-      pageCount={-1}
-      pagination={pagination}
-      onPaginationChange={setPagination}
-      sorting={sorting}
-      onSortingChange={setSorting}
-      loading={isLoading}
-    />
+    <>
+      <DataTable
+        columns={columns}
+        data={items}
+        pageCount={-1}
+        pagination={pagination}
+        onPaginationChange={setPagination}
+        sorting={sorting}
+        onSortingChange={setSorting}
+        loading={isLoading}
+      />
+
+      <AlertDialog
+        open={!!itemToDelete}
+        onOpenChange={(open) => !open && setItemToDelete(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the
+              item &quot;{itemToDelete?.name}&quot; and remove its data from our
+              servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteMutation.isPending}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                handleDelete();
+              }}
+              disabled={deleteMutation.isPending}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleteMutation.isPending ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
