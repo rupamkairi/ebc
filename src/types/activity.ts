@@ -1,3 +1,4 @@
+import { UnitType } from "@/constants/quantities";
 import { Item } from "./catalog";
 
 // Shared definitions
@@ -16,7 +17,7 @@ export interface LineItem {
 // Enquiry Specifics
 export interface EnquiryLineItem extends LineItem {
   quantity: number;
-  unitType: string;
+  unitType: UnitType;
   flexibleWithBrands?: boolean;
 }
 
@@ -199,4 +200,3 @@ export interface VisitListParams {
   page?: number;
   perPage?: number;
 }
-

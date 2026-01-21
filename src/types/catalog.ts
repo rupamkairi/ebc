@@ -1,3 +1,4 @@
+import { UnitType } from "@/constants/quantities";
 import { Entity } from "./entity";
 
 export interface Media {
@@ -160,7 +161,7 @@ export interface ItemRate {
   id?: string;
   itemListingId?: string;
   minQuantity: number;
-  unitType: string;
+  unitType: UnitType;
   rate: number;
   isNegotiable?: boolean;
 }
@@ -206,7 +207,7 @@ export interface ItemListingListParams {
 export interface CreateItemRateRequest {
   itemListingId: string;
   minQuantity: number;
-  unitType: string;
+  unitType: UnitType;
   rate: number;
   isNegotiable?: boolean;
 }

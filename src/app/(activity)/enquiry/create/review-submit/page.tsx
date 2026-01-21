@@ -26,7 +26,7 @@ export default function ReviewSubmitPage() {
       lineItems: items.map((item) => ({
         itemId: item.itemId,
         quantity: item.quantity,
-        unitType: item.unit || "Piece",
+        unitType: item.unitType || "Nos",
         remarks: item.remarks || "",
         flexibleWithBrands: true, // Defaulting to true as per common flow
       })),

@@ -20,9 +20,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useEnquiryStore, UNIT_TYPE } from "@/store/enquiryStore";
+import { useEnquiryStore } from "@/store/enquiryStore";
 import { Product } from "@/queries/browse.queries";
 import { toast } from "sonner";
+import { UNIT_TYPE_LABELS, UNIT_TYPES, UnitType } from "@/constants/quantities";
 
 interface AddToEnquiryModalProps {
   isOpen: boolean;
@@ -37,7 +38,7 @@ export function AddToEnquiryModal({
 }: AddToEnquiryModalProps) {
   const [quantity, setQuantity] = useState("1");
   const [remarks, setRemarks] = useState("");
-  const [unit, setUnit] = useState<UNIT_TYPE>(UNIT_TYPE.Piece);
+  const [unitType, setUnitType] = useState<UnitType>("Nos");
   const addItem = useEnquiryStore((state) => state.addItem);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -54,7 +55,7 @@ export function AddToEnquiryModal({
       type: product.type,
       quantity: qty,
       remarks: remarks,
-      unit: unit,
+      unitType: unitType,
       price: product.price,
     });
 
@@ -63,7 +64,7 @@ export function AddToEnquiryModal({
     // Reset form
     setQuantity("1");
     setRemarks("");
-    setUnit(UNIT_TYPE.Piece);
+    setUnitType("Nos");
   };
 
   return (
@@ -90,16 +91,16 @@ export function AddToEnquiryModal({
                 className="flex-1"
               />
               <Select
-                value={unit}
-                onValueChange={(val) => setUnit(val as UNIT_TYPE)}
+                value={unitType}
+                onValueChange={(val) => setUnitType(val as UnitType)}
               >
                 <SelectTrigger className="w-[140px]">
                   <SelectValue placeholder="Unit" />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.values(UNIT_TYPE).map((u) => (
+                  {UNIT_TYPES.map((u) => (
                     <SelectItem key={u} value={u}>
-                      {u}
+                      {UNIT_TYPE_LABELS[u]}
                     </SelectItem>
                   ))}
                 </SelectContent>

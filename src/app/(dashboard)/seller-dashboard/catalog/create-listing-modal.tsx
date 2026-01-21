@@ -6,6 +6,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { usePincodeRecordsQuery } from "@/queries/regionQueries";
 import { useCreateItemListingMutation } from "@/queries/catalogQueries";
 import { Item } from "@/types/catalog";
+import { UnitType } from "@/constants/quantities";
 import { PincodeRecord } from "@/types/region";
 import { ListingModalHeader } from "@/components/dashboard/seller/catalog/listing-modal-header";
 import { ItemSelectionStep } from "@/components/dashboard/seller/catalog/steps/item-selection-step";
@@ -28,7 +29,7 @@ export function CreateListingModal({
   const [step, setStep] = useState(1);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [rate, setRate] = useState({
-    unitType: "",
+    unitType: "" as UnitType,
     minQuantity: 1,
     baseRate: 0,
   });
@@ -44,7 +45,7 @@ export function CreateListingModal({
       state: selectedState,
       district: selectedDistrict,
       pincode: pincodeSearch.length >= 3 ? pincodeSearch : undefined,
-    }
+    },
   );
 
   const createListingMutation = useCreateItemListingMutation();
@@ -56,7 +57,7 @@ export function CreateListingModal({
     setSelectedRegions((prev) =>
       prev.some((r) => r.id === record.id)
         ? prev.filter((r) => r.id !== record.id)
-        : [...prev, record]
+        : [...prev, record],
     );
   };
 

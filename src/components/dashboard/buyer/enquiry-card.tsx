@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Enquiry } from "@/types/activity";
+import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
 import { format } from "date-fns";
 import { Package, MapPin, Calendar, ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -71,7 +72,9 @@ export function EnquiryCard({ enquiry }: EnquiryCardProps) {
               </span>
             </div>
             <p className="text-sm font-semibold text-foreground">
-              {firstItem?.quantity} {firstItem?.unitType}
+              {firstItem?.quantity}{" "}
+              {firstItem?.unitType &&
+                UNIT_TYPE_LABELS[firstItem.unitType as UnitType]}
             </p>
             {details?.address && (
               <div className="flex items-start gap-1.5 text-xs text-muted-foreground mt-1">

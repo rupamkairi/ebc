@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, MapPin, Phone, Mail, User } from "lucide-react";
+import { UNIT_TYPE_LABELS } from "@/constants/quantities";
 
 interface EnquiryReviewProps {
   onSubmit: () => void;
@@ -79,7 +80,8 @@ export function EnquiryReview({ onSubmit, isSubmitting }: EnquiryReviewProps) {
                   </div>
                   <div className="text-right">
                     <p className="font-medium">
-                      {item.quantity} {item.unit}
+                      {item.quantity}{" "}
+                      {item.unitType ? UNIT_TYPE_LABELS[item.unitType] : ""}
                     </p>
                     <p className="text-xs uppercase text-muted-foreground">
                       {item.type}

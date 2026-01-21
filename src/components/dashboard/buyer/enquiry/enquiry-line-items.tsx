@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Trash2, Package } from "lucide-react";
 import { useEnquiryStore } from "@/store/enquiryStore";
+import { UNIT_TYPE_LABELS } from "@/constants/quantities";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function EnquiryLineItems() {
@@ -47,7 +48,9 @@ export function EnquiryLineItems() {
                 <TableCell className="font-medium">{item.title}</TableCell>
                 <TableCell className="capitalize">{item.type}</TableCell>
                 <TableCell>{item.quantity}</TableCell>
-                <TableCell>{item.unit || "-"}</TableCell>
+                <TableCell>
+                  {item.unitType ? UNIT_TYPE_LABELS[item.unitType] : "-"}
+                </TableCell>
                 <TableCell
                   className="max-w-[200px] truncate"
                   title={item.remarks}

@@ -4,19 +4,27 @@ import { ChevronLeft, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { UNIT_TYPES, UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
 import { Item } from "@/types/catalog";
 
 interface RateDetailsStepProps {
   type: "PRODUCT" | "SERVICE";
   selectedItem: Item | null;
   rate: {
-    unitType: string;
+    unitType: UnitType;
     minQuantity: number;
     baseRate: number;
   };
   setRate: React.Dispatch<
     React.SetStateAction<{
-      unitType: string;
+      unitType: UnitType;
       minQuantity: number;
       baseRate: number;
     }>
@@ -56,16 +64,24 @@ export function RateDetailsStep({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-1">
-          <Label className="text-sm font-semibold">
-            Unit Type (e.g. Bag, Ton, Hour)
-          </Label>
-          <Input
+          <Label className="text-sm font-semibold">Unit Type</Label>
+          <Select
             value={rate.unitType}
-            onChange={(e) =>
-              setRate((r) => ({ ...r, unitType: e.target.value }))
+            onValueChange={(value) =>
+              setRate((r) => ({ ...r, unitType: value as UnitType }))
             }
-            className="font-medium"
-          />
+          >
+            <SelectTrigger className="font-medium w-full">
+              <SelectValue placeholder="Select unit type" />
+            </SelectTrigger>
+            <SelectContent>
+              {UNIT_TYPES.map((unit) => (
+                <SelectItem key={unit} value={unit}>
+                  {UNIT_TYPE_LABELS[unit]}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         {isProduct && (
           <div className="space-y-1">

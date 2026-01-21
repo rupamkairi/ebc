@@ -1,7 +1,12 @@
 "use client";
 
 import { useQuotationStore, QuotationState } from "@/store/quotationStore";
-import { CreateQuotationRequest, Enquiry, Quotation, REF_TYPE } from "@/types/activity";
+import {
+  CreateQuotationRequest,
+  Enquiry,
+  Quotation,
+  REF_TYPE,
+} from "@/types/activity";
 import { ItemListingAutocomplete } from "./item-listing-autocomplete";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -33,11 +38,11 @@ import {
   Loader2,
 } from "lucide-react";
 import { format } from "date-fns";
+import { UNIT_TYPE_LABELS } from "@/constants/quantities";
 import { useAcceptQuotationMutation } from "@/queries/activityQueries";
 import { useWalletDetails, useLeadPricing } from "@/queries/walletQueries";
 import { RechargeModal } from "../../seller/recharge-modal";
 import { toast } from "sonner";
-
 
 interface QuotationFormProps {
   enquiry: Enquiry;
@@ -74,7 +79,8 @@ export function QuotationForm({
 
   const { data: wallet } = useWalletDetails(sellerEntityId);
   const { data: leadPricing } = useLeadPricing(REF_TYPE.QUOTATION);
-  const { mutate: acceptQuotation, isPending: isAccepting } = useAcceptQuotationMutation();
+  const { mutate: acceptQuotation, isPending: isAccepting } =
+    useAcceptQuotationMutation();
 
   const { data: listings } = useItemListingsQuery({ entityId: sellerEntityId });
 
@@ -162,21 +168,30 @@ export function QuotationForm({
                 <Lock size={32} />
               </div>
               <div className="space-y-1">
-                <h4 className="text-2xl font-black italic uppercase tracking-tight">Lead Locked</h4>
+                <h4 className="text-2xl font-black italic uppercase tracking-tight">
+                  Lead Locked
+                </h4>
                 <p className="text-sm font-bold opacity-70 italic max-w-md leading-relaxed">
-                  Accept this lead to reveal the buyer&apos;s contact details. This will deduct <span className="text-amber-600 font-extrabold">{leadPricing?.cost || 50} coins</span> from your wallet.
+                  Accept this lead to reveal the buyer&apos;s contact details.
+                  This will deduct{" "}
+                  <span className="text-amber-600 font-extrabold">
+                    {leadPricing?.cost || 50} coins
+                  </span>{" "}
+                  from your wallet.
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-6">
               <div className="text-right hidden md:block">
-                <p className="text-[10px] font-black uppercase opacity-40 tracking-widest mb-1">Your Balance</p>
+                <p className="text-[10px] font-black uppercase opacity-40 tracking-widest mb-1">
+                  Your Balance
+                </p>
                 <p className="text-2xl font-black text-amber-600 italic flex items-center justify-end gap-1.5">
                   <Coins size={20} />
                   {wallet?.balance || 0}
                 </p>
               </div>
-              <Button 
+              <Button
                 type="button"
                 onClick={() => {
                   if ((wallet?.balance || 0) < (leadPricing?.cost || 50)) {
@@ -184,8 +199,10 @@ export function QuotationForm({
                     return;
                   }
                   acceptQuotation(quotation.id, {
-                    onSuccess: () => toast.success("Lead accepted! Contact details revealed."),
-                    onError: (err: Error) => toast.error(err.message || "Failed to accept lead.")
+                    onSuccess: () =>
+                      toast.success("Lead accepted! Contact details revealed."),
+                    onError: (err: Error) =>
+                      toast.error(err.message || "Failed to accept lead."),
                   });
                 }}
                 disabled={isAccepting}
@@ -244,14 +261,22 @@ export function QuotationForm({
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <Phone className="h-4 w-4 text-primary" />
-                    <span className={`font-medium ${quotation && !quotation.isActive ? 'blur-md select-none' : ''}`}>
-                      {quotation?.isActive ? enquiry.createdBy?.phone : "+91 ••••• •••••"}
+                    <span
+                      className={`font-medium ${quotation && !quotation.isActive ? "blur-md select-none" : ""}`}
+                    >
+                      {quotation?.isActive
+                        ? enquiry.createdBy?.phone
+                        : "+91 ••••• •••••"}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Mail className="h-4 w-4 text-primary" />
-                    <span className={`font-medium ${quotation && !quotation.isActive ? 'blur-md select-none' : ''}`}>
-                      {quotation?.isActive ? (enquiry.createdBy?.email || "No email") : "••••••••@••••.com"}
+                    <span
+                      className={`font-medium ${quotation && !quotation.isActive ? "blur-md select-none" : ""}`}
+                    >
+                      {quotation?.isActive
+                        ? enquiry.createdBy?.email || "No email"
+                        : "••••••••@••••.com"}
                     </span>
                   </div>
                 </div>
@@ -280,7 +305,7 @@ export function QuotationForm({
                         <CardDescription>
                           Requested:{" "}
                           <span className="font-bold text-foreground">
-                            {eli.quantity} {eli.unitType}
+                            {eli.quantity} {UNIT_TYPE_LABELS[eli.unitType]}
                           </span>
                         </CardDescription>
                       </div>
@@ -314,7 +339,7 @@ export function QuotationForm({
                             placeholder={`Select ${eli.item?.name}...`}
                             onValueChange={(val) => {
                               const selectedListing = listings?.find(
-                                (l) => l.id === val
+                                (l) => l.id === val,
                               );
                               updateLineItem(index, {
                                 itemListingId: val,
@@ -328,7 +353,7 @@ export function QuotationForm({
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label className="text-xs font-bold uppercase text-muted-foreground">
-                            Rate (Per {eli.unitType})
+                            Rate (Per {UNIT_TYPE_LABELS[eli.unitType]})
                           </Label>
                           <div className="relative">
                             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
@@ -467,8 +492,8 @@ export function QuotationForm({
                     {isLoading
                       ? "Processing..."
                       : isUpdate
-                      ? "Update Quotation"
-                      : "Submit Quotation"}
+                        ? "Update Quotation"
+                        : "Submit Quotation"}
                   </Button>
                 )}
               </div>
@@ -477,9 +502,9 @@ export function QuotationForm({
         </div>
       </div>
 
-      <RechargeModal 
-        isOpen={isRechargeModalOpen} 
-        onClose={() => setIsRechargeModalOpen(false)} 
+      <RechargeModal
+        isOpen={isRechargeModalOpen}
+        onClose={() => setIsRechargeModalOpen(false)}
       />
     </form>
   );

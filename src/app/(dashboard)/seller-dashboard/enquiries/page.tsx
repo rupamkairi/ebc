@@ -16,6 +16,7 @@ import { ActivityAssignment } from "@/types/activity";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
 
 export default function EnquiriesPage() {
   const { data: entities = [] } = useEntitiesQuery();
@@ -140,7 +141,10 @@ export default function EnquiriesPage() {
                           : ""}
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        {firstItem?.quantity} {firstItem?.unitType} requested
+                        {firstItem?.quantity}{" "}
+                        {firstItem?.unitType &&
+                          UNIT_TYPE_LABELS[firstItem.unitType as UnitType]}{" "}
+                        requested
                       </p>
                     </div>
                     <Button asChild>

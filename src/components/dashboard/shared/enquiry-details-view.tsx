@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import { format } from "date-fns";
 import { MapPin, Calendar, Phone, Mail, User, StickyNote } from "lucide-react";
+import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
 
 export interface BuyerDetails {
   name: string;
@@ -27,7 +28,7 @@ export interface EnquiryItem {
   brandName?: string;
   categoryName?: string;
   quantity: number;
-  unit: string;
+  unitType: UnitType;
   remarks?: string;
 }
 
@@ -154,7 +155,7 @@ export function EnquiryDetailsView({
                       </div>
                     </TableCell>
                     <TableCell className="text-right font-medium">
-                      {item.quantity} {item.unit}
+                      {item.quantity} {UNIT_TYPE_LABELS[item.unitType]}
                     </TableCell>
                   </TableRow>
                 ))}

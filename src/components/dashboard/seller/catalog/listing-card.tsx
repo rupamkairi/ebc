@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ItemListing } from "@/types/catalog";
+import { UNIT_TYPE_LABELS } from "@/constants/quantities";
 
 interface ListingCardProps {
   listing: ItemListing;
@@ -63,7 +64,8 @@ export function ListingCard({ listing, type }: ListingCardProps) {
                   <div className="flex items-center justify-end font-bold text-primary text-2xl tracking-tighter">
                     {listing.item_rate?.minQuantity}
                     <span className="text-xs text-muted-foreground font-medium ml-1">
-                      {listing.item_rate?.unitType}
+                      {listing.item_rate?.unitType &&
+                        UNIT_TYPE_LABELS[listing.item_rate.unitType]}
                     </span>
                   </div>
                 </div>

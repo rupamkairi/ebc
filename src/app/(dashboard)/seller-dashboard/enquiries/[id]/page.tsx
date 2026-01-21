@@ -25,6 +25,7 @@ import {
   Phone,
   User,
 } from "lucide-react";
+import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -73,25 +74,6 @@ export default function EnquiryDetailsPage() {
   }
 
   const details = enquiry.enquiryDetails?.[0];
-
-  // Mock data to match EnquiryDetailsView props
-  const buyerDetails = {
-    name: "Amit Sharma",
-    phone: "+91 98765 43210",
-    address: "Ring Road, Scheme 54",
-    pincode: "452010",
-    expectedDate: new Date("2025-12-23"),
-    remarks: "Need delivery by tomorrow morning. Prefer local Indore dispatch.",
-  };
-
-  const items = [
-    {
-      name: "Cement",
-      brandName: "Ultratech/ACC",
-      quantity: 50,
-      unit: "Bags",
-    },
-  ];
 
   return (
     <div className="flex flex-col gap-6 p-4 max-w-5xl mx-auto">
@@ -146,7 +128,8 @@ export default function EnquiryDetailsPage() {
                       <div className="space-y-1">
                         <p className="font-bold">{item.item?.name}</p>
                         <p className="text-sm text-muted-foreground">
-                          {item.quantity} {item.unitType}
+                          {item.quantity}{" "}
+                          {UNIT_TYPE_LABELS[item.unitType as UnitType]}
                         </p>
                         {item.remarks && (
                           <p className="text-sm italic text-muted-foreground mt-2">
@@ -160,11 +143,7 @@ export default function EnquiryDetailsPage() {
                     </div>
                   ))}
                 </div>
-                <h1 className="text-3xl font-black text-foreground pt-2">
-                  Requirement Details
-                </h1>
               </div>
-            </div>
 
               <Separator />
 
