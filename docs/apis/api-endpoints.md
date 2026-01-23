@@ -6,12 +6,14 @@ This document provides a consolidated view of all API endpoints available in the
 
 1. [Authentication](#1-authentication)
 2. [Business Entity](#2-business-entity)
-3. [Catalog](#3-catalog)
-4. [Activity (Enquiry, Appointment, etc.)](#4-activity)
-5. [Wallet](#5-wallet)
-6. [Notification](#6-notification)
-7. [Attachments](#7-attachments)
-8. [Miscellaneous (Pincode Directory)](#8-miscellaneous)
+3. [Catalog (Categories, Brands, Items)](#3-catalog)
+4. [Item Listing & Offer](#4-item-listing--offer)
+5. [Conference Hall (Events)](#5-conference-hall)
+6. [Activity (Enquiry, Appointment, etc.)](#6-activity)
+7. [Wallet](#7-wallet)
+8. [Notification](#8-notification)
+9. [Attachments](#9-attachments)
+10. [Miscellaneous (Pincode Directory)](#10-miscellaneous)
 
 ---
 
@@ -275,26 +277,63 @@ _All routes require `Authorization: Bearer <token>` header._
 - **Delete:** `DELETE /item`
 - **List:** `POST /item/list`
 
-### 3.5 Item Listing (Composite)
-
-- **Create:** `POST /item-listing`
-- **Update:** `PATCH /item-listing/:id`
-- **Delete:** `DELETE /item-listing/:id`
-- **List:** `POST /item-listing/list`
-
-### 3.6 Item Rate & Region (Granular)
-
-- **Rate Create/Update/Delete/List:** Under `/item-rate`
-- **Region Create/Update/Delete/List:** Under `/item-region`
-
-### 3.7 Bulk Upload
+### 3.5 Bulk Upload
 
 - **POST** `/upload`
 - Accepts an array of objects to create categories, brands, specifications, and items in bulk.
 
 ---
 
-## 4. Activity
+## 4. Item Listing & Offer
+
+**Base URL:** `/api/item-listing`
+
+### 4.1 Item Listing
+
+- **Composite Create**: `POST /listing`
+- **Update**: `PATCH /listing/:id`
+- **Delete**: `DELETE /listing/:id`
+- **List**: `POST /listing/list`
+
+### 4.2 Item Rate (Granular)
+
+- **Create**: `POST /rate`
+- **Update**: `PATCH /rate/:id`
+- **Delete**: `DELETE /rate/:id`
+- **List**: `POST /rate/list`
+
+### 4.3 Item Region (Granular)
+
+- **Create**: `POST /region`
+- **Update**: `PATCH /region/:id`
+- **Delete**: `DELETE /region/:id`
+- **List**: `POST /region/list`
+
+### 4.4 Offer
+
+- **Create**: `POST /offer`
+- **Update**: `PATCH /offer/:id`
+- **Get**: `GET /offer/:id`
+- **Delete**: `DELETE /offer/:id`
+- **List**: `POST /offer/list`
+
+---
+
+## 5. Conference Hall
+
+**Base URL:** `/api/conference-hall`
+
+### 5.1 Event
+
+- **Create**: `POST /event`
+- **Update**: `PATCH /event/:id`
+- **Get**: `GET /event/:id`
+- **Delete**: `DELETE /event/:id`
+- **List**: `POST /event/list`
+
+---
+
+## 6. Activity
 
 **Base URL:** `/api/activity`
 
@@ -334,7 +373,7 @@ _All routes require `Authorization: Bearer <token>` header._
 
 ---
 
-## 5. Wallet
+## 7. Wallet
 
 **Base URL:** `/api/wallet`
 
@@ -354,7 +393,7 @@ _All routes require `Authorization: Bearer <token>` header._
 
 ---
 
-## 6. Notification
+## 8. Notification
 
 **Base URL:** `/api/notification`
 
@@ -368,7 +407,7 @@ _All routes require `Authorization: Bearer <token>` header._
 
 ---
 
-## 7. Attachments
+## 9. Attachments
 
 **Base URL:** `/api/attachment`
 
@@ -387,7 +426,7 @@ _All routes require `Authorization: Bearer <token>` header._
 
 ---
 
-## 8. Miscellaneous
+## 10. Miscellaneous
 
 **Base URL:** `/api/pincode-directory`
 

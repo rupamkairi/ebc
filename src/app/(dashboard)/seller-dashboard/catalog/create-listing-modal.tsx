@@ -98,7 +98,7 @@ export function CreateListingModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(val) => !val && onClose()}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-0 border shadow-lg">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 border shadow-lg">
         <ListingModalHeader step={step} />
 
         <div className="p-6">

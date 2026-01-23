@@ -22,21 +22,22 @@ export default function SellerDashboardLayoutComponent({
       ? "Service Provider"
       : "Material Seller";
 
+  // Using standard background and spacing
   return (
-    <div className="min-h-screen bg-[#F8F9FA] pb-32">
+    <div className="min-h-screen bg-muted/30 pb-32">
       <DashboardHeader />
-      <br />
-      <Container>
-        <ProfileCard
-          user={{
-            name: businessName,
-            role: businessRole,
-            avatarUrl: "",
-          }}
-        />
-      </Container>
-      <br />
-      <Container>{children}</Container>
+      <div className="flex flex-col gap-6 py-6">
+        <Container>
+          <ProfileCard
+            user={{
+              name: businessName,
+              role: businessRole,
+              avatarUrl: "",
+            }}
+          />
+        </Container>
+        <Container>{children}</Container>
+      </div>
       <BottomNav />
     </div>
   );

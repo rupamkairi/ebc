@@ -1,3 +1,5 @@
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { Bell, ScanLine, Settings, LogOut } from "lucide-react";
@@ -11,6 +13,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 interface ProfileCardProps {
   user: {
@@ -30,53 +34,60 @@ export function ProfileCard({ user }: ProfileCardProps) {
   };
 
   return (
-    <Card className="w-full flex flex-row items-center justify-between p-6 bg-white border-none shadow-sm rounded-4xl">
-      <div className="flex flex-row items-center gap-5">
-        <Avatar className="h-16 w-16 rounded-2xl">
+    <Card className="w-full flex flex-col sm:flex-row items-center justify-between p-6 gap-4">
+      <div className="flex flex-row items-center gap-4 w-full sm:w-auto">
+        <Avatar className="h-14 w-14 border">
           <AvatarImage src={user.avatarUrl} alt={user.name} />
-          <AvatarFallback className="rounded-2xl bg-primary/10 text-primary font-black">{user.name.charAt(0)}</AvatarFallback>
+          <AvatarFallback className="text-lg font-medium">
+            {user.name.charAt(0)}
+          </AvatarFallback>
         </Avatar>
-        <div className="flex flex-col">
-          <h2 className="text-2xl font-black tracking-tight italic text-foreground">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-xl font-semibold tracking-tight text-foreground">
             {user.name}
           </h2>
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30 italic">{user.role}</p>
+          <p className="text-sm text-muted-foreground font-medium">
+            {user.role}
+          </p>
         </div>
       </div>
-      <div className="flex flex-row items-center gap-3">
-        <div className="h-10 w-10 border border-border rounded-xl flex items-center justify-center hover:bg-muted cursor-pointer transition-colors text-foreground/40">
-          <ScanLine className="h-5 w-5" />
-        </div>
-        
+
+      <div className="flex flex-row items-center gap-2 w-full sm:w-auto justify-end">
+        <Button variant="outline" size="icon" className="h-9 w-9">
+          <ScanLine className="h-4 w-4 text-muted-foreground" />
+        </Button>
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <div className="h-10 w-10 border border-border rounded-xl flex items-center justify-center hover:bg-muted cursor-pointer transition-colors text-foreground/40">
-              <Settings className="h-5 w-5" />
-            </div>
+            <Button variant="outline" size="icon" className="h-9 w-9">
+              <Settings className="h-4 w-4 text-muted-foreground" />
+            </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56 rounded-2xl p-2 border-border shadow-2xl">
-            <DropdownMenuLabel className="font-black italic text-xs uppercase tracking-widest text-foreground/30 px-3 py-2">Account Settings</DropdownMenuLabel>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>Account Settings</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="rounded-xl font-bold italic h-10 cursor-pointer">
-              Edit Business Profile
+            <DropdownMenuItem className="cursor-pointer">
+              <Link href="/seller-dashboard/settings">
+                Edit Business Profile
+              </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem className="rounded-xl font-bold italic h-10 cursor-pointer">
+            <DropdownMenuItem className="cursor-pointer">
               Notifications
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem 
+            <DropdownMenuItem
               onClick={handleLogout}
-              className="rounded-xl font-black italic h-10 cursor-pointer text-rose-500 focus:text-rose-500 focus:bg-rose-50"
+              className="cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10"
             >
               <LogOut className="mr-2 h-4 w-4" />
-              Logout Session
+              Logout
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <div className="h-10 w-10 border border-border rounded-xl flex items-center justify-center hover:bg-muted cursor-pointer transition-colors text-foreground/40">
-          <Bell className="h-5 w-5" />
-        </div>
+        <Button variant="outline" size="icon" className="h-9 w-9">
+          <Bell className="h-4 w-4 text-muted-foreground" />
+        </Button>
       </div>
     </Card>
   );
