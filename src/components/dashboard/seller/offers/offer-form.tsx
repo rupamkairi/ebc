@@ -39,6 +39,7 @@ import {
   FileText,
   X,
   Plus,
+  AlertCircle,
 } from "lucide-react";
 import {
   FileUploader,
@@ -250,6 +251,8 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
   const { data: entities } = useEntitiesQuery();
   const activeEntityId = entityId || entities?.[0]?.id;
 
+  const isPublished = !!existingOffer?.offerDetails?.[0]?.publishedAt;
+
   const createMutation = useCreateOfferMutation();
   const updateMutation = useUpdateOfferMutation();
 
@@ -460,6 +463,19 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {isPublished && (
+          <div className="flex gap-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900 p-4 rounded-lg text-amber-800 dark:text-amber-400">
+            <AlertCircle className="h-5 w-5 shrink-0" />
+            <div className="text-sm">
+              <p className="font-semibold">This offer is live.</p>
+              <p>
+                Targets and Regions are read-only to ensure promotional
+                historical data integrity. You can still update basic details
+                and status.
+              </p>
+            </div>
+          </div>
+        )}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Info */}
           <div className="lg:col-span-2 space-y-6">
@@ -586,6 +602,7 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                   <div className="space-y-2 flex-1">
                     <FormLabel>Type</FormLabel>
                     <Select
+                      disabled={isPublished}
                       value={selectedRelationType}
                       onValueChange={(
                         v:
@@ -616,6 +633,9 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                       {selectedRelationType.toLowerCase().replace("_", " ")}s
                     </FormLabel>
                     <MultiSelectCombobox
+                      className={cn(
+                        isPublished && "opacity-60 cursor-not-allowed",
+                      )}
                       options={
                         (selectedRelationType === "CATEGORY"
                           ? categories?.map((c: Category) => ({
@@ -646,7 +666,7 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                         .watch("relations")
                         .filter((r) => r.relationType === selectedRelationType)
                         .map((r) => r.relationId)}
-                      onToggle={toggleRelation}
+                      onToggle={isPublished ? () => {} : toggleRelation}
                       placeholder={`Select ${selectedRelationType.toLowerCase().replace("_", " ")}s...`}
                     />
                   </div>
@@ -669,10 +689,12 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                             {r.relationType}
                           </span>
                           {getRelationName(r.relationType, r.relationId)}
-                          <X
-                            className="h-3 w-3 cursor-pointer hover:text-destructive"
-                            onClick={() => handleRemoveRelation(i)}
-                          />
+                          {!isPublished && (
+                            <X
+                              className="h-3 w-3 cursor-pointer hover:text-destructive"
+                              onClick={() => handleRemoveRelation(i)}
+                            />
+                          )}
                         </Badge>
                       ),
                     )}
@@ -686,24 +708,31 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
             </Card>
 
             <Card>
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0">
                 <CardTitle>Applicable Regions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <PincodeSelector
-                  selectedIds={form.watch("pincodeIds")}
-                  onToggle={(id) => {
-                    const current = form.getValues("pincodeIds") || [];
-                    if (current.includes(id)) {
-                      form.setValue(
-                        "pincodeIds",
-                        current.filter((i) => i !== id),
-                      );
-                    } else {
-                      form.setValue("pincodeIds", [...current, id]);
-                    }
-                  }}
-                />
+                <div
+                  className={cn(
+                    isPublished && "pointer-events-none opacity-60",
+                  )}
+                >
+                  <PincodeSelector
+                    selectedIds={form.watch("pincodeIds")}
+                    onToggle={(id) => {
+                      if (isPublished) return;
+                      const current = form.getValues("pincodeIds") || [];
+                      if (current.includes(id)) {
+                        form.setValue(
+                          "pincodeIds",
+                          current.filter((i) => i !== id),
+                        );
+                      } else {
+                        form.setValue("pincodeIds", [...current, id]);
+                      }
+                    }}
+                  />
+                </div>
               </CardContent>
             </Card>
 
