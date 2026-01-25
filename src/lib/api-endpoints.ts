@@ -22,48 +22,66 @@ export const API_ENDPOINTS = {
   CATALOG: {
     CATEGORY: {
       CREATE: "/catalog/category",
-      UPDATE: "/catalog/category",
+      UPDATE: "/catalog/category", // PATCH
       DELETE: "/catalog/category",
       LIST: "/catalog/category/list",
     },
     BRAND: {
       CREATE: "/catalog/brand",
-      UPDATE: "/catalog/brand",
+      UPDATE: "/catalog/brand", // PATCH
       DELETE: "/catalog/brand",
       LIST: "/catalog/brand/list",
     },
     SPECIFICATION: {
       CREATE: "/catalog/specification",
-      UPDATE: "/catalog/specification",
+      UPDATE: "/catalog/specification", // PATCH
       DELETE: "/catalog/specification",
       LIST: "/catalog/specification/list",
     },
     ITEM: {
       CREATE: "/catalog/item",
-      UPDATE: "/catalog/item",
+      UPDATE: "/catalog/item", // PATCH
       DELETE: "/catalog/item",
       LIST: "/catalog/item/list",
       GET: "/catalog/item", // :id attached in service
     },
-    ITEM_LISTING: {
-      CREATE: "/catalog/item-listing",
-      UPDATE: "/catalog/item-listing",
-      DELETE: "/catalog/item-listing",
-      LIST: "/catalog/item-listing/list",
-    },
-    ITEM_RATE: {
-      CREATE: "/catalog/item-rate",
-      UPDATE: "/catalog/item-rate",
-      DELETE: "/catalog/item-rate",
-      LIST: "/catalog/item-rate/list",
-    },
-    ITEM_REGION: {
-      CREATE: "/catalog/item-region",
-      UPDATE: "/catalog/item-region",
-      DELETE: "/catalog/item-region",
-      LIST: "/catalog/item-region/list",
-    },
     UPLOAD: "/catalog/upload",
+  },
+  ITEM_LISTING: {
+    LISTING: {
+      CREATE: "/item-listing/listing",
+      UPDATE: "/item-listing/listing", // :id
+      DELETE: "/item-listing/listing", // :id
+      LIST: "/item-listing/listing/list",
+    },
+    RATE: {
+      CREATE: "/item-listing/rate",
+      UPDATE: "/item-listing/rate", // :id
+      DELETE: "/item-listing/rate", // :id
+      LIST: "/item-listing/rate/list",
+    },
+    REGION: {
+      CREATE: "/item-listing/region",
+      UPDATE: "/item-listing/region", // :id
+      DELETE: "/item-listing/region", // :id
+      LIST: "/item-listing/region/list",
+    },
+    OFFER: {
+      CREATE: "/item-listing/offer",
+      UPDATE: "/item-listing/offer", // :id
+      GET: "/item-listing/offer", // :id
+      DELETE: "/item-listing/offer", // :id
+      LIST: "/item-listing/offer/list",
+    },
+  },
+  CONFERENCE_HALL: {
+    EVENT: {
+      CREATE: "/conference-hall/event",
+      UPDATE: "/conference-hall/event", // :id
+      GET: "/conference-hall/event", // :id
+      DELETE: "/conference-hall/event", // :id
+      LIST: "/conference-hall/event/list",
+    },
   },
   ACTIVITY: {
     ENQUIRY: {
@@ -108,6 +126,21 @@ export const API_ENDPOINTS = {
     UPDATE: "/entity", // :id attached in service
     VERIFY: "/entity", // :id/verify attached in service
   },
+  WALLET: {
+    PACKAGES: "/wallet/packages",
+    DETAILS: "/wallet/", // :entityId
+    PRICING: "/wallet/pricing/cost/", // :leadType
+    RECHARGE: "/wallet/recharge",
+    TRANSACTION: "/wallet/transaction",
+    VERIFY_PAYMENT: "/wallet/verify-payment",
+  },
+  NOTIFICATION: {
+    CREATE: "/notification",
+    GET: "/notification", // :id
+    LIST: "/notification/list",
+    UPDATE: "/notification", // :id
+    DELETE: "/notification", // :id
+  },
   ATTACHMENT: {
     MEDIA: {
       UPLOAD_SINGLE: "/attachment/media/upload/single",
@@ -119,13 +152,5 @@ export const API_ENDPOINTS = {
       UPLOAD_MULTIPLE: "/attachment/document/upload/multiple",
       GET_URL: "/attachment/document/url", // :id
     },
-  },
-  WALLET: {
-    PACKAGES: "/wallet/packages",
-    DETAILS: "/wallet/", // :entityId
-    PRICING: "/wallet/pricing/cost/", // :leadType
-    RECHARGE: "/wallet/recharge",
-    TRANSACTION: "/wallet/transaction",
-    VERIFY_PAYMENT: "/wallet/verify-payment",
   },
 } as const;

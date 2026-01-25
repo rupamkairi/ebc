@@ -1,5 +1,6 @@
 import { UnitType } from "@/constants/quantities";
 import { Entity } from "./entity";
+import { z } from "zod"; // Added import for zod
 
 export interface Media {
   id: string;
@@ -204,11 +205,22 @@ export interface ItemListingListParams {
   search?: string;
 }
 
+export interface UpdateItemListingRequest {
+  isActive?: boolean;
+}
+
 export interface CreateItemRateRequest {
   itemListingId: string;
   minQuantity: number;
   unitType: UnitType;
   rate: number;
+  isNegotiable?: boolean;
+}
+
+export interface UpdateItemRateRequest {
+  minQuantity?: number;
+  unitType?: UnitType;
+  rate?: number;
   isNegotiable?: boolean;
 }
 
@@ -229,4 +241,73 @@ export interface ItemRateListParams {
 
 export interface ItemRegionListParams {
   itemListingId: string;
+}
+
+export interface Offer {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  isActive: boolean;
+  isPublic: boolean;
+  name: string;
+  description?: string;
+  createdById: string;
+  deletedById?: string;
+  entityId: string;
+  itemListingId: string;
+  attachments?: Media[];
+  documents?: Media[]; // Added documents
+}
+
+export const offerSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  description: z.string().optional(),
+  publishedAt: z.date().optional(),
+  isActive: z.boolean(),
+  isPublic: z.boolean(),
+  mediaIds: z.array(z.string()),
+  documentIds: z.array(z.string()),
+});
+
+// Explicitly defining the type to avoid any mismatch with zodResolver
+export interface OfferFormValues {
+  name: string;
+  description?: string;
+  publishedAt?: Date;
+  isActive: boolean;
+  isPublic: boolean;
+  mediaIds: string[];
+  documentIds: string[];
+}
+
+export interface CreateOfferRequest {
+  publishedAt: string;
+  isActive: boolean;
+  isPublic: boolean;
+  name: string;
+  description?: string;
+  entityId: string;
+  itemListingId: string;
+  attachments?: string[];
+}
+
+export interface UpdateOfferRequest {
+  id: string;
+  publishedAt?: string;
+  isActive?: boolean;
+  isPublic?: boolean;
+  name?: string;
+  description?: string;
+  attachments?: string[];
+}
+
+export interface OfferListParams {
+  entityId?: string;
+  itemListingId?: string;
+  search?: string;
+  page?: number;
+  perPage?: number;
+  sort?: string;
+  order?: "asc" | "desc";
 }

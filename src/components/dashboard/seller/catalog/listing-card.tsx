@@ -1,11 +1,19 @@
 "use client";
 
+import Link from "next/link";
 import { Clock, MapPin, MoreVertical, Package } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ItemListing } from "@/types/catalog";
 import { UNIT_TYPE_LABELS } from "@/constants/quantities";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 
 interface ListingCardProps {
   listing: ItemListing;
@@ -16,67 +24,82 @@ export function ListingCard({ listing, type }: ListingCardProps) {
   const isProduct = type === "PRODUCT";
 
   return (
-    <Card className="border shadow-none hover:shadow-md transition-all group overflow-hidden bg-card rounded-lg">
+    <Card className="group relative border shadow-none hover:border-primary/50 transition-all overflow-hidden bg-card">
       <CardContent className="p-0">
-        <div className="flex items-center">
-          <div className="w-20 h-20 md:w-24 md:h-24 bg-muted flex items-center justify-center text-muted-foreground/30 shrink-0 group-hover:bg-primary/5 transition-colors">
-            {isProduct ? <Package size={32} /> : <Clock size={32} />}
+        <div className="flex items-stretch">
+          {/* Image/Icon Placeholder */}
+          <div className="w-16 h-16 md:w-20 md:h-20 bg-muted flex items-center justify-center text-muted-foreground/40 shrink-0 self-center ml-4 rounded-md">
+            {isProduct ? <Package size={24} /> : <Clock size={24} />}
           </div>
-          <div className="flex-1 p-4 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="space-y-1">
+
+          <div className="flex-1 p-4 flex items-center justify-between">
+            <Link
+              href={`/seller-dashboard/catalog/${listing.id}`}
+              className="flex-1 space-y-1 min-w-0 pr-4"
+            >
               <div className="flex items-center gap-2">
-                <h3 className="text-lg font-bold tracking-tight">
+                <h3 className="text-base font-semibold truncate">
                   {listing.item?.name}
                 </h3>
                 <Badge
-                  variant={listing.isActive ? "default" : "secondary"}
-                  className="text-[9px] px-2 py-0"
+                  variant={listing.isActive ? "outline" : "secondary"}
+                  className={cn(
+                    "text-[10px] uppercase h-5",
+                    listing.isActive &&
+                      "bg-green-500/10 text-green-600 border-green-500/20",
+                  )}
                 >
-                  {listing.isActive ? "ACTIVE" : "INACTIVE"}
+                  {listing.isActive ? "Active" : "Inactive"}
                 </Badge>
               </div>
 
-              {isProduct ? (
-                <div className="flex items-center gap-3 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-                  <span>{listing.item?.category?.name}</span>
-                  <div className="h-1 w-1 rounded-full bg-border" />
-                  <span className="text-primary">
-                    {listing.item?.brand?.name}
-                  </span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2 text-[10px] font-semibold text-muted-foreground uppercase tracking-widest bg-muted w-fit px-2 py-1 rounded-md border">
-                  <MapPin size={12} className="text-primary" />
-                  {listing.item_region?.[0]?.state || "Global"}{" "}
-                  {listing.item_region && listing.item_region.length > 1
-                    ? `+${listing.item_region.length - 1} more`
-                    : ""}
-                </div>
-              )}
-            </div>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                {isProduct ? (
+                  <>
+                    <span>{listing.item?.category?.name}</span>
+                    <span className="text-muted-foreground/30">•</span>
+                    <span>{listing.item?.brand?.name}</span>
+                  </>
+                ) : (
+                  <div className="flex items-center gap-1">
+                    <MapPin size={12} />
+                    {listing.item_region?.[0]?.state || "Global"}
+                  </div>
+                )}
+              </div>
+            </Link>
 
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4">
               {isProduct && (
-                <div className="text-right">
-                  <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">
-                    Min. Order
+                <div className="text-right hidden sm:block">
+                  <p className="text-[10px] text-muted-foreground uppercase font-medium">
+                    Min Order
                   </p>
-                  <div className="flex items-center justify-end font-bold text-primary text-2xl tracking-tighter">
-                    {listing.item_rate?.minQuantity}
-                    <span className="text-xs text-muted-foreground font-medium ml-1">
+                  <p className="text-sm font-bold">
+                    {listing.item_rate?.minQuantity}{" "}
+                    <span className="text-[10px] font-normal text-muted-foreground">
                       {listing.item_rate?.unitType &&
                         UNIT_TYPE_LABELS[listing.item_rate.unitType]}
                     </span>
-                  </div>
+                  </p>
                 </div>
               )}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-10 w-10 text-muted-foreground/50 hover:text-primary transition-all"
-              >
-                <MoreVertical size={20} />
-              </Button>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <MoreVertical size={16} />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <Link href={`/seller-dashboard/catalog/${listing.id}`}>
+                      View Details
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>Delete</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>

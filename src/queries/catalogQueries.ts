@@ -20,6 +20,13 @@ import {
   ItemRateListParams,
   CreateItemRegionRequest,
   ItemRegionListParams,
+  // New Offer Imports
+  CreateOfferRequest,
+  UpdateOfferRequest,
+  OfferListParams,
+  // Add Update Requests
+  UpdateItemListingRequest,
+  UpdateItemRateRequest,
 } from "@/types/catalog";
 import { keepPreviousData } from "@tanstack/react-query";
 
@@ -39,6 +46,8 @@ export const catalogKeys = {
     [...catalogKeys.all, "rates", params] as const,
   itemRegions: (params: ItemRegionListParams) =>
     [...catalogKeys.all, "regions", params] as const,
+  offers: (params: OfferListParams) =>
+    [...catalogKeys.all, "offers", params] as const,
 };
 
 // Categories
@@ -229,6 +238,22 @@ export function useCreateItemListingMutation() {
   });
 }
 
+export function useUpdateItemListingMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: UpdateItemListingRequest;
+    }) => catalogService.updateItemListing(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: catalogKeys.all });
+    },
+  });
+}
+
 // Item Rates
 export function useItemRatesQuery(params: ItemRateListParams) {
   return useQuery({
@@ -249,6 +274,17 @@ export function useCreateItemRateMutation() {
   });
 }
 
+export function useUpdateItemRateMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: UpdateItemRateRequest }) =>
+      catalogService.updateItemRate(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: catalogKeys.all });
+    },
+  });
+}
+
 // Item Regions
 export function useItemRegionsQuery(params: ItemRegionListParams) {
   return useQuery({
@@ -263,6 +299,53 @@ export function useCreateItemRegionMutation() {
   return useMutation({
     mutationFn: (data: CreateItemRegionRequest) =>
       catalogService.createItemRegion(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: catalogKeys.all });
+    },
+  });
+}
+
+// Offers
+export function useOffersQuery(params: OfferListParams = {}) {
+  return useQuery({
+    queryKey: catalogKeys.offers(params),
+    queryFn: () => catalogService.getOffers(params),
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useOfferQuery(id: string) {
+  return useQuery({
+    queryKey: [...catalogKeys.all, "offer", id],
+    queryFn: () => catalogService.getOffer(id),
+    enabled: !!id,
+  });
+}
+
+export function useCreateOfferMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreateOfferRequest) => catalogService.createOffer(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: catalogKeys.all });
+    },
+  });
+}
+
+export function useUpdateOfferMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: UpdateOfferRequest) => catalogService.updateOffer(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: catalogKeys.all });
+    },
+  });
+}
+
+export function useDeleteOfferMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => catalogService.deleteOffer(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: catalogKeys.all });
     },

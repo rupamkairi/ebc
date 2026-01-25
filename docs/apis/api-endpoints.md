@@ -7,8 +7,8 @@ This document provides a consolidated view of all API endpoints available in the
 1. [Authentication](#1-authentication)
 2. [Business Entity](#2-business-entity)
 3. [Catalog (Categories, Brands, Items)](#3-catalog)
-4. [Item Listing & Offer](#4-item-listing--offer)
-5. [Conference Hall (Events)](#5-conference-hall)
+4. [Item Listing](#4-item-listing)
+5. [Conference Hall (Events & Offers)](#5-conference-hall)
 6. [Activity (Enquiry, Appointment, etc.)](#6-activity)
 7. [Wallet](#7-wallet)
 8. [Notification](#8-notification)
@@ -284,7 +284,7 @@ _All routes require `Authorization: Bearer <token>` header._
 
 ---
 
-## 4. Item Listing & Offer
+## 4. Item Listing
 
 **Base URL:** `/api/item-listing`
 
@@ -309,27 +309,35 @@ _All routes require `Authorization: Bearer <token>` header._
 - **Delete**: `DELETE /region/:id`
 - **List**: `POST /region/list`
 
-### 4.4 Offer
-
-- **Create**: `POST /offer`
-- **Update**: `PATCH /offer/:id`
-- **Get**: `GET /offer/:id`
-- **Delete**: `DELETE /offer/:id`
-- **List**: `POST /offer/list`
-
 ---
 
-## 5. Conference Hall
+## 5. Conference Hall (Events & Offers)
 
 **Base URL:** `/api/conference-hall`
 
 ### 5.1 Event
 
-- **Create**: `POST /event`
-- **Update**: `PATCH /event/:id`
-- **Get**: `GET /event/:id`
-- **Delete**: `DELETE /event/:id`
-- **List**: `POST /event/list`
+**Base Path:** `/event`
+
+- **Create**: `POST /`
+- **Update**: `PATCH /:id`
+- **Get**: `GET /:id`
+- **Delete**: `DELETE /:id`
+- **List**: `POST /list`
+
+### 5.2 Offer
+
+**Base Path:** `/offer`
+
+- **Create Draft**: `POST /`
+  - Body: `{ name, description, entityId, relations: {...}, regions: [...] }`
+- **Publish**: `POST /:id/publish`
+  - Transactions cost
+- **Update**: `PATCH /:id`
+  - If published, strict editing rules apply.
+- **Get**: `GET /:id`
+- **Delete**: `DELETE /:id`
+- **List**: `POST /list`
 
 ---
 
@@ -337,34 +345,34 @@ _All routes require `Authorization: Bearer <token>` header._
 
 **Base URL:** `/api/activity`
 
-### 4.1 Enquiry
+### 6.1 Enquiry
 
 - **Create:** `POST /enquiry`
 - **Get Details:** `GET /enquiry/:id`
 - **Delete:** `DELETE /enquiry/:id`
 - **List:** `POST /enquiry/list`
 
-### 4.2 Appointment
+### 6.2 Appointment
 
 - **Create:** `POST /appointment`
 - **Get Details:** `GET /appointment/:id`
 - **Delete:** `DELETE /appointment/:id`
 - **List:** `POST /appointment/list`
 
-### 4.3 Quotation
+### 6.3 Quotation
 
 - **Create:** `POST /quotation`
 - **Get Details:** `GET /quotation/:id`
 - **Delete:** `DELETE /quotation/:id`
 - **List:** `POST /quotation/list`
 
-### 4.4 Activity Assignment
+### 6.4 Activity Assignment
 
 - **Create:** `POST /activity-assignment`
 - **Get Details:** `GET /activity-assignment/:id`
 - **List:** `POST /activity-assignment/list`
 
-### 4.5 Visit
+### 6.5 Visit
 
 - **Create:** `POST /visit`
 - **Get Details:** `GET /visit/:id`
@@ -377,13 +385,13 @@ _All routes require `Authorization: Bearer <token>` header._
 
 **Base URL:** `/api/wallet`
 
-### 5.1 Get Wallet
+### 7.1 Get Wallet
 
 **GET** `/:entityId`
 
 - Returns balance and recent transactions.
 
-### 5.2 Process Transaction
+### 7.2 Process Transaction
 
 **POST** `/transaction`
 
@@ -397,7 +405,7 @@ _All routes require `Authorization: Bearer <token>` header._
 
 **Base URL:** `/api/notification`
 
-### 6.1 Management
+### 8.1 Management
 
 - **Create:** `POST /`
 - **Get Details:** `GET /:id`
@@ -411,13 +419,13 @@ _All routes require `Authorization: Bearer <token>` header._
 
 **Base URL:** `/api/attachment`
 
-### 7.1 Media Routes (`/media`)
+### 9.1 Media Routes (`/media`)
 
 - **Single Upload:** `POST /upload/single`
 - **Multiple Upload:** `POST /upload/multiple`
 - **Get URL:** `GET /url/:id`
 
-### 7.2 Document Routes (`/document`)
+### 9.2 Document Routes (`/document`)
 
 - **Single Upload:** `POST /upload/single`
 - **Multiple Upload:** `POST /upload/multiple`
@@ -430,7 +438,7 @@ _All routes require `Authorization: Bearer <token>` header._
 
 **Base URL:** `/api/pincode-directory`
 
-### 8.1 Pincode Directory
+### 10.1 Pincode Directory
 
 - **Search:** `POST /list`
 - **Body:**

@@ -21,12 +21,19 @@ import {
   CreateItemListingRequest,
   ItemListing,
   ItemListingListParams,
+  UpdateItemListingRequest, // Added this import based on the instruction
   CreateItemRateRequest,
   ItemRate,
   ItemRateListParams,
+  UpdateItemRateRequest, // Added this import based on the instruction
   CreateItemRegionRequest,
   ItemRegion,
   ItemRegionListParams,
+  // New Offer Imports
+  Offer,
+  CreateOfferRequest,
+  UpdateOfferRequest,
+  OfferListParams,
 } from "@/types/catalog";
 
 export const catalogService = {
@@ -95,7 +102,7 @@ export const catalogService = {
       {
         method: "POST",
         body: data,
-      }
+      },
     );
   },
 
@@ -105,7 +112,7 @@ export const catalogService = {
       {
         method: "PATCH",
         body: data,
-      }
+      },
     );
   },
 
@@ -122,7 +129,7 @@ export const catalogService = {
       {
         method: "POST",
         body: params as Record<string, string | number | boolean>,
-      }
+      },
     );
   },
 
@@ -163,30 +170,30 @@ export const catalogService = {
 
   // Item Listing
   async createItemListing(data: CreateItemListingRequest) {
-    return fetchClient<ItemListing>(API_ENDPOINTS.CATALOG.ITEM_LISTING.CREATE, {
+    return fetchClient<ItemListing>(API_ENDPOINTS.ITEM_LISTING.LISTING.CREATE, {
       method: "POST",
       body: data,
     });
   },
 
-  async updateItemListing(id: string, data: { isActive: boolean }) {
+  async updateItemListing(id: string, data: UpdateItemListingRequest) {
     return fetchClient<ItemListing>(
-      `${API_ENDPOINTS.CATALOG.ITEM_LISTING.UPDATE}/${id}`,
+      `${API_ENDPOINTS.ITEM_LISTING.LISTING.UPDATE}/${id}`,
       {
         method: "PATCH",
-        body: data,
-      }
+        body: data as Record<string, unknown>,
+      },
     );
   },
 
   async deleteItemListing(id: string) {
-    return fetchClient(`${API_ENDPOINTS.CATALOG.ITEM_LISTING.DELETE}/${id}`, {
+    return fetchClient(`${API_ENDPOINTS.ITEM_LISTING.LISTING.DELETE}/${id}`, {
       method: "DELETE",
     });
   },
 
   async getItemListings(params: ItemListingListParams = {}) {
-    return fetchClient<ItemListing[]>(API_ENDPOINTS.CATALOG.ITEM_LISTING.LIST, {
+    return fetchClient<ItemListing[]>(API_ENDPOINTS.ITEM_LISTING.LISTING.LIST, {
       method: "POST",
       body: params as Record<string, string | number | boolean>,
     });
@@ -194,30 +201,30 @@ export const catalogService = {
 
   // Item Rate
   async createItemRate(data: CreateItemRateRequest) {
-    return fetchClient<ItemRate>(API_ENDPOINTS.CATALOG.ITEM_RATE.CREATE, {
+    return fetchClient<ItemRate>(API_ENDPOINTS.ITEM_LISTING.RATE.CREATE, {
       method: "POST",
       body: data,
     });
   },
 
-  async updateItemRate(id: string, data: Partial<CreateItemRateRequest>) {
+  async updateItemRate(id: string, data: UpdateItemRateRequest) {
     return fetchClient<ItemRate>(
-      `${API_ENDPOINTS.CATALOG.ITEM_RATE.UPDATE}/${id}`,
+      `${API_ENDPOINTS.ITEM_LISTING.RATE.UPDATE}/${id}`,
       {
         method: "PATCH",
-        body: data as Record<string, string | number | boolean>,
-      }
+        body: data as Record<string, unknown>,
+      },
     );
   },
 
   async deleteItemRate(id: string) {
-    return fetchClient(`${API_ENDPOINTS.CATALOG.ITEM_RATE.DELETE}/${id}`, {
+    return fetchClient(`${API_ENDPOINTS.ITEM_LISTING.RATE.DELETE}/${id}`, {
       method: "DELETE",
     });
   },
 
   async getItemRates(params: ItemRateListParams) {
-    return fetchClient<ItemRate[]>(API_ENDPOINTS.CATALOG.ITEM_RATE.LIST, {
+    return fetchClient<ItemRate[]>(API_ENDPOINTS.ITEM_LISTING.RATE.LIST, {
       method: "POST",
       body: params as unknown as Record<string, string | number | boolean>,
     });
@@ -225,27 +232,64 @@ export const catalogService = {
 
   // Item Region
   async createItemRegion(data: CreateItemRegionRequest) {
-    return fetchClient(API_ENDPOINTS.CATALOG.ITEM_REGION.CREATE, {
+    return fetchClient(API_ENDPOINTS.ITEM_LISTING.REGION.CREATE, {
       method: "POST",
       body: data,
     });
   },
 
   async updateItemRegion(id: string, data: Partial<CreateItemRegionRequest>) {
-    return fetchClient(`${API_ENDPOINTS.CATALOG.ITEM_REGION.UPDATE}/${id}`, {
+    return fetchClient(`${API_ENDPOINTS.ITEM_LISTING.REGION.UPDATE}/${id}`, {
       method: "PATCH",
       body: data,
     });
   },
 
   async deleteItemRegion(id: string) {
-    return fetchClient(`${API_ENDPOINTS.CATALOG.ITEM_REGION.DELETE}/${id}`, {
+    return fetchClient(`${API_ENDPOINTS.ITEM_LISTING.REGION.DELETE}/${id}`, {
       method: "DELETE",
     });
   },
 
   async getItemRegions(params: ItemRegionListParams) {
-    return fetchClient<ItemRegion[]>(API_ENDPOINTS.CATALOG.ITEM_REGION.LIST, {
+    return fetchClient<ItemRegion[]>(API_ENDPOINTS.ITEM_LISTING.REGION.LIST, {
+      method: "POST",
+      body: params as unknown as Record<string, string | number | boolean>,
+    });
+  },
+
+  // Offer
+  async createOffer(data: CreateOfferRequest) {
+    return fetchClient<Offer>(API_ENDPOINTS.ITEM_LISTING.OFFER.CREATE, {
+      method: "POST",
+      body: data,
+    });
+  },
+
+  async updateOffer(data: UpdateOfferRequest) {
+    return fetchClient<Offer>(
+      `${API_ENDPOINTS.ITEM_LISTING.OFFER.UPDATE}/${data.id}`,
+      {
+        method: "PATCH",
+        body: data,
+      },
+    );
+  },
+
+  async deleteOffer(id: string) {
+    return fetchClient(`${API_ENDPOINTS.ITEM_LISTING.OFFER.DELETE}/${id}`, {
+      method: "DELETE",
+    });
+  },
+
+  async getOffer(id: string) {
+    return fetchClient<Offer>(`${API_ENDPOINTS.ITEM_LISTING.OFFER.GET}/${id}`, {
+      method: "GET",
+    });
+  },
+
+  async getOffers(params: OfferListParams) {
+    return fetchClient<Offer[]>(API_ENDPOINTS.ITEM_LISTING.OFFER.LIST, {
       method: "POST",
       body: params as unknown as Record<string, string | number | boolean>,
     });
