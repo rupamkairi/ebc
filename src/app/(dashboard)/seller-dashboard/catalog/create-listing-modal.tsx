@@ -6,33 +6,24 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { usePincodeRecordsQuery } from "@/queries/regionQueries";
 import { useCreateItemListingMutation } from "@/queries/catalogQueries";
 import { Item } from "@/types/catalog";
-import { UnitType } from "@/constants/quantities";
 import { PincodeRecord } from "@/types/region";
 import { ListingModalHeader } from "@/components/dashboard/seller/catalog/listing-modal-header";
 import { ItemSelectionStep } from "@/components/dashboard/seller/catalog/steps/item-selection-step";
-import { RateDetailsStep } from "@/components/dashboard/seller/catalog/steps/rate-details-step";
 import { RegionSelectionStep } from "@/components/dashboard/seller/catalog/steps/region-selection-step";
 
 interface CreateListingModalProps {
   isOpen: boolean;
   onClose: () => void;
   entityId: string;
-  type: "PRODUCT" | "SERVICE";
 }
 
 export function CreateListingModal({
   isOpen,
   onClose,
   entityId,
-  type,
 }: CreateListingModalProps) {
   const [step, setStep] = useState(1);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
-  const [rate, setRate] = useState({
-    unitType: "" as UnitType,
-    minQuantity: 1,
-    baseRate: 0,
-  });
 
   // Region Selection State
   const [selectedState, setSelectedState] = useState("");
@@ -49,9 +40,6 @@ export function CreateListingModal({
   );
 
   const createListingMutation = useCreateItemListingMutation();
-
-  const handleNext = () => setStep((s) => s + 1);
-  const handleBack = () => setStep((s) => s - 1);
 
   const toggleRegion = (record: PincodeRecord) => {
     setSelectedRegions((prev) =>
@@ -74,8 +62,8 @@ export function CreateListingModal({
           itemId: selectedItem.id,
           entityId,
           item_rate: {
-            unitType: rate.unitType,
-            minQuantity: rate.minQuantity,
+            unitType: "Nos", // Default value
+            minQuantity: 1,
             rate: 0,
             isNegotiable: false,
           },
@@ -106,23 +94,8 @@ export function CreateListingModal({
             <ItemSelectionStep
               onItemSelect={(item) => {
                 setSelectedItem(item);
-                if (type === "SERVICE") {
-                  setStep(3);
-                } else {
-                  handleNext();
-                }
+                setStep(3); // Skip RateDetailsStep
               }}
-            />
-          )}
-
-          {step === 2 && (
-            <RateDetailsStep
-              type={type}
-              selectedItem={selectedItem}
-              rate={rate}
-              setRate={setRate}
-              onBack={handleBack}
-              onNext={handleNext}
             />
           )}
 
@@ -140,7 +113,7 @@ export function CreateListingModal({
               toggleRegion={toggleRegion}
               removeRegion={removeRegion}
               setSelectedRegions={setSelectedRegions}
-              onBack={() => (type === "SERVICE" ? setStep(1) : handleBack())}
+              onBack={() => setStep(1)}
               onComplete={handleCreate}
               isSubmitting={createListingMutation.isPending}
             />

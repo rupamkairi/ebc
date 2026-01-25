@@ -187,6 +187,8 @@ export interface ItemListing {
   item_region?: ItemRegion[];
   createdAt: string;
   updatedAt: string;
+  mediaIds?: string[];
+  documentIds?: string[];
 }
 
 export interface CreateItemListingRequest {
@@ -206,6 +208,8 @@ export interface ItemListingListParams {
 
 export interface UpdateItemListingRequest {
   isActive?: boolean;
+  mediaIds?: string[];
+  documentIds?: string[];
 }
 
 export interface CreateItemRateRequest {

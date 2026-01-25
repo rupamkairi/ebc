@@ -1,9 +1,11 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
 import { useItemListingsQuery } from "@/queries/catalogQueries";
 import { Loader2 } from "lucide-react";
-
+import { useParams, useRouter } from "next/navigation";
+import { ListingEditForm } from "@/components/dashboard/seller/catalog/steps/listing-edit-form";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,9 +13,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Edit, ArrowLeft } from "lucide-react";
-import { ListingEditForm } from "@/components/shared/forms/listing-edit-form";
 import {
   Dialog,
   DialogContent,
@@ -22,16 +21,22 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { ArrowLeft, Edit, Plus } from "lucide-react";
+
+export interface OfferListParams {
+  itemListingId?: string;
+  entityId?: string;
+
+  search?: string;
+  isActive?: boolean;
+}
+
 export default function ListingDetailsPage() {
   const params = useParams();
   const listingId = params.listingId as string;
-  // Assuming user has entityId, otherwise we might valid to fetch it or use a store selector
-  // For now, fetching all listings for the user's entity (if identifiable) or just all and filtering
-  // Ideally backend filters by user's entity context.
+  const router = useRouter();
 
   const { data: listings, isLoading } = useItemListingsQuery({});
-
-  const router = useRouter();
 
   if (isLoading) {
     return (
@@ -48,35 +53,40 @@ export default function ListingDetailsPage() {
   }
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
-      <div className="flex items-center gap-4">
-        <Button variant="outline" size="icon" onClick={() => router.back()}>
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Listing Details</h1>
-          <p className="text-muted-foreground">
-            Manage your listing and create offers.
-          </p>
-        </div>
-      </div>
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button>
-            <Edit className="mr-2 h-4 w-4" />
-            Edit Listing
+    <div className="container mx-auto py-6 space-y-8">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Button variant="outline" size="icon" onClick={() => router.back()}>
+            <ArrowLeft className="h-4 w-4" />
           </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[600px]">
-          <DialogHeader>
-            <DialogTitle>Edit Listing</DialogTitle>
-            <DialogDescription>
-              Update listing status, price, and other details.
-            </DialogDescription>
-          </DialogHeader>
-          {listing && <ListingEditForm listing={listing} />}
-        </DialogContent>
-      </Dialog>
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">
+              Listing Details
+            </h1>
+            <p className="text-muted-foreground">
+              Manage your listing and create offers.
+            </p>
+          </div>
+        </div>
+
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>
+              <Edit className="mr-2 h-4 w-4" />
+              Edit Listing
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Edit Listing</DialogTitle>
+              <DialogDescription>
+                Update listing status, price, and other details.
+              </DialogDescription>
+            </DialogHeader>
+            {listing && <ListingEditForm listing={listing} />}
+          </DialogContent>
+        </Dialog>
+      </div>
 
       <Card>
         <CardHeader>
@@ -84,30 +94,44 @@ export default function ListingDetailsPage() {
           <CardDescription>{listing.item?.description}</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <span className="font-semibold">Listing ID:</span> {listing.id}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground uppercase font-semibold">
+                Listing ID
+              </p>
+              <p className="text-sm font-medium">{listing.id}</p>
             </div>
-            <div>
-              <span className="font-semibold">Status:</span>{" "}
-              {listing.isActive ? "Active" : "Inactive"}
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground uppercase font-semibold">
+                Status
+              </p>
+              <Badge variant={listing.isActive ? "default" : "secondary"}>
+                {listing.isActive ? "Active" : "Inactive"}
+              </Badge>
             </div>
             {listing.item_rate && (
-              <div>
-                <span className="font-semibold">Rate:</span>{" "}
-                {listing.item_rate.rate} / {listing.item_rate.unitType}
-              </div>
+              <>
+                <div className="space-y-1">
+                  <p className="text-xs text-muted-foreground uppercase font-semibold">
+                    Rate
+                  </p>
+                  <p className="text-sm font-medium">
+                    {listing.item_rate.rate}
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs text-muted-foreground uppercase font-semibold">
+                    Unit
+                  </p>
+                  <p className="text-sm font-medium">
+                    {listing.item_rate.unitType}
+                  </p>
+                </div>
+              </>
             )}
           </div>
         </CardContent>
       </Card>
-
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold tracking-tight">Existing Offers</h2>
-        <p className="text-muted-foreground">
-          Offers are now managed in the Conference Hall.
-        </p>
-      </div>
     </div>
   );
 }

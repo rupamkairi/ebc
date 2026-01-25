@@ -5,7 +5,7 @@ import { useEnquiryStore } from "@/store/enquiryStore";
 import {
   BuyerDetailsForm,
   buyerDetailsSchema,
-} from "@/components/shared/forms/buyer-details-form";
+} from "@/components/dashboard/buyer/buyer-details-form";
 
 import { usePrefetchBuyerDetails } from "@/hooks/usePrefetchBuyerDetails";
 import { useSessionQuery } from "@/queries/authQueries";

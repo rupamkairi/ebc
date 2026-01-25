@@ -1,30 +1,35 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { catalogService } from "@/services/catalogService";
 import {
-  CategoryListParams,
-  CreateCategoryRequest,
-  UpdateCategoryRequest,
   BrandListParams,
+  CategoryListParams,
   CreateBrandRequest,
-  UpdateBrandRequest,
-  SpecificationListParams,
-  CreateSpecificationRequest,
-  UpdateSpecificationRequest,
-  ItemListParams,
-  CreateItemRequest,
-  UpdateItemRequest,
+  CreateCategoryRequest,
   // New Imports
   CreateItemListingRequest,
-  ItemListingListParams,
   CreateItemRateRequest,
-  ItemRateListParams,
   CreateItemRegionRequest,
+  CreateItemRequest,
+  CreateSpecificationRequest,
+  ItemListingListParams,
+  ItemListParams,
+  ItemRateListParams,
   ItemRegionListParams,
+  SpecificationListParams,
+  UpdateBrandRequest,
+  UpdateCategoryRequest,
   // Add Update Requests
   UpdateItemListingRequest,
   UpdateItemRateRequest,
+  UpdateItemRequest,
+  UpdateSpecificationRequest,
 } from "@/types/catalog";
-import { keepPreviousData } from "@tanstack/react-query";
+import { CreateOfferRequest, OfferListParams } from "@/types/conference-hall";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 export const catalogKeys = {
   all: ["catalog"] as const,
@@ -293,6 +298,50 @@ export function useCreateItemRegionMutation() {
   return useMutation({
     mutationFn: (data: CreateItemRegionRequest) =>
       catalogService.createItemRegion(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: catalogKeys.all });
+    },
+  });
+}
+export function useUpdateItemRegionMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: Partial<CreateItemRegionRequest>;
+    }) => catalogService.updateItemRegion(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: catalogKeys.all });
+    },
+  });
+}
+
+// Offers
+export function useOffersQuery(params: OfferListParams = {}) {
+  return useQuery({
+    queryKey: [...catalogKeys.all, "offers", params],
+    queryFn: () => catalogService.getOffers(params),
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useCreateOfferMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreateOfferRequest) => catalogService.createOffer(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: catalogKeys.all });
+    },
+  });
+}
+
+export function useDeleteOfferMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => catalogService.deleteOffer(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: catalogKeys.all });
     },

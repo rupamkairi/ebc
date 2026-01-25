@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useAppointmentStore } from "@/store/appointmentStore";
-import { BuyerDetailsForm } from "@/components/shared/forms/buyer-details-form";
+import { BuyerDetailsForm } from "@/components/dashboard/buyer/buyer-details-form";
 import { BuyerDetails } from "@/store/enquiryStore";
 
 import { usePrefetchBuyerDetails } from "@/hooks/usePrefetchBuyerDetails";
