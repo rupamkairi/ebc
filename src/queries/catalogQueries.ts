@@ -1,4 +1,5 @@
 import { catalogService } from "@/services/catalogService";
+import { conferenceHallService } from "@/services/conferenceHallService";
 import {
   BrandListParams,
   CategoryListParams,
@@ -23,7 +24,11 @@ import {
   UpdateItemRequest,
   UpdateSpecificationRequest,
 } from "@/types/catalog";
-import { CreateOfferRequest, OfferListParams } from "@/types/conference-hall";
+import {
+  CreateOfferRequest,
+  UpdateOfferRequest,
+  OfferListParams,
+} from "@/types/conference-hall";
 import {
   keepPreviousData,
   useMutation,
@@ -323,7 +328,7 @@ export function useUpdateItemRegionMutation() {
 export function useOffersQuery(params: OfferListParams = {}) {
   return useQuery({
     queryKey: [...catalogKeys.all, "offers", params],
-    queryFn: () => catalogService.getOffers(params),
+    queryFn: () => conferenceHallService.getOffers(params),
     placeholderData: keepPreviousData,
   });
 }
@@ -331,7 +336,8 @@ export function useOffersQuery(params: OfferListParams = {}) {
 export function useCreateOfferMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: CreateOfferRequest) => catalogService.createOffer(data),
+    mutationFn: (data: CreateOfferRequest) =>
+      conferenceHallService.createOffer(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: catalogKeys.all });
     },
@@ -341,7 +347,18 @@ export function useCreateOfferMutation() {
 export function useDeleteOfferMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => catalogService.deleteOffer(id),
+    mutationFn: (id: string) => conferenceHallService.deleteOffer(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: catalogKeys.all });
+    },
+  });
+}
+
+export function useUpdateOfferMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: UpdateOfferRequest }) =>
+      conferenceHallService.updateOffer(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: catalogKeys.all });
     },

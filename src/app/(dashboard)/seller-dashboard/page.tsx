@@ -283,32 +283,53 @@ export default function SellerDashboardPage() {
             </div>
             <NotificationCard className="h-auto" />
           </section>
-
-          <section>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-semibold tracking-tight">
-                Conference Hall
-              </h2>
-            </div>
-            <DashboardCard
-              title="Broadcast"
-              subtext="Advertise products"
-              iconComponent={<MessageSquare className="h-5 w-5" />}
-              contentComponent={
-                <p className="text-sm text-muted-foreground mt-2">
-                  Get higher visibility by broadcasting to verified dealer
-                  networks.
-                </p>
-              }
-              footerComponent={
-                <Button className="w-full" variant="outline">
-                  Broadcast Now
-                </Button>
-              }
-            />
-          </section>
         </div>
       </div>
+      <section>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-semibold tracking-tight">
+            Conference Hall
+          </h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <DashboardCard
+            title="Offers"
+            subtext="Manage offers"
+            iconComponent={<MessageSquare className="h-5 w-5" />}
+            footerComponent={
+              <Link href="/seller-dashboard/conference-hall/offers">
+                <Button className="w-full" variant="outline">
+                  Create Offers
+                </Button>
+              </Link>
+            }
+          />
+          <DashboardCard
+            title="Events"
+            subtext="Manage events"
+            iconComponent={<MessageSquare className="h-5 w-5" />}
+            footerComponent={
+              <Link href="/seller-dashboard/conference-hall/events">
+                <Button className="w-full" variant="outline">
+                  Create Events
+                </Button>
+              </Link>
+            }
+          />
+          <DashboardCard
+            title="Forum"
+            subtext="Manage forum"
+            iconComponent={<MessageSquare className="h-5 w-5" />}
+            footerComponent={
+              <Link href="/seller-dashboard/conference-hall/forum">
+                <Button className="w-full" variant="outline">
+                  Join Discussion
+                </Button>
+              </Link>
+            }
+          />
+        </div>
+      </section>
     </div>
   );
 }

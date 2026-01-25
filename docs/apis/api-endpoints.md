@@ -329,15 +329,111 @@ _All routes require `Authorization: Bearer <token>` header._
 
 **Base Path:** `/offer`
 
-- **Create Draft**: `POST /`
-  - Body: `{ name, description, entityId, relations: {...}, regions: [...] }`
-- **Publish**: `POST /:id/publish`
-  - Transactions cost
-- **Update**: `PATCH /:id`
-  - If published, strict editing rules apply.
-- **Get**: `GET /:id`
-- **Delete**: `DELETE /:id`
-- **List**: `POST /list`
+Detailed endpoints for managing offers within the conference hall.
+
+#### 5.2.1 Create Offer
+
+**POST** `/`
+Create a new offer draft. Does not publish it.
+
+**Request Body**
+
+```json
+{
+  "name": "Offer Name",
+  "description": "Offer Description",
+  "entityId": "uuid",
+  "categoryIds": ["uuid", "uuid"],
+  "brandIds": ["uuid"],
+  "specificationIds": [],
+  "itemIds": [],
+  "itemListingIds": [],
+  "pincodeIds": ["uuid"],
+  "attachmentIds": [{ "mediaId": "uuid" }, { "documentId": "uuid" }],
+  "startDate": "2024-01-25T00:00:00.000Z",
+  "endDate": "2024-12-25T00:00:00.000Z"
+}
+```
+
+**Response**
+Returns the created offer object.
+
+---
+
+#### 5.2.2 Publish Offer
+
+**POST** `/:id/publish`
+Publishes transactionally. Deducts coins from entity's wallet.
+
+**Response**
+
+```json
+{
+  "message": "Offer published successfully",
+  "offerId": "uuid"
+}
+```
+
+---
+
+#### 5.2.3 Update Offer
+
+**PATCH** `/:id`
+Updates an offer. If published, only `name`, `description`, and `isActive` can be updated. If draft, relations and regions can also be updated.
+
+**Request Body**
+
+```json
+{
+  "name": "Updated Name",
+  "description": "Updated Description",
+  "isActive": true,
+  "categoryIds": ["uuid"], // Only allowed if NOT published
+  "startDate": "2024-01-25T00:00:00.000Z",
+  "endDate": "2024-12-25T00:00:00.000Z"
+}
+```
+
+**Response**
+Returns the updated offer object.
+
+---
+
+#### 5.2.4 Delete Offer
+
+**DELETE** `/:id`
+Soft deletes the offer.
+
+**Response**
+Returns the updated (deleted) offer object.
+
+---
+
+#### 5.2.5 Get Offer
+
+**GET** `/:id`
+Get offer details including relations, regions, and attachments.
+
+---
+
+#### 5.2.6 List Offers
+
+**POST** `/list`
+List offers with filtering.
+
+**Request Body**
+
+```json
+{
+  "entityId": "uuid",
+  "isActive": true,
+  "isPublic": true,
+  "search": "keyword"
+}
+```
+
+**Response**
+Returns array of offer objects.
 
 ---
 

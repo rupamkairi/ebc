@@ -1,3 +1,5 @@
+import { Category, Brand, Specification, Item, ItemListing } from "./catalog";
+
 export interface ConferenceHallEvent {
   id: string;
   name: string;
@@ -16,18 +18,47 @@ export type OfferRelationType =
   | "ITEM"
   | "ITEM_LISTING";
 
+export interface OfferDetail {
+  id: string;
+  startDate: string | null;
+  endDate: string | null;
+  publishedAt: string | null;
+  isPublic: boolean;
+  offerId: string;
+  attachments?: string[];
+}
+
+export interface OfferPincode {
+  id: string;
+  state: string;
+  district: string;
+  pincode: string;
+}
+
+export interface OfferRegion {
+  id: string;
+  pincodeId: string;
+  offerId: string;
+  pincode?: OfferPincode;
+}
+
 export interface OfferRelation {
   id: string;
   offerId: string;
   relationType: OfferRelationType;
   relationId: string;
-  // Optional expanded details if needed, usually just IDs are enough for creation
-}
 
-export interface OfferRegion {
-  id: string;
-  offerId: string;
-  pincodeId: string;
+  categoryId?: string | null;
+  brandId?: string | null;
+  specificationId?: string | null;
+  itemId?: string | null;
+  itemListingId?: string | null;
+
+  category?: Category | null;
+  brand?: Brand | null;
+  specification?: Specification | null;
+  item?: Item | null;
+  itemListing?: ItemListing | null;
 }
 
 export type OfferStatus = "DRAFT" | "PUBLISHED" | "INACTIVE";
@@ -36,46 +67,36 @@ export interface Offer {
   id: string;
   entityId: string;
   name: string;
-  description?: string;
-  status: OfferStatus; // DRAFT, PUBLISHED, INACTIVE
-
-  // Dates
-  startDate: string;
-  endDate: string;
-
-  // Visibility
+  description: string;
   isActive: boolean;
-  isPublic: boolean;
-
-  // Relations & Regions
-  relations: OfferRelation[];
-  regions: OfferRegion[];
-
-  // Attachments (joined strings of IDs usually, or objects)
-  attachments: string[];
-
   createdAt: string;
   updatedAt: string;
+  deletedById: string | null;
+  createdById: string;
+
+  // Nested Data
+  offerDetails: OfferDetail[];
+  offerRegions: OfferRegion[];
+  offerRelations: OfferRelation[];
+
+  // We keep status for frontend logic, but might need to derive it if not in JSON
+  status?: OfferStatus;
 }
 
 export interface CreateOfferRequest {
   entityId: string;
   name: string;
   description?: string;
+  isActive: boolean;
   startDate: string;
   endDate: string;
-  isActive: boolean;
-  isPublic: boolean;
-  attachments?: string[];
-
-  // For relations, we might send an array of objects
-  relations: {
-    relationType: OfferRelationType;
-    relationId: string;
-  }[];
-
-  // For regions, list of pincode IDs
+  categoryIds: string[];
+  brandIds: string[];
+  specificationIds: string[];
+  itemIds: string[];
+  itemListingIds: string[];
   pincodeIds: string[];
+  attachmentIds: { mediaId?: string; documentId?: string }[];
 }
 
 export type UpdateOfferRequest = Partial<CreateOfferRequest>;

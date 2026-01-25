@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { OfferRegion } from "@/types/conference-hall";
+import { OfferRegion, CreateOfferRequest } from "@/types/conference-hall";
 import {
   Category,
   Brand,
@@ -36,6 +36,7 @@ import {
   CalendarIcon,
   Loader2,
   Image as ImageIcon,
+  FileText,
   X,
   Plus,
 } from "lucide-react";
@@ -55,6 +56,7 @@ import {
   useItemsQuery,
   useItemListingsQuery,
 } from "@/queries/catalogQueries";
+import { useEntitiesQuery } from "@/queries/entityQueries";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import {
@@ -67,6 +69,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 import {
   Command,
@@ -79,88 +82,124 @@ import {
 import { usePincodeRecordsQuery } from "@/queries/regionQueries";
 import { Check } from "lucide-react";
 
+// Generic MultiSelect Component
+function MultiSelectCombobox({
+  options,
+  selectedIds,
+  onToggle,
+  placeholder = "Select...",
+  searchPlaceholder = "Search...",
+  emptyMessage = "No items found.",
+  isLoading = false,
+  onSearchChange,
+  className,
+}: {
+  options: { id: string; label: string }[];
+  selectedIds: string[];
+  onToggle: (id: string) => void;
+  placeholder?: string;
+  searchPlaceholder?: string;
+  emptyMessage?: string;
+  isLoading?: boolean;
+  onSearchChange?: (search: string) => void;
+  className?: string;
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className={cn("w-full justify-between", className)}
+        >
+          <span className="truncate">
+            {selectedIds.length > 0
+              ? `${selectedIds.length} selected`
+              : placeholder}
+          </span>
+          <Plus className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[400px] p-0" align="start">
+        <Command shouldFilter={!onSearchChange}>
+          <CommandInput
+            placeholder={searchPlaceholder}
+            onValueChange={onSearchChange}
+          />
+          <CommandList>
+            <CommandEmpty>
+              {isLoading ? "Loading..." : emptyMessage}
+            </CommandEmpty>
+            <CommandGroup className="max-h-64 overflow-y-auto">
+              {options.map((option) => (
+                <CommandItem
+                  key={option.id}
+                  value={option.label}
+                  onSelect={() => {
+                    onToggle(option.id);
+                  }}
+                >
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      selectedIds.includes(option.id)
+                        ? "opacity-100"
+                        : "opacity-0",
+                    )}
+                  />
+                  {option.label}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 // Helper Component for Pincode Selection
 function PincodeSelector({
   selectedIds,
-  onSelect,
-  onRemove,
+  onToggle,
 }: {
   selectedIds: string[];
-  onSelect: (id: string) => void;
-  onRemove: (id: string) => void;
+  onToggle: (id: string) => void;
 }) {
-  const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const { data: pincodes, isLoading } = usePincodeRecordsQuery({
     search: search,
     perPage: 10,
   });
 
-  // De-bounce search could be added here if needed, relying on query cache/debounce
+  const options =
+    pincodes?.map((p) => ({
+      id: p.id,
+      label: `${p.pincode} - ${p.district}, ${p.state}`,
+    })) || [];
 
   return (
     <div className="space-y-4">
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="w-full justify-between"
-          >
-            Select Pincodes...
-            <Plus className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-[400px] p-0">
-          <Command shouldFilter={false}>
-            <CommandInput
-              placeholder="Search pincode or district..."
-              onValueChange={setSearch}
-            />
-            <CommandList>
-              <CommandEmpty>
-                {isLoading ? "Loading..." : "No pincode found."}
-              </CommandEmpty>
-              <CommandGroup>
-                {pincodes?.map((pincode) => (
-                  <CommandItem
-                    key={pincode.id}
-                    value={pincode.pincode}
-                    onSelect={() => {
-                      onSelect(pincode.id);
-                      setOpen(false);
-                    }}
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        selectedIds.includes(pincode.id)
-                          ? "opacity-100"
-                          : "opacity-0",
-                      )}
-                    />
-                    {pincode.pincode} - {pincode.district}, {pincode.state}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+      <MultiSelectCombobox
+        options={options}
+        selectedIds={selectedIds}
+        onToggle={onToggle}
+        placeholder="Select Pincodes..."
+        searchPlaceholder="Search pincode or district..."
+        isLoading={isLoading}
+        onSearchChange={setSearch}
+      />
 
       <div className="flex flex-wrap gap-2">
         {selectedIds.map((id) => (
           <Badge key={id} variant="secondary" className="gap-2">
-            {/* We might not have the full object here if it wasn't in the search results recently, 
-                             but ideally we should fetch selected details. 
-                             For now showing ID or "Pincode" unless we store name in form too. 
-                             Or we can lookup in cache.
-                         */}
             Pincode {id.slice(0, 5)}...
             <X
               className="h-3 w-3 cursor-pointer hover:text-destructive"
-              onClick={() => onRemove(id)}
+              onClick={() => onToggle(id)}
             />
           </Badge>
         ))}
@@ -208,6 +247,9 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
     offerId || "",
   );
 
+  const { data: entities } = useEntitiesQuery();
+  const activeEntityId = entityId || entities?.[0]?.id;
+
   const createMutation = useCreateOfferMutation();
   const updateMutation = useUpdateOfferMutation();
 
@@ -229,14 +271,49 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
 
   useEffect(() => {
     if (existingOffer) {
+      const detail = existingOffer.offerDetails?.[0];
       form.reset({
         name: existingOffer.name,
         description: existingOffer.description || "",
-        startDate: new Date(existingOffer.startDate),
-        endDate: new Date(existingOffer.endDate),
+        startDate: detail?.startDate ? new Date(detail.startDate) : new Date(),
+        endDate: detail?.endDate ? new Date(detail.endDate) : new Date(),
         isActive: existingOffer.isActive,
-        isPublic: existingOffer.isPublic,
-        pincodeIds: existingOffer.regions.map((r: OfferRegion) => r.pincodeId),
+        isPublic: detail?.isPublic || false,
+        mediaIds: (detail?.attachments || []).filter(
+          (id) => !id.includes("doc"),
+        ), // Simple filter logic
+        documentIds: (detail?.attachments || []).filter((id) =>
+          id.includes("doc"),
+        ),
+        relations:
+          existingOffer.offerRelations?.map((r) => {
+            let rId = r.relationId;
+            let rType = r.relationType;
+
+            if (!rId) {
+              if (r.categoryId) {
+                rId = r.categoryId;
+                rType = "CATEGORY";
+              } else if (r.brandId) {
+                rId = r.brandId;
+                rType = "BRAND";
+              } else if (r.specificationId) {
+                rId = r.specificationId;
+                rType = "SPECIFICATION";
+              } else if (r.itemId) {
+                rId = r.itemId;
+                rType = "ITEM";
+              } else if (r.itemListingId) {
+                rId = r.itemListingId;
+                rType = "ITEM_LISTING";
+              }
+            }
+
+            return { relationType: rType, relationId: rId };
+          }) || [],
+        pincodeIds:
+          existingOffer.offerRegions?.map((r: OfferRegion) => r.pincodeId) ||
+          [],
       });
     }
   }, [existingOffer, form]);
@@ -251,24 +328,27 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
   const [selectedRelationType, setSelectedRelationType] = useState<
     "CATEGORY" | "BRAND" | "SPECIFICATION" | "ITEM" | "ITEM_LISTING"
   >("CATEGORY");
-  const [selectedRelationId, setSelectedRelationId] = useState<string>("");
 
-  const handleAddRelation = () => {
-    if (!selectedRelationId) return;
+  const toggleRelation = (id: string) => {
     const current = form.getValues("relations");
-    if (
-      !current.find(
-        (r) =>
-          r.relationType === selectedRelationType &&
-          r.relationId === selectedRelationId,
-      )
-    ) {
+    const exists = current.find(
+      (r) => r.relationType === selectedRelationType && r.relationId === id,
+    );
+
+    if (exists) {
+      form.setValue(
+        "relations",
+        current.filter(
+          (r) =>
+            !(r.relationType === selectedRelationType && r.relationId === id),
+        ),
+      );
+    } else {
       form.setValue("relations", [
         ...current,
-        { relationType: selectedRelationType, relationId: selectedRelationId },
+        { relationType: selectedRelationType, relationId: id },
       ]);
     }
-    setSelectedRelationId("");
   };
 
   const handleRemoveRelation = (index: number) => {
@@ -280,34 +360,76 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
   };
 
   const getRelationName = (type: string, id: string) => {
+    if (!id) return "Unknown";
+
+    // First try to find label in current cached offer details (objects from backend)
+    const existing = existingOffer?.offerRelations?.find(
+      (r) =>
+        r.relationId === id ||
+        r.categoryId === id ||
+        r.brandId === id ||
+        r.specificationId === id ||
+        r.itemId === id ||
+        r.itemListingId === id,
+    );
+
+    if (existing) {
+      if (existing.category) return existing.category.name;
+      if (existing.brand) return existing.brand.name;
+      if (existing.specification) return existing.specification.name;
+      if (existing.item) return existing.item.name;
+      if (existing.itemListing)
+        return existing.itemListing.item?.name || existing.itemListingId;
+    }
+
     switch (type) {
       case "CATEGORY":
-        return categories?.find((c) => c.id === id)?.name || id;
+        return categories?.find((c: Category) => c.id === id)?.name || id;
       case "BRAND":
-        return brands?.find((b) => b.id === id)?.name || id;
+        return brands?.find((b: Brand) => b.id === id)?.name || id;
       case "SPECIFICATION":
-        return specifications?.find((s) => s.id === id)?.name || id;
+        return (
+          specifications?.find((s: Specification) => s.id === id)?.name || id
+        );
       case "ITEM":
-        return items?.find((i) => i.name === id)?.name || id; // Item might not have generic name id match easily
+        return items?.find((i: Item) => i.id === id)?.name || id;
       case "ITEM_LISTING":
-        return listings?.find((l) => l.id === id)?.item?.name || id;
+        return (
+          listings?.find((l: ItemListing) => l.id === id)?.item?.name || id
+        );
       default:
         return id;
     }
   };
 
   const onSubmit = (values: OfferFormValues) => {
-    const payload = {
-      entityId: entityId || "current-user-entity", // Should come from props or store
+    const payload: CreateOfferRequest = {
+      entityId: activeEntityId || "temp-entity-id",
       name: values.name,
       description: values.description,
+      isActive: values.isActive,
       startDate: values.startDate.toISOString(),
       endDate: values.endDate.toISOString(),
-      isActive: values.isActive,
-      isPublic: values.isPublic,
-      attachments: [...values.mediaIds, ...values.documentIds],
-      relations: values.relations,
+      categoryIds: values.relations
+        .filter((r) => r.relationType === "CATEGORY")
+        .map((r) => r.relationId),
+      brandIds: values.relations
+        .filter((r) => r.relationType === "BRAND")
+        .map((r) => r.relationId),
+      specificationIds: values.relations
+        .filter((r) => r.relationType === "SPECIFICATION")
+        .map((r) => r.relationId),
+      itemIds: values.relations
+        .filter((r) => r.relationType === "ITEM")
+        .map((r) => r.relationId),
+      itemListingIds: values.relations
+        .filter((r) => r.relationType === "ITEM_LISTING")
+        .map((r) => r.relationId),
       pincodeIds: values.pincodeIds,
+      attachmentIds: [
+        ...values.mediaIds.map((id) => ({ mediaId: id })),
+        ...values.documentIds.map((id) => ({ documentId: id })),
+      ],
     };
 
     if (isEdit && offerId) {
@@ -489,51 +611,45 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                     </Select>
                   </div>
                   <div className="space-y-2 flex-[2]">
-                    <FormLabel>Item</FormLabel>
-                    <Select
-                      value={selectedRelationId}
-                      onValueChange={setSelectedRelationId}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {selectedRelationType === "CATEGORY" &&
-                          categories?.map((c: Category) => (
-                            <SelectItem key={c.id} value={c.id}>
-                              {c.name}
-                            </SelectItem>
-                          ))}
-                        {selectedRelationType === "BRAND" &&
-                          brands?.map((b: Brand) => (
-                            <SelectItem key={b.id} value={b.id}>
-                              {b.name}
-                            </SelectItem>
-                          ))}
-                        {selectedRelationType === "SPECIFICATION" &&
-                          specifications?.map((s: Specification) => (
-                            <SelectItem key={s.id} value={s.id}>
-                              {s.name}
-                            </SelectItem>
-                          ))}
-                        {selectedRelationType === "ITEM" &&
-                          items?.map((i: Item) => (
-                            <SelectItem key={i.id} value={i.id}>
-                              {i.name}
-                            </SelectItem>
-                          ))}
-                        {selectedRelationType === "ITEM_LISTING" &&
-                          listings?.map((l: ItemListing) => (
-                            <SelectItem key={l.id} value={l.id}>
-                              {l.item?.name || l.id} - {l.item_rate?.rate}
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </Select>
+                    <FormLabel>
+                      Select{" "}
+                      {selectedRelationType.toLowerCase().replace("_", " ")}s
+                    </FormLabel>
+                    <MultiSelectCombobox
+                      options={
+                        (selectedRelationType === "CATEGORY"
+                          ? categories?.map((c: Category) => ({
+                              id: c.id,
+                              label: c.name,
+                            }))
+                          : selectedRelationType === "BRAND"
+                            ? brands?.map((b: Brand) => ({
+                                id: b.id,
+                                label: b.name,
+                              }))
+                            : selectedRelationType === "SPECIFICATION"
+                              ? specifications?.map((s: Specification) => ({
+                                  id: s.id,
+                                  label: s.name,
+                                }))
+                              : selectedRelationType === "ITEM"
+                                ? items?.map((i: Item) => ({
+                                    id: i.id,
+                                    label: i.name,
+                                  }))
+                                : listings?.map((l: ItemListing) => ({
+                                    id: l.id,
+                                    label: `${l.item?.name || l.id} - ${l.item_rate?.rate || "No rate"}`,
+                                  }))) || []
+                      }
+                      selectedIds={form
+                        .watch("relations")
+                        .filter((r) => r.relationType === selectedRelationType)
+                        .map((r) => r.relationId)}
+                      onToggle={toggleRelation}
+                      placeholder={`Select ${selectedRelationType.toLowerCase().replace("_", " ")}s...`}
+                    />
                   </div>
-                  <Button type="button" onClick={handleAddRelation}>
-                    <Plus className="h-4 w-4" />
-                  </Button>
                 </div>
 
                 <div className="border rounded-md p-4 min-h-[100px] space-y-2">
@@ -576,18 +692,16 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
               <CardContent className="space-y-4">
                 <PincodeSelector
                   selectedIds={form.watch("pincodeIds")}
-                  onSelect={(id) => {
+                  onToggle={(id) => {
                     const current = form.getValues("pincodeIds") || [];
-                    if (!current.includes(id)) {
+                    if (current.includes(id)) {
+                      form.setValue(
+                        "pincodeIds",
+                        current.filter((i) => i !== id),
+                      );
+                    } else {
                       form.setValue("pincodeIds", [...current, id]);
                     }
-                  }}
-                  onRemove={(id) => {
-                    const current = form.getValues("pincodeIds") || [];
-                    form.setValue(
-                      "pincodeIds",
-                      current.filter((i) => i !== id),
-                    );
                   }}
                 />
               </CardContent>
@@ -623,6 +737,49 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                             className="flex items-center gap-2 p-2 border rounded text-xs"
                           >
                             <ImageIcon className="h-3 w-3" /> {id.slice(0, 8)}
+                            ...
+                            <X
+                              className="h-3 w-3 cursor-pointer text-destructive"
+                              onClick={() =>
+                                field.onChange(
+                                  field.value.filter((i) => i !== id),
+                                )
+                              }
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                />
+
+                <Separator className="my-4" />
+
+                <FormField
+                  control={form.control}
+                  name="documentIds"
+                  render={({ field }) => (
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between border-b pb-2">
+                        <FormLabel>Documents</FormLabel>
+                        <FileUploader
+                          type="document"
+                          variant="multiple"
+                          entityId={entityId}
+                          onUploadSuccess={(newFiles: FileUploadResponse[]) => {
+                            const newIds = newFiles.map((f) => f.id);
+                            field.onChange([...(field.value || []), ...newIds]);
+                          }}
+                        />
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {field.value.map((id) => (
+                          <div
+                            key={id}
+                            className="flex items-center gap-2 p-2 border rounded text-xs"
+                          >
+                            <FileText className="h-3 w-3 text-blue-500" />{" "}
+                            {id.slice(0, 8)}
                             ...
                             <X
                               className="h-3 w-3 cursor-pointer text-destructive"

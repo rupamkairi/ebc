@@ -48,16 +48,13 @@ export function OfferList() {
   };
 
   const getStatusBadge = (offer: Offer) => {
-    switch (offer.status) {
-      case "PUBLISHED":
-        return <Badge className="bg-green-500">Published</Badge>;
-      case "DRAFT":
-        return <Badge variant="secondary">Draft</Badge>;
-      case "INACTIVE":
-        return <Badge variant="destructive">Inactive</Badge>;
-      default:
-        return <Badge variant="outline">{offer.status}</Badge>;
-    }
+    const detail = offer.offerDetails?.[0];
+    const isPublished = !!detail?.publishedAt;
+
+    if (!offer.isActive) return <Badge variant="destructive">Inactive</Badge>;
+    if (isPublished)
+      return <Badge className="bg-green-500 text-white">Published</Badge>;
+    return <Badge variant="secondary">Draft</Badge>;
   };
 
   return (
@@ -81,55 +78,57 @@ export function OfferList() {
                 </TableCell>
               </TableRow>
             ) : (
-              offers?.map((offer) => (
-                <TableRow key={offer.id}>
-                  <TableCell className="font-medium">
-                    <div className="flex flex-col">
-                      <span>{offer.name}</span>
-                      <span className="text-xs text-muted-foreground truncate max-w-[200px]">
-                        {offer.description}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell>{getStatusBadge(offer)}</TableCell>
-                  <TableCell>
-                    {offer.startDate
-                      ? format(new Date(offer.startDate), "PP")
-                      : "-"}
-                  </TableCell>
-                  <TableCell>
-                    {offer.endDate
-                      ? format(new Date(offer.endDate), "PP")
-                      : "-"}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      {offer.status === "DRAFT" && (
+              offers?.map((offer) => {
+                const detail = offer.offerDetails?.[0];
+                const isPublished = !!detail?.publishedAt;
+
+                return (
+                  <TableRow key={offer.id}>
+                    <TableCell className="font-medium">
+                      <div className="flex flex-col">
+                        <span>{offer.name}</span>
+                        <span className="text-xs text-muted-foreground truncate max-w-[200px]">
+                          {offer.description}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell>{getStatusBadge(offer)}</TableCell>
+                    <TableCell>
+                      {detail?.startDate
+                        ? format(new Date(detail.startDate), "PP")
+                        : "-"}
+                    </TableCell>
+                    <TableCell>
+                      {detail?.endDate
+                        ? format(new Date(detail.endDate), "PP")
+                        : "-"}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        {!isPublished && offer.isActive && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            title="Publish"
+                            onClick={() => setPublishOfferId(offer.id)}
+                          >
+                            <Globe className="h-4 w-4 text-blue-500" />
+                          </Button>
+                        )}
+
                         <Button
                           variant="ghost"
                           size="icon"
-                          title="Publish"
-                          onClick={() => setPublishOfferId(offer.id)}
+                          title="Edit"
+                          onClick={() =>
+                            router.push(
+                              `/seller-dashboard/conference-hall/offers/create?offerId=${offer.id}`,
+                            )
+                          }
                         >
-                          <Globe className="h-4 w-4 text-blue-500" />
+                          <Edit className="h-4 w-4" />
                         </Button>
-                      )}
 
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        title="Edit"
-                        onClick={() =>
-                          router.push(
-                            `/seller-dashboard/conference-hall/offers/create?offerId=${offer.id}`,
-                          )
-                        } // Assuming consistent create/edit page
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-
-                      {(offer.status === "DRAFT" ||
-                        offer.status === "INACTIVE") && (
                         <Button
                           variant="ghost"
                           size="icon"
@@ -139,11 +138,11 @@ export function OfferList() {
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
-                      )}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
             )}
           </TableBody>
         </Table>
