@@ -66,13 +66,6 @@ export const API_ENDPOINTS = {
       DELETE: "/item-listing/region", // :id
       LIST: "/item-listing/region/list",
     },
-    OFFER: {
-      CREATE: "/item-listing/offer",
-      UPDATE: "/item-listing/offer", // :id
-      GET: "/item-listing/offer", // :id
-      DELETE: "/item-listing/offer", // :id
-      LIST: "/item-listing/offer/list",
-    },
   },
   CONFERENCE_HALL: {
     EVENT: {
@@ -81,6 +74,14 @@ export const API_ENDPOINTS = {
       GET: "/conference-hall/event", // :id
       DELETE: "/conference-hall/event", // :id
       LIST: "/conference-hall/event/list",
+    },
+    OFFER: {
+      CREATE: "/conference-hall/offer",
+      UPDATE: "/conference-hall/offer", // :id
+      GET: "/conference-hall/offer", // :id
+      DELETE: "/conference-hall/offer", // :id
+      LIST: "/conference-hall/offer/list",
+      PUBLISH: "/conference-hall/offer/publish", // :id/publish
     },
   },
   ACTIVITY: {

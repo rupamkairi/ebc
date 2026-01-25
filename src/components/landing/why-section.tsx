@@ -3,7 +3,7 @@
 import Container from "@/components/containers/containers";
 import { TypographyH1, TypographyH2 } from "@/components/ui/typography";
 import { DisplayCard3 } from "@/components/shared/cards/display-card-3";
-import Break from "@/components/spacing/break";
+import Break from "@/components/ui/break";
 import {
   CircleDollarSign,
   ShieldCheck,

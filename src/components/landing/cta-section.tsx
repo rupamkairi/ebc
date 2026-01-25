@@ -1,7 +1,7 @@
 "use client";
 
 import Container from "@/components/containers/containers";
-import Break from "@/components/spacing/break";
+import Break from "@/components/ui/break";
 import { Button } from "@/components/ui/button";
 import { TypographyH1 } from "@/components/ui/typography";
 import { ArrowRight } from "lucide-react";

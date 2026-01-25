@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useItemListingsQuery } from "@/queries/catalogQueries";
 import { Loader2 } from "lucide-react";
-import { OfferForm } from "@/components/shared/forms/offer-form";
+
 import {
   Card,
   CardContent,
@@ -102,23 +102,11 @@ export default function ListingDetailsPage() {
         </CardContent>
       </Card>
 
-      <div className="border-t my-6" />
-
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold tracking-tight">Create Offer</h2>
-        <Card>
-          <CardContent className="pt-6">
-            <OfferForm listingId={listing.id} entityId={listing.entityId} />
-          </CardContent>
-        </Card>
-      </div>
-
       <div className="space-y-4">
         <h2 className="text-2xl font-bold tracking-tight">Existing Offers</h2>
         <p className="text-muted-foreground">
-          List of existing offers calls (TODO)
+          Offers are now managed in the Conference Hall.
         </p>
-        {/* Listing offers would go here */}
       </div>
     </div>
   );

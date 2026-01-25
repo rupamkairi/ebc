@@ -2,7 +2,7 @@
 
 import Container from "@/components/containers/containers";
 import { DisplayCard } from "@/components/shared/cards/display-cards";
-import Break from "@/components/spacing/break";
+import Break from "@/components/ui/break";
 import { TypographyH1, TypographyH2 } from "@/components/ui/typography";
 
 export function BenefitsSection() {

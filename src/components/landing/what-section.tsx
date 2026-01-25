@@ -2,7 +2,7 @@
 
 import Container from "@/components/containers/containers";
 import { DisplayCard2 } from "@/components/shared/cards/display-card-2";
-import Break from "@/components/spacing/break";
+import Break from "@/components/ui/break";
 import { Button } from "@/components/ui/button";
 import { TypographyH1, TypographyH2 } from "@/components/ui/typography";
 import { ArrowRight } from "lucide-react";

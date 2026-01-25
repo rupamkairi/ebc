@@ -13,7 +13,7 @@ import { PricingSection } from "@/components/landing/pricing-section";
 import { ProblemSection } from "@/components/landing/problem-section";
 import { UseCasesSection } from "@/components/landing/use-cases-section";
 import { Navbar } from "@/components/shared/navbar";
-import Break from "@/components/spacing/break";
+import Break from "@/components/ui/break";
 import { Button } from "@/components/ui/button";
 import {
   TypographyLarge,
