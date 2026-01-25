@@ -17,6 +17,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { OfferRegion } from "@/types/conference-hall";
+import {
+  Category,
+  Brand,
+  Specification,
+  Item,
+  ItemListing,
+} from "@/types/catalog";
 import {
   Popover,
   PopoverContent,
@@ -40,7 +48,13 @@ import {
   useUpdateOfferMutation,
   useOfferQuery,
 } from "@/queries/conferenceHallQueries";
-import { useItemListingsQuery } from "@/queries/catalogQueries"; // Assuming these exist
+import {
+  useCategoriesQuery,
+  useBrandsQuery,
+  useSpecificationsQuery,
+  useItemsQuery,
+  useItemListingsQuery,
+} from "@/queries/catalogQueries";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import {
@@ -222,24 +236,16 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
         endDate: new Date(existingOffer.endDate),
         isActive: existingOffer.isActive,
         isPublic: existingOffer.isPublic,
-        mediaIds:
-          existingOffer.attachments?.filter((id) => !id.includes("doc")) || [], // Naive filter, usually would separate
-        documentIds: [], // TODO: Separate attachments if backend returns mixed
-        relations: existingOffer.relations.map((r) => ({
-          relationType: r.relationType,
-          relationId: r.relationId,
-        })),
-        pincodeIds: existingOffer.regions.map((r) => r.pincodeId),
+        pincodeIds: existingOffer.regions.map((r: OfferRegion) => r.pincodeId),
       });
     }
   }, [existingOffer, form]);
 
-  // Relation Selectors Data
   const { data: categories } = useCategoriesQuery();
   const { data: brands } = useBrandsQuery();
   const { data: specifications } = useSpecificationsQuery();
   const { data: items } = useItemsQuery();
-  const { data: listings } = useItemListingsQuery(); // Might need huge list or search
+  const { data: listings } = useItemListingsQuery();
   // regions handled via pincode search ideally, but for now assuming list or manual entry
 
   const [selectedRelationType, setSelectedRelationType] = useState<
@@ -493,31 +499,31 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                       </SelectTrigger>
                       <SelectContent>
                         {selectedRelationType === "CATEGORY" &&
-                          categories?.map((c) => (
+                          categories?.map((c: Category) => (
                             <SelectItem key={c.id} value={c.id}>
                               {c.name}
                             </SelectItem>
                           ))}
                         {selectedRelationType === "BRAND" &&
-                          brands?.map((b) => (
+                          brands?.map((b: Brand) => (
                             <SelectItem key={b.id} value={b.id}>
                               {b.name}
                             </SelectItem>
                           ))}
                         {selectedRelationType === "SPECIFICATION" &&
-                          specifications?.map((s) => (
+                          specifications?.map((s: Specification) => (
                             <SelectItem key={s.id} value={s.id}>
                               {s.name}
                             </SelectItem>
                           ))}
                         {selectedRelationType === "ITEM" &&
-                          items?.map((i) => (
+                          items?.map((i: Item) => (
                             <SelectItem key={i.id} value={i.id}>
                               {i.name}
                             </SelectItem>
                           ))}
                         {selectedRelationType === "ITEM_LISTING" &&
-                          listings?.map((l) => (
+                          listings?.map((l: ItemListing) => (
                             <SelectItem key={l.id} value={l.id}>
                               {l.item?.name || l.id} - {l.item_rate?.rate}
                             </SelectItem>
@@ -531,28 +537,59 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                 </div>
 
                 <div className="border rounded-md p-4 min-h-[100px] space-y-2">
-                  {form.watch("relations").map((r, i) => (
-                    <Badge
-                      key={i}
-                      variant="secondary"
-                      className="mr-2 mb-2 p-2 gap-2"
-                    >
-                      <span className="font-bold text-[10px] uppercase text-muted-foreground mr-1">
-                        {r.relationType}
-                      </span>
-                      {getRelationName(r.relationType, r.relationId)}
-                      <X
-                        className="h-3 w-3 cursor-pointer hover:text-destructive"
-                        onClick={() => handleRemoveRelation(i)}
-                      />
-                    </Badge>
-                  ))}
+                  {form
+                    .watch("relations")
+                    .map(
+                      (
+                        r: { relationType: string; relationId: string },
+                        i: number,
+                      ) => (
+                        <Badge
+                          key={i}
+                          variant="secondary"
+                          className="mr-2 mb-2 p-2 gap-2"
+                        >
+                          <span className="font-bold text-[10px] uppercase text-muted-foreground mr-1">
+                            {r.relationType}
+                          </span>
+                          {getRelationName(r.relationType, r.relationId)}
+                          <X
+                            className="h-3 w-3 cursor-pointer hover:text-destructive"
+                            onClick={() => handleRemoveRelation(i)}
+                          />
+                        </Badge>
+                      ),
+                    )}
                   {form.watch("relations").length === 0 && (
                     <p className="text-sm text-muted-foreground">
                       No relations selected. Offer might apply generally?
                     </p>
                   )}
                 </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Applicable Regions</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <PincodeSelector
+                  selectedIds={form.watch("pincodeIds")}
+                  onSelect={(id) => {
+                    const current = form.getValues("pincodeIds") || [];
+                    if (!current.includes(id)) {
+                      form.setValue("pincodeIds", [...current, id]);
+                    }
+                  }}
+                  onRemove={(id) => {
+                    const current = form.getValues("pincodeIds") || [];
+                    form.setValue(
+                      "pincodeIds",
+                      current.filter((i) => i !== id),
+                    );
+                  }}
+                />
               </CardContent>
             </Card>
 

@@ -20,10 +20,6 @@ import {
   ItemRateListParams,
   CreateItemRegionRequest,
   ItemRegionListParams,
-  // New Offer Imports
-  CreateOfferRequest,
-  UpdateOfferRequest,
-  OfferListParams,
   // Add Update Requests
   UpdateItemListingRequest,
   UpdateItemRateRequest,
@@ -46,8 +42,6 @@ export const catalogKeys = {
     [...catalogKeys.all, "rates", params] as const,
   itemRegions: (params: ItemRegionListParams) =>
     [...catalogKeys.all, "regions", params] as const,
-  offers: (params: OfferListParams) =>
-    [...catalogKeys.all, "offers", params] as const,
 };
 
 // Categories
@@ -299,53 +293,6 @@ export function useCreateItemRegionMutation() {
   return useMutation({
     mutationFn: (data: CreateItemRegionRequest) =>
       catalogService.createItemRegion(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: catalogKeys.all });
-    },
-  });
-}
-
-// Offers
-export function useOffersQuery(params: OfferListParams = {}) {
-  return useQuery({
-    queryKey: catalogKeys.offers(params),
-    queryFn: () => catalogService.getOffers(params),
-    placeholderData: keepPreviousData,
-  });
-}
-
-export function useOfferQuery(id: string) {
-  return useQuery({
-    queryKey: [...catalogKeys.all, "offer", id],
-    queryFn: () => catalogService.getOffer(id),
-    enabled: !!id,
-  });
-}
-
-export function useCreateOfferMutation() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (data: CreateOfferRequest) => catalogService.createOffer(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: catalogKeys.all });
-    },
-  });
-}
-
-export function useUpdateOfferMutation() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (data: UpdateOfferRequest) => catalogService.updateOffer(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: catalogKeys.all });
-    },
-  });
-}
-
-export function useDeleteOfferMutation() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (id: string) => catalogService.deleteOffer(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: catalogKeys.all });
     },
