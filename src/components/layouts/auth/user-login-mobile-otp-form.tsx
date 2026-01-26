@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -226,6 +227,12 @@ export function UserLoginMobileOtpForm({
           </div>
         </CardContent>
       </Card>
+      <p className="text-center text-sm text-muted-foreground">
+        Don&apos;t have an account?{" "}
+        <Link href="/auth/register" className="text-primary hover:underline">
+          Register
+        </Link>
+      </p>
     </div>
   );
 }

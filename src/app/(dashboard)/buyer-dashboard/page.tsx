@@ -219,13 +219,14 @@ export default function BuyerDashboardPage() {
                     metric: "On Air",
                   },
                 ].map((item) => (
-                  <DashboardCard
-                    key={item.title}
-                    title={item.title}
-                    iconComponent={item.icon}
-                    subtext={item.metric}
-                    className="h-full"
-                  />
+                  <Link key={item.title} href="/buyer-dashboard/conference-hall" className="h-full">
+                    <DashboardCard
+                      title={item.title}
+                      iconComponent={item.icon}
+                      subtext={item.metric}
+                      className="h-full hover:bg-muted/50 transition-colors"
+                    />
+                  </Link>
                 ))}
               </div>
             </section>

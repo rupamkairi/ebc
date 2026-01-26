@@ -5,9 +5,72 @@ import {
   Offer,
   OfferListParams,
   UpdateOfferRequest,
+  ConferenceHallEvent,
+  CreateEventRequest,
+  UpdateEventRequest,
+  EventListParams,
 } from "@/types/conference-hall";
 
 export const conferenceHallService = {
+  // Events
+  getEvents: (params: EventListParams = {}) => {
+    return fetchClient<ConferenceHallEvent[]>(
+      API_ENDPOINTS.CONFERENCE_HALL.EVENT.LIST,
+      {
+        method: "POST",
+        body: params,
+      },
+    );
+  },
+
+  getEvent: (id: string) => {
+    return fetchClient<ConferenceHallEvent>(
+      `${API_ENDPOINTS.CONFERENCE_HALL.EVENT.GET}/${id}`,
+      {
+        method: "GET",
+      },
+    );
+  },
+
+  createEvent: (data: CreateEventRequest) => {
+    return fetchClient<ConferenceHallEvent>(
+      API_ENDPOINTS.CONFERENCE_HALL.EVENT.CREATE,
+      {
+        method: "POST",
+        body: data,
+      },
+    );
+  },
+
+  updateEvent: (id: string, data: UpdateEventRequest) => {
+    return fetchClient<ConferenceHallEvent>(
+      `${API_ENDPOINTS.CONFERENCE_HALL.EVENT.UPDATE}/${id}`,
+      {
+        method: "PATCH",
+        body: data,
+      },
+    );
+  },
+
+  deleteEvent: (id: string) => {
+    return fetchClient(
+      `${API_ENDPOINTS.CONFERENCE_HALL.EVENT.DELETE}/${id}`,
+      {
+        method: "DELETE",
+      },
+    );
+  },
+
+  joinEvent: (id: string, entityId?: string) => {
+    return fetchClient(
+      `${API_ENDPOINTS.CONFERENCE_HALL.EVENT.JOIN.replace("/join", "")}/${id}/join`,
+      {
+        method: "POST",
+        body: { entityId },
+      },
+    );
+  },
+
   // Offers
   getOffers: (params: OfferListParams = {}) => {
     return fetchClient<Offer[]>(API_ENDPOINTS.CONFERENCE_HALL.OFFER.LIST, {
@@ -54,13 +117,6 @@ export const conferenceHallService = {
       {
         method: "POST",
       },
-    );
-  },
-
-  publishOfferViaUrl: (id: string) => {
-    return fetchClient<Offer>(
-      `${API_ENDPOINTS.CONFERENCE_HALL.OFFER.PUBLISH.replace("/publish", "")}/${id}/publish`,
-      { method: "POST" },
     );
   },
 };

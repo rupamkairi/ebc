@@ -4,11 +4,71 @@ export interface ConferenceHallEvent {
   id: string;
   name: string;
   description?: string;
-  startDateTime: string;
-  endDateTime: string;
+  type: "LIVE" | "RECORDED";
+  isPublic: boolean;
   isActive: boolean;
+  isPhysical: boolean;
+  isRemote: boolean;
+  startDate: string | null;
+  endDate: string | null;
+  location: string | null;
+  meetingUrl: string | null;
   createdAt: string;
   updatedAt: string;
+  entityId: string;
+  createdById: string;
+  pincodeId?: string | null;
+  hasJoined?: boolean;
+  entity?: {
+    id: string;
+    name: string;
+  };
+  attachments?: {
+    id: string;
+    mediaId?: string;
+    documentId?: string;
+    media?: {
+      id: string;
+      name: string;
+      url: string;
+    };
+    document?: {
+      id: string;
+      name: string;
+      url: string;
+    };
+  }[];
+  _count?: {
+    participants: number;
+  };
+}
+
+export interface CreateEventRequest {
+  name: string;
+  description?: string;
+  entityId: string;
+  type: "LIVE" | "RECORDED";
+  isPublic?: boolean;
+  isPhysical?: boolean;
+  isRemote?: boolean;
+  startDate?: string;
+  endDate?: string;
+  location?: string;
+  pincodeId?: string;
+  attachmentIds?: { mediaId?: string; documentId?: string }[];
+}
+
+export type UpdateEventRequest = Partial<CreateEventRequest>;
+
+export interface EventListParams {
+  entityId?: string;
+  isActive?: boolean;
+  isPublic?: boolean;
+  type?: "LIVE" | "RECORDED";
+  isRemote?: boolean;
+  isPhysical?: boolean;
+  timeframe?: "FUTURE" | "PAST" | "ALL";
+  search?: string;
 }
 
 export type OfferRelationType =
