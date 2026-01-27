@@ -54,6 +54,7 @@ export interface CreateEventRequest {
   startDate?: string;
   endDate?: string;
   location?: string;
+  meetingUrl?: string;
   pincodeId?: string;
   attachmentIds?: { mediaId?: string; documentId?: string }[];
 }

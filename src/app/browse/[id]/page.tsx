@@ -6,6 +6,7 @@ import { useItemQuery } from "@/queries/catalogQueries";
 import { Loader2, AlertCircle, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { ForumSection } from "@/components/shared/forum";
 
 export default function ItemDetailsPage() {
   const params = useParams();
@@ -64,6 +65,10 @@ export default function ItemDetailsPage() {
         <pre className="whitespace-pre-wrap bg-muted/50 p-4 rounded-md text-xs sm:text-sm overflow-auto max-h-[600px]">
           {JSON.stringify(item, null, 2)}
         </pre>
+      </div>
+
+      <div className="pt-10 border-t">
+        <ForumSection itemId={id} />
       </div>
     </div>
   );

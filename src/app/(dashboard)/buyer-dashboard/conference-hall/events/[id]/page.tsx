@@ -3,7 +3,7 @@
 import { useEventQuery } from "@/queries/conferenceHallQueries";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
   Calendar, 
   MapPin, 
@@ -17,8 +17,8 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
-import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { ForumSection } from "@/components/shared/forum";
 
 export default function BuyerEventDetailsPage() {
   const params = useParams();
@@ -126,7 +126,7 @@ export default function BuyerEventDetailsPage() {
                         <p className="text-sm text-muted-foreground italic">No media files provided for this session.</p>
                       </div>
                     ) : (
-                      event.attachments?.filter(a => a.mediaId).map((attachment: any) => (
+                      event.attachments?.filter(a => a.mediaId).map((attachment) => (
                         <div key={attachment.id} className="group/item flex items-center justify-between p-4 bg-background rounded-xl border border-transparent hover:border-primary/20 hover:shadow-md transition-all">
                           <div className="flex items-center gap-3 min-w-0">
                             <div className="h-8 w-8 bg-muted rounded flex items-center justify-center shrink-0">
@@ -163,7 +163,7 @@ export default function BuyerEventDetailsPage() {
                         <p className="text-sm text-muted-foreground italic">No downloadable resources yet.</p>
                       </div>
                     ) : (
-                      event.attachments?.filter(a => a.documentId).map((attachment: any) => (
+                      event.attachments?.filter(a => a.documentId).map((attachment) => (
                         <div key={attachment.id} className="group/item flex items-center justify-between p-4 bg-background rounded-xl border border-transparent hover:border-primary/20 hover:shadow-md transition-all">
                           <div className="flex items-center gap-3 min-w-0">
                             <div className="h-8 w-8 bg-muted rounded flex items-center justify-center shrink-0">
@@ -286,6 +286,12 @@ export default function BuyerEventDetailsPage() {
               </div>
             </CardContent>
           </Card>
+        </div>
+      </div>
+
+      <div className="pt-16 border-t border-dashed">
+        <div className="max-w-4xl">
+          <ForumSection eventId={id} />
         </div>
       </div>
     </div>

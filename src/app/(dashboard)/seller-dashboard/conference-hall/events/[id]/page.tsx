@@ -9,15 +9,14 @@ import {
   MapPin, 
   Video, 
   Users, 
-  ArrowLeft,
-  Settings,
-  Pencil
+  ArrowLeft
 } from "lucide-react";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useParams, useRouter } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EventForm } from "@/components/dashboard/seller/events/event-form";
+import { ForumSection } from "@/components/shared/forum";
 
 export default function SellerEventDetailsPage() {
   const params = useParams();
@@ -96,6 +95,7 @@ export default function SellerEventDetailsPage() {
           <Tabs defaultValue="overview" className="space-y-6">
             <TabsList>
               <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="discussions">Discussions</TabsTrigger>
               <TabsTrigger value="edit">Edit Details</TabsTrigger>
             </TabsList>
 
@@ -141,6 +141,14 @@ export default function SellerEventDetailsPage() {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            <TabsContent value="discussions">
+               <Card className="rounded-[2.5rem] border-none shadow-2xl shadow-black/5">
+                 <CardContent className="pt-10">
+                   <ForumSection eventId={id} />
+                 </CardContent>
+               </Card>
             </TabsContent>
 
             <TabsContent value="edit">

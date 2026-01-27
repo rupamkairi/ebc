@@ -18,7 +18,7 @@ import {
   Video, 
   Search, 
   Users,
-  Lock,
+  Sparkles,
   Unlock,
   Loader2
 } from "lucide-react";
@@ -152,8 +152,8 @@ export function EventDiscovery() {
                     onClick={() => handleJoin(event.id)}
                     disabled={joinEvent.isPending}
                   >
-                    {joinEvent.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
-                    Join Session - 50 Coins
+                    {joinEvent.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                    Register for Free
                   </Button>
                 )}
                 <div className="w-full flex justify-center border-t border-muted pt-3">

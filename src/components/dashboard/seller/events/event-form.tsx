@@ -60,6 +60,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
       startDate: initialData?.startDate || "",
       endDate: initialData?.endDate || "",
       location: initialData?.location || "",
+      meetingUrl: initialData?.meetingUrl || "",
       pincodeId: initialData?.pincodeId || "",
       attachmentIds: [] as { mediaId?: string; documentId?: string }[],
     },
@@ -313,10 +314,31 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                       </div>
 
                       {isRemote && (
-                        <div className="p-3 border border-blue-100 bg-blue-50 rounded-md text-xs text-blue-700">
-                          Choosing &quot;Remote&quot; will automatically sync
-                          this event with Google Calendar and generate a Meeting
-                          Link once published.
+                        <div className="space-y-4">
+                          <form.Field name="meetingUrl">
+                            {(field) => (
+                              <div className="space-y-2">
+                                <Label htmlFor={field.name}>Meeting Link (Google Meet / Zoom / Teams)</Label>
+                                <Input
+                                  id={field.name}
+                                  value={field.state.value}
+                                  onBlur={field.handleBlur}
+                                  onChange={(e) => field.handleChange(e.target.value)}
+                                  placeholder="https://meet.google.com/..."
+                                />
+                                <p className="text-[10px] text-muted-foreground italic">
+                                  {field.state.value ? "You have provided a custom link. Buyers will see this upon joining." : "Leave blank to automatically generate a Google Meet link (requires Start/End time)."}
+                                </p>
+                              </div>
+                            )}
+                          </form.Field>
+                          {!form.getFieldValue("meetingUrl") && (
+                            <div className="p-3 border border-blue-100 bg-blue-50 rounded-md text-xs text-blue-700">
+                              Choosing &quot;Remote&quot; without a custom link will automatically sync
+                              this event with Google Calendar and generate a Meeting
+                              Link once published.
+                            </div>
+                          )}
                         </div>
                       )}
                     </CardContent>
