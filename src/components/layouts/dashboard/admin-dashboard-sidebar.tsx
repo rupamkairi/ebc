@@ -10,6 +10,7 @@ import {
   Sparkles,
   Store,
   Users,
+  MessageSquare,
 } from "lucide-react";
 import * as React from "react";
 
@@ -109,6 +110,12 @@ const data = {
         { title: "Conference Hall", url: "#" },
         { title: "Calculators", url: "#" },
       ],
+    },
+    {
+      title: "Support Center",
+      url: "/admin-dashboard/support",
+      icon: MessageSquare,
+      color: "text-foreground",
     },
     {
       title: "Settings",

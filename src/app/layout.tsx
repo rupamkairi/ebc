@@ -19,6 +19,7 @@ export const metadata: Metadata = {
 };
 
 import { Toaster } from "@/components/ui/sonner";
+import { SupportCenter } from "@/components/shared/support/support-center";
 
 export default function RootLayout({
   children,
@@ -31,6 +32,7 @@ export default function RootLayout({
         <QueryClientProvider>
           <I18NProvider>
             <>{children}</>
+            <SupportCenter />
           </I18NProvider>
         </QueryClientProvider>
         <Toaster />
