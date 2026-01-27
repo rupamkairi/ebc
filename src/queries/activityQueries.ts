@@ -109,6 +109,26 @@ export function useDeleteAppointmentMutation() {
   });
 }
 
+export function useCompleteEnquiryMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => activityService.completeEnquiry(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: activityKeys.all });
+    },
+  });
+}
+
+export function useCompleteAppointmentMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => activityService.completeAppointment(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: activityKeys.all });
+    },
+  });
+}
+
 export function useRejectAppointmentMutation() {
   const queryClient = useQueryClient();
   return useMutation({

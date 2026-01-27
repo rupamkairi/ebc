@@ -80,6 +80,18 @@ export const activityService = {
     });
   },
 
+  async completeEnquiry(id: string) {
+    return fetchClient(`${API_ENDPOINTS.ACTIVITY.ENQUIRY.COMPLETE}/${id}/complete`, {
+      method: "POST",
+    });
+  },
+
+  async completeAppointment(id: string) {
+    return fetchClient(`${API_ENDPOINTS.ACTIVITY.APPOINTMENT.COMPLETE}/${id}/complete`, {
+      method: "POST",
+    });
+  },
+
   async getAssignments(params: AssignmentListParams = {}) {
     return fetchClient<ActivityAssignment[]>(
       API_ENDPOINTS.ACTIVITY.ASSIGNMENT.LIST,

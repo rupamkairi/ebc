@@ -32,7 +32,7 @@ interface ComboboxProps {
   onSearchValueChange?: (value: string) => void;
   loading?: boolean;
   placeholder?: string;
-  emptyText?: string;
+  emptyText?: React.ReactNode;
   label?: string;
   className?: string;
   disabled?: boolean;
@@ -72,7 +72,7 @@ export function Combobox({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full p-0" align="start">
-        <Command shouldFilter={false}>
+        <Command shouldFilter={false} className="border-none">
           <CommandInput
             placeholder={placeholder}
             value={searchValue}

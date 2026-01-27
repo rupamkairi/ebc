@@ -193,10 +193,13 @@ export const catalogService = {
   },
 
   async getItemListings(params: ItemListingListParams = {}) {
-    return fetchClient<ItemListing[]>(API_ENDPOINTS.ITEM_LISTING.LISTING.LIST, {
+    console.log("[CatalogService] fetching listings for:", params);
+    const results = await fetchClient<ItemListing[]>(API_ENDPOINTS.ITEM_LISTING.LISTING.LIST, {
       method: "POST",
       body: params as Record<string, string | number | boolean>,
     });
+    console.log("[CatalogService] fetched listings count:", results?.length);
+    return results;
   },
 
   // Item Rate

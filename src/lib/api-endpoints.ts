@@ -91,12 +91,14 @@ export const API_ENDPOINTS = {
       GET: "/activity/enquiry", // :id
       DELETE: "/activity/enquiry", // :id
       LIST: "/activity/enquiry/list",
+      COMPLETE: "/activity/enquiry", // :id/complete
     },
     APPOINTMENT: {
       CREATE: "/activity/appointment",
       GET: "/activity/appointment", // :id
       DELETE: "/activity/appointment", // :id
       LIST: "/activity/appointment/list",
+      COMPLETE: "/activity/appointment", // :id/complete
     },
     ASSIGNMENT: {
       CREATE: "/activity/activity-assignment",

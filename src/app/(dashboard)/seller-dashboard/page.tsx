@@ -27,6 +27,7 @@ import {
 } from "@/queries/activityQueries";
 import { useSessionQuery } from "@/queries/authQueries";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ReviewSummary } from "@/components/shared/reviews";
 
 export default function SellerDashboardPage() {
   const { data: user } = useSessionQuery();
@@ -178,6 +179,17 @@ export default function SellerDashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Column */}
         <div className="lg:col-span-2 flex flex-col gap-8">
+          {/* Trust Score Breakdown */}
+          {mainEntity?.id && (
+            <section>
+               <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-semibold tracking-tight">Trust Score</h2>
+                <Link href="/seller-dashboard/reviews" className="text-sm font-bold text-primary hover:underline">Manage Reviews</Link>
+              </div>
+              <ReviewSummary entityId={mainEntity.id} />
+            </section>
+          )}
+
           {/* 2. Finances */}
           <section>
             <div className="flex items-center justify-between mb-4">

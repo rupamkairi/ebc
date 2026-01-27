@@ -53,6 +53,7 @@ interface FileUploaderProps {
   crop?: boolean;
   type?: "media" | "document";
   entityId?: string;
+  children?: React.ReactNode;
 }
 
 export function FileUploader({
@@ -65,6 +66,7 @@ export function FileUploader({
   crop = variant === "single",
   type = "media",
   entityId,
+  children,
 }: FileUploaderProps) {
   const isSingle = variant === "single";
   const maxFiles = isSingle ? 1 : propMaxFiles || 10;
@@ -278,13 +280,17 @@ export function FileUploader({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        {showTrigger && (
-          <DialogTrigger asChild>
-            <Button variant={buttonVariant} size="sm" className="gap-2">
-              <UploadCloud className="size-4" />
-              <span className="hidden sm:inline">{defaultLabel}</span>
-            </Button>
-          </DialogTrigger>
+        {children ? (
+          <DialogTrigger asChild>{children}</DialogTrigger>
+        ) : (
+          showTrigger && (
+            <DialogTrigger asChild>
+              <Button variant={buttonVariant} size="sm" className="gap-2">
+                <UploadCloud className="size-4" />
+                <span className="hidden sm:inline">{defaultLabel}</span>
+              </Button>
+            </DialogTrigger>
+          )
         )}
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>

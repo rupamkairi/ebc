@@ -328,7 +328,7 @@ export function QuotationForm({
                         <Label className="text-xs font-bold uppercase text-muted-foreground">
                           Select Your Matching Listing
                         </Label>
-                        {sellerEntityId && (
+                        {sellerEntityId ? (
                           <ItemListingAutocomplete
                             entityId={sellerEntityId}
                             categoryId={eli.item?.categoryId}
@@ -348,6 +348,17 @@ export function QuotationForm({
                             }}
                             disabled={killSwitchUpdateDisabled && isUpdate}
                           />
+                        ) : (
+                          <div className="p-4 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm flex flex-col gap-2">
+                            <div className="flex items-center gap-2 font-bold">
+                              <AlertCircle className="h-5 w-5" />
+                              <span>Business Identity Missing</span>
+                            </div>
+                            <p className="text-xs">
+                              We couldn&apos;t find a business entity associated with your account ({entities?.length || 0} found). 
+                              You must have an approved business profile to respond to enquiries.
+                            </p>
+                          </div>
                         )}
                       </div>
                       <div className="grid grid-cols-2 gap-4">

@@ -1,0 +1,262 @@
+"use client";
+
+import { useParams, useRouter } from "next/navigation";
+import { 
+  useAppointmentQuery, 
+  useVisitsQuery, 
+  useAcceptVisitMutation,
+  useCompleteAppointmentMutation 
+} from "@/queries/activityQueries";
+import { ReputationSection, ReviewForm } from "@/components/shared/reviews";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { 
+  Loader2, Calendar, MapPin, Clock, ArrowLeft, 
+  CheckCircle2, User, Bell, PartyPopper, Star 
+} from "lucide-react";
+import { format } from "date-fns";
+import Link from "next/link";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+
+export default function BuyerAppointmentDetailsPage() {
+  const { id } = useParams<{ id: string }>();
+  const router = useRouter();
+
+  const { data: appointment, isLoading: loadingAppointment } = useAppointmentQuery(id);
+  const { data: visits, isLoading: loadingVisits } = useVisitsQuery({ appointmentId: id });
+  const acceptMutation = useAcceptVisitMutation();
+  const completeMutation = useCompleteAppointmentMutation();
+
+  const confirmedVisit = visits?.find((v: any) => v.isActive);
+  const isCompleted = appointment?.status === "COMPLETED";
+
+  const handleAccept = async (visitId: string) => {
+    try {
+      await acceptMutation.mutateAsync(visitId);
+      toast.success("Visit confirmed successfully!");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to confirm visit");
+    }
+  };
+
+  const handleComplete = async () => {
+    try {
+      await completeMutation.mutateAsync(id);
+      toast.success("Service marked as completed!");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update status");
+    }
+  };
+
+  if (loadingAppointment || loadingVisits) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!appointment) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+        <p className="text-xl font-bold">Appointment not found</p>
+        <Button onClick={() => router.back()}>Go Back</Button>
+      </div>
+    );
+  }
+
+  const firstItem = appointment.appointmentLineItems?.[0];
+
+  return (
+    <div className="max-w-7xl mx-auto py-10 px-4 space-y-12">
+      {/* Header */}
+      <div className="flex flex-col gap-4">
+        <Link href="/buyer-dashboard/appointments" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors text-sm font-bold">
+          <ArrowLeft className="h-4 w-4" />
+          BACK TO APPOINTMENTS
+        </Link>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <Badge variant="outline" className="font-mono text-[10px] tracking-widest bg-muted uppercase">ID: {appointment.id.slice(0, 8)}</Badge>
+              <Badge className={cn(
+                "uppercase text-[10px] font-black tracking-widest",
+                appointment.status === "APPROVED" ? "bg-emerald-500" : 
+                appointment.status === "COMPLETED" ? "bg-blue-600" : "bg-amber-500"
+              )}>{appointment.status}</Badge>
+            </div>
+            <h1 className="text-4xl font-black tracking-tighter">Visit Confirmation</h1>
+          </div>
+
+          {confirmedVisit && !isCompleted && (
+            <Button 
+              onClick={handleComplete} 
+              disabled={completeMutation.isPending}
+              className="h-14 rounded-3xl bg-blue-600 hover:bg-blue-700 font-black gap-2 px-8 shadow-xl shadow-blue-500/20"
+            >
+              {completeMutation.isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : <CheckCircle2 className="h-5 w-5" />}
+              MARK AS COMPLETED
+            </Button>
+          )}
+        </div>
+      </div>
+
+      {isCompleted && (
+        <div className="p-8 rounded-4xl bg-linear-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border border-emerald-500/20 flex flex-col md:flex-row items-center justify-between gap-8 animate-in fade-in slide-in-from-top-4 duration-700">
+          <div className="flex items-center gap-6 text-center md:text-left">
+            <div className="h-20 w-20 rounded-3xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
+              <PartyPopper className="h-10 w-10" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-black tracking-tight">Service Completed!</h2>
+              <p className="text-muted-foreground font-medium max-w-sm">How was your experience with <b>{confirmedVisit?.createdBy?.staffAt?.name || confirmedVisit?.createdBy?.name}</b>?</p>
+            </div>
+          </div>
+          <ReviewForm 
+            entityId={confirmedVisit?.createdBy?.staffAtEntityId}
+            appointmentId={id}
+            isVerified={true}
+            trigger={
+              <Button size="lg" className="h-16 rounded-full px-10 bg-emerald-500 hover:bg-emerald-600 font-black gap-3 text-lg shadow-xl shadow-emerald-500/20 group">
+                <Star className="h-6 w-6 fill-current group-hover:rotate-12 transition-transform" />
+                RATE YOUR EXPERIENCE
+              </Button>
+            }
+          />
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        {/* Left Side: Appointment Info */}
+        <div className="lg:col-span-2 space-y-10">
+          <section className="space-y-6">
+            <h3 className="text-xl font-black tracking-tight flex items-center gap-2">
+              <User className="h-5 w-5 text-primary" />
+              Service & Professional
+            </h3>
+            <Card className="overflow-hidden border-none shadow-sm bg-muted/30">
+              <CardContent className="p-8">
+                <div className="space-y-2">
+                  <h4 className="text-3xl font-black tracking-tight">{firstItem?.item?.name || "Service Request"}</h4>
+                  <p className="text-muted-foreground italic">&quot;{firstItem?.remarks || "No specific instructions provided."}&quot;</p>
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+
+          <Separator className="opacity-50" />
+
+          {/* Visits/Confirmations Section */}
+          <section className="space-y-8">
+            <div className="flex items-center justify-between">
+              <h3 className="text-2xl font-black tracking-tight flex items-center gap-2">
+                <Bell className="h-6 w-6 text-primary" />
+                Service Provider Responses
+              </h3>
+            </div>
+
+            {(!visits || visits.length === 0) ? (
+              <div className="p-12 text-center bg-muted/20 border border-dashed rounded-3xl">
+                <Calendar className="h-10 w-10 text-muted-foreground mx-auto mb-4 opacity-20" />
+                <p className="text-muted-foreground font-medium">Waiting for the Service Provider to confirm a slot.</p>
+              </div>
+            ) : (
+              <div className="space-y-12">
+                {visits.map((v: any) => (
+                  <div key={v.id} className="space-y-8 p-8 rounded-4xl bg-white border shadow-xl shadow-black/5 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 p-6">
+                      <Badge className="bg-primary/10 text-primary border-primary/20 uppercase text-[10px] font-black tracking-widest">SCHEDULED VISIT</Badge>
+                    </div>
+
+                    <div className="flex flex-col md:flex-row gap-10">
+                      <div className="flex-1 space-y-6">
+                        <div>
+                          <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">SERVICE BY</p>
+                          <h4 className="text-2xl font-black tracking-tight">{v.createdBy?.staffAt?.name || v.createdBy?.name}</h4>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div className="flex items-center gap-4 p-4 rounded-2xl bg-muted/50 border">
+                            <div className="h-10 w-10 rounded-xl bg-white border flex items-center justify-center">
+                              <Calendar className="h-5 w-5 text-primary" />
+                            </div>
+                            <div>
+                              <p className="text-[10px] font-bold text-muted-foreground uppercase">Date</p>
+                              <p className="font-black text-sm">{format(new Date(v.visitSlot.fromDateTime), "PPP")}</p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-4 p-4 rounded-2xl bg-muted/50 border">
+                            <div className="h-10 w-10 rounded-xl bg-white border flex items-center justify-center">
+                              <Clock className="h-5 w-5 text-primary" />
+                            </div>
+                            <div>
+                              <p className="text-[10px] font-bold text-muted-foreground uppercase">Time Slot</p>
+                              <p className="font-black text-sm">
+                                {format(new Date(v.visitSlot.fromDateTime), "p")} - {format(new Date(v.visitSlot.toDateTime), "p")}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="md:w-64 space-y-4 flex flex-col justify-center">
+                        {v.isActive ? (
+                          <Button className="w-full h-14 rounded-3xl bg-emerald-500 hover:bg-emerald-600 font-black gap-2" disabled>
+                            <CheckCircle2 className="h-5 w-5" />
+                            CONFIRMED
+                          </Button>
+                        ) : (
+                          <Button 
+                            className="w-full h-14 rounded-3xl font-black shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform"
+                            onClick={() => handleAccept(v.id)}
+                            disabled={acceptMutation.isPending || isCompleted}
+                          >
+                            {acceptMutation.isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : "CONFIRM SCHEDULE"}
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Integrated Reputation Section for the Service Provider */}
+                    <div className="pt-10 border-t border-dashed">
+                      <ReputationSection 
+                        entityId={v.createdBy?.staffAtEntityId} 
+                        entityName={v.createdBy?.staffAt?.name}
+                        className="scale-95 origin-top"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        </div>
+
+        {/* Right Side: Quick Info */}
+        <div className="space-y-6">
+          <Card className="rounded-4xl border-none shadow-lg shadow-black/5 bg-linear-to-b from-primary/5 to-transparent">
+            <CardHeader>
+              <CardTitle className="text-lg font-black tracking-tight">Visit Location</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-start gap-3">
+                <MapPin className="h-5 w-5 text-primary mt-1" />
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Address</p>
+                  <p className="font-bold text-sm leading-relaxed">{appointment.appointmentDetails?.[0]?.address || "N/A"}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Separator({ className }: { className?: string }) {
+  return <div className={cn("h-px bg-border w-full", className)} />;
+}

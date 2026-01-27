@@ -99,7 +99,10 @@ const data = {
       url: "#",
       icon: BarChart3,
       color: "text-foreground",
-      items: [{ title: "General", url: "#" }],
+      items: [
+        { title: "General", url: "#" },
+        { title: "Reviews Moderation", url: "/admin-dashboard/reviews" },
+      ],
     },
     {
       title: "AI",
