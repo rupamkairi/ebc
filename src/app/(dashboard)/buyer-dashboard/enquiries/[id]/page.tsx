@@ -246,20 +246,21 @@ export default function BuyerEnquiryDetailsPage() {
                       </div>
                     </div>
 
-                    {/* Integrated Reputation Section for the Seller */}
-                    <div className="pt-10 border-t border-dashed">
-                      <ReputationSection 
-                        entityId={
-                          q.createdBy?.staffAtEntityId || 
-                          q.createdBy?.createdEntities?.[0]?.id
-                        } 
-                        entityName={
-                          q.createdBy?.staffAt?.name || 
-                          q.createdBy?.createdEntities?.[0]?.name
-                        }
-                        className="scale-95 origin-top"
-                      />
-                    </div>
+                      {/* Integrated Reputation Section for the Seller */}
+                      <div className="pt-10 border-t border-dashed">
+                        <ReputationSection 
+                          entityId={
+                            q.createdBy?.staffAtEntityId || 
+                            q.createdBy?.createdEntities?.[0]?.id
+                          } 
+                          entityName={
+                            q.createdBy?.staffAt?.name || 
+                            q.createdBy?.createdEntities?.[0]?.name
+                          }
+                          className="scale-95 origin-top"
+                          canReview={q.status === "ACCEPTED"}
+                        />
+                      </div>
                   </div>
                 ))}
               </div>

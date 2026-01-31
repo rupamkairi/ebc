@@ -11,9 +11,17 @@ interface ReputationSectionProps {
   enquiryId?: string;
   appointmentId?: string;
   className?: string;
+  canReview?: boolean;
 }
 
-export function ReputationSection({ entityId, entityName, enquiryId, appointmentId, className }: ReputationSectionProps) {
+export function ReputationSection({ 
+  entityId, 
+  entityName, 
+  enquiryId, 
+  appointmentId, 
+  className,
+  canReview = false
+}: ReputationSectionProps) {
   // We just render the list and form, they handle their own data
   return (
     <div className={cn("space-y-10", className)}>
@@ -31,17 +39,19 @@ export function ReputationSection({ entityId, entityName, enquiryId, appointment
           </p>
         </div>
 
-        <ReviewForm 
-          entityId={entityId} 
-          enquiryId={enquiryId}
-          appointmentId={appointmentId}
-          trigger={
-            <button className="px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-black text-sm shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2">
-              <Award className="h-4 w-4" />
-              RATE YOUR EXPERIENCE
-            </button>
-          }
-        />
+        {canReview && (
+          <ReviewForm 
+            entityId={entityId} 
+            enquiryId={enquiryId}
+            appointmentId={appointmentId}
+            trigger={
+              <button className="px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-black text-sm shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2">
+                <Award className="h-4 w-4" />
+                RATE YOUR EXPERIENCE
+              </button>
+            }
+          />
+        )}
       </div>
 
       <ReviewList entityId={entityId} />
