@@ -4,3 +4,4 @@ export * from "./review-list";
 export * from "./reputation-section";
 export * from "./review-summary";
 export * from "./review-snapshot";
+export * from "./review-snapshot";

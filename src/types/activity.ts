@@ -14,6 +14,24 @@ export interface LineItem {
   item?: Item;
 }
 
+// Shared User Interface for Activity Creators
+export interface ActivityUser {
+  id: string;
+  name: string;
+  phone: string;
+  email?: string | null;
+  role: string;
+  staffAtEntityId?: string;
+  staffAt?: {
+    id: string;
+    name: string;
+  } | null;
+  createdEntities?: {
+    id: string;
+    name: string;
+  }[];
+}
+
 // Enquiry Specifics
 export interface EnquiryLineItem extends LineItem {
   quantity: number;
@@ -41,13 +59,7 @@ export interface Enquiry {
   createdAt: string;
   updatedAt: string;
   createdById: string;
-  createdBy?: {
-    id: string;
-    name: string;
-    phone: string;
-    email?: string | null;
-    role: string;
-  };
+  createdBy?: ActivityUser;
 }
 
 export interface EnquiryListParams {
@@ -92,13 +104,7 @@ export interface Appointment {
   createdAt: string;
   updatedAt: string;
   createdById: string;
-  createdBy?: {
-    id: string;
-    name: string;
-    phone: string;
-    email?: string | null;
-    role: string;
-  };
+  createdBy?: ActivityUser;
 }
 
 export interface AppointmentListParams {
@@ -160,13 +166,7 @@ export interface Quotation {
   createdAt: string;
   updatedAt: string;
   createdById: string;
-  createdBy?: {
-    id: string;
-    name: string;
-    phone: string;
-    email?: string | null;
-    role: string;
-  };
+  createdBy?: ActivityUser;
   enquiry?: Enquiry;
 }
 
@@ -185,13 +185,7 @@ export interface Visit {
   createdAt: string;
   updatedAt: string;
   createdById: string;
-  createdBy?: {
-    id: string;
-    name: string;
-    phone: string;
-    email?: string | null;
-    role: string;
-  };
+  createdBy?: ActivityUser;
 }
 
 export interface VisitListParams {

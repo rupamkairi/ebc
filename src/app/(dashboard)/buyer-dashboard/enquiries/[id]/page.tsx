@@ -7,6 +7,7 @@ import {
   useAcceptQuotationMutation,
   useCompleteEnquiryMutation
 } from "@/queries/activityQueries";
+import { Quotation, EnquiryLineItem, QuotationLineItem } from "@/types/activity";
 import { ReputationSection, ReviewForm, ReviewSnapshot } from "@/components/shared/reviews";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +31,7 @@ export default function BuyerEnquiryDetailsPage() {
   const acceptMutation = useAcceptQuotationMutation();
   const completeMutation = useCompleteEnquiryMutation();
 
-  const acceptedQuotation = quotations?.find((q: any) => q.status === "ACCEPTED");
+  const acceptedQuotation = quotations?.find((q: Quotation) => q.status === "ACCEPTED");
   const isCompleted = enquiry?.status === "COMPLETED";
 
   const handleAccept = async (quotationId: string) => {
@@ -139,7 +140,7 @@ export default function BuyerEnquiryDetailsPage() {
               Items Requested
             </h3>
             <div className="grid gap-4">
-              {enquiry.enquiryLineItems?.map((item: any) => (
+              {enquiry.enquiryLineItems?.map((item: EnquiryLineItem) => (
                 <Card key={item.id} className="overflow-hidden border-none shadow-sm bg-muted/30">
                   <CardContent className="p-6 flex justify-between items-center">
                     <div>
@@ -177,7 +178,7 @@ export default function BuyerEnquiryDetailsPage() {
               </div>
             ) : (
               <div className="space-y-12">
-                {quotations.map((q: any) => (
+                {quotations.map((q: Quotation) => (
                   <div key={q.id} className="space-y-8 p-8 rounded-4xl bg-white border shadow-xl shadow-black/5 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-6">
                       <Badge className="bg-primary/10 text-primary border-primary/20 uppercase text-[10px] font-black tracking-widest">PROPOSAL</Badge>
@@ -191,10 +192,10 @@ export default function BuyerEnquiryDetailsPage() {
                         </div>
 
                         <div className="grid grid-cols-2 gap-6">
-                          {q.quotationLineItems.map((li: any) => (
+                          {q.quotationLineItems.map((li: QuotationLineItem) => (
                             <div key={li.id} className="p-4 rounded-2xl bg-muted/50 border">
                               <p className="text-[10px] font-bold text-muted-foreground uppercase mb-1">{li.item?.name}</p>
-                              <div className="text-xl font-black tracking-tight">₹{li.rate} / {UNIT_TYPE_LABELS[enquiry.enquiryLineItems.find((eli: any) => eli.itemId === li.itemId)?.unitType as UnitType]}</div>
+                              <div className="text-xl font-black tracking-tight">₹{li.rate} / {UNIT_TYPE_LABELS[(enquiry?.enquiryLineItems?.find((eli: EnquiryLineItem) => eli.itemId === li.itemId)?.unitType || "NUM") as UnitType]}</div>
                               <p className="text-[10px] text-primary font-bold mt-1 uppercase tracking-tighter">
                                 {li.isNegotiable ? "Negotiable" : "Fixed Price"}
                               </p>
@@ -212,7 +213,7 @@ export default function BuyerEnquiryDetailsPage() {
                       <div className="md:w-64 space-y-4">
                         <div className="p-6 rounded-4xl bg-primary text-primary-foreground text-center space-y-1">
                           <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">Final Proposal</p>
-                          <div className="text-3xl font-black">₹{q.quotationLineItems.reduce((acc: number, li: any) => acc + (li.amount || 0), 0)}</div>
+                          <div className="text-3xl font-black">₹{q.quotationLineItems.reduce((acc: number, li: QuotationLineItem) => acc + (li.amount || 0), 0)}</div>
                         </div>
 
                         <div className="flex justify-center pb-2">
