@@ -7,7 +7,7 @@ import {
   useAcceptQuotationMutation,
   useCompleteEnquiryMutation
 } from "@/queries/activityQueries";
-import { ReputationSection, ReviewForm } from "@/components/shared/reviews";
+import { ReputationSection, ReviewForm, ReviewSnapshot } from "@/components/shared/reviews";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -213,6 +213,19 @@ export default function BuyerEnquiryDetailsPage() {
                         <div className="p-6 rounded-4xl bg-primary text-primary-foreground text-center space-y-1">
                           <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">Final Proposal</p>
                           <div className="text-3xl font-black">₹{q.quotationLineItems.reduce((acc: number, li: any) => acc + (li.amount || 0), 0)}</div>
+                        </div>
+
+                        <div className="flex justify-center pb-2">
+                          <ReviewSnapshot 
+                            entityId={
+                              q.createdBy?.staffAtEntityId || 
+                              q.createdBy?.createdEntities?.[0]?.id
+                            }
+                            entityName={
+                              q.createdBy?.staffAt?.name || 
+                              q.createdBy?.createdEntities?.[0]?.name
+                            }
+                          />
                         </div>
 
                         {q.status === "ACCEPTED" ? (
