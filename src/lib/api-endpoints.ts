@@ -144,6 +144,15 @@ export const API_ENDPOINTS = {
     LIST: "/notification/list",
     UPDATE: "/notification", // :id
     DELETE: "/notification", // :id
+    MARK_READ: "/notification/read", // :id
+  },
+  NOTIFICATION_CHANNEL: {
+    CREATE: "/notification-channel",
+    LIST: "/notification-channel",
+    GET: "/notification-channel", // :id
+    UPDATE: "/notification-channel", // :id
+    DELETE: "/notification-channel", // :id
+    VERIFY: "/notification-channel", // :id/verify
   },
   ATTACHMENT: {
     MEDIA: {

@@ -504,8 +504,42 @@ Returns array of offer objects.
 ### 8.1 Management
 
 - **Create:** `POST /`
-- **Get Details:** `GET /:id`
+  - Body:
+    ```json
+    {
+      "type": "ENQUIRY_RECEIVE",
+      "activityId": "activity-uuid",
+      "metadata": { "subject": "Hello" },
+      "recipients": [
+        {
+          "userId": "uuid",
+          "channelId": "uuid",
+          "destination": "email@example.com"
+        }
+      ]
+    }
+    ```
+- **Get Details:** `GET /:id` (Returns notification + list of sendees)
 - **List:** `POST /list`
+  - Body: `{ "type": "TYPE", "activityId": "uuid" }`
+- **Delete:** `DELETE /:id`
+
+### 8.2 Channel Management
+
+**Base URL:** `/api/notification-channel`
+
+- **Create:** `POST /`
+  - Body:
+    ```json
+    {
+      "name": "Email Default",
+      "type": "EMAIL",
+      "config": {},
+      "isActive": true
+    }
+    ```
+- **List:** `GET /`
+- **Get:** `GET /:id`
 - **Update:** `PATCH /:id`
 - **Delete:** `DELETE /:id`
 

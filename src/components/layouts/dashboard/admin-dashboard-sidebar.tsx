@@ -122,9 +122,10 @@ const data = {
     },
     {
       title: "Settings",
-      url: "#",
+      url: "/admin-dashboard/settings",
       icon: Settings,
       color: "text-foreground",
+      items: [{ title: "Notificaitons", url: "/admin-dashboard/settings" }],
     },
   ],
 };

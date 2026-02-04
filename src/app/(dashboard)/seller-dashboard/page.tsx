@@ -1,7 +1,7 @@
 "use client";
 
 import { DashboardCard } from "@/components/dashboard/seller/dashboard-card";
-import { NotificationCard } from "@/components/dashboard/seller/notification-card";
+import { NotificationInbox } from "@/components/dashboard/notifications/notification-inbox";
 import { Button } from "@/components/ui/button";
 import {
   CalendarDays,
@@ -182,9 +182,16 @@ export default function SellerDashboardPage() {
           {/* Trust Score Breakdown */}
           {mainEntity?.id && (
             <section>
-               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-semibold tracking-tight">Trust Score</h2>
-                <Link href="/seller-dashboard/reviews" className="text-sm font-bold text-primary hover:underline">Manage Reviews</Link>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  Trust Score
+                </h2>
+                <Link
+                  href="/seller-dashboard/reviews"
+                  className="text-sm font-bold text-primary hover:underline"
+                >
+                  Manage Reviews
+                </Link>
               </div>
               <ReviewSummary entityId={mainEntity.id} />
             </section>
@@ -287,14 +294,7 @@ export default function SellerDashboardPage() {
 
         {/* Sidebar Column */}
         <div className="space-y-8">
-          <section>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-semibold tracking-tight">
-                Notifications
-              </h2>
-            </div>
-            <NotificationCard className="h-auto" />
-          </section>
+          <NotificationInbox userType="SELLER" />
         </div>
       </div>
       <section>

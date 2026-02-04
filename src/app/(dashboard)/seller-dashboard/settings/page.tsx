@@ -1,71 +1,13 @@
 "use client";
 
-import {
-  Bell,
-  Lock,
-  Zap,
-  Clock,
-  XCircle,
-  ShieldCheck,
-  AlertCircle,
-} from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
+import { Lock, Clock, XCircle, ShieldCheck } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { EntitySettingsForm } from "@/components/dashboard/seller/entity-settings-form";
+import { NotificationChannelList } from "@/components/dashboard/notifications/notification-channel-list";
 import { useEntitiesQuery } from "@/queries/entityQueries";
 import { cn } from "@/lib/utils";
 import Container from "@/components/containers/containers";
-
-const settingGroups = [
-  {
-    title: "Notifications",
-    icon: Bell,
-    items: [
-      {
-        id: "notif-1",
-        label: "New Lead Alerts",
-        desc: "Get notified when a buyer sends an inquiry.",
-        active: true,
-      },
-      {
-        id: "notif-2",
-        label: "Quotation Updates",
-        desc: "Know when a quote is accepted or rejected.",
-        active: true,
-      },
-      {
-        id: "notif-3",
-        label: "Marketing Tips",
-        desc: "Receive tips to grow your business.",
-        active: false,
-      },
-    ],
-  },
-  {
-    title: "Preferences",
-    icon: Zap,
-    items: [
-      {
-        id: "pref-1",
-        label: "Hinglish Mode",
-        desc: "Show dashboard text in a mix of Hindi and English.",
-        active: true,
-      },
-      {
-        id: "pref-2",
-        label: "Auto-respond to inquiries",
-        desc: "Send a welcome message automatically.",
-        active: false,
-      },
-    ],
-  },
-];
 
 export default function SettingsPage() {
   const { data: entities = [] } = useEntitiesQuery();
@@ -78,7 +20,7 @@ export default function SettingsPage() {
       <div className="space-y-1">
         <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
         <p className="text-muted-foreground">
-          Manage your business profile and dashboard preferences.
+          Manage your business profile and notification preferences.
         </p>
       </div>
 
@@ -88,7 +30,7 @@ export default function SettingsPage() {
           className={cn(
             "border-2",
             status === "PENDING" && "bg-amber-50/50 border-amber-200",
-            status === "REJECTED" && "bg-destructive/5 border-destructive/20"
+            status === "REJECTED" && "bg-destructive/5 border-destructive/20",
           )}
         >
           <CardContent className="p-4 flex items-center justify-between">
@@ -103,7 +45,7 @@ export default function SettingsPage() {
                   className={cn(
                     "text-sm font-bold",
                     status === "PENDING" && "text-amber-900",
-                    status === "REJECTED" && "text-destructive"
+                    status === "REJECTED" && "text-destructive",
                   )}
                 >
                   {status === "PENDING"
@@ -131,86 +73,50 @@ export default function SettingsPage() {
           <EntitySettingsForm />
         </div>
 
-        {/* Sidebar: Platform Settings (Disabled) */}
-        <div className="space-y-8 opacity-60">
+        {/* Sidebar: Platform Settings */}
+        <div className="space-y-8">
+          <NotificationChannelList />
+
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold px-1 flex items-center gap-2">
-              <AlertCircle className="size-4 text-muted-foreground" />
-              Platform Settings
-              <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded uppercase tracking-wider font-bold">
-                Soon
-              </span>
-            </h3>
-
-            {settingGroups.map((group, i) => (
-              <Card key={i} className="pointer-events-none grayscale-[0.5]">
-                <CardHeader className="py-4 px-6 border-b">
-                  <div className="flex items-center gap-2">
-                    <group.icon className="size-4 text-muted-foreground" />
-                    <CardTitle className="text-sm">{group.title}</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-0">
-                  {group.items.map((item, idx) => (
-                    <div
-                      key={item.id}
-                      className={cn(
-                        "p-4 flex items-center justify-between gap-4",
-                        idx !== group.items.length - 1 && "border-b"
-                      )}
-                    >
-                      <div className="space-y-0.5">
-                        <p className="text-sm font-medium">{item.label}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {item.desc}
-                        </p>
-                      </div>
-                      <Switch disabled checked={item.active} />
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            ))}
-
             {/* Security Section */}
-            <Card className="pointer-events-none grayscale-[0.5]">
-              <CardHeader className="py-4 px-6 border-b">
+            <Card className="pointer-events-none opacity-60 grayscale-[0.5]">
+              <CardContent className="p-4 space-y-4">
                 <div className="flex items-center gap-2">
                   <Lock className="size-4 text-muted-foreground" />
-                  <CardTitle className="text-sm">Security</CardTitle>
+                  <p className="text-sm font-semibold">Security</p>
                 </div>
-              </CardHeader>
-              <CardContent className="p-4 space-y-2">
-                <Button
-                  variant="outline"
-                  disabled
-                  className="w-full justify-start text-xs h-9"
-                >
-                  Change Password
-                </Button>
-                <Button
-                  variant="outline"
-                  disabled
-                  className="w-full justify-start text-xs h-9"
-                >
-                  Session Management
-                </Button>
+                <div className="space-y-2">
+                  <Button
+                    variant="outline"
+                    disabled
+                    className="w-full justify-start text-xs h-9"
+                  >
+                    Change Password
+                  </Button>
+                  <Button
+                    variant="outline"
+                    disabled
+                    className="w-full justify-start text-xs h-9"
+                  >
+                    Session Management
+                  </Button>
+                </div>
               </CardContent>
             </Card>
+
+            <Card className="border-dashed">
+              <CardContent className="p-6 text-center space-y-2">
+                <ShieldCheck className="size-8 mx-auto text-muted-foreground/40" />
+                <p className="text-xs font-medium text-muted-foreground">
+                  Account verification ensures a safe marketplace for everyone.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Button variant="destructive" className="w-full" disabled>
+              Log Out
+            </Button>
           </div>
-
-          <Card className="border-dashed">
-            <CardContent className="p-6 text-center space-y-2">
-              <ShieldCheck className="size-8 mx-auto text-muted-foreground/40" />
-              <p className="text-xs font-medium text-muted-foreground">
-                Account verification ensures a safe marketplace for everyone.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Button variant="destructive" className="w-full" disabled>
-            Log Out
-          </Button>
         </div>
       </div>
     </Container>

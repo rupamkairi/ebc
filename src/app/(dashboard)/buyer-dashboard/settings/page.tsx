@@ -12,11 +12,11 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 import { Plus, Trash2 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import { useUpdateProfileMutation } from "@/queries/authQueries";
 import { toast } from "sonner";
+import { NotificationChannelList } from "@/components/dashboard/notifications/notification-channel-list";
 
 export default function SettingsPage() {
   const { user } = useAuthStore();
@@ -86,8 +86,7 @@ export default function SettingsPage() {
                       id="email"
                       name="email"
                       type="email"
-                      placeholder="Enter email"
-                      defaultValue={user?.email}
+                      defaultValue={user?.email || ""}
                     />
                   </div>
                   <div className="space-y-2">
@@ -97,7 +96,7 @@ export default function SettingsPage() {
                       name="phone"
                       type="tel"
                       placeholder="Enter phone number"
-                      defaultValue={user?.phoneNumber || ""}
+                      defaultValue={user?.phone || ""}
                     />
                   </div>
                 </div>
@@ -199,6 +198,8 @@ export default function SettingsPage() {
               </div>
             </CardContent>
           </Card>
+          {/* 4. Notification Settings */}
+          <NotificationChannelList />
         </div>
       </div>
     </Container>

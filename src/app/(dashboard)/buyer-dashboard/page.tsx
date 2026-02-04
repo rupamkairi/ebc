@@ -28,6 +28,7 @@ import {
 import { useSessionQuery } from "@/queries/authQueries";
 import { ProfileCard } from "@/components/dashboard/seller/profile-card";
 import { useMemo } from "react";
+import { NotificationInbox } from "@/components/dashboard/notifications/notification-inbox";
 
 export default function BuyerDashboardPage() {
   const { data: enquiries } = useEnquiriesQuery({});
@@ -219,7 +220,11 @@ export default function BuyerDashboardPage() {
                     metric: "On Air",
                   },
                 ].map((item) => (
-                  <Link key={item.title} href="/buyer-dashboard/conference-hall" className="h-full">
+                  <Link
+                    key={item.title}
+                    href="/buyer-dashboard/conference-hall"
+                    className="h-full"
+                  >
                     <DashboardCard
                       title={item.title}
                       iconComponent={item.icon}
@@ -231,29 +236,35 @@ export default function BuyerDashboardPage() {
               </div>
             </section>
 
-            <section className="md:col-span-1">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  Settings
-                </h2>
-              </div>
-              <DashboardCard
-                title="Profile Settings"
-                subtext="Manage your account"
-                iconComponent={<Settings className="h-5 w-5" />}
-                contentComponent={
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Update your personal details, company info, and members.
-                  </p>
-                }
-                footerComponent={
-                  <Link href="/buyer-dashboard/settings" className="w-full">
-                    <Button className="w-full">Manage Settings</Button>
-                  </Link>
-                }
-                className="h-full"
-              />
-            </section>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <section className="lg:col-span-1">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-2xl font-semibold tracking-tight">
+                    Settings
+                  </h2>
+                </div>
+                <DashboardCard
+                  title="Profile Settings"
+                  subtext="Manage your account"
+                  iconComponent={<Settings className="h-5 w-5" />}
+                  contentComponent={
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Update your profile and notification channels.
+                    </p>
+                  }
+                  footerComponent={
+                    <Link href="/buyer-dashboard/settings" className="w-full">
+                      <Button className="w-full">Manage Settings</Button>
+                    </Link>
+                  }
+                  className="h-full"
+                />
+              </section>
+
+              <section className="lg:col-span-2">
+                <NotificationInbox userType="BUYER" />
+              </section>
+            </div>
           </div>
 
           {/* 4. AI Calculator */}
