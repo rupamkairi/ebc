@@ -18,6 +18,7 @@ export interface DiscussionPost {
   flagReason?: string;
   createdById: string;
   discussionId: string;
+  replyToId?: string;
   createdBy: {
     id: string;
     name: string;
@@ -37,4 +38,5 @@ export interface ForumContextResponse {
 export interface CreatePostRequest {
   discussionId: string;
   content: string;
+  replyToId?: string;
 }

@@ -3,7 +3,11 @@
 import { useState } from "react";
 import { useForumContextQuery, useCreatePostMutation, useToggleHidePostMutation } from "@/queries/forumQueries";
 import { useAuthStore } from "@/store/authStore";
-import { MessageSquare, Send, ShieldAlert, MoreVertical, Flag, EyeOff, Loader2, User as UserIcon } from "lucide-react";
+import { DiscussionPost } from "@/types/forum";
+import { 
+  MessageSquare, Send, ShieldAlert, MoreVertical, Flag, 
+  EyeOff, Loader2, User as UserIcon, Reply, X 
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -28,6 +32,7 @@ interface ForumSectionProps {
 export function ForumSection({ eventId, offerId, itemId, slug, className }: ForumSectionProps) {
   const user = useAuthStore((state) => state.user);
   const [content, setContent] = useState("");
+  const [replyingTo, setReplyingTo] = useState<DiscussionPost | null>(null);
   
   const { data, isLoading } = useForumContextQuery({ eventId, offerId, itemId, slug });
   const createMutation = useCreatePostMutation();
@@ -45,8 +50,10 @@ export function ForumSection({ eventId, offerId, itemId, slug, className }: Foru
       await createMutation.mutateAsync({
         discussionId: data!.discussion.id,
         content: content.trim(),
+        replyToId: replyingTo?.id,
       });
       setContent("");
+      setReplyingTo(null);
       toast.success("Post shared with the community!");
     } catch {
       toast.error("Failed to post message");
@@ -71,8 +78,108 @@ export function ForumSection({ eventId, offerId, itemId, slug, className }: Foru
     );
   }
 
-  const posts = data?.posts || [];
+  const allPosts = data?.posts || [];
   const isAdmin = user?.role === "ADMIN" || user?.role === "ADMIN_MANAGER";
+
+  interface ThreadedPost extends DiscussionPost {
+    children: ThreadedPost[];
+  }
+
+  // Build a tree structure for nested replies
+  const buildTree = (posts: DiscussionPost[], parentId?: string): ThreadedPost[] => {
+    return posts
+      .filter(p => p.replyToId === (parentId || null) || (!parentId && !p.replyToId))
+      .map(p => ({
+        ...p,
+        children: buildTree(posts, p.id)
+      }))
+      .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+  };
+
+  const threadedPosts = buildTree(allPosts);
+
+  const renderPost = (post: ThreadedPost, depth: number = 0) => (
+    <div key={post.id} className="space-y-4">
+      <div 
+        className={cn(
+          "group relative flex gap-4 p-6 rounded-3xl transition-all duration-300",
+          post.isHidden ? "bg-muted/50 grayscale opacity-60" : "bg-white border hover:shadow-xl hover:shadow-black/5",
+          depth > 0 && "ml-4 md:ml-12 border-l-4 border-l-primary/10"
+        )}
+      >
+        <Avatar className="h-10 w-10 md:h-12 md:w-12 rounded-2xl border-2 border-background shadow-sm">
+          <AvatarImage src={post.createdBy.image} />
+          <AvatarFallback className="bg-primary/5 text-primary">
+            <UserIcon className="h-5 w-5" />
+          </AvatarFallback>
+        </Avatar>
+
+        <div className="flex-1 space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-black text-sm tracking-tight">{post.createdBy.name}</span>
+              {post.createdBy.staffAt && (
+                <span className="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-black uppercase rounded-lg">
+                  {post.createdBy.staffAt.name}
+                </span>
+              )}
+              <span className="text-[10px] font-bold text-muted-foreground/50 uppercase">
+                {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-1">
+              {user && !post.isHidden && (
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-8 gap-2 rounded-full px-3 text-[10px] font-black opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={() => {
+                    setReplyingTo(post);
+                    document.getElementById("forum-textarea")?.focus();
+                  }}
+                >
+                  <Reply className="h-3 w-3" />
+                  REPLY
+                </Button>
+              )}
+              {isAdmin && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="rounded-xl border-none shadow-2xl">
+                    <DropdownMenuItem 
+                      className="gap-2 font-bold text-xs"
+                      onClick={() => handleToggleHide(post.id, !post.isHidden)}
+                    >
+                      {post.isHidden ? <ShieldAlert className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                      {post.isHidden ? "Unhide Post" : "Moderate & Hide"}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="gap-2 font-bold text-xs text-destructive">
+                      <Flag className="h-4 w-4" />
+                      Mark for Audit
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </div>
+          </div>
+
+          <div className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap font-medium">
+            {post.content}
+          </div>
+        </div>
+      </div>
+      {post.children.length > 0 && (
+        <div className="space-y-4">
+          {post.children.map(child => renderPost(child, depth + 1))}
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <div className={cn("space-y-8", className)}>
@@ -87,79 +194,21 @@ export function ForumSection({ eventId, offerId, itemId, slug, className }: Foru
           </div>
         </div>
         <div className="text-right">
-          <div className="text-2xl font-black">{posts.length}</div>
+          <div className="text-2xl font-black">{allPosts.length}</div>
           <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-tighter">Community Contributions</div>
         </div>
       </div>
 
       {/* Post List */}
       <div className="space-y-6">
-        {posts.length === 0 ? (
+        {threadedPosts.length === 0 ? (
           <div className="text-center py-20 bg-muted/20 rounded-4xl border border-dashed">
             <MessageSquare className="h-10 w-10 text-muted-foreground/30 mx-auto mb-4" />
             <h4 className="font-bold text-muted-foreground">The hall is quiet...</h4>
             <p className="text-sm text-muted-foreground/60 max-w-xs mx-auto mt-1">Be the first to share your thoughts and start the conversation!</p>
           </div>
         ) : (
-          posts.map((post) => (
-            <div 
-              key={post.id} 
-              className={cn(
-                "group relative flex gap-4 p-6 rounded-3xl transition-all duration-300",
-                post.isHidden ? "bg-muted/50 grayscale opacity-60" : "bg-white border hover:shadow-xl hover:shadow-black/5"
-              )}
-            >
-              <Avatar className="h-12 w-12 rounded-2xl border-2 border-background shadow-sm">
-                <AvatarImage src={post.createdBy.image} />
-                <AvatarFallback className="bg-primary/5 text-primary">
-                  <UserIcon className="h-5 w-5" />
-                </AvatarFallback>
-              </Avatar>
-
-              <div className="flex-1 space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-black text-sm tracking-tight">{post.createdBy.name}</span>
-                    {post.createdBy.staffAt && (
-                      <span className="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-black uppercase rounded-lg">
-                        {post.createdBy.staffAt.name}
-                      </span>
-                    )}
-                    <span className="text-[10px] font-bold text-muted-foreground/50 uppercase">
-                      {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
-                    </span>
-                  </div>
-
-                  {isAdmin && (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="rounded-xl border-none shadow-2xl">
-                        <DropdownMenuItem 
-                          className="gap-2 font-bold text-xs"
-                          onClick={() => handleToggleHide(post.id, !post.isHidden)}
-                        >
-                          {post.isHidden ? <ShieldAlert className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
-                          {post.isHidden ? "Unhide Post" : "Moderate & Hide"}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="gap-2 font-bold text-xs text-destructive">
-                          <Flag className="h-4 w-4" />
-                          Mark for Audit
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  )}
-                </div>
-
-                <div className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap">
-                  {post.content}
-                </div>
-              </div>
-            </div>
-          ))
+          threadedPosts.map(post => renderPost(post))
         )}
       </div>
 
@@ -167,9 +216,29 @@ export function ForumSection({ eventId, offerId, itemId, slug, className }: Foru
       <div className="pt-8 border-t">
         {user ? (
           <form onSubmit={handlePost} className="space-y-4">
+            {replyingTo && (
+              <div className="flex items-center justify-between px-6 py-3 bg-primary/5 rounded-2xl border border-primary/10 animate-in fade-in slide-in-from-bottom-2">
+                <div className="flex items-center gap-2">
+                  <Reply className="h-4 w-4 text-primary" />
+                  <span className="text-xs font-bold tracking-tight">
+                    Replying to <span className="text-primary">{replyingTo.createdBy.name}</span>
+                  </span>
+                </div>
+                <Button 
+                  type="button" 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setReplyingTo(null)}
+                  className="h-6 w-6 p-0 rounded-full hover:bg-primary/10"
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </div>
+            )}
             <div className="relative group">
               <Textarea
-                placeholder="Share your insights, ask questions, or contribute to the hall..."
+                id="forum-textarea"
+                placeholder={replyingTo ? `Write your reply to ${replyingTo.createdBy.name}...` : "Share your insights, ask questions, or contribute to the hall..."}
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 className="min-h-[120px] rounded-4xl border-none bg-muted/30 p-8 text-sm focus-visible:ring-primary focus-visible:bg-white transition-all resize-none shadow-inner"
@@ -187,7 +256,7 @@ export function ForumSection({ eventId, offerId, itemId, slug, className }: Foru
                   className="rounded-2xl h-12 px-6 gap-2 font-black shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
                 >
                   {createMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                  PUBLISH CONTRIBUTION
+                  {replyingTo ? "POST REPLY" : "PUBLISH CONTRIBUTION"}
                 </Button>
               </div>
             </div>
