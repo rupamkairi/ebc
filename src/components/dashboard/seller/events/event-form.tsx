@@ -1,10 +1,10 @@
 "use client";
 
-import { useForm } from "@tanstack/react-form";
+import { PincodeSearchAutocomplete } from "@/components/autocompletes/pincode-search-autocomplete";
+import { FileUploader } from "@/components/shared/upload/media-uploader";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -12,6 +12,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -20,24 +22,32 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { PincodeSearchAutocomplete } from "@/components/autocompletes/pincode-search-autocomplete";
+import { Textarea } from "@/components/ui/textarea";
 import {
-  FileUploader,
-} from "@/components/shared/upload/media-uploader";
-import { useCreateEventMutation, useUpdateEventMutation } from "@/queries/conferenceHallQueries";
-import { toast } from "sonner";
-import { 
-  Loader2, 
-  Save, 
-  Video, 
-  MapPin, 
-  Calendar, 
-  FileVideo, 
-  FileText, 
-  X 
+  useCreateEventMutation,
+  useUpdateEventMutation,
+} from "@/queries/conferenceHallQueries";
+import {
+  ConferenceHallEvent,
+  CreateEventRequest,
+  UpdateEventRequest,
+  VERIFICATION_STATUS,
+} from "@/types/conference-hall";
+import { useForm } from "@tanstack/react-form";
+import {
+  AlertTriangle,
+  Calendar,
+  CheckCircle,
+  FileText,
+  FileVideo,
+  Loader2,
+  MapPin,
+  Save,
+  Video,
+  X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { ConferenceHallEvent, CreateEventRequest, UpdateEventRequest } from "@/types/conference-hall";
+import { toast } from "sonner";
 
 interface EventFormProps {
   initialData?: ConferenceHallEvent;
@@ -77,11 +87,14 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
             ...(value as CreateEventRequest),
             entityId,
           });
-          toast.success("Event created successfully! Coins deducted from wallet.");
+          toast.success(
+            "Event created successfully! Coins deducted from wallet.",
+          );
         }
         router.push("/seller-dashboard/conference-hall/events");
       } catch (error) {
-        const message = error instanceof Error ? error.message : "Failed to save event";
+        const message =
+          error instanceof Error ? error.message : "Failed to save event";
         toast.error(message);
       }
     },
@@ -96,6 +109,48 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
       }}
       className="space-y-8"
     >
+      {initialData?.verificationStatus && (
+        <Alert
+          variant={
+            initialData.verificationStatus === VERIFICATION_STATUS.REJECTED
+              ? "destructive"
+              : "default"
+          }
+          className={
+            initialData.verificationStatus === VERIFICATION_STATUS.APPROVED
+              ? "border-emerald-500 bg-emerald-50 text-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-200"
+              : "mb-6"
+          }
+        >
+          {initialData.verificationStatus === VERIFICATION_STATUS.APPROVED ? (
+            <CheckCircle className="h-4 w-4" />
+          ) : (
+            <AlertTriangle className="h-4 w-4" />
+          )}
+          <AlertTitle className="mb-1 flex items-center gap-2">
+            Verification Status:
+            <Badge variant="outline" className="uppercase">
+              {initialData.verificationStatus}
+            </Badge>
+          </AlertTitle>
+          <AlertDescription>
+            {initialData.verificationRemark ? (
+              <span>
+                <strong>Remarks:</strong> {initialData.verificationRemark}
+              </span>
+            ) : (
+              "No remarks provided."
+            )}
+            {initialData.verificationStatus ===
+              VERIFICATION_STATUS.APPROVED && (
+              <div className="mt-2 text-xs opacity-90">
+                This event is approved. You can only change its active
+                status/mode or delete it.
+              </div>
+            )}
+          </AlertDescription>
+        </Alert>
+      )}
       <form.Subscribe
         selector={(state) => [
           state.values.type,
@@ -163,7 +218,9 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                                 <SelectValue placeholder="Select type" />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="LIVE">Live Session</SelectItem>
+                                <SelectItem value="LIVE">
+                                  Live Session
+                                </SelectItem>
                                 <SelectItem value="RECORDED">
                                   Recorded Session
                                 </SelectItem>
@@ -185,6 +242,10 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                             <Switch
                               checked={field.state.value}
                               onCheckedChange={field.handleChange}
+                              disabled={
+                                initialData?.verificationStatus ===
+                                VERIFICATION_STATUS.APPROVED
+                              }
                             />
                           </div>
                         )}
@@ -253,6 +314,10 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                               <Switch
                                 checked={field.state.value}
                                 onCheckedChange={field.handleChange}
+                                disabled={
+                                  initialData?.verificationStatus ===
+                                  VERIFICATION_STATUS.APPROVED
+                                }
                               />
                             </div>
                           )}
@@ -273,6 +338,10 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                               <Switch
                                 checked={field.state.value}
                                 onCheckedChange={field.handleChange}
+                                disabled={
+                                  initialData?.verificationStatus ===
+                                  VERIFICATION_STATUS.APPROVED
+                                }
                               />
                             </div>
                           )}
@@ -318,25 +387,32 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                           <form.Field name="meetingUrl">
                             {(field) => (
                               <div className="space-y-2">
-                                <Label htmlFor={field.name}>Meeting Link (Google Meet / Zoom / Teams)</Label>
+                                <Label htmlFor={field.name}>
+                                  Meeting Link (Google Meet / Zoom / Teams)
+                                </Label>
                                 <Input
                                   id={field.name}
                                   value={field.state.value}
                                   onBlur={field.handleBlur}
-                                  onChange={(e) => field.handleChange(e.target.value)}
+                                  onChange={(e) =>
+                                    field.handleChange(e.target.value)
+                                  }
                                   placeholder="https://meet.google.com/..."
                                 />
                                 <p className="text-[10px] text-muted-foreground italic">
-                                  {field.state.value ? "You have provided a custom link. Buyers will see this upon joining." : "Leave blank to automatically generate a Google Meet link (requires Start/End time)."}
+                                  {field.state.value
+                                    ? "You have provided a custom link. Buyers will see this upon joining."
+                                    : "Leave blank to automatically generate a Google Meet link (requires Start/End time)."}
                                 </p>
                               </div>
                             )}
                           </form.Field>
                           {!form.getFieldValue("meetingUrl") && (
                             <div className="p-3 border border-blue-100 bg-blue-50 rounded-md text-xs text-blue-700">
-                              Choosing &quot;Remote&quot; without a custom link will automatically sync
-                              this event with Google Calendar and generate a Meeting
-                              Link once published.
+                              Choosing &quot;Remote&quot; without a custom link
+                              will automatically sync this event with Google
+                              Calendar and generate a Meeting Link once
+                              published.
                             </div>
                           )}
                         </div>

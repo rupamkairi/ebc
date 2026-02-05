@@ -13,6 +13,7 @@ import {
   CreateContentRequest,
   UpdateContentRequest,
   ContentListParams,
+  VerificationRequest,
 } from "@/types/conference-hall";
 
 export const conferenceHallService = {
@@ -169,6 +170,36 @@ export const conferenceHallService = {
       `${API_ENDPOINTS.CONFERENCE_HALL.OFFER.PUBLISH.replace("/publish", "")}/${id}/publish`,
       {
         method: "POST",
+      },
+    );
+  },
+
+  verifyOffer: (id: string, data: VerificationRequest) => {
+    return fetchClient<Offer>(
+      `${API_ENDPOINTS.CONFERENCE_HALL.OFFER.UPDATE}/${id}/verify`,
+      {
+        method: "PATCH",
+        body: data,
+      },
+    );
+  },
+
+  verifyEvent: (id: string, data: VerificationRequest) => {
+    return fetchClient<ConferenceHallEvent>(
+      `${API_ENDPOINTS.CONFERENCE_HALL.EVENT.UPDATE}/${id}/verify`,
+      {
+        method: "PATCH",
+        body: data,
+      },
+    );
+  },
+
+  verifyContent: (id: string, data: VerificationRequest) => {
+    return fetchClient<Content>(
+      `${API_ENDPOINTS.CONFERENCE_HALL.CONTENT.UPDATE}/${id}/verify`,
+      {
+        method: "PATCH",
+        body: data,
       },
     );
   },

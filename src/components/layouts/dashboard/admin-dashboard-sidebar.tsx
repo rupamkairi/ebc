@@ -95,6 +95,17 @@ const data = {
       ],
     },
     {
+      title: "Conference Hall",
+      url: "#",
+      icon: FileBox,
+      color: "text-foreground",
+      items: [
+        { title: "Offers", url: "/admin-dashboard/conference-hall/offers" },
+        { title: "Content", url: "/admin-dashboard/conference-hall/content" },
+        { title: "Events", url: "/admin-dashboard/conference-hall/events" },
+      ],
+    },
+    {
       title: "Reports",
       url: "#",
       icon: BarChart3,

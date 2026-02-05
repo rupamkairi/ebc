@@ -317,6 +317,18 @@ export default function SellerDashboardPage() {
             }
           />
           <DashboardCard
+            title="Content"
+            subtext="Manage content"
+            iconComponent={<MessageSquare className="h-5 w-5" />}
+            footerComponent={
+              <Link href="/seller-dashboard/conference-hall/content">
+                <Button className="w-full" variant="outline">
+                  Create Content
+                </Button>
+              </Link>
+            }
+          />
+          <DashboardCard
             title="Events"
             subtext="Manage events"
             iconComponent={<MessageSquare className="h-5 w-5" />}

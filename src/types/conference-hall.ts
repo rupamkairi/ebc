@@ -1,5 +1,15 @@
 import { Category, Brand, Specification, Item, ItemListing } from "./catalog";
 
+export enum VERIFICATION_STATUS {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+  REVISE = "REVISE",
+  MISINFORMATION = "MISINFORMATION",
+  INAPPROPRIATE = "INAPPROPRIATE",
+  OTHER = "OTHER",
+}
+
 export interface ConferenceHallEvent {
   id: string;
   name: string;
@@ -19,6 +29,8 @@ export interface ConferenceHallEvent {
   createdById: string;
   pincodeId?: string | null;
   hasJoined?: boolean;
+  verificationStatus?: VERIFICATION_STATUS;
+  verificationRemark?: string;
   entity?: {
     id: string;
     name: string;
@@ -133,7 +145,10 @@ export interface Offer {
   createdAt: string;
   updatedAt: string;
   deletedById: string | null;
+
   createdById: string;
+  verificationStatus?: VERIFICATION_STATUS;
+  verificationRemark?: string;
 
   // Nested Data
   offerDetails: OfferDetail[];
@@ -184,7 +199,10 @@ export interface Content {
   createdAt: string;
   updatedAt: string;
   deletedById: string | null;
+
   createdById: string;
+  verificationStatus?: VERIFICATION_STATUS;
+  verificationRemark?: string;
 
   attachments?: {
     id: string;
@@ -223,4 +241,9 @@ export interface ContentListParams {
   isActive?: boolean;
   isPublic?: boolean;
   search?: string;
+}
+
+export interface VerificationRequest {
+  status: VERIFICATION_STATUS;
+  remarks?: string;
 }

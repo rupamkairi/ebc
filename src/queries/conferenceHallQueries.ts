@@ -1,17 +1,22 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { conferenceHallService } from "@/services/conferenceHallService";
 import {
-  CreateOfferRequest,
-  UpdateOfferRequest,
-  OfferListParams,
-  EventListParams,
-  CreateEventRequest,
-  UpdateEventRequest,
   ContentListParams,
   CreateContentRequest,
+  CreateEventRequest,
+  CreateOfferRequest,
+  EventListParams,
+  OfferListParams,
   UpdateContentRequest,
+  UpdateEventRequest,
+  UpdateOfferRequest,
+  VerificationRequest,
 } from "@/types/conference-hall";
-import { keepPreviousData } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { walletKeys } from "./walletQueries";
 
 export const conferenceHallKeys = {
@@ -92,6 +97,20 @@ export function usePublishContentMutation() {
   });
 }
 
+export function useVerifyContentMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: VerificationRequest }) =>
+      conferenceHallService.verifyContent(id, data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: conferenceHallKeys.all });
+      queryClient.invalidateQueries({
+        queryKey: conferenceHallKeys.content((data as any).id),
+      });
+    },
+  });
+}
+
 // Events
 export function useEventsQuery(params: EventListParams = {}) {
   return useQuery({
@@ -160,6 +179,20 @@ export function useJoinEventMutation() {
   });
 }
 
+export function useVerifyEventMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: VerificationRequest }) =>
+      conferenceHallService.verifyEvent(id, data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: conferenceHallKeys.all });
+      queryClient.invalidateQueries({
+        queryKey: conferenceHallKeys.event((data as any).id),
+      });
+    },
+  });
+}
+
 // Offers
 export function useOffersQuery(params: OfferListParams = {}) {
   return useQuery({
@@ -216,6 +249,20 @@ export function usePublishOfferMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => conferenceHallService.publishOffer(id),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: conferenceHallKeys.all });
+      queryClient.invalidateQueries({
+        queryKey: conferenceHallKeys.offer(data.id),
+      });
+    },
+  });
+}
+
+export function useVerifyOfferMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: VerificationRequest }) =>
+      conferenceHallService.verifyOffer(id, data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: conferenceHallKeys.all });
       queryClient.invalidateQueries({

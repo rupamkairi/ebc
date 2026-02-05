@@ -19,13 +19,23 @@ import {
   useUpdateContentMutation,
 } from "@/queries/conferenceHallQueries";
 import { toast } from "sonner";
-import { Loader2, Save, X, File } from "lucide-react";
+import {
+  Loader2,
+  Save,
+  X,
+  File,
+  AlertTriangle,
+  CheckCircle,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   Content,
   CreateContentRequest,
   UpdateContentRequest,
+  VERIFICATION_STATUS,
 } from "@/types/conference-hall";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 
 interface ContentFormProps {
   initialData?: Content;
@@ -81,6 +91,49 @@ export function ContentForm({ initialData, entityId }: ContentFormProps) {
       }}
       className="space-y-8"
     >
+      {initialData?.verificationStatus && (
+        <Alert
+          variant={
+            initialData.verificationStatus === VERIFICATION_STATUS.REJECTED
+              ? "destructive"
+              : "default"
+          }
+          className={
+            initialData.verificationStatus === VERIFICATION_STATUS.APPROVED
+              ? "border-emerald-500 bg-emerald-50 text-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-200"
+              : ""
+          }
+        >
+          {initialData.verificationStatus === VERIFICATION_STATUS.APPROVED ? (
+            <CheckCircle className="h-4 w-4" />
+          ) : (
+            <AlertTriangle className="h-4 w-4" />
+          )}
+          <AlertTitle className="mb-1 flex items-center gap-2">
+            Verification Status:
+            <Badge variant="outline" className="uppercase">
+              {initialData.verificationStatus}
+            </Badge>
+          </AlertTitle>
+          <AlertDescription>
+            {initialData.verificationRemark ? (
+              <span>
+                <strong>Remarks:</strong> {initialData.verificationRemark}
+              </span>
+            ) : (
+              "No remarks provided."
+            )}
+            {initialData.verificationStatus ===
+              VERIFICATION_STATUS.APPROVED && (
+              <div className="mt-2 text-xs opacity-90">
+                This content is approved. You can only change its active status
+                or delete it.
+              </div>
+            )}
+          </AlertDescription>
+        </Alert>
+      )}
+
       <form.Subscribe selector={(state) => [state.values.isActive]}>
         {() => {
           return (
@@ -105,6 +158,10 @@ export function ContentForm({ initialData, entityId }: ContentFormProps) {
                             onBlur={field.handleBlur}
                             onChange={(e) => field.handleChange(e.target.value)}
                             placeholder="e.g. Q1 Architecture Trends Whitepaper"
+                            disabled={
+                              initialData?.verificationStatus ===
+                              VERIFICATION_STATUS.APPROVED
+                            }
                           />
                         </div>
                       )}
@@ -121,6 +178,10 @@ export function ContentForm({ initialData, entityId }: ContentFormProps) {
                             onChange={(e) => field.handleChange(e.target.value)}
                             placeholder="Briefly describe what this content is about..."
                             className="min-h-[120px]"
+                            disabled={
+                              initialData?.verificationStatus ===
+                              VERIFICATION_STATUS.APPROVED
+                            }
                           />
                         </div>
                       )}
@@ -163,35 +224,41 @@ export function ContentForm({ initialData, entityId }: ContentFormProps) {
                         <div className="space-y-4">
                           <div className="space-y-2">
                             <Label>Document / File</Label>
-                            <FileUploader
-                              type="document"
-                              entityId={entityId}
-                              onUploadSuccess={(files) => {
-                                const newIds = files.map((f) => ({
-                                  documentId: f.id,
-                                }));
-                                field.handleChange([
-                                  ...field.state.value,
-                                  ...newIds,
-                                ]);
-                              }}
-                            />
+                            {initialData?.verificationStatus !==
+                              VERIFICATION_STATUS.APPROVED && (
+                              <FileUploader
+                                type="document"
+                                entityId={entityId}
+                                onUploadSuccess={(files) => {
+                                  const newIds = files.map((f) => ({
+                                    documentId: f.id,
+                                  }));
+                                  field.handleChange([
+                                    ...field.state.value,
+                                    ...newIds,
+                                  ]);
+                                }}
+                              />
+                            )}
                           </div>
                           <div className="space-y-2 pt-2 border-t">
                             <Label>Media / Video</Label>
-                            <FileUploader
-                              type="media"
-                              entityId={entityId}
-                              onUploadSuccess={(files) => {
-                                const newIds = files.map((f) => ({
-                                  mediaId: f.id,
-                                }));
-                                field.handleChange([
-                                  ...field.state.value,
-                                  ...newIds,
-                                ]);
-                              }}
-                            />
+                            {initialData?.verificationStatus !==
+                              VERIFICATION_STATUS.APPROVED && (
+                              <FileUploader
+                                type="media"
+                                entityId={entityId}
+                                onUploadSuccess={(files) => {
+                                  const newIds = files.map((f) => ({
+                                    mediaId: f.id,
+                                  }));
+                                  field.handleChange([
+                                    ...field.state.value,
+                                    ...newIds,
+                                  ]);
+                                }}
+                              />
+                            )}
                           </div>
 
                           {/* Preview selected assets */}
@@ -206,20 +273,23 @@ export function ContentForm({ initialData, entityId }: ContentFormProps) {
                                     <File className="h-3 w-3" />
                                     <span>Asset {idx + 1}</span>
                                   </div>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-6 w-6"
-                                    onClick={() => {
-                                      field.handleChange(
-                                        field.state.value.filter(
-                                          (_, i) => i !== idx,
-                                        ),
-                                      );
-                                    }}
-                                  >
-                                    <X className="h-3 w-3" />
-                                  </Button>
+                                  {initialData?.verificationStatus !==
+                                    VERIFICATION_STATUS.APPROVED && (
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-6 w-6"
+                                      onClick={() => {
+                                        field.handleChange(
+                                          field.state.value.filter(
+                                            (_, i) => i !== idx,
+                                          ),
+                                        );
+                                      }}
+                                    >
+                                      <X className="h-3 w-3" />
+                                    </Button>
+                                  )}
                                 </div>
                               ))}
                             </div>

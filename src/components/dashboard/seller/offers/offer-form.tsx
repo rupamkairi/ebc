@@ -40,7 +40,11 @@ import {
   X,
   Plus,
   AlertCircle,
+  AlertTriangle,
+  CheckCircle,
 } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { VERIFICATION_STATUS } from "@/types/conference-hall";
 import {
   FileUploader,
   FileUploadResponse,
@@ -252,6 +256,9 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
   const activeEntityId = entityId || entities?.[0]?.id;
 
   const isPublished = !!existingOffer?.offerDetails?.[0]?.publishedAt;
+  const isReadOnly =
+    isPublished ||
+    existingOffer?.verificationStatus === VERIFICATION_STATUS.APPROVED;
 
   const createMutation = useCreateOfferMutation();
   const updateMutation = useUpdateOfferMutation();
@@ -463,6 +470,49 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {existingOffer?.verificationStatus && (
+          <Alert
+            variant={
+              existingOffer.verificationStatus === VERIFICATION_STATUS.REJECTED
+                ? "destructive"
+                : "default"
+            }
+            className={
+              existingOffer.verificationStatus === VERIFICATION_STATUS.APPROVED
+                ? "border-emerald-500 bg-emerald-50 text-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-200"
+                : ""
+            }
+          >
+            {existingOffer.verificationStatus ===
+            VERIFICATION_STATUS.APPROVED ? (
+              <CheckCircle className="h-4 w-4" />
+            ) : (
+              <AlertTriangle className="h-4 w-4" />
+            )}
+            <AlertTitle className="mb-1 flex items-center gap-2">
+              Verification Status:
+              <Badge variant="outline" className="uppercase">
+                {existingOffer.verificationStatus}
+              </Badge>
+            </AlertTitle>
+            <AlertDescription>
+              {existingOffer.verificationRemark ? (
+                <span>
+                  <strong>Remarks:</strong> {existingOffer.verificationRemark}
+                </span>
+              ) : (
+                "No remarks provided."
+              )}
+              {existingOffer.verificationStatus ===
+                VERIFICATION_STATUS.APPROVED && (
+                <div className="mt-2 text-xs opacity-90">
+                  This offer is approved. You can only change its active status
+                  or delete it.
+                </div>
+              )}
+            </AlertDescription>
+          </Alert>
+        )}
         {isPublished && (
           <div className="flex gap-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900 p-4 rounded-lg text-amber-800 dark:text-amber-400">
             <AlertCircle className="h-5 w-5 shrink-0" />
@@ -491,7 +541,11 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                     <FormItem>
                       <FormLabel>Offer Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Summer Sale" {...field} />
+                        <Input
+                          placeholder="Summer Sale"
+                          {...field}
+                          disabled={isReadOnly}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -504,7 +558,11 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                     <FormItem>
                       <FormLabel>Description</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="Details..." {...field} />
+                        <Textarea
+                          placeholder="Details..."
+                          {...field}
+                          disabled={isReadOnly}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -541,7 +599,9 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                               mode="single"
                               selected={field.value}
                               onSelect={field.onChange}
-                              disabled={(date) => date < new Date("1900-01-01")}
+                              disabled={(date) =>
+                                isReadOnly || date < new Date("1900-01-01")
+                              }
                               initialFocus
                             />
                           </PopoverContent>
@@ -580,7 +640,9 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                               mode="single"
                               selected={field.value}
                               onSelect={field.onChange}
-                              disabled={(date) => date < new Date("1900-01-01")}
+                              disabled={(date) =>
+                                isReadOnly || date < new Date("1900-01-01")
+                              }
                               initialFocus
                             />
                           </PopoverContent>
@@ -602,7 +664,7 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                   <div className="space-y-2 flex-1">
                     <FormLabel>Type</FormLabel>
                     <Select
-                      disabled={isPublished}
+                      disabled={isReadOnly}
                       value={selectedRelationType}
                       onValueChange={(
                         v:
@@ -634,7 +696,7 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                     </FormLabel>
                     <MultiSelectCombobox
                       className={cn(
-                        isPublished && "opacity-60 cursor-not-allowed",
+                        isReadOnly && "opacity-60 cursor-not-allowed",
                       )}
                       options={
                         (selectedRelationType === "CATEGORY"
@@ -666,7 +728,7 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                         .watch("relations")
                         .filter((r) => r.relationType === selectedRelationType)
                         .map((r) => r.relationId)}
-                      onToggle={isPublished ? () => {} : toggleRelation}
+                      onToggle={isReadOnly ? () => {} : toggleRelation}
                       placeholder={`Select ${selectedRelationType.toLowerCase().replace("_", " ")}s...`}
                     />
                   </div>
@@ -689,7 +751,7 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                             {r.relationType}
                           </span>
                           {getRelationName(r.relationType, r.relationId)}
-                          {!isPublished && (
+                          {!isReadOnly && (
                             <X
                               className="h-3 w-3 cursor-pointer hover:text-destructive"
                               onClick={() => handleRemoveRelation(i)}
@@ -713,14 +775,12 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div
-                  className={cn(
-                    isPublished && "pointer-events-none opacity-60",
-                  )}
+                  className={cn(isReadOnly && "pointer-events-none opacity-60")}
                 >
                   <PincodeSelector
                     selectedIds={form.watch("pincodeIds")}
                     onToggle={(id) => {
-                      if (isPublished) return;
+                      if (isReadOnly) return;
                       const current = form.getValues("pincodeIds") || [];
                       if (current.includes(id)) {
                         form.setValue(
@@ -749,15 +809,22 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                     <div className="space-y-4">
                       <div className="flex items-center justify-between border-b pb-2">
                         <FormLabel>Media</FormLabel>
-                        <FileUploader
-                          type="media"
-                          variant="multiple"
-                          entityId={entityId}
-                          onUploadSuccess={(newFiles: FileUploadResponse[]) => {
-                            const newIds = newFiles.map((f) => f.id);
-                            field.onChange([...(field.value || []), ...newIds]);
-                          }}
-                        />
+                        {!isReadOnly && (
+                          <FileUploader
+                            type="media"
+                            variant="multiple"
+                            entityId={entityId}
+                            onUploadSuccess={(
+                              newFiles: FileUploadResponse[],
+                            ) => {
+                              const newIds = newFiles.map((f) => f.id);
+                              field.onChange([
+                                ...(field.value || []),
+                                ...newIds,
+                              ]);
+                            }}
+                          />
+                        )}
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {field.value.map((id) => (
@@ -767,14 +834,16 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                           >
                             <ImageIcon className="h-3 w-3" /> {id.slice(0, 8)}
                             ...
-                            <X
-                              className="h-3 w-3 cursor-pointer text-destructive"
-                              onClick={() =>
-                                field.onChange(
-                                  field.value.filter((i) => i !== id),
-                                )
-                              }
-                            />
+                            {!isReadOnly && (
+                              <X
+                                className="h-3 w-3 cursor-pointer text-destructive"
+                                onClick={() =>
+                                  field.onChange(
+                                    field.value.filter((i) => i !== id),
+                                  )
+                                }
+                              />
+                            )}
                           </div>
                         ))}
                       </div>

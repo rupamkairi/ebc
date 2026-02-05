@@ -112,7 +112,7 @@ export function NotificationInbox({
         </div>
       </CardHeader>
       <CardContent className="px-0">
-        <ScrollArea className="h-[400px] pr-4">
+        <ScrollArea className="h-[400px]">
           {displayedNotifications.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center opacity-40">
               <Bell className="size-10 mb-2" />

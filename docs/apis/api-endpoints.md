@@ -325,6 +325,34 @@ _All routes require `Authorization: Bearer <token>` header._
 - **Get**: `GET /:id`
 - **Delete**: `DELETE /:id`
 - **List**: `POST /list`
+- **Verify**: `PATCH /:id/verify` (Admin Only)
+- **Publish**: `POST /:id/publish` (Seller/Admin)
+
+#### 5.1.1 Verify Event
+
+**PATCH** `/:id/verify`
+Updates the verification status of an event and notifies the creator.
+
+- **Roles:** `ADMIN`, `ADMIN_MANAGER`, `ADMIN_EXECUTIVE`
+- **Request Body:**
+  ```json
+  {
+    "status": "APPROVED",
+    "remarks": "Event approved."
+  }
+  ```
+
+#### 5.1.2 Publish Event
+
+**POST** `/:id/publish`
+Publishes an event. Deducts coins from entity's wallet.
+_Note: Event must be APPROVED by an admin before it can be published._
+
+#### 5.1.3 Update Event
+
+**PATCH** `/:id`
+Updates an event.
+_Note: If an event is APPROVED, sellers can only update `isActive` and `isPublic`. Admins can update all fields._
 
 ### 5.2 Offer
 
@@ -365,6 +393,7 @@ Returns the created offer object.
 
 **POST** `/:id/publish`
 Publishes transactionally. Deducts coins from entity's wallet.
+_Note: Offer must be APPROVED by an admin before it can be published._
 
 **Response**
 
@@ -381,6 +410,7 @@ Publishes transactionally. Deducts coins from entity's wallet.
 
 **PATCH** `/:id`
 Updates an offer. If published, only `name`, `description`, and `isActive` can be updated. If draft, relations and regions can also be updated.
+_Note: If an offer is APPROVED, sellers can only update `isActive`. Admins can update all fields._
 
 **Request Body**
 
@@ -414,6 +444,22 @@ Returns the updated (deleted) offer object.
 
 **GET** `/:id`
 Get offer details including relations, regions, and attachments.
+
+---
+
+#### 5.2.7 Verify Offer
+
+**PATCH** `/:id/verify`
+Updates the verification status of an offer and notifies the creator.
+
+- **Roles:** `ADMIN`, `ADMIN_MANAGER`, `ADMIN_EXECUTIVE`
+- **Request Body:**
+  ```json
+  {
+    "status": "APPROVED", // "PENDING" | "APPROVED" | "REJECTED" | "REVISE" | etc.
+    "remarks": "Approving this offer for publication."
+  }
+  ```
 
 ---
 
@@ -470,6 +516,7 @@ Returns the created content object.
 
 **POST** `/:id/publish`
 Publishes the content.
+_Note: Content must be APPROVED by an admin before it can be published._
 
 **Response**
 
@@ -500,6 +547,8 @@ Updates a content entry.
   "isPublic": false
 }
 ```
+
+_Note: If content is APPROVED, sellers can only update `isActive`, `isPublic`, and `publishedAt`. Admins can update all fields._
 
 ---
 
@@ -532,6 +581,22 @@ List contents with filtering.
   "search": "keyword"
 }
 ```
+
+---
+
+#### 5.3.7 Verify Content
+
+**PATCH** `/:id/verify`
+Updates the verification status of content and notifies the creator.
+
+- **Roles:** `ADMIN`, `ADMIN_MANAGER`, `ADMIN_EXECUTIVE`
+- **Request Body:**
+  ```json
+  {
+    "status": "APPROVED",
+    "remarks": "Content looks good."
+  }
+  ```
 
 ---
 
