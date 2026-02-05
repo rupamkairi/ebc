@@ -9,9 +9,65 @@ import {
   CreateEventRequest,
   UpdateEventRequest,
   EventListParams,
+  Content,
+  CreateContentRequest,
+  UpdateContentRequest,
+  ContentListParams,
 } from "@/types/conference-hall";
 
 export const conferenceHallService = {
+  // Content
+  getContents: (params: ContentListParams = {}) => {
+    return fetchClient<Content[]>(API_ENDPOINTS.CONFERENCE_HALL.CONTENT.LIST, {
+      method: "POST",
+      body: params,
+    });
+  },
+
+  getContent: (id: string) => {
+    return fetchClient<Content>(
+      `${API_ENDPOINTS.CONFERENCE_HALL.CONTENT.GET}/${id}`,
+      {
+        method: "GET",
+      },
+    );
+  },
+
+  createContent: (data: CreateContentRequest) => {
+    return fetchClient<Content>(API_ENDPOINTS.CONFERENCE_HALL.CONTENT.CREATE, {
+      method: "POST",
+      body: data,
+    });
+  },
+
+  updateContent: (id: string, data: UpdateContentRequest) => {
+    return fetchClient<Content>(
+      `${API_ENDPOINTS.CONFERENCE_HALL.CONTENT.UPDATE}/${id}`,
+      {
+        method: "PATCH",
+        body: data,
+      },
+    );
+  },
+
+  deleteContent: (id: string) => {
+    return fetchClient(
+      `${API_ENDPOINTS.CONFERENCE_HALL.CONTENT.DELETE}/${id}`,
+      {
+        method: "DELETE",
+      },
+    );
+  },
+
+  publishContent: (id: string) => {
+    return fetchClient<Content>(
+      `${API_ENDPOINTS.CONFERENCE_HALL.CONTENT.PUBLISH.replace("/publish", "")}/${id}/publish`,
+      {
+        method: "POST",
+      },
+    );
+  },
+
   // Events
   getEvents: (params: EventListParams = {}) => {
     return fetchClient<ConferenceHallEvent[]>(
@@ -53,12 +109,9 @@ export const conferenceHallService = {
   },
 
   deleteEvent: (id: string) => {
-    return fetchClient(
-      `${API_ENDPOINTS.CONFERENCE_HALL.EVENT.DELETE}/${id}`,
-      {
-        method: "DELETE",
-      },
-    );
+    return fetchClient(`${API_ENDPOINTS.CONFERENCE_HALL.EVENT.DELETE}/${id}`, {
+      method: "DELETE",
+    });
   },
 
   joinEvent: (id: string, entityId?: string) => {

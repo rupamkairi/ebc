@@ -172,3 +172,55 @@ export interface OfferListParams {
   search?: string;
   isActive?: boolean;
 }
+
+export interface Content {
+  id: string;
+  name: string;
+  description: string;
+  entityId: string;
+  isActive: boolean;
+  isPublic: boolean;
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  deletedById: string | null;
+  createdById: string;
+
+  attachments?: {
+    id: string;
+    mediaId?: string;
+    documentId?: string;
+    media?: {
+      id: string;
+      name: string;
+      url: string;
+    };
+    document?: {
+      id: string;
+      name: string;
+      url: string;
+    };
+  }[];
+}
+
+export interface CreateContentRequest {
+  name: string;
+  description: string;
+  entityId: string;
+  isActive: boolean;
+  attachmentIds: { mediaId?: string; documentId?: string }[];
+}
+
+export interface UpdateContentRequest {
+  name?: string;
+  description?: string;
+  isActive?: boolean;
+  isPublic?: boolean;
+}
+
+export interface ContentListParams {
+  entityId?: string;
+  isActive?: boolean;
+  isPublic?: boolean;
+  search?: string;
+}

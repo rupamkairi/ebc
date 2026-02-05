@@ -7,6 +7,9 @@ import {
   EventListParams,
   CreateEventRequest,
   UpdateEventRequest,
+  ContentListParams,
+  CreateContentRequest,
+  UpdateContentRequest,
 } from "@/types/conference-hall";
 import { keepPreviousData } from "@tanstack/react-query";
 import { walletKeys } from "./walletQueries";
@@ -19,7 +22,75 @@ export const conferenceHallKeys = {
   events: (params: EventListParams) =>
     [...conferenceHallKeys.all, "events", params] as const,
   event: (id: string) => [...conferenceHallKeys.all, "event", id] as const,
+  contents: (params: ContentListParams) =>
+    [...conferenceHallKeys.all, "contents", params] as const,
+  content: (id: string) => [...conferenceHallKeys.all, "content", id] as const,
 };
+
+// Contents
+export function useContentsQuery(params: ContentListParams = {}) {
+  return useQuery({
+    queryKey: conferenceHallKeys.contents(params),
+    queryFn: () => conferenceHallService.getContents(params),
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useContentQuery(id: string) {
+  return useQuery({
+    queryKey: conferenceHallKeys.content(id),
+    queryFn: () => conferenceHallService.getContent(id),
+    enabled: !!id,
+  });
+}
+
+export function useCreateContentMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreateContentRequest) =>
+      conferenceHallService.createContent(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: conferenceHallKeys.all });
+    },
+  });
+}
+
+export function useUpdateContentMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: UpdateContentRequest }) =>
+      conferenceHallService.updateContent(id, data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: conferenceHallKeys.all });
+      queryClient.invalidateQueries({
+        queryKey: conferenceHallKeys.content((data as any).id),
+      });
+    },
+  });
+}
+
+export function useDeleteContentMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => conferenceHallService.deleteContent(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: conferenceHallKeys.all });
+    },
+  });
+}
+
+export function usePublishContentMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => conferenceHallService.publishContent(id),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: conferenceHallKeys.all });
+      queryClient.invalidateQueries({
+        queryKey: conferenceHallKeys.content((data as any).id),
+      });
+    },
+  });
+}
 
 // Events
 export function useEventsQuery(params: EventListParams = {}) {

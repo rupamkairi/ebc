@@ -84,6 +84,14 @@ export const API_ENDPOINTS = {
       LIST: "/conference-hall/offer/list",
       PUBLISH: "/conference-hall/offer/publish", // :id/publish
     },
+    CONTENT: {
+      CREATE: "/conference-hall/content",
+      UPDATE: "/conference-hall/content", // :id
+      GET: "/conference-hall/content", // :id
+      DELETE: "/conference-hall/content", // :id
+      LIST: "/conference-hall/content/list",
+      PUBLISH: "/conference-hall/content/publish", // :id/publish
+    },
   },
   ACTIVITY: {
     ENQUIRY: {

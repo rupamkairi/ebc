@@ -8,12 +8,13 @@ This document provides a consolidated view of all API endpoints available in the
 2. [Business Entity](#2-business-entity)
 3. [Catalog (Categories, Brands, Items)](#3-catalog)
 4. [Item Listing](#4-item-listing)
-5. [Conference Hall (Events & Offers)](#5-conference-hall)
+5. [Conference Hall (Events, Offers & Content)](#5-conference-hall)
 6. [Activity (Enquiry, Appointment, etc.)](#6-activity)
 7. [Wallet](#7-wallet)
 8. [Notification](#8-notification)
 9. [Attachments](#9-attachments)
 10. [Miscellaneous (Pincode Directory)](#10-miscellaneous)
+11. [Forum (Discussion)](#11-forum)
 
 ---
 
@@ -311,7 +312,7 @@ _All routes require `Authorization: Bearer <token>` header._
 
 ---
 
-## 5. Conference Hall (Events & Offers)
+## 5. Conference Hall (Events, Offers & Content)
 
 **Base URL:** `/api/conference-hall`
 
@@ -437,6 +438,103 @@ Returns array of offer objects.
 
 ---
 
+### 5.3 Content
+
+**Base Path:** `/content`
+
+Detailed endpoints for managing content within the conference hall.
+
+#### 5.3.1 Create Content
+
+**POST** `/`
+Create a new content draft.
+
+**Request Body**
+
+```json
+{
+  "name": "Content Name",
+  "description": "Content Description",
+  "entityId": "uuid",
+  "isActive": true,
+  "attachmentIds": [{ "mediaId": "uuid" }, { "documentId": "uuid" }]
+}
+```
+
+**Response**
+Returns the created content object.
+
+---
+
+#### 5.3.2 Publish Content
+
+**POST** `/:id/publish`
+Publishes the content.
+
+**Response**
+
+```json
+{
+  "id": "uuid",
+  "name": "Content Name",
+  "isPublic": true,
+  "publishedAt": "2024-01-25T00:00:00.000Z",
+  ...
+}
+```
+
+---
+
+#### 5.3.3 Update Content
+
+**PATCH** `/:id`
+Updates a content entry.
+
+**Request Body**
+
+```json
+{
+  "name": "Updated Name",
+  "description": "Updated Description",
+  "isActive": true,
+  "isPublic": false
+}
+```
+
+---
+
+#### 5.3.4 Delete Content
+
+**DELETE** `/:id`
+Soft deletes the content.
+
+---
+
+#### 5.3.5 Get Content
+
+**GET** `/:id`
+Get content details including attachments.
+
+---
+
+#### 5.3.6 List Contents
+
+**POST** `/list`
+List contents with filtering.
+
+**Request Body**
+
+```json
+{
+  "entityId": "uuid",
+  "isActive": true,
+  "isPublic": true,
+  "search": "keyword"
+}
+```
+
+---
+
 ## 6. Activity
 
 **Base URL:** `/api/activity`
@@ -528,20 +626,28 @@ Returns array of offer objects.
 
 **Base URL:** `/api/notification-channel`
 
+> [!NOTE]
+> Channels are linked to the authenticated user. Users can only manage their own channels.
+
 - **Create:** `POST /`
   - Body:
     ```json
     {
-      "name": "Email Default",
-      "type": "EMAIL",
-      "config": {},
+      "name": "Primary Phone",
+      "type": "SMS",
+      "destination": "+919999999901",
       "isActive": true
     }
     ```
-- **List:** `GET /`
-- **Get:** `GET /:id`
+- **List:** `GET /` (Returns only channels owned by user)
+- **Get:** `GET /:id` (Owner only)
 - **Update:** `PATCH /:id`
+  - Body: `{ "name": "...", "destination": "...", "isActive": true }`
+  - Note: Changing `destination` resets `isVerified` to false.
 - **Delete:** `DELETE /:id`
+- **Request Verification:** `POST /:id/request-verification`
+- **Confirm Verification:** `POST /:id/verify`
+  - Body: `{ "otp": "123456" }`
 
 ---
 
@@ -579,3 +685,64 @@ Returns array of offer objects.
     "pincode": "400001"
   }
   ```
+
+---
+
+## 11. Forum (Discussion)
+
+**Base URL:** `/api/forum`
+
+### 11.1 Get Discussion Context
+
+**GET** `/context`
+Get or create a discussion for a specific context (Event, Offer, Item, or Content).
+
+**Query Parameters:**
+
+- `eventId`: (Optional) UUID of the event.
+- `offerId`: (Optional) UUID of the offer.
+- `itemId`: (Optional) UUID of the item.
+- `contentId`: (Optional) UUID of the content.
+- `slug`: (Optional) Unique slug for the discussion.
+
+**Response:**
+Returns the discussion object along with its posts.
+
+### 11.2 Post Message
+
+**POST** `/:discussionId/post`
+Post a new message to a discussion. Requires authentication.
+
+**Request Body:**
+
+```json
+{
+  "content": "Your message here..."
+}
+```
+
+### 11.3 Flag Post
+
+**PATCH** `/post/:postId/flag`
+Flag a post for moderation.
+
+**Request Body:**
+
+```json
+{
+  "reason": "Reason for flagging"
+}
+```
+
+### 11.4 Hide/Unhide Post
+
+**PATCH** `/post/:postId/hide`
+Hide or unhide a post. Requires ADMIN or ADMIN_MANAGER role.
+
+**Request Body:**
+
+```json
+{
+  "isHidden": true
+}
+```
