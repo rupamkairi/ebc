@@ -91,6 +91,16 @@ export function EventList() {
               <Badge variant={event.type === "LIVE" ? "default" : "secondary"} className="rounded-md">
                 {event.type}
               </Badge>
+              <Badge 
+                variant={
+                  event.verificationStatus === "APPROVED" ? "outline" : 
+                  event.verificationStatus === "REJECTED" ? "destructive" : 
+                  "secondary"
+                } 
+                className="uppercase text-[10px]"
+              >
+                {event.verificationStatus}
+              </Badge>
               {event.isRemote && <Badge variant="outline" className="bg-blue-50/50 text-blue-700 border-blue-200/50 text-[10px]">Remote</Badge>}
               {event.isPhysical && <Badge variant="outline" className="bg-green-50/50 text-green-700 border-green-200/50 text-[10px]">Physical</Badge>}
             </div>
@@ -130,9 +140,6 @@ export function EventList() {
                      {event._count?.participants || 0}
                   </span>
                   <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Joined</span>
-                </div>
-                <div className="text-[10px] font-bold text-primary bg-primary/5 px-2 py-1 rounded">
-                   { (event._count?.participants || 0) * 50 } COINS EARNED
                 </div>
               </div>
             </div>

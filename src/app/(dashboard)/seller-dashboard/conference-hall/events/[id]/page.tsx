@@ -63,15 +63,6 @@ export default function SellerEventDetailsPage() {
              </CardHeader>
            </Card>
 
-           <Card>
-             <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Earnings</CardTitle>
-                <div className="text-2xl font-bold">
-                  {(event._count?.participants || 0) * 50} 
-                  <span className="text-xs font-normal text-muted-foreground ml-1">Coins</span>
-                </div>
-             </CardHeader>
-           </Card>
 
            <Card className="bg-muted/50">
              <CardContent className="pt-6 text-sm">

@@ -1,6 +1,7 @@
 import { conferenceHallService } from "@/services/conferenceHallService";
 import {
   ContentListParams,
+  ConferenceHallEvent,
   CreateContentRequest,
   CreateEventRequest,
   CreateOfferRequest,
@@ -145,10 +146,10 @@ export function useUpdateEventMutation() {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateEventRequest }) =>
       conferenceHallService.updateEvent(id, data),
-    onSuccess: (data) => {
+    onSuccess: (data: ConferenceHallEvent) => {
       queryClient.invalidateQueries({ queryKey: conferenceHallKeys.all });
       queryClient.invalidateQueries({
-        queryKey: conferenceHallKeys.event((data as any).id),
+        queryKey: conferenceHallKeys.event(data.id),
       });
     },
   });
@@ -160,6 +161,20 @@ export function useDeleteEventMutation() {
     mutationFn: (id: string) => conferenceHallService.deleteEvent(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: conferenceHallKeys.all });
+    },
+  });
+}
+
+export function usePublishEventMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => conferenceHallService.publishEvent(id),
+    onSuccess: (data: ConferenceHallEvent) => {
+      queryClient.invalidateQueries({ queryKey: conferenceHallKeys.all });
+      queryClient.invalidateQueries({ queryKey: walletKeys.all });
+      queryClient.invalidateQueries({
+        queryKey: conferenceHallKeys.event(data.id),
+      });
     },
   });
 }

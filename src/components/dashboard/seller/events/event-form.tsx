@@ -25,6 +25,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import {
   useCreateEventMutation,
+  usePublishEventMutation,
   useUpdateEventMutation,
 } from "@/queries/conferenceHallQueries";
 import {
@@ -58,6 +59,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
   const router = useRouter();
   const createEventMutation = useCreateEventMutation();
   const updateEventMutation = useUpdateEventMutation();
+  const publishEventMutation = usePublishEventMutation();
 
   const form = useForm({
     defaultValues: {
@@ -77,18 +79,35 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
     onSubmit: async ({ value }) => {
       try {
         if (initialData) {
-          await updateEventMutation.mutateAsync({
-            id: initialData.id,
-            data: value as UpdateEventRequest,
-          });
-          toast.success("Event updated successfully!");
+          const isApproved =
+            initialData.verificationStatus === VERIFICATION_STATUS.APPROVED;
+
+          // If transitioning to public for the first time after approval, use publish mutation (charges coins)
+          if (isApproved && !initialData.isPublic && value.isPublic) {
+            await publishEventMutation.mutateAsync(initialData.id);
+            toast.success("Event published successfully!");
+          } else {
+            // Otherwise use update mutation, but filter fields if approved to avoid backend errors
+            const payload = isApproved
+              ? { isPublic: value.isPublic, isActive: initialData.isActive }
+              : value;
+
+            await updateEventMutation.mutateAsync({
+              id: initialData.id,
+              data: payload as UpdateEventRequest,
+            });
+            toast.success("Event updated successfully!");
+          }
         } else {
           await createEventMutation.mutateAsync({
             ...(value as CreateEventRequest),
             entityId,
           });
+          const isLive = value.type === "LIVE";
           toast.success(
-            "Event created successfully! Coins deducted from wallet.",
+            isLive
+              ? "Event created and sent for admin approval!"
+              : "Event created successfully! Coins deducted from wallet.",
           );
         }
         router.push("/seller-dashboard/conference-hall/events");
@@ -164,6 +183,21 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Basic Info */}
               <div className="lg:col-span-2 space-y-6">
+                {isLive &&
+                  (!initialData ||
+                    initialData.verificationStatus !==
+                      VERIFICATION_STATUS.APPROVED) && (
+                    <Alert className="bg-blue-50 border-blue-200">
+                      <AlertTriangle className="h-4 w-4 text-blue-600" />
+                      <AlertTitle className="text-blue-800">
+                        Admin Approval Required
+                      </AlertTitle>
+                      <AlertDescription className="text-blue-700">
+                        Live events must be verified and approved by an admin
+                        before they can be made public.
+                      </AlertDescription>
+                    </Alert>
+                  )}
                 <Card>
                   <CardHeader>
                     <CardTitle>Event Information</CardTitle>
@@ -243,8 +277,9 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                               checked={field.state.value}
                               onCheckedChange={field.handleChange}
                               disabled={
-                                initialData?.verificationStatus ===
-                                VERIFICATION_STATUS.APPROVED
+                                isLive &&
+                                initialData?.verificationStatus !==
+                                  VERIFICATION_STATUS.APPROVED
                               }
                             />
                           </div>
@@ -541,7 +576,11 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                             ) : (
                               <Save className="h-4 w-4" />
                             )}
-                            {initialData ? "Update Event" : "Publish Event"}
+                             {initialData
+                              ? "Update Event"
+                              : isLive
+                                ? "Save & Request Approval"
+                                : "Publish Event"}
                           </Button>
                         )}
                       </form.Subscribe>

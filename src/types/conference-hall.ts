@@ -60,6 +60,7 @@ export interface CreateEventRequest {
   description?: string;
   entityId: string;
   type: "LIVE" | "RECORDED";
+  isActive?: boolean;
   isPublic?: boolean;
   isPhysical?: boolean;
   isRemote?: boolean;

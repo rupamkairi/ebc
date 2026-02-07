@@ -115,6 +115,15 @@ export const conferenceHallService = {
     });
   },
 
+  publishEvent: (id: string) => {
+    return fetchClient<ConferenceHallEvent>(
+      `${API_ENDPOINTS.CONFERENCE_HALL.EVENT.PUBLISH.replace("/publish", "")}/${id}/publish`,
+      {
+        method: "POST",
+      },
+    );
+  },
+
   joinEvent: (id: string, entityId?: string) => {
     return fetchClient(
       `${API_ENDPOINTS.CONFERENCE_HALL.EVENT.JOIN.replace("/join", "")}/${id}/join`,

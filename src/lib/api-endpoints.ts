@@ -75,6 +75,7 @@ export const API_ENDPOINTS = {
       DELETE: "/conference-hall/event", // :id
       LIST: "/conference-hall/event/list",
       JOIN: "/conference-hall/event/join", // :id/join
+      PUBLISH: "/conference-hall/event/publish", // :id/publish
     },
     OFFER: {
       CREATE: "/conference-hall/offer",
