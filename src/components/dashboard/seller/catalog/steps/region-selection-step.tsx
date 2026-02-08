@@ -1,12 +1,18 @@
 "use client";
 
-import { ChevronLeft, Globe, Loader2, Search, Save, X } from "lucide-react";
+import {
+  ChevronLeft,
+  Globe,
+  Loader2,
+  Search,
+  Save,
+  X,
+  Check,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { StateSearchAutocomplete } from "@/components/autocompletes/state-search-autocomplete";
 import { DistrictSearchAutocomplete } from "@/components/autocompletes/district-search-autocomplete";
 import { PincodeRecord } from "@/types/region";
@@ -28,6 +34,7 @@ interface RegionSelectionStepProps {
   onBack: () => void;
   onComplete: () => void;
   isSubmitting: boolean;
+  hideButtons?: boolean;
 }
 
 export function RegionSelectionStep({
@@ -46,6 +53,7 @@ export function RegionSelectionStep({
   onBack,
   onComplete,
   isSubmitting,
+  hideButtons = false,
 }: RegionSelectionStepProps) {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-right-2">
@@ -97,7 +105,7 @@ export function RegionSelectionStep({
                 </Badge>
               )}
             </div>
-            <ScrollArea className="h-[400px]">
+            <div className="h-[400px] overflow-y-auto">
               {isLoadingRegions ? (
                 <div className="p-20 text-center">
                   <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary/20" />
@@ -106,7 +114,7 @@ export function RegionSelectionStep({
                 <div className="grid grid-cols-2 md:grid-cols-3">
                   {records.map((r) => {
                     const isSelected = selectedRegions.some(
-                      (sr) => sr.id === r.id
+                      (sr) => sr.id === r.id,
                     );
                     return (
                       <div
@@ -114,14 +122,19 @@ export function RegionSelectionStep({
                         onClick={() => toggleRegion(r)}
                         className={cn(
                           "p-3 border-b border-r cursor-pointer transition-all hover:bg-muted/50 flex items-center gap-3",
-                          isSelected && "bg-primary/5"
+                          isSelected && "bg-primary/5",
                         )}
                       >
-                        <Checkbox
-                          checked={isSelected}
-                          onCheckedChange={() => toggleRegion(r)}
-                          className="rounded"
-                        />
+                        <div
+                          className={cn(
+                            "size-4 shrink-0 rounded-[4px] border border-input shadow-xs flex items-center justify-center transition-all",
+                            isSelected
+                              ? "bg-primary border-primary text-primary-foreground"
+                              : "bg-background",
+                          )}
+                        >
+                          {isSelected && <Check className="size-3" />}
+                        </div>
                         <div>
                           <p className="font-bold text-sm">{r.pincode}</p>
                           <p className="text-[10px] font-medium text-muted-foreground truncate">
@@ -137,7 +150,7 @@ export function RegionSelectionStep({
                   <p className="text-sm italic">Search to find pincodes</p>
                 </div>
               )}
-            </ScrollArea>
+            </div>
           </div>
         </div>
 
@@ -158,7 +171,7 @@ export function RegionSelectionStep({
                 </Button>
               )}
             </div>
-            <ScrollArea className="flex-1 h-[400px]">
+            <div className="h-[400px] overflow-y-auto">
               {selectedRegions.length > 0 ? (
                 <div className="divide-y">
                   {selectedRegions.map((r) => (
@@ -191,32 +204,34 @@ export function RegionSelectionStep({
                   </p>
                 </div>
               )}
-            </ScrollArea>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="flex justify-between pt-6 border-t">
-        <Button
-          variant="outline"
-          onClick={onBack}
-          className="font-semibold gap-2"
-        >
-          <ChevronLeft size={18} /> Back
-        </Button>
-        <Button
-          onClick={onComplete}
-          disabled={isSubmitting || selectedRegions.length === 0}
-          className="font-semibold gap-2 shadow-sm"
-        >
-          {isSubmitting ? (
-            <Loader2 className="animate-spin" />
-          ) : (
-            <Save size={18} />
-          )}
-          Complete Listing
-        </Button>
-      </div>
+      {!hideButtons && (
+        <div className="flex justify-between pt-6 border-t">
+          <Button
+            variant="outline"
+            onClick={onBack}
+            className="font-semibold gap-2"
+          >
+            <ChevronLeft size={18} /> Back
+          </Button>
+          <Button
+            onClick={onComplete}
+            disabled={isSubmitting || selectedRegions.length === 0}
+            className="font-semibold gap-2 shadow-sm"
+          >
+            {isSubmitting ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              <Save size={18} />
+            )}
+            Complete Listing
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

@@ -231,6 +231,14 @@ export function useItemListingsQuery(params: ItemListingListParams = {}) {
   });
 }
 
+export function useItemListingQuery(id: string) {
+  return useQuery({
+    queryKey: [...catalogKeys.all, "listing", id],
+    queryFn: () => catalogService.getItemListing(id),
+    enabled: !!id,
+  });
+}
+
 export function useCreateItemListingMutation() {
   const queryClient = useQueryClient();
   return useMutation({

@@ -1,12 +1,12 @@
 "use client";
 
 import React from "react";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useBrowseParams } from "@/hooks/useBrowseParams";
 import { Facet } from "@/queries/browse.queries";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Check } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface SidebarProps {
   facets?: {
@@ -57,35 +57,43 @@ export function Sidebar({ facets, isLoading }: SidebarProps) {
         <h3 className="font-semibold mb-4 text-sm tracking-wide uppercase text-muted-foreground">
           Brands
         </h3>
-        <ScrollArea className="h-[200px] pr-4">
+        <div className="h-[200px] overflow-y-auto pr-4">
           <div className="space-y-3">
-            {facets?.brands.map((brand) => (
-              <div key={brand.value} className="flex items-center space-x-2">
-                <Checkbox
-                  id={`brand-${brand.value}`}
-                  checked={params.brand.includes(brand.value)}
-                  onCheckedChange={(checked) =>
-                    handleBrandChange(brand.value, checked as boolean)
-                  }
-                />
-                <Label
-                  htmlFor={`brand-${brand.value}`}
-                  className="flex-1 cursor-pointer font-normal text-sm flex justify-between"
-                >
-                  <span>{brand.label}</span>
-                  <span className="text-muted-foreground text-xs">
-                    {brand.count}
-                  </span>
-                </Label>
-              </div>
-            ))}
+            {facets?.brands.map((brand) => {
+              const isChecked = params.brand.includes(brand.value);
+              return (
+                <div key={brand.value} className="flex items-center space-x-2">
+                  <div
+                    onClick={() => handleBrandChange(brand.value, !isChecked)}
+                    className={cn(
+                      "size-4 shrink-0 rounded-[4px] border border-input shadow-xs flex items-center justify-center transition-all cursor-pointer",
+                      isChecked
+                        ? "bg-primary border-primary text-primary-foreground"
+                        : "bg-background",
+                    )}
+                  >
+                    {isChecked && <Check className="size-3" />}
+                  </div>
+                  <Label
+                    htmlFor={`brand-${brand.value}`}
+                    onClick={() => handleBrandChange(brand.value, !isChecked)}
+                    className="flex-1 cursor-pointer font-normal text-sm flex justify-between"
+                  >
+                    <span>{brand.label}</span>
+                    <span className="text-muted-foreground text-xs">
+                      {brand.count}
+                    </span>
+                  </Label>
+                </div>
+              );
+            })}
             {(!facets?.brands || facets.brands.length === 0) && (
               <p className="text-xs text-muted-foreground">
                 No brands available
               </p>
             )}
           </div>
-        </ScrollArea>
+        </div>
       </div>
 
       <Separator />
@@ -95,28 +103,38 @@ export function Sidebar({ facets, isLoading }: SidebarProps) {
         <h3 className="font-semibold mb-4 text-sm tracking-wide uppercase text-muted-foreground">
           Specifications
         </h3>
-        <ScrollArea className="h-[200px] pr-4">
+        <div className="h-[200px] overflow-y-auto pr-4">
           <div className="space-y-3">
-            {facets?.specifications.map((spec) => (
-              <div key={spec.value} className="flex items-center space-x-2">
-                <Checkbox
-                  id={`spec-${spec.value}`}
-                  checked={(params.specification || []).includes(spec.value)}
-                  onCheckedChange={(checked) =>
-                    handleSpecChange(spec.value, checked as boolean)
-                  }
-                />
-                <Label
-                  htmlFor={`spec-${spec.value}`}
-                  className="flex-1 cursor-pointer font-normal text-sm flex justify-between"
-                >
-                  <span>{spec.label}</span>
-                  <span className="text-muted-foreground text-xs">
-                    {spec.count}
-                  </span>
-                </Label>
-              </div>
-            ))}
+            {facets?.specifications.map((spec) => {
+              const isChecked = (params.specification || []).includes(
+                spec.value,
+              );
+              return (
+                <div key={spec.value} className="flex items-center space-x-2">
+                  <div
+                    onClick={() => handleSpecChange(spec.value, !isChecked)}
+                    className={cn(
+                      "size-4 shrink-0 rounded-[4px] border border-input shadow-xs flex items-center justify-center transition-all cursor-pointer",
+                      isChecked
+                        ? "bg-primary border-primary text-primary-foreground"
+                        : "bg-background",
+                    )}
+                  >
+                    {isChecked && <Check className="size-3" />}
+                  </div>
+                  <Label
+                    htmlFor={`spec-${spec.value}`}
+                    onClick={() => handleSpecChange(spec.value, !isChecked)}
+                    className="flex-1 cursor-pointer font-normal text-sm flex justify-between"
+                  >
+                    <span>{spec.label}</span>
+                    <span className="text-muted-foreground text-xs">
+                      {spec.count}
+                    </span>
+                  </Label>
+                </div>
+              );
+            })}
             {(!facets?.specifications ||
               facets.specifications.length === 0) && (
               <p className="text-xs text-muted-foreground">
@@ -124,7 +142,7 @@ export function Sidebar({ facets, isLoading }: SidebarProps) {
               </p>
             )}
           </div>
-        </ScrollArea>
+        </div>
       </div>
     </div>
   );

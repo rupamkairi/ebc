@@ -292,6 +292,7 @@ _All routes require `Authorization: Bearer <token>` header._
 ### 4.1 Item Listing
 
 - **Composite Create**: `POST /listing`
+- **Read**: `GET /listing/:id`
 - **Update**: `PATCH /listing/:id`
 - **Delete**: `DELETE /listing/:id`
 - **List**: `POST /listing/list`

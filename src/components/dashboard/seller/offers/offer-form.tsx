@@ -721,7 +721,7 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                                   }))
                                 : listings?.map((l: ItemListing) => ({
                                     id: l.id,
-                                    label: `${l.item?.name || l.id} - ${l.item_rate?.rate || "No rate"}`,
+                                    label: `${l.item?.name || l.id} - ${l.itemRates?.[0]?.rate || "No rate"}`,
                                   }))) || []
                       }
                       selectedIds={form

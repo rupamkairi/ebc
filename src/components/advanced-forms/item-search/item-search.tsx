@@ -11,7 +11,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useItemsQuery } from "@/queries/catalogQueries";
 import { Item } from "@/types/catalog";
 import { Loader2, Search, Package, Info, CheckCircle2 } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -21,7 +20,11 @@ interface ItemSearchProps {
   type?: "PRODUCT" | "SERVICE";
 }
 
-export function ItemSearch({ onItemSelect, className, type = "PRODUCT" }: ItemSearchProps) {
+export function ItemSearch({
+  onItemSelect,
+  className,
+  type = "PRODUCT",
+}: ItemSearchProps) {
   const [categoryId, setCategoryId] = useState<string>("");
   const [brandId, setBrandId] = useState<string>("");
   const [specificationId, setSpecificationId] = useState<string>("");
@@ -136,7 +139,7 @@ export function ItemSearch({ onItemSelect, className, type = "PRODUCT" }: ItemSe
             <p className="text-sm text-muted-foreground">Searching items...</p>
           </div>
         ) : items && items.length > 0 ? (
-          <ScrollArea className="h-[360px] rounded-lg border bg-background">
+          <div className="h-[360px] overflow-y-auto rounded-lg border bg-background">
             <div className="p-4 space-y-4">
               {items.map((item) => (
                 <div
@@ -178,7 +181,7 @@ export function ItemSearch({ onItemSelect, className, type = "PRODUCT" }: ItemSe
                 </div>
               ))}
             </div>
-          </ScrollArea>
+          </div>
         ) : isSearchValid ? (
           <div className="flex flex-col items-center justify-center py-20 bg-muted/30 rounded-lg border-2 border-dashed">
             <Package className="size-8 text-muted-foreground mb-2" />

@@ -63,7 +63,7 @@ export function ListingCard({ listing, type }: ListingCardProps) {
                 ) : (
                   <div className="flex items-center gap-1">
                     <MapPin size={12} />
-                    {listing.item_region?.[0]?.state || "Global"}
+                    {listing.itemRegions?.[0]?.state || "Global"}
                   </div>
                 )}
               </div>
@@ -76,10 +76,10 @@ export function ListingCard({ listing, type }: ListingCardProps) {
                     Min Order
                   </p>
                   <p className="text-sm font-bold">
-                    {listing.item_rate?.minQuantity}{" "}
+                    {listing.itemRates?.[0]?.minQuantity}{" "}
                     <span className="text-[10px] font-normal text-muted-foreground">
-                      {listing.item_rate?.unitType &&
-                        UNIT_TYPE_LABELS[listing.item_rate.unitType]}
+                      {listing.itemRates?.[0]?.unitType &&
+                        UNIT_TYPE_LABELS[listing.itemRates[0].unitType]}
                     </span>
                   </p>
                 </div>

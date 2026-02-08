@@ -1,7 +1,8 @@
 "use client";
 
-import { useItemListingsQuery } from "@/queries/catalogQueries";
+import { useItemListingQuery } from "@/queries/catalogQueries";
 import { Loader2 } from "lucide-react";
+import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ListingEditForm } from "@/components/dashboard/seller/catalog/steps/listing-edit-form";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +22,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ArrowLeft, Edit, Plus } from "lucide-react";
+import { ArrowLeft, Edit } from "lucide-react";
 
 export interface OfferListParams {
   itemListingId?: string;
@@ -35,8 +36,9 @@ export default function ListingDetailsPage() {
   const params = useParams();
   const listingId = params.listingId as string;
   const router = useRouter();
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
-  const { data: listings, isLoading } = useItemListingsQuery({});
+  const { data: listing, isLoading } = useItemListingQuery(listingId);
 
   if (isLoading) {
     return (
@@ -45,8 +47,6 @@ export default function ListingDetailsPage() {
       </div>
     );
   }
-
-  const listing = listings?.find((l) => l.id === listingId);
 
   if (!listing) {
     return <div>Listing not found</div>;
@@ -69,7 +69,7 @@ export default function ListingDetailsPage() {
           </div>
         </div>
 
-        <Dialog>
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Edit className="mr-2 h-4 w-4" />
@@ -83,7 +83,12 @@ export default function ListingDetailsPage() {
                 Update listing status, price, and other details.
               </DialogDescription>
             </DialogHeader>
-            {listing && <ListingEditForm listing={listing} />}
+            {listing && (
+              <ListingEditForm
+                listing={listing}
+                onSuccess={() => setIsEditDialogOpen(false)}
+              />
+            )}
           </DialogContent>
         </Dialog>
       </div>
@@ -109,14 +114,14 @@ export default function ListingDetailsPage() {
                 {listing.isActive ? "Active" : "Inactive"}
               </Badge>
             </div>
-            {listing.item_rate && (
+            {listing.itemRates?.[0] && (
               <>
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground uppercase font-semibold">
                     Rate
                   </p>
                   <p className="text-sm font-medium">
-                    {listing.item_rate.rate}
+                    {listing.itemRates[0].rate}
                   </p>
                 </div>
                 <div className="space-y-1">
@@ -124,7 +129,7 @@ export default function ListingDetailsPage() {
                     Unit
                   </p>
                   <p className="text-sm font-medium">
-                    {listing.item_rate.unitType}
+                    {listing.itemRates[0].unitType}
                   </p>
                 </div>
               </>

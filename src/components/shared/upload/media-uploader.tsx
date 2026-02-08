@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   UploadCloud,
   X,
@@ -88,7 +87,7 @@ export function FileUploader({
     if (e.target.files && e.target.files.length > 0) {
       const selectedFiles = Array.from(e.target.files).slice(
         0,
-        maxFiles - files.length
+        maxFiles - files.length,
       );
 
       if (selectedFiles.length === 0) {
@@ -161,7 +160,7 @@ export function FileUploader({
     const uploadUrl = new URL(
       `${apiBaseUrl}/${
         endpoint.startsWith("/") ? endpoint.substring(1) : endpoint
-      }`
+      }`,
     );
 
     if (entityId) {
@@ -174,7 +173,9 @@ export function FileUploader({
     });
 
     setFiles((prev) =>
-      prev.map((f) => (f.status === "idle" ? { ...f, status: "uploading" } : f))
+      prev.map((f) =>
+        f.status === "idle" ? { ...f, status: "uploading" } : f,
+      ),
     );
 
     try {
@@ -189,15 +190,15 @@ export function FileUploader({
         xhr.upload.onprogress = (event) => {
           if (event.lengthComputable) {
             const percentComplete = Math.round(
-              (event.loaded / event.total) * 100
+              (event.loaded / event.total) * 100,
             );
             setOverallProgress(percentComplete);
             setFiles((prev) =>
               prev.map((f) =>
                 f.status === "uploading"
                   ? { ...f, progress: percentComplete }
-                  : f
-              )
+                  : f,
+              ),
             );
           }
         };
@@ -235,8 +236,8 @@ export function FileUploader({
         prev.map((f) =>
           f.status === "uploading"
             ? { ...f, status: "success", progress: 100 }
-            : f
-        )
+            : f,
+        ),
       );
 
       toast.success(`Successfully uploaded ${idleFiles.length} file(s)`);
@@ -255,8 +256,8 @@ export function FileUploader({
         prev.map((f) =>
           f.status === "uploading"
             ? { ...f, status: "error", error: errorMessage }
-            : f
-        )
+            : f,
+        ),
       );
       toast.error(errorMessage);
     } finally {
@@ -311,7 +312,7 @@ export function FileUploader({
               className={cn(
                 "group relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 py-10 transition-colors hover:bg-accent",
                 (isUploading || (isSingle && files.length > 0)) &&
-                  "pointer-events-none opacity-50"
+                  "pointer-events-none opacity-50",
               )}
               onClick={triggerClick}
             >
@@ -340,7 +341,7 @@ export function FileUploader({
             </div>
 
             {files.length > 0 && (
-              <ScrollArea className="h-[200px] rounded-md border p-2">
+              <div className="h-[200px] overflow-y-auto rounded-md border p-2">
                 <div className="space-y-3">
                   {files.map((file) => (
                     <div
@@ -389,7 +390,7 @@ export function FileUploader({
                     </div>
                   ))}
                 </div>
-              </ScrollArea>
+              </div>
             )}
 
             {isUploading && (

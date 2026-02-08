@@ -31,15 +31,13 @@ import { toast } from "sonner";
 import {
   Loader2,
   Package,
-  Globe,
   FileText,
   Image as ImageIcon,
-  MapPin,
   X,
-  Search,
+  DollarSign,
 } from "lucide-react";
 import { ItemListing } from "@/types/catalog";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { UNIT_TYPES, UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
@@ -48,18 +46,16 @@ import {
   FileUploadResponse,
 } from "@/components/shared/upload/media-uploader";
 import { PincodeRecord } from "@/types/region";
-import { StateSearchAutocomplete } from "@/components/autocompletes/state-search-autocomplete";
-import { DistrictSearchAutocomplete } from "@/components/autocompletes/district-search-autocomplete";
 import { usePincodeRecordsQuery } from "@/queries/regionQueries";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
-import { cn } from "@/lib/utils";
+import { RegionSelectionStep } from "./region-selection-step";
 
 const listingEditSchema = z.object({
   isActive: z.boolean(),
   unitType: z.enum(UNIT_TYPES),
   minQuantity: z.number().min(1),
+  rate: z.number().min(0),
+  isNegotiable: z.boolean(),
   mediaIds: z.array(z.string()),
   documentIds: z.array(z.string()),
 });
@@ -68,6 +64,8 @@ interface ListingEditFormValues {
   isActive: boolean;
   unitType: (typeof UNIT_TYPES)[number];
   minQuantity: number;
+  rate: number;
+  isNegotiable: boolean;
   mediaIds: string[];
   documentIds: string[];
 }
@@ -89,6 +87,7 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [pincodeSearch, setPincodeSearch] = useState("");
   const [selectedRegions, setSelectedRegions] = useState<PincodeRecord[]>([]);
+  const lastInitializedId = useRef<string | null>(null);
 
   const { data: records, isLoading: isLoadingRegions } = usePincodeRecordsQuery(
     {
@@ -102,38 +101,50 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
     resolver: zodResolver(listingEditSchema),
     defaultValues: {
       isActive: listing.isActive,
-      unitType: (listing.item_rate?.unitType as UnitType) || "Nos",
-      minQuantity: listing.item_rate?.minQuantity || 1,
+      unitType: (listing.itemRates?.[0]?.unitType as UnitType) || "Nos",
+      minQuantity: listing.itemRates?.[0]?.minQuantity || 1,
+      rate: listing.itemRates?.[0]?.rate || 0,
+      isNegotiable: listing.itemRates?.[0]?.isNegotiable || false,
       mediaIds: listing.mediaIds || [],
       documentIds: listing.documentIds || [],
     },
   });
 
   useEffect(() => {
+    if (!listing || lastInitializedId.current === listing.id) return;
+
+    lastInitializedId.current = listing.id;
+
+    const rate = listing.itemRates?.[0];
+
     form.reset({
       isActive: listing.isActive,
-      unitType: listing.item_rate?.unitType || "Nos",
-      minQuantity: listing.item_rate?.minQuantity || 1,
+      unitType: (rate?.unitType as UnitType) || "Nos",
+      minQuantity: rate?.minQuantity || 1,
+      rate: rate?.rate || 0,
+      isNegotiable: rate?.isNegotiable || false,
       mediaIds: listing.mediaIds || [],
       documentIds: listing.documentIds || [],
     });
 
-    if (listing.item_region) {
+    if (listing.itemRegions) {
       setSelectedRegions(
-        listing.item_region.map(
-          (ir) =>
-            ({
-              id: ir.pincodeId || "",
-              pincode: "", // We don't have the pincode text, but we have the ID.
-              // In a real app we might fetch the records or just show ID.
-              // For now, mapping what we have.
-              district: ir.district || "",
-              state: ir.state || "",
-            }) as PincodeRecord,
-        ),
+        listing.itemRegions.map((ir) => {
+          const pincodeData =
+            typeof ir.pincode === "object" ? ir.pincode : null;
+          return {
+            id: ir.pincodeId || "",
+            pincode:
+              pincodeData?.pincode ||
+              ir.pincode?.toString() ||
+              "Pincode ID: " + ir.pincodeId,
+            district: pincodeData?.district || ir.district || "District",
+            state: pincodeData?.state || ir.state || "State",
+          } as PincodeRecord;
+        }),
       );
     }
-  }, [listing, form]);
+  }, [listing.id]); // Removed form.reset to avoid potential unstable reference issues
 
   const toggleRegion = (record: PincodeRecord) => {
     setSelectedRegions((prev) =>
@@ -143,7 +154,12 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
     );
   };
 
+  const removeRegion = (id: string) => {
+    setSelectedRegions((prev) => prev.filter((r) => r.id !== id));
+  };
+
   const onSubmit: SubmitHandler<ListingEditFormValues> = async (values) => {
+    const toastId = toast.loading("Saving listing changes...");
     try {
       // 1. Update Listing Basic & Attachments
       await updateListingMutation.mutateAsync({
@@ -156,39 +172,45 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
       });
 
       // 2. Update Rate Info
-      if (listing.item_rate?.id) {
+      const rateId = listing.itemRates?.[0]?.id;
+      if (rateId) {
         await updateRateMutation.mutateAsync({
-          id: listing.item_rate.id,
+          id: rateId,
           data: {
             unitType: values.unitType as UnitType,
             minQuantity: values.minQuantity,
+            rate: values.rate,
+            isNegotiable: values.isNegotiable,
           },
         });
       }
 
-      // 3. Update Regions (if changed or just always push selected)
-      if (selectedRegions.length > 0) {
-        await updateRegionMutation.mutateAsync({
-          id: listing.id, // Assuming URL endpoint takes itemListingId
-          data: {
-            itemListingId: listing.id,
-            regions: selectedRegions.map((r) => ({
-              pincodeId: r.id,
-              state: r.state,
-              district: r.district,
-              wholeState: false,
-              wholeDistrict: false,
-            })),
-          },
-        });
-      }
+      // 3. Update Regions
+      await updateRegionMutation.mutateAsync({
+        id: listing.id,
+        data: {
+          itemListingId: listing.id,
+          regions: selectedRegions.map((r) => ({
+            pincodeId: r.id,
+            state: r.state,
+            district: r.district,
+            wholeState: false,
+            wholeDistrict: false,
+          })),
+        },
+      });
 
-      toast.success("Listing updated successfully");
+      toast.success("Listing updated successfully", { id: toastId });
       onSuccess?.();
     } catch (error) {
-      toast.error("Failed to update listing");
+      toast.error("Failed to update listing", { id: toastId });
       console.error(error);
     }
+  };
+
+  const onInvalid = (errors: any) => {
+    console.error("Form Validation Errors:", errors);
+    toast.error("Please fill all required fields correctly.");
   };
 
   const isSubmitting =
@@ -212,14 +234,17 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
       </div>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form
+          onSubmit={form.handleSubmit(onSubmit, onInvalid)}
+          className="space-y-6"
+        >
           <Tabs
             value={activeTab}
             onValueChange={setActiveTab}
             className="w-full"
           >
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="general">General</TabsTrigger>
+              <TabsTrigger value="general">General & Rates</TabsTrigger>
               <TabsTrigger value="attachments">Brochures & Media</TabsTrigger>
               <TabsTrigger value="regions">Service Area</TabsTrigger>
             </TabsList>
@@ -231,9 +256,11 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm bg-card">
                     <div className="space-y-0.5">
-                      <FormLabel className="text-base">Active Status</FormLabel>
+                      <FormLabel className="text-base font-bold text-primary">
+                        Active Status
+                      </FormLabel>
                       <FormDescription>
-                        Listing visibility on current marketplaces.
+                        Control visibility on the marketplace.
                       </FormDescription>
                     </div>
                     <FormControl>
@@ -246,16 +273,16 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
                 )}
               />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
                   name="unitType"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Unit Type</FormLabel>
+                      <FormLabel className="font-bold">Unit Type</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -279,7 +306,7 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
                   name="minQuantity"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Min Quantity</FormLabel>
+                      <FormLabel className="font-bold">Min Quantity</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -290,6 +317,56 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
                         />
                       </FormControl>
                       <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="rate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-bold flex items-center gap-2">
+                        <DollarSign size={14} className="text-primary" /> Base
+                        Rate
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
+                        />
+                      </FormControl>
+                      <FormDescription className="text-[10px]">
+                        Per {UNIT_TYPE_LABELS[form.watch("unitType")]}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="isNegotiable"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm bg-card mt-2">
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base font-bold">
+                          Negotiable
+                        </FormLabel>
+                        <FormDescription className="text-[10px]">
+                          Price can be negotiated?
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
                     </FormItem>
                   )}
                 />
@@ -316,10 +393,11 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
                         variant="multiple"
                         onUploadSuccess={(files: FileUploadResponse[]) => {
                           const newIds = files.map((f) => f.id);
-                          form.setValue("mediaIds", [
-                            ...form.getValues("mediaIds"),
-                            ...newIds,
-                          ]);
+                          const current = form.getValues("mediaIds") || [];
+                          form.setValue("mediaIds", [...current, ...newIds], {
+                            shouldValidate: true,
+                            shouldDirty: true,
+                          });
                         }}
                       />
                     </div>
@@ -369,10 +447,15 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
                         variant="multiple"
                         onUploadSuccess={(files: FileUploadResponse[]) => {
                           const newIds = files.map((f) => f.id);
-                          form.setValue("documentIds", [
-                            ...form.getValues("documentIds"),
-                            ...newIds,
-                          ]);
+                          const current = form.getValues("documentIds") || [];
+                          form.setValue(
+                            "documentIds",
+                            [...current, ...newIds],
+                            {
+                              shouldValidate: true,
+                              shouldDirty: true,
+                            },
+                          );
                         }}
                       />
                     </div>
@@ -407,153 +490,44 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
               </div>
             </TabsContent>
 
-            <TabsContent value="regions" className="mt-6 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 gap-3 bg-muted/20 p-3 rounded-lg border">
-                    <StateSearchAutocomplete
-                      value={selectedState}
-                      onValueChange={(v) => {
-                        setSelectedState(v);
-                        setSelectedDistrict("");
-                      }}
-                    />
-                    <DistrictSearchAutocomplete
-                      state={selectedState}
-                      value={selectedDistrict}
-                      onValueChange={setSelectedDistrict}
-                      disabled={!selectedState}
-                    />
-                    <div className="relative">
-                      <Search
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50"
-                        size={14}
-                      />
-                      <Input
-                        placeholder="Search Pincode..."
-                        value={pincodeSearch}
-                        onChange={(e) => setPincodeSearch(e.target.value)}
-                        className="pl-9 h-9"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="rounded-lg border overflow-hidden bg-background h-[300px]">
-                    <div className="bg-muted p-2 border-b flex justify-between items-center text-[10px] font-bold uppercase">
-                      <span>Available</span>
-                      {records && (
-                        <span className="opacity-50">
-                          {records.length} Found
-                        </span>
-                      )}
-                    </div>
-                    <ScrollArea className="h-full">
-                      {isLoadingRegions ? (
-                        <div className="p-10 flex justify-center">
-                          <Loader2 className="animate-spin opacity-20" />
-                        </div>
-                      ) : records && records.length > 0 ? (
-                        <div className="divide-y">
-                          {records.map((r) => {
-                            const isSelected = selectedRegions.some(
-                              (sr) => sr.id === r.id,
-                            );
-                            return (
-                              <div
-                                key={r.id}
-                                onClick={() => toggleRegion(r)}
-                                className={cn(
-                                  "p-2 text-xs cursor-pointer hover:bg-muted/50 flex items-center gap-3",
-                                  isSelected && "bg-primary/5",
-                                )}
-                              >
-                                <Checkbox
-                                  checked={isSelected}
-                                  className="rounded"
-                                />
-                                <span className="font-bold">{r.pincode}</span>
-                                <span className="text-muted-foreground truncate">
-                                  {r.district}
-                                </span>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      ) : (
-                        <p className="p-10 text-center text-xs text-muted-foreground italic">
-                          Search to find locations
-                        </p>
-                      )}
-                    </ScrollArea>
-                  </div>
-                </div>
-
-                <div className="rounded-lg border bg-muted/5 flex flex-col h-full">
-                  <div className="p-3 border-b flex justify-between items-center bg-card">
-                    <h5 className="text-xs font-bold flex items-center gap-2">
-                      <MapPin size={14} /> Selected ({selectedRegions.length})
-                    </h5>
-                    {selectedRegions.length > 0 && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setSelectedRegions([])}
-                        className="h-6 text-[10px]"
-                      >
-                        Clear
-                      </Button>
-                    )}
-                  </div>
-                  <ScrollArea className="flex-1 h-[300px] bg-background">
-                    {selectedRegions.length > 0 ? (
-                      <div className="divide-y">
-                        {selectedRegions.map((r) => (
-                          <div
-                            key={r.id}
-                            className="p-2 flex justify-between items-center group hover:bg-muted/30"
-                          >
-                            <div className="text-[11px]">
-                              <p className="font-bold">{r.pincode}</p>
-                              <p className="text-muted-foreground">
-                                {r.district}, {r.state}
-                              </p>
-                            </div>
-                            <X
-                              size={12}
-                              className="cursor-pointer opacity-0 group-hover:opacity-100 hover:text-destructive"
-                              onClick={() =>
-                                setSelectedRegions((prev) =>
-                                  prev.filter((x) => x.id !== r.id),
-                                )
-                              }
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="p-10 text-center text-muted-foreground/30 flex flex-col items-center">
-                        <Globe size={32} className="mb-2" />
-                        <p className="text-[10px] uppercase font-bold">
-                          No Areas Selected
-                        </p>
-                      </div>
-                    )}
-                  </ScrollArea>
-                </div>
-              </div>
+            <TabsContent value="regions" className="mt-6">
+              <RegionSelectionStep
+                selectedState={selectedState}
+                setSelectedState={setSelectedState}
+                selectedDistrict={selectedDistrict}
+                setSelectedDistrict={setSelectedDistrict}
+                pincodeSearch={pincodeSearch}
+                setPincodeSearch={setPincodeSearch}
+                isLoadingRegions={isLoadingRegions}
+                records={records}
+                selectedRegions={selectedRegions}
+                toggleRegion={toggleRegion}
+                removeRegion={removeRegion}
+                setSelectedRegions={setSelectedRegions}
+                onBack={() => setActiveTab("attachments")}
+                onComplete={() => form.handleSubmit(onSubmit)()}
+                isSubmitting={isSubmitting}
+                hideButtons={true}
+              />
             </TabsContent>
           </Tabs>
 
-          <div className="flex justify-end gap-3 pt-6 border-t">
+          <div className="flex flex-col items-end gap-3 pt-6 border-t">
+            {Object.keys(form.formState.errors).length > 0 && (
+              <p className="text-xs font-bold text-destructive animate-pulse">
+                Please fix errors in:{" "}
+                {Object.keys(form.formState.errors).join(", ")}
+              </p>
+            )}
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="min-w-[120px]"
+              className="min-w-[150px] font-bold"
             >
               {isSubmitting && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
-              Save Changes
+              Save All Changes
             </Button>
           </div>
         </form>

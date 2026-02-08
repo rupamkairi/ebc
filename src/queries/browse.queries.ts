@@ -145,7 +145,7 @@ export const useBrowseData = (params: BrowseParams) => {
       id: item.id,
       title: item.name,
       description: item.description,
-      price: listing?.item_rate?.rate || 0,
+      price: listing?.itemRates?.[0]?.rate || 0,
       image: listing?.mediaIds?.[0] || "https://placehold.co/300x300",
       category: item.category?.name || "Uncategorized",
       brand: brandMap.get(item.brandId)?.name || "Generic",

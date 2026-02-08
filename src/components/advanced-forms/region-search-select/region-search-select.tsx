@@ -6,7 +6,6 @@ import { DistrictSearchAutocomplete } from "../../autocompletes/district-search-
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Card,
   CardContent,
@@ -16,8 +15,7 @@ import {
 } from "@/components/ui/card";
 import { usePincodeRecordsQuery } from "@/queries/regionQueries";
 import { PincodeRecord } from "@/types/region";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Loader2, MapPin, Globe, CheckCircle2, X } from "lucide-react";
+import { Loader2, MapPin, Globe, CheckCircle2, X, Check } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -76,7 +74,7 @@ export function RegionSearchSelect() {
     } else if (!checked && records && selectedState) {
       // Remove all records from current state
       setSelectedRegions((prev) =>
-        prev.filter((r) => r.state !== selectedState)
+        prev.filter((r) => r.state !== selectedState),
       );
     }
   };
@@ -85,7 +83,7 @@ export function RegionSearchSelect() {
     setSelectWholeDistrict(checked);
     if (checked && records && selectedDistrict) {
       const districtRecords = records.filter(
-        (r) => r.district === selectedDistrict
+        (r) => r.district === selectedDistrict,
       );
       setSelectedRegions((prev) => {
         const newRegions = [...prev];
@@ -98,7 +96,7 @@ export function RegionSearchSelect() {
       });
     } else if (!checked && records && selectedDistrict) {
       setSelectedRegions((prev) =>
-        prev.filter((r) => r.district !== selectedDistrict)
+        prev.filter((r) => r.district !== selectedDistrict),
       );
     }
   };
@@ -148,13 +146,24 @@ export function RegionSearchSelect() {
                     </div>
                     {selectedState && (
                       <div className="flex items-center gap-2 px-1">
-                        <Checkbox
-                          id="whole-state"
-                          checked={selectWholeState}
-                          onCheckedChange={handleWholeStateChange}
-                        />
+                        <div
+                          onClick={() =>
+                            handleWholeStateChange(!selectWholeState)
+                          }
+                          className={cn(
+                            "size-4 shrink-0 rounded-[4px] border border-input shadow-xs flex items-center justify-center transition-all cursor-pointer",
+                            selectWholeState
+                              ? "bg-primary border-primary text-primary-foreground"
+                              : "bg-background",
+                          )}
+                        >
+                          {selectWholeState && <Check className="size-3" />}
+                        </div>
                         <Label
                           htmlFor="whole-state"
+                          onClick={() =>
+                            handleWholeStateChange(!selectWholeState)
+                          }
                           className="text-sm cursor-pointer"
                         >
                           Select whole {selectedState}
@@ -179,13 +188,24 @@ export function RegionSearchSelect() {
                     </div>
                     {selectedDistrict && (
                       <div className="flex items-center gap-2 px-1">
-                        <Checkbox
-                          id="whole-district"
-                          checked={selectWholeDistrict}
-                          onCheckedChange={handleWholeDistrictChange}
-                        />
+                        <div
+                          onClick={() =>
+                            handleWholeDistrictChange(!selectWholeDistrict)
+                          }
+                          className={cn(
+                            "size-4 shrink-0 rounded-[4px] border border-input shadow-xs flex items-center justify-center transition-all cursor-pointer",
+                            selectWholeDistrict
+                              ? "bg-primary border-primary text-primary-foreground"
+                              : "bg-background",
+                          )}
+                        >
+                          {selectWholeDistrict && <Check className="size-3" />}
+                        </div>
                         <Label
                           htmlFor="whole-district"
+                          onClick={() =>
+                            handleWholeDistrictChange(!selectWholeDistrict)
+                          }
                           className="text-sm cursor-pointer"
                         >
                           Select whole {selectedDistrict}
@@ -230,20 +250,29 @@ export function RegionSearchSelect() {
                     </p>
                   </div>
                 ) : records && records.length > 0 ? (
-                  <ScrollArea className="h-[400px]">
+                  <div className="h-[400px] overflow-y-auto">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
                       {records.map((record) => (
                         <div
                           key={record.id}
                           className={cn(
                             "flex items-center gap-3 p-4 border-b border-r last:border-r-0 hover:bg-muted/30 transition-colors",
-                            isRegionSelected(record.id) && "bg-primary/5"
+                            isRegionSelected(record.id) && "bg-primary/5",
                           )}
                         >
-                          <Checkbox
-                            checked={isRegionSelected(record.id)}
-                            onCheckedChange={() => toggleRegion(record)}
-                          />
+                          <div
+                            onClick={() => toggleRegion(record)}
+                            className={cn(
+                              "size-4 shrink-0 rounded-[4px] border border-input shadow-xs flex items-center justify-center transition-all cursor-pointer",
+                              isRegionSelected(record.id)
+                                ? "bg-primary border-primary text-primary-foreground"
+                                : "bg-background",
+                            )}
+                          >
+                            {isRegionSelected(record.id) && (
+                              <Check className="size-3" />
+                            )}
+                          </div>
                           <div className="flex flex-col overflow-hidden">
                             <span className="font-bold text-sm tracking-wide">
                               {record.pincode}
@@ -255,7 +284,7 @@ export function RegionSearchSelect() {
                         </div>
                       ))}
                     </div>
-                  </ScrollArea>
+                  </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center py-20 bg-muted/10">
                     <MapPin className="size-8 text-muted-foreground mb-2" />
@@ -278,7 +307,7 @@ export function RegionSearchSelect() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                <ScrollArea className="h-[300px] lg:h-[500px]">
+                <div className="h-[300px] lg:h-[500px] overflow-y-auto">
                   {selectedRegions.length > 0 ? (
                     <div className="divide-y">
                       {selectedRegions.map((region) => (
@@ -314,7 +343,7 @@ export function RegionSearchSelect() {
                       </p>
                     </div>
                   )}
-                </ScrollArea>
+                </div>
               </CardContent>
               <CardFooter className="p-6 bg-muted/30 border-t">
                 <div className="w-full space-y-4">

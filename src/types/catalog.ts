@@ -172,6 +172,14 @@ export interface ItemRegion {
   state?: string;
   district?: string;
   pincodeId?: string;
+  pincode?:
+    | string
+    | {
+        id: string;
+        pincode: string;
+        state: string;
+        district: string;
+      };
   wholeState?: boolean;
   wholeDistrict?: boolean;
 }
@@ -183,8 +191,8 @@ export interface ItemListing {
   isActive: boolean;
   item?: Item;
   entity?: Entity;
-  item_rate?: ItemRate;
-  item_region?: ItemRegion[];
+  itemRates?: ItemRate[];
+  itemRegions?: ItemRegion[];
   createdAt: string;
   updatedAt: string;
   mediaIds?: string[];

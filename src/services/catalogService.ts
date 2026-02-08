@@ -200,6 +200,15 @@ export const catalogService = {
     return results;
   },
 
+  async getItemListing(id: string) {
+    return fetchClient<ItemListing>(
+      `${API_ENDPOINTS.ITEM_LISTING.LISTING.GET}/${id}`,
+      {
+        method: "GET",
+      },
+    );
+  },
+
   // Item Rate
   async createItemRate(data: CreateItemRateRequest) {
     return fetchClient<ItemRate>(API_ENDPOINTS.ITEM_LISTING.RATE.CREATE, {

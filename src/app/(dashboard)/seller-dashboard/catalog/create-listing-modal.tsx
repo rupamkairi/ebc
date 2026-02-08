@@ -9,7 +9,9 @@ import { Item } from "@/types/catalog";
 import { PincodeRecord } from "@/types/region";
 import { ListingModalHeader } from "@/components/dashboard/seller/catalog/listing-modal-header";
 import { ItemSelectionStep } from "@/components/dashboard/seller/catalog/steps/item-selection-step";
+import { RateDetailsStep } from "@/components/dashboard/seller/catalog/steps/rate-details-step";
 import { RegionSelectionStep } from "@/components/dashboard/seller/catalog/steps/region-selection-step";
+import { UnitType } from "@/constants/quantities";
 
 interface CreateListingModalProps {
   isOpen: boolean;
@@ -24,6 +26,12 @@ export function CreateListingModal({
 }: CreateListingModalProps) {
   const [step, setStep] = useState(1);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+
+  // Rate Details State
+  const [unitType, setUnitType] = useState<UnitType>("Nos");
+  const [minQuantity, setMinQuantity] = useState(1);
+  const [rate, setRate] = useState(0);
+  const [isNegotiable, setIsNegotiable] = useState(false);
 
   // Region Selection State
   const [selectedState, setSelectedState] = useState("");
@@ -62,10 +70,10 @@ export function CreateListingModal({
           itemId: selectedItem.id,
           entityId,
           item_rate: {
-            unitType: "Nos", // Default value
-            minQuantity: 1,
-            rate: 0,
-            isNegotiable: false,
+            unitType,
+            minQuantity,
+            rate,
+            isNegotiable,
           },
           item_region: selectedRegions.map((r) => ({
             pincodeId: r.id,
@@ -94,8 +102,24 @@ export function CreateListingModal({
             <ItemSelectionStep
               onItemSelect={(item) => {
                 setSelectedItem(item);
-                setStep(3); // Skip RateDetailsStep
+                setStep(2);
               }}
+            />
+          )}
+
+          {step === 2 && (
+            <RateDetailsStep
+              selectedItem={selectedItem}
+              unitType={unitType}
+              setUnitType={setUnitType}
+              minQuantity={minQuantity}
+              setMinQuantity={setMinQuantity}
+              rate={rate}
+              setRate={setRate}
+              isNegotiable={isNegotiable}
+              setIsNegotiable={setIsNegotiable}
+              onBack={() => setStep(1)}
+              onNext={() => setStep(3)}
             />
           )}
 
@@ -113,7 +137,7 @@ export function CreateListingModal({
               toggleRegion={toggleRegion}
               removeRegion={removeRegion}
               setSelectedRegions={setSelectedRegions}
-              onBack={() => setStep(1)}
+              onBack={() => setStep(2)}
               onComplete={handleCreate}
               isSubmitting={createListingMutation.isPending}
             />

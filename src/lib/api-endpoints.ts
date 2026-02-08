@@ -51,6 +51,7 @@ export const API_ENDPOINTS = {
     LISTING: {
       CREATE: "/item-listing/listing",
       UPDATE: "/item-listing/listing", // :id
+      GET: "/item-listing/listing", // :id
       DELETE: "/item-listing/listing", // :id
       LIST: "/item-listing/listing/list",
     },
