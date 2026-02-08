@@ -10,25 +10,14 @@ import { Separator } from "@/components/ui/separator";
 
 interface SidebarProps {
   facets?: {
-    categories: Facet[];
     brands: Facet[];
+    specifications: Facet[];
   };
   isLoading?: boolean;
 }
 
 export function Sidebar({ facets, isLoading }: SidebarProps) {
   const { params, updateParams } = useBrowseParams();
-
-  const handleCategoryChange = (category: string, checked: boolean) => {
-    const current = params.category;
-    let next: string[];
-    if (checked) {
-      next = [...current, category];
-    } else {
-      next = current.filter((c) => c !== category);
-    }
-    updateParams({ category: next });
-  };
 
   const handleBrandChange = (brand: string, checked: boolean) => {
     const current = params.brand;
@@ -39,6 +28,17 @@ export function Sidebar({ facets, isLoading }: SidebarProps) {
       next = current.filter((b) => b !== brand);
     }
     updateParams({ brand: next });
+  };
+
+  const handleSpecChange = (spec: string, checked: boolean) => {
+    const current = params.specification || [];
+    let next: string[];
+    if (checked) {
+      next = [...current, spec];
+    } else {
+      next = current.filter((s) => s !== spec);
+    }
+    updateParams({ specification: next });
   };
 
   if (isLoading) {
@@ -52,38 +52,7 @@ export function Sidebar({ facets, isLoading }: SidebarProps) {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h3 className="font-semibold mb-4 text-sm tracking-wide uppercase text-muted-foreground">
-          Categories
-        </h3>
-        <ScrollArea className="h-[200px] pr-4">
-          <div className="space-y-3">
-            {facets?.categories.map((cat) => (
-              <div key={cat.value} className="flex items-center space-x-2">
-                <Checkbox
-                  id={`cat-${cat.value}`}
-                  checked={params.category.includes(cat.value)}
-                  onCheckedChange={(checked) =>
-                    handleCategoryChange(cat.value, checked as boolean)
-                  }
-                />
-                <Label
-                  htmlFor={`cat-${cat.value}`}
-                  className="flex-1 cursor-pointer font-normal text-sm flex justify-between"
-                >
-                  <span>{cat.label}</span>
-                  <span className="text-muted-foreground text-xs">
-                    {cat.count}
-                  </span>
-                </Label>
-              </div>
-            ))}
-          </div>
-        </ScrollArea>
-      </div>
-
-      <Separator />
-
+      {/* Brands Section */}
       <div>
         <h3 className="font-semibold mb-4 text-sm tracking-wide uppercase text-muted-foreground">
           Brands
@@ -110,6 +79,50 @@ export function Sidebar({ facets, isLoading }: SidebarProps) {
                 </Label>
               </div>
             ))}
+            {(!facets?.brands || facets.brands.length === 0) && (
+              <p className="text-xs text-muted-foreground">
+                No brands available
+              </p>
+            )}
+          </div>
+        </ScrollArea>
+      </div>
+
+      <Separator />
+
+      {/* Specifications Section */}
+      <div>
+        <h3 className="font-semibold mb-4 text-sm tracking-wide uppercase text-muted-foreground">
+          Specifications
+        </h3>
+        <ScrollArea className="h-[200px] pr-4">
+          <div className="space-y-3">
+            {facets?.specifications.map((spec) => (
+              <div key={spec.value} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`spec-${spec.value}`}
+                  checked={(params.specification || []).includes(spec.value)}
+                  onCheckedChange={(checked) =>
+                    handleSpecChange(spec.value, checked as boolean)
+                  }
+                />
+                <Label
+                  htmlFor={`spec-${spec.value}`}
+                  className="flex-1 cursor-pointer font-normal text-sm flex justify-between"
+                >
+                  <span>{spec.label}</span>
+                  <span className="text-muted-foreground text-xs">
+                    {spec.count}
+                  </span>
+                </Label>
+              </div>
+            ))}
+            {(!facets?.specifications ||
+              facets.specifications.length === 0) && (
+              <p className="text-xs text-muted-foreground">
+                No specifications available
+              </p>
+            )}
           </div>
         </ScrollArea>
       </div>

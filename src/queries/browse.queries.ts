@@ -1,7 +1,14 @@
 import { BrowseParams } from "@/hooks/useBrowseParams";
-import { useQuery } from "@tanstack/react-query";
+import {
+  useBrandsQuery,
+  useCategoriesQuery,
+  useItemListingsQuery,
+  useItemsQuery,
+  useSpecificationsQuery,
+} from "./catalogQueries";
+import { ItemListing } from "@/types/catalog";
 
-// Mock Data Types
+// UI Types
 export interface Product {
   id: string;
   title: string;
@@ -11,7 +18,7 @@ export interface Product {
   category: string;
   brand: string;
   rating: number;
-  type: "PRODUCT" | "SERVICE";
+  type: string;
 }
 
 export interface Facet {
@@ -22,120 +29,191 @@ export interface Facet {
 
 export interface BrowseData {
   products: Product[];
+  categories: { id: string; name: string; image: string }[];
+  subCategories: { id: string; name: string; image: string }[];
   total: number;
   facets: {
-    categories: Facet[];
     brands: Facet[];
+    specifications: Facet[];
   };
   page: number;
   totalPages: number;
 }
 
-// Mock Data Generator
-const MOCK_PRODUCTS: Product[] = Array.from({ length: 50 }).map((_, i) => {
-  const isService = i % 5 === 0; // 20% services
-  return {
-    id: `prod-${i}`,
-    title: isService ? `Service Solution ${i + 1}` : `Premium Product ${i + 1}`,
-    description: isService
-      ? "Professional service with guaranteed results."
-      : "High quality item with amazing features.",
-    price: Math.floor(Math.random() * 500) + 50,
-    image: "https://placehold.co/300x300",
-    category: i % 3 === 0 ? "electronics" : i % 3 === 1 ? "clothing" : "home",
-    brand:
-      i % 4 === 0
-        ? "brand-a"
-        : i % 4 === 1
-        ? "brand-b"
-        : i % 4 === 2
-        ? "brand-c"
-        : "brand-d",
-    rating: Number((Math.random() * 2 + 3).toFixed(1)),
-    type: isService ? "SERVICE" : "PRODUCT",
-  };
-});
-
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 export const useBrowseData = (params: BrowseParams) => {
-  return useQuery({
-    queryKey: ["browse", params],
-    queryFn: async (): Promise<BrowseData> => {
-      // Simulate network delay
-      await delay(800);
+  // Read selection from URL params
+  const { parentCategory, subCategory, type } = params;
 
-      let filtered = [...MOCK_PRODUCTS];
+  // 1. Fetch Parent Categories (for horizontal carousel) - filtered by type
+  const { data: parentCategories, isLoading: isLoadingCats } =
+    useCategoriesQuery({
+      isSubCategory: false,
+      type: type, // Pass PRODUCT or SERVICE type to filter categories
+    });
 
-      // 0. Filter by Type
-      if (params.type) {
-        filtered = filtered.filter((p) => p.type === params.type);
-      }
+  // 2. Fetch Subcategories based on selected parent category
+  const { data: subCategoriesData, isLoading: isLoadingSubCats } =
+    useCategoriesQuery(
+      parentCategory
+        ? { parentCategoryId: parentCategory, isSubCategory: true, type: type }
+        : ({ enabled: false } as never), // Skip query if no parent selected
+    );
 
-      // 1. Search
-      if (params.q) {
-        const qLower = params.q.toLowerCase();
-        filtered = filtered.filter(
-          (p) =>
-            p.title.toLowerCase().includes(qLower) ||
-            p.description.toLowerCase().includes(qLower)
-        );
-      }
+  // 3. Fetch Brands for Sidebar
+  const { data: brands } = useBrandsQuery({});
 
-      // 2. Filter by Category
-      if (params.category && params.category.length > 0) {
-        filtered = filtered.filter((p) => params.category.includes(p.category));
-      }
+  // 4. Fetch Specifications for Sidebar
+  const { data: specifications } = useSpecificationsQuery({});
 
-      // 3. Filter by Brand
-      if (params.brand && params.brand.length > 0) {
-        filtered = filtered.filter((p) => params.brand.includes(p.brand));
-      }
+  // 5. Fetch Items - filter by selected category or subcategories
+  const categoryFilter =
+    subCategory.length > 0
+      ? subCategory[0] // API only supports single category, multi-select is client-side
+      : parentCategory || undefined;
 
-      // 4. Sort
-      filtered.sort((a, b) => {
-        switch (params.sort) {
-          case "price_asc":
-            return a.price - b.price;
-          case "price_desc":
-            return b.price - a.price;
-          case "newest":
-            return b.id.localeCompare(a.id); // primitive "newest"
-          default:
-            return 0; // relevance (preserved original order)
-        }
-      });
-
-      // 5. Pagination
-      const pageSize = 12;
-      const total = filtered.length;
-      const totalPages = Math.ceil(total / pageSize);
-      const start = (params.page - 1) * pageSize;
-      const paginatedProducts = filtered.slice(start, start + pageSize);
-
-      // 6. Facets (Mocked counts based on full dataset vs filtered - simplified to full dataset for now to show options)
-      // Real apps effectively aggregate based on current search context
-      const allCategories = ["electronics", "clothing", "home"];
-      const allBrands = ["brand-a", "brand-b", "brand-c", "brand-d"];
-
-      return {
-        products: paginatedProducts,
-        total,
-        page: params.page,
-        totalPages,
-        facets: {
-          categories: allCategories.map((c) => ({
-            label: c.charAt(0).toUpperCase() + c.slice(1),
-            value: c,
-            count: MOCK_PRODUCTS.filter((p) => p.category === c).length,
-          })),
-          brands: allBrands.map((b) => ({
-            label: b.charAt(0).toUpperCase() + b.slice(1).replace("-", " "),
-            value: b,
-            count: MOCK_PRODUCTS.filter((p) => p.brand === b).length,
-          })),
-        },
-      };
-    },
+  const { data: itemsFromCatalog, isLoading: isLoadingItems } = useItemsQuery({
+    search: params.q || undefined,
+    categoryId: categoryFilter,
+    brandId: params.brand.length === 1 ? params.brand[0] : undefined,
+    type: type, // Pass type to filter products vs services
   });
+
+  // 6. Fetch Listings for price/media info
+  const { data: listings, isLoading: isLoadingListings } = useItemListingsQuery(
+    {
+      search: params.q || undefined,
+    },
+  );
+
+  const isLoading =
+    isLoadingCats || isLoadingSubCats || isLoadingItems || isLoadingListings;
+
+  // Create listing lookup map
+  const listingMap = new Map<string, ItemListing>();
+  (listings || []).forEach((listing) => {
+    if (!listingMap.has(listing.itemId)) {
+      listingMap.set(listing.itemId, listing);
+    }
+  });
+
+  // Filter items client-side
+  const allItems = itemsFromCatalog || [];
+  const filteredItems = allItems.filter((item) => {
+    // Filter by Type
+    if (type && item.type !== type) return false;
+
+    // Filter by Subcategories (if any selected)
+    if (subCategory.length > 0) {
+      if (!item.categoryId || !subCategory.includes(item.categoryId)) {
+        return false;
+      }
+    }
+
+    // Filter by Brands (multi-select)
+    if (params.brand.length > 0) {
+      if (!item.brandId || !params.brand.includes(item.brandId)) return false;
+    }
+
+    // Filter by Specifications
+    if (params.specification.length > 0) {
+      if (
+        !item.specificationId ||
+        !params.specification.includes(item.specificationId)
+      ) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+
+  // Pagination
+  const total = filteredItems.length;
+  const pageSize = 12;
+  const totalPages = Math.ceil(total / pageSize);
+  const currentPage = Math.max(1, params.page || 1);
+  const start = (currentPage - 1) * pageSize;
+  const paginatedItems = filteredItems.slice(start, start + pageSize);
+
+  // Lookup maps for names
+  const brandMap = new Map((brands || []).map((b) => [b.id, b]));
+
+  // Map to Product interface
+  const products: Product[] = paginatedItems.map((item) => {
+    const listing = listingMap.get(item.id);
+    return {
+      id: item.id,
+      title: item.name,
+      description: item.description,
+      price: listing?.item_rate?.rate || 0,
+      image: listing?.mediaIds?.[0] || "https://placehold.co/300x300",
+      category: item.category?.name || "Uncategorized",
+      brand: brandMap.get(item.brandId)?.name || "Generic",
+      rating: 4.5,
+      type: item.type || "PRODUCT",
+    };
+  });
+
+  // Build Facets with counts
+  const brandFacetMap = new Map<string, number>();
+  const specFacetMap = new Map<string, number>();
+
+  filteredItems.forEach((item) => {
+    if (item.brandId) {
+      brandFacetMap.set(
+        item.brandId,
+        (brandFacetMap.get(item.brandId) || 0) + 1,
+      );
+    }
+    if (item.specificationId) {
+      specFacetMap.set(
+        item.specificationId,
+        (specFacetMap.get(item.specificationId) || 0) + 1,
+      );
+    }
+  });
+
+  const brandFacets: Facet[] = (brands || [])
+    .map((b) => ({
+      label: b.name,
+      value: b.id,
+      count: brandFacetMap.get(b.id) || 0,
+    }))
+    .filter((f) => f.count > 0 || params.brand.includes(f.value));
+
+  const specFacets: Facet[] = (specifications || [])
+    .map((s) => ({
+      label: s.name,
+      value: s.id,
+      count: specFacetMap.get(s.id) || 0,
+    }))
+    .filter((f) => f.count > 0 || params.specification.includes(f.value));
+
+  // Map categories and subcategories for UI
+  const categories = (parentCategories || []).map((c) => ({
+    id: c.id,
+    name: c.name,
+    image: c.categoryIcon?.url || "https://placehold.co/120x70",
+  }));
+
+  const subCategories = (subCategoriesData || []).map((sc) => ({
+    id: sc.id,
+    name: sc.name,
+    image: sc.categoryIcon?.url || "https://placehold.co/150x100",
+  }));
+
+  const data: BrowseData = {
+    products,
+    categories,
+    subCategories,
+    total,
+    facets: {
+      brands: brandFacets,
+      specifications: specFacets,
+    },
+    page: currentPage,
+    totalPages,
+  };
+
+  return { data, isLoading };
 };

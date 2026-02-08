@@ -29,11 +29,6 @@ import {
   CreateItemRegionRequest,
   ItemRegion,
   ItemRegionListParams,
-  // New Offer Imports
-  Offer,
-  CreateOfferRequest,
-  UpdateOfferRequest,
-  OfferListParams,
 } from "@/types/catalog";
 
 export const catalogService = {
@@ -194,10 +189,13 @@ export const catalogService = {
 
   async getItemListings(params: ItemListingListParams = {}) {
     console.log("[CatalogService] fetching listings for:", params);
-    const results = await fetchClient<ItemListing[]>(API_ENDPOINTS.ITEM_LISTING.LISTING.LIST, {
-      method: "POST",
-      body: params as Record<string, string | number | boolean>,
-    });
+    const results = await fetchClient<ItemListing[]>(
+      API_ENDPOINTS.ITEM_LISTING.LISTING.LIST,
+      {
+        method: "POST",
+        body: params as unknown as Record<string, unknown>,
+      },
+    );
     console.log("[CatalogService] fetched listings count:", results?.length);
     return results;
   },
@@ -256,43 +254,6 @@ export const catalogService = {
 
   async getItemRegions(params: ItemRegionListParams) {
     return fetchClient<ItemRegion[]>(API_ENDPOINTS.ITEM_LISTING.REGION.LIST, {
-      method: "POST",
-      body: params as unknown as Record<string, string | number | boolean>,
-    });
-  },
-
-  // Offer
-  async createOffer(data: CreateOfferRequest) {
-    return fetchClient<Offer>(API_ENDPOINTS.ITEM_LISTING.OFFER.CREATE, {
-      method: "POST",
-      body: data,
-    });
-  },
-
-  async updateOffer(data: UpdateOfferRequest) {
-    return fetchClient<Offer>(
-      `${API_ENDPOINTS.ITEM_LISTING.OFFER.UPDATE}/${data.id}`,
-      {
-        method: "PATCH",
-        body: data,
-      },
-    );
-  },
-
-  async deleteOffer(id: string) {
-    return fetchClient(`${API_ENDPOINTS.ITEM_LISTING.OFFER.DELETE}/${id}`, {
-      method: "DELETE",
-    });
-  },
-
-  async getOffer(id: string) {
-    return fetchClient<Offer>(`${API_ENDPOINTS.ITEM_LISTING.OFFER.GET}/${id}`, {
-      method: "GET",
-    });
-  },
-
-  async getOffers(params: OfferListParams) {
-    return fetchClient<Offer[]>(API_ENDPOINTS.ITEM_LISTING.OFFER.LIST, {
       method: "POST",
       body: params as unknown as Record<string, string | number | boolean>,
     });

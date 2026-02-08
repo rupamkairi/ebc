@@ -204,6 +204,13 @@ export interface ItemListingListParams {
   itemId?: string;
   entityId?: string;
   search?: string;
+  // added for browse
+  categoryId?: string[];
+  brandId?: string[];
+  type?: string;
+  page?: number;
+  perPage?: number;
+  sort?: string;
 }
 
 export interface UpdateItemListingRequest {

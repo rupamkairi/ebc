@@ -19,6 +19,8 @@ function BrowsePageContent() {
     if (data) {
       setBrowseData({
         products: data.products,
+        categories: data.categories,
+        subCategories: data.subCategories,
         facets: data.facets,
         total: data.total,
         page: data.page,

@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { AddToEnquiryModal } from "./add-to-enquiry-modal";
+import { useAppointmentStore } from "@/store/appointmentStore";
 
 interface ItemCardProps {
   product: Product;
@@ -21,9 +22,27 @@ interface ItemCardProps {
 export function ItemCard({ product }: ItemCardProps) {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const setAppointmentItem = useAppointmentStore(
+    (state) => state.setAppointmentItem,
+  );
 
   const handleCardClick = () => {
     router.push(`/browse/${product.id}`);
+  };
+
+  const handleMakeAppointment = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // Set item in appointment store
+    setAppointmentItem({
+      itemId: product.id,
+      title: product.title,
+      type: "service",
+      price: product.price,
+      image: product.image,
+      description: product.description,
+    });
+    // Navigate to appointment creation page
+    router.push("/appointment/create");
   };
 
   return (
@@ -70,6 +89,15 @@ export function ItemCard({ product }: ItemCardProps) {
               }}
             >
               Add to Enquiry
+            </Button>
+          )}
+          {product.type === "SERVICE" && (
+            <Button
+              className="w-full"
+              size="sm"
+              onClick={handleMakeAppointment}
+            >
+              Make an Appointment
             </Button>
           )}
         </CardFooter>

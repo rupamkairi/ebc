@@ -25,8 +25,8 @@ import { useDebounce } from "@uidotdev/usehooks";
 
 interface SearchProps {
   facets?: {
-    categories: Facet[];
     brands: Facet[];
+    specifications: Facet[];
   };
 }
 

@@ -30,3 +30,20 @@ on click of "add to enquiry" (button in the item-card), opens a modal-compoment 
 
 ---
 
+I want all the categories (not sub-categories) in horizontal scrollable list (carousel) in the top of the page.
+When I select one category, another similar section should open & show all the (sub-categories) under that category in horizontal scrollable list (carousel) below the categories list.
+Also at this time another section should show all the products under that from all the sub-categories in grid view below the sub-categories list.
+When I again select one sub-category, item list should update to show all the products under that sub-category in grid view below the sub-categories list.
+
+If I select multiple sub-categories, item list should update to show all the products under that from all the selected sub-categories in grid view below the sub-categories list.
+Multiple sub-categories selection should be allowed. The Items that I select should be shown in chips (with x to remove)
+
+On the Sidebar I have options for the brands & specifications should be list of checkboxes.
+
+
+Update the store to manage the category and sub-category selection state.
+Correctly handle the queries that gives the products based on category and sub-category & specifications.
+
+---
+
+

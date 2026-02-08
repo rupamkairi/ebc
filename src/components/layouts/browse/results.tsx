@@ -8,21 +8,30 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useBrowseStore } from "@/store/browseStore";
 import { ItemCardGrid } from "@/components/browse/item-card";
 import { SubCategoryCardContainer } from "@/components/browse/sub-category-card";
+import { CategoryCarousel } from "@/components/browse/category-carousel";
+import { SelectedFiltersChips } from "@/components/browse/selected-filters-chips";
 
 interface ResultsProps {
   isLoading: boolean;
 }
 
 export function Results({ isLoading }: ResultsProps) {
-  const { updateParams } = useBrowseParams();
-  const { products, total, page, totalPages } = useBrowseStore();
+  // URL params for selection state
+  const { params, updateParams, setParentCategory, toggleSubCategory } =
+    useBrowseParams();
+
+  // Store for API data only
+  const { products, categories, subCategories, total, page, totalPages } =
+    useBrowseStore();
+
+  // Get selection from URL params
+  const { parentCategory, subCategory, type } = params;
 
   if (isLoading) {
     return (
       <div className="space-y-8">
-        {/* Subcategories Skeleton */}
-        <div className="w-full h-[150px] border rounded-md bg-muted/20 animate-pulse" />
-
+        {/* Categories Skeleton */}
+        <div className="w-full h-[100px] bg-muted/20 rounded-md animate-pulse" />
         {/* Grid Skeleton */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
           {Array.from({ length: 8 }).map((_, i) => (
@@ -39,38 +48,67 @@ export function Results({ isLoading }: ResultsProps) {
     );
   }
 
-  if (!products || products.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 text-center">
-        <h3 className="text-xl font-semibold mb-2">No results found</h3>
-        <p className="text-muted-foreground">
-          Try adjusting your filters or search query.
-        </p>
-        <Button
-          variant="link"
-          onClick={() => updateParams({ q: "", category: [], brand: [] })}
-          className="mt-4"
-        >
-          Clear all filters
-        </Button>
-      </div>
-    );
-  }
+  const pageTitle = type === "SERVICE" ? "Browse Services" : "Browse Products";
 
   return (
-    <div className="space-y-8">
-      {/* Sub Categories Carousel */}
-      <SubCategoryCardContainer />
+    <div className="space-y-6">
+      {/* 1. Parent Categories Carousel */}
+      <CategoryCarousel
+        categories={categories}
+        selectedId={parentCategory}
+        onSelect={setParentCategory}
+        title={pageTitle}
+      />
 
+      {/* 2. Subcategories Carousel (only if category selected) */}
+      {parentCategory && subCategories.length > 0 && (
+        <SubCategoryCardContainer
+          items={subCategories}
+          selectedIds={subCategory}
+          onToggle={toggleSubCategory}
+          title="Sub-Categories"
+        />
+      )}
+
+      {/* 3. Selected Filters Chips */}
+      <SelectedFiltersChips />
+
+      {/* 4. Results Count */}
       <div className="flex items-center justify-between text-sm text-muted-foreground">
         <p>
-          Showing {products.length} of {total} products
+          Showing {products.length} of {total}{" "}
+          {type === "SERVICE" ? "services" : "products"}
         </p>
       </div>
 
-      <ItemCardGrid products={products} />
+      {/* 5. Product Grid or Empty State */}
+      {products.length > 0 ? (
+        <ItemCardGrid products={products} />
+      ) : (
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <h3 className="text-xl font-semibold mb-2">No results found</h3>
+          <p className="text-muted-foreground">
+            Try adjusting your filters or search query.
+          </p>
+          <Button
+            variant="link"
+            onClick={() =>
+              updateParams({
+                q: "",
+                parentCategory: null,
+                subCategory: [],
+                brand: [],
+                specification: [],
+              })
+            }
+            className="mt-4"
+          >
+            Clear all filters
+          </Button>
+        </div>
+      )}
 
-      {/* Pagination */}
+      {/* 6. Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-4 pt-4">
           <Button
