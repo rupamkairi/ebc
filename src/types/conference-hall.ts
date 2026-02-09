@@ -53,6 +53,27 @@ export interface ConferenceHallEvent {
   _count?: {
     participants: number;
   };
+  eventRegions?: {
+    id: string;
+    state: string | null;
+    wholeState: boolean;
+    district: string | null;
+    wholeDistrict: boolean;
+    pincodeId: string | null;
+    pincode?: {
+      pincode: string;
+      district: string;
+      state: string;
+    };
+  }[];
+}
+
+export interface EventAudience {
+  state?: string;
+  wholeState?: boolean;
+  district?: string;
+  wholeDistrict?: boolean;
+  pincodeId?: string;
 }
 
 export interface CreateEventRequest {
@@ -70,6 +91,7 @@ export interface CreateEventRequest {
   meetingUrl?: string;
   pincodeId?: string;
   attachmentIds?: { mediaId?: string; documentId?: string }[];
+  regions?: EventAudience[];
 }
 
 export type UpdateEventRequest = Partial<CreateEventRequest>;

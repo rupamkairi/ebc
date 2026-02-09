@@ -28,27 +28,38 @@ import {
   usePublishEventMutation,
   useUpdateEventMutation,
 } from "@/queries/conferenceHallQueries";
+import { usePincodeRecordsQuery } from "@/queries/regionQueries";
 import {
   ConferenceHallEvent,
   CreateEventRequest,
+  EventAudience,
   UpdateEventRequest,
   VERIFICATION_STATUS,
 } from "@/types/conference-hall";
+import { PincodeRecord } from "@/types/region";
 import { useForm } from "@tanstack/react-form";
 import {
   AlertTriangle,
   Calendar,
+  Check,
   CheckCircle,
   FileText,
   FileVideo,
+  Globe,
   Loader2,
   MapPin,
+  Plus,
   Save,
+  Trash2,
   Video,
   X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useState } from "react";
+import { StateSearchAutocomplete } from "@/components/autocompletes/state-search-autocomplete";
+import { DistrictSearchAutocomplete } from "@/components/autocompletes/district-search-autocomplete";
+import { cn } from "@/lib/utils";
 
 interface EventFormProps {
   initialData?: ConferenceHallEvent;
@@ -75,6 +86,13 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
       meetingUrl: initialData?.meetingUrl || "",
       pincodeId: initialData?.pincodeId || "",
       attachmentIds: [] as { mediaId?: string; documentId?: string }[],
+      regions: (initialData?.eventRegions || []).map((r) => ({
+        state: r.state || undefined,
+        wholeState: r.wholeState,
+        district: r.district || undefined,
+        wholeDistrict: r.wholeDistrict,
+        pincodeId: r.pincodeId || undefined,
+      })) as EventAudience[],
     },
     onSubmit: async ({ value }) => {
       try {
@@ -455,6 +473,25 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                     </CardContent>
                   </Card>
                 )}
+
+                {/* Audience Targeting Section */}
+                <Card className="border-emerald-100 bg-emerald-50/30">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Globe className="h-5 w-5 text-emerald-600" />
+                      Target Audience Regions
+                    </CardTitle>
+                    <CardDescription>
+                      Select specific areas where your event should be promoted.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <RegionSelector
+                      regions={form.getFieldValue("regions") || []}
+                      onUpdate={(regions) => form.setFieldValue("regions", regions)}
+                    />
+                  </CardContent>
+                </Card>
               </div>
 
               {/* Sidebar: Assets & Publish */}
@@ -593,5 +630,200 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
         }}
       </form.Subscribe>
     </form>
+  );
+}
+
+function RegionSelector({
+  regions,
+  onUpdate,
+}: {
+  regions: EventAudience[];
+  onUpdate: (regions: EventAudience[]) => void;
+}) {
+  const [selectedState, setSelectedState] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [pincodeSearch, setPincodeSearch] = useState("");
+
+  const { data: records, isLoading } = usePincodeRecordsQuery({
+    state: selectedState,
+    district: selectedDistrict,
+    pincode: pincodeSearch.length >= 3 ? pincodeSearch : undefined,
+  });
+
+  const addRegion = (record: PincodeRecord) => {
+    // Check if already added
+    if (regions.some((r) => r.pincodeId === record.id)) return;
+    onUpdate([...regions, { pincodeId: record.id }]);
+  };
+
+  const addDistrict = () => {
+    if (!selectedDistrict || !selectedState) return;
+    if (
+      regions.some(
+        (r) => r.district === selectedDistrict && r.wholeDistrict === true
+      )
+    )
+      return;
+    onUpdate([
+      ...regions,
+      { state: selectedState, district: selectedDistrict, wholeDistrict: true },
+    ]);
+  };
+
+  const addState = () => {
+    if (!selectedState) return;
+    if (regions.some((r) => r.state === selectedState && r.wholeState === true))
+      return;
+    onUpdate([...regions, { state: selectedState, wholeState: true }]);
+  };
+
+  const removeRegion = (index: number) => {
+    onUpdate(regions.filter((_, i) => i !== index));
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-muted/20 p-4 rounded-lg border">
+        <div className="space-y-1">
+          <Label className="text-xs font-semibold">Step 1: Select State</Label>
+          <div className="flex gap-2">
+            <StateSearchAutocomplete
+              value={selectedState}
+              onValueChange={(val) => {
+                setSelectedState(val);
+                setSelectedDistrict("");
+              }}
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              disabled={!selectedState}
+              onClick={addState}
+              title="Target Whole State"
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+
+        <div className="space-y-1">
+          <Label className="text-xs font-semibold">
+            Step 2: Select District (Optional)
+          </Label>
+          <div className="flex gap-2">
+            <DistrictSearchAutocomplete
+              state={selectedState}
+              value={selectedDistrict}
+              onValueChange={setSelectedDistrict}
+              disabled={!selectedState}
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              disabled={!selectedDistrict}
+              onClick={addDistrict}
+              title="Target Whole District"
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+
+        <div className="space-y-1 md:col-span-2">
+          <Label className="text-xs font-semibold">
+            Step 3: Search Pincode (Optional)
+          </Label>
+          <div className="relative">
+            <Input
+              placeholder="Start typing pincode (min 3 digits)..."
+              value={pincodeSearch}
+              onChange={(e) => setPincodeSearch(e.target.value)}
+              disabled={!selectedState}
+            />
+            {isLoading && (
+              <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Search Results */}
+      {records && records.length > 0 && selectedState && (
+        <div className="border rounded-md max-h-40 overflow-y-auto bg-background">
+          <div className="grid grid-cols-1 divide-y">
+            {records.map((r) => {
+              const isSelected = regions.some((reg) => reg.pincodeId === r.id);
+              return (
+                <div
+                  key={r.id}
+                  className="flex items-center justify-between p-2 px-3 hover:bg-muted/50 transition-colors cursor-pointer"
+                  onClick={() => !isSelected && addRegion(r)}
+                >
+                  <div className="text-sm">
+                    <span className="font-bold">{r.pincode}</span>
+                    <span className="ml-2 text-muted-foreground text-xs">
+                      {r.district}, {r.state}
+                    </span>
+                  </div>
+                  {isSelected ? (
+                    <Check className="h-4 w-4 text-emerald-500" />
+                  ) : (
+                    <Plus className="h-4 w-4 text-muted-foreground opacity-30" />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Selected Regions List */}
+      <div className="space-y-3">
+        <h4 className="text-sm font-bold flex items-center gap-2">
+          Selected Targets ({regions.length})
+        </h4>
+        <div className="flex flex-wrap gap-2 min-h-[40px] p-4 border rounded-lg bg-card">
+          {regions.length === 0 && (
+            <p className="text-xs text-muted-foreground italic">
+              No regions selected. This event will be visible generally.
+            </p>
+          )}
+          {regions.map((region, idx) => (
+            <Badge key={idx} variant="secondary" className="pl-3 pr-1 py-1 gap-2 border-primary/20 bg-primary/5">
+              <span className="text-xs">
+                {region.wholeState ? (
+                  <>
+                    <span className="font-bold text-[10px] text-emerald-600 mr-1 uppercase">Whole State:</span>
+                    {region.state}
+                  </>
+                ) : region.wholeDistrict ? (
+                  <>
+                    <span className="font-bold text-[10px] text-blue-600 mr-1 uppercase">Whole District:</span>
+                    {region.district} ({region.state})
+                  </>
+                ) : (
+                  <>
+                    <span className="font-bold text-[10px] text-primary/60 mr-1 uppercase">Pincode:</span>
+                    {region.pincodeId?.substring(0, 8)}...
+                  </>
+                )}
+              </span>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-5 w-5 hover:bg-destructive/20 hover:text-destructive text-muted-foreground"
+                onClick={() => removeRegion(idx)}
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </Badge>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
