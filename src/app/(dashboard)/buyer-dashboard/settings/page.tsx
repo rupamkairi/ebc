@@ -17,18 +17,28 @@ import { useAuthStore } from "@/store/authStore";
 import { useUpdateProfileMutation } from "@/queries/authQueries";
 import { toast } from "sonner";
 import { NotificationChannelList } from "@/components/dashboard/notifications/notification-channel-list";
+import { PincodeSearchAutocomplete } from "@/components/autocompletes/pincode-search-autocomplete";
+import React, { useState, useEffect } from "react";
 
 export default function SettingsPage() {
   const { user } = useAuthStore();
   const updateProfile = useUpdateProfileMutation();
+  const [pincodeId, setPincodeId] = useState(user?.pincodeId || "");
+
+  useEffect(() => {
+    if (user?.pincodeId) {
+      setPincodeId(user.pincodeId);
+    }
+  }, [user?.pincodeId]);
 
   const handleUpdateProfile = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = {
       name: `${formData.get("firstName")} ${formData.get("lastName")}`.trim(),
-      email: formData.get("email") as string,
-      phoneNumber: formData.get("phone") as string,
+      email: (formData.get("email") as string) || undefined,
+      phone: (formData.get("phone") as string) || undefined,
+      pincodeId: pincodeId || undefined,
     };
 
     updateProfile.mutate(data, {
@@ -57,7 +67,7 @@ export default function SettingsPage() {
               <CardHeader>
                 <CardTitle>Personal Details</CardTitle>
                 <CardDescription>
-                  Update your personal information and contact details.
+                  Update your personal information and contact details for better targeting.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -97,6 +107,15 @@ export default function SettingsPage() {
                       type="tel"
                       placeholder="Enter phone number"
                       defaultValue={user?.phone || ""}
+                    />
+                  </div>
+                  <div className="space-y-2 md:col-span-2">
+                    <Label>Pincode / Targeting Location</Label>
+                    <PincodeSearchAutocomplete
+                      value={pincodeId}
+                      onValueChange={setPincodeId}
+                      initialRecord={user?.pincode || undefined}
+                      placeholder="Search your pincode..."
                     />
                   </div>
                 </div>

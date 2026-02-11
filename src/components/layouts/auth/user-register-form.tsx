@@ -35,6 +35,8 @@ import { useAuthStore } from "@/store/authStore";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
+import { PincodeSearchAutocomplete } from "@/components/autocompletes/pincode-search-autocomplete";
+
 export function UserRegisterForm({
   className,
   ...props
@@ -43,6 +45,7 @@ export function UserRegisterForm({
   const { setToken, setUser } = useAuthStore();
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
+  const [pincodeId, setPincodeId] = useState("");
   const [type, setType] = useState<string>("BUYER");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"info" | "otp">("info");
@@ -59,11 +62,15 @@ export function UserRegisterForm({
       toast.error("Please enter a valid mobile number");
       return;
     }
+    if (!pincodeId) {
+      toast.error("Please select a pincode");
+      return;
+    }
 
     setIsLoading(true);
     try {
       const phone = mobile.startsWith("+") ? mobile : `+91${mobile}`;
-      const response = await authService.sendOtp({ phone, name, type });
+      const response = await authService.sendOtp({ phone, name, type, pincodeId });
 
       if (response.isNewUser === false) {
         toast.info("User already exists. Redirecting to login...");
@@ -166,6 +173,15 @@ export function UserRegisterForm({
                         required
                       />
                     </div>
+                  </Field>
+                  <Field>
+                    <FieldLabel>Pincode / Location</FieldLabel>
+                    <PincodeSearchAutocomplete
+                      value={pincodeId}
+                      onValueChange={setPincodeId}
+                      placeholder="Search your pincode..."
+                      label="Select Pincode"
+                    />
                   </Field>
                   <Field>
                     <FieldLabel htmlFor="type">I am a</FieldLabel>

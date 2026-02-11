@@ -31,6 +31,7 @@ export interface SendOtpRequest {
   phone: string;
   name?: string;
   type?: string;
+  pincodeId?: string;
 }
 
 export interface VerifyOtpRequest {
@@ -83,6 +84,7 @@ export interface SessionResponse {
 export interface UpdateProfileRequest {
   name?: string;
   email?: string;
-  phoneNumber?: string;
+  phone?: string;
   role?: string;
+  pincodeId?: string;
 }
