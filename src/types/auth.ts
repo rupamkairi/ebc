@@ -40,6 +40,13 @@ export interface VerifyOtpRequest {
 
 import { Entity } from "./entity";
 
+export interface PincodeDirectory {
+  id: string;
+  state: string;
+  district?: string | null;
+  pincode?: string | null;
+}
+
 export interface AdminUser {
   id: string;
   email: string | null;
@@ -55,6 +62,8 @@ export interface AdminUser {
   phone?: string | null;
   phoneVerified?: boolean;
   username?: string | null;
+  pincodeId?: string | null;
+  pincode?: PincodeDirectory | null;
   staffAtEntityId?: string | null;
   createdEntities?: Entity[];
   staffAt?: Entity | null;

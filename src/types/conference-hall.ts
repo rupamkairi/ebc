@@ -94,6 +94,11 @@ export interface EventListParams {
   isPhysical?: boolean;
   timeframe?: "FUTURE" | "PAST" | "ALL";
   search?: string;
+  targeting?: {
+    pincodeId?: string;
+    district?: string;
+    state?: string;
+  };
 }
 
 export type OfferRelationType =
