@@ -1,11 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { walletService } from "@/services/walletService";
+import { WalletAdjustmentRequest, LeadPricingRequest } from "@/types/wallet";
 
 export const walletKeys = {
   all: ["wallet"] as const,
-  details: (entityId: string) => [...walletKeys.all, "details", entityId] as const,
+  details: (entityId: string) =>
+    [...walletKeys.all, "details", entityId] as const,
   packages: () => [...walletKeys.all, "packages"] as const,
-  pricing: (leadType: string) => [...walletKeys.all, "pricing", leadType] as const,
+  list: () => [...walletKeys.all, "list"] as const,
 };
 
 export const useWalletDetails = (entityId: string | undefined) => {
@@ -23,18 +25,22 @@ export const useWalletPackages = () => {
   });
 };
 
-export const useLeadPricing = (leadType: string | undefined) => {
+export const useWalletsQuery = () => {
   return useQuery({
-    queryKey: walletKeys.pricing(leadType || ""),
-    queryFn: () => walletService.getPricingCost(leadType!),
-    enabled: !!leadType,
+    queryKey: walletKeys.list(),
+    queryFn: () => walletService.listWallets(),
   });
 };
 
 export const useCreateRechargeOrder = () => {
   return useMutation({
-    mutationFn: ({ packageId, entityId }: { packageId: string; entityId: string }) =>
-      walletService.createRechargeOrder(packageId, entityId),
+    mutationFn: ({
+      packageId,
+      entityId,
+    }: {
+      packageId: string;
+      entityId: string;
+    }) => walletService.createRechargeOrder(packageId, entityId),
   });
 };
 
@@ -59,10 +65,21 @@ export const useDebitWallet = () => {
       walletId: string;
       cost: number;
       reason: string;
-      type: 'DEBIT';
+      type: "DEBIT";
       refType: string;
       refId: string;
     }) => walletService.createTransaction(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: walletKeys.all });
+    },
+  });
+};
+
+export const useAdjustWalletMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: WalletAdjustmentRequest) =>
+      walletService.adjustWallet(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: walletKeys.all });
     },

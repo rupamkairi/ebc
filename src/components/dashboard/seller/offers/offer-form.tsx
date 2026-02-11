@@ -1,9 +1,15 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { format } from "date-fns";
+import { UnifiedRegionSelector } from "@/components/shared/region/unified-region-selector";
+import {
+  FileUploader,
+  FileUploadResponse,
+} from "@/components/shared/upload/media-uploader";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -14,57 +20,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { CreateOfferRequest, TargetRegion } from "@/types/conference-hall";
-import { UnifiedRegionSelector } from "@/components/shared/region/unified-region-selector";
-import {
-  Category,
-  Brand,
-  Specification,
-  Item,
-  ItemListing,
-} from "@/types/catalog";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { cn } from "@/lib/utils";
-import {
-  CalendarIcon,
-  Loader2,
-  Image as ImageIcon,
-  FileText,
-  X,
-  Plus,
-  AlertCircle,
-  AlertTriangle,
-  CheckCircle,
-} from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { VERIFICATION_STATUS } from "@/types/conference-hall";
-import {
-  FileUploader,
-  FileUploadResponse,
-} from "@/components/shared/upload/media-uploader";
-import {
-  useCreateOfferMutation,
-  useUpdateOfferMutation,
-  useOfferQuery,
-} from "@/queries/conferenceHallQueries";
-import {
-  useCategoriesQuery,
-  useBrandsQuery,
-  useSpecificationsQuery,
-  useItemsQuery,
-  useItemListingsQuery,
-} from "@/queries/catalogQueries";
-import { useEntitiesQuery } from "@/queries/entityQueries";
-import { toast } from "sonner";
-import { useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -72,10 +32,53 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import {
+  useBrandsQuery,
+  useCategoriesQuery,
+  useItemListingsQuery,
+  useItemsQuery,
+  useSpecificationsQuery,
+} from "@/queries/catalogQueries";
+import {
+  useCreateOfferMutation,
+  useOfferQuery,
+  useUpdateOfferMutation,
+} from "@/queries/conferenceHallQueries";
+import { useEntitiesQuery } from "@/queries/entityQueries";
+import { useLeadPricing } from "@/queries/pricingQueries";
+import {
+  Brand,
+  Category,
+  Item,
+  ItemListing,
+  Specification,
+} from "@/types/catalog";
+import {
+  CreateOfferRequest,
+  VERIFICATION_STATUS,
+} from "@/types/conference-hall";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import {
+  AlertCircle,
+  AlertTriangle,
+  CalendarIcon,
+  CheckCircle,
+  FileText,
+  Image as ImageIcon,
+  Loader2,
+  Plus,
+  X,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
 
 import {
   Command,
@@ -85,7 +88,6 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { usePincodeRecordsQuery } from "@/queries/regionQueries";
 import { Check } from "lucide-react";
 
 // Generic MultiSelect Component
@@ -167,7 +169,6 @@ function MultiSelectCombobox({
   );
 }
 
-
 const offerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   description: z.string().optional(),
@@ -218,6 +219,10 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
 
   const createMutation = useCreateOfferMutation();
   const updateMutation = useUpdateOfferMutation();
+
+  const { data: pricingData, isLoading: isLoadingPricing } =
+    useLeadPricing("OFFER");
+  const publishingFee = pricingData?.cost ?? 0;
 
   const form = useForm<OfferFormValues>({
     resolver: zodResolver(offerSchema),
@@ -391,7 +396,9 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
       itemListingIds: values.relations
         .filter((r) => r.relationType === "ITEM_LISTING")
         .map((r) => r.relationId),
-      targetRegionPincodeIds: values.targetRegions.map((r: any) => r.pincodeId),
+      targetRegions: values.targetRegions.map((r: any) => ({
+        pincodeId: r.pincodeId,
+      })),
       attachmentIds: [
         ...values.mediaIds.map((id) => ({ mediaId: id })),
         ...values.documentIds.map((id) => ({ documentId: id })),
@@ -894,6 +901,25 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                 />
               </CardContent>
             </Card>
+
+            <div className="space-y-4 p-4 rounded-lg bg-muted/30 border border-dashed">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Publishing Fee</span>
+                <span className="font-semibold text-primary">
+                  {isLoadingPricing ? (
+                    <Loader2 className="h-4 w-4 animate-spin inline-block" />
+                  ) : (
+                    publishingFee
+                  )}{" "}
+                  Coins
+                </span>
+              </div>
+              <div className="p-3 bg-yellow-50 border border-yellow-200 rounded text-[10px] text-yellow-800">
+                By publishing, you agree that{" "}
+                {isLoadingPricing ? "the applicable" : publishingFee} coins will
+                be deducted from your entity wallet.
+              </div>
+            </div>
 
             <Button
               type="submit"

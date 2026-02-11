@@ -35,7 +35,7 @@ export default function SettingsPage() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = {
-      name: `${formData.get("firstName")} ${formData.get("lastName")}`.trim(),
+      name: (formData.get("name") as string).trim(),
       email: (formData.get("email") as string) || undefined,
       phone: (formData.get("phone") as string) || undefined,
       pincodeId: pincodeId || undefined,
@@ -46,9 +46,6 @@ export default function SettingsPage() {
       onError: () => toast.error("Failed to update profile"),
     });
   };
-
-  // Split name for display
-  const [firstName, lastName] = (user?.name || "").split(" ");
 
   return (
     <Container>
@@ -67,27 +64,19 @@ export default function SettingsPage() {
               <CardHeader>
                 <CardTitle>Personal Details</CardTitle>
                 <CardDescription>
-                  Update your personal information and contact details for better targeting.
+                  Update your personal information and contact details for
+                  better targeting.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="firstName">First Name</Label>
                     <Input
-                      id="firstName"
-                      name="firstName"
-                      placeholder="Enter first name"
-                      defaultValue={firstName}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName">Last Name</Label>
-                    <Input
-                      id="lastName"
-                      name="lastName"
-                      placeholder="Enter last name"
-                      defaultValue={lastName}
+                      id="name"
+                      name="name"
+                      placeholder="Enter name"
+                      defaultValue={user?.name || ""}
                     />
                   </div>
                   <div className="space-y-2">
@@ -109,16 +98,17 @@ export default function SettingsPage() {
                       defaultValue={user?.phone || ""}
                     />
                   </div>
-                  <div className="space-y-2 md:col-span-2">
+                  <div className="space-y-2 md:col-span-1">
                     <Label>Pincode / Targeting Location</Label>
                     <PincodeSearchAutocomplete
                       value={pincodeId}
                       onValueChange={setPincodeId}
-                      initialRecord={user?.pincode || undefined}
+                      initialRecord={(user?.pincode?.pincode || "") as string}
                       placeholder="Search your pincode..."
                     />
                   </div>
                 </div>
+                <br />
               </CardContent>
               <CardFooter className="justify-end border-t pt-4">
                 <Button type="submit" disabled={updateProfile.isPending}>
@@ -128,95 +118,6 @@ export default function SettingsPage() {
             </form>
           </Card>
 
-          {/* 2. Company Details */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Company Details</CardTitle>
-              <CardDescription>
-                Manage your company profile and billing information.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="companyName">Company Name</Label>
-                  <Input
-                    id="companyName"
-                    placeholder="Enter company name"
-                    defaultValue="Acme Corp"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="gst">GST Number</Label>
-                  <Input
-                    id="gst"
-                    placeholder="Enter GST number"
-                    defaultValue="29ZZZZZ9999Z9Z9"
-                  />
-                </div>
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="address">Address</Label>
-                  <Input
-                    id="address"
-                    placeholder="Enter company address"
-                    defaultValue="123 Business Park, Tech City"
-                  />
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter className="justify-end border-t pt-4">
-              <Button>Save Company Details</Button>
-            </CardFooter>
-          </Card>
-
-          {/* 3. Company Members */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle>Company Members</CardTitle>
-                  <CardDescription>
-                    Manage team members who have access to this account.
-                  </CardDescription>
-                </div>
-                <Button size="sm" variant="outline">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Member
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {[
-                  {
-                    name: "Alice Johnson",
-                    role: "Admin",
-                    email: "alice@acme.com",
-                  },
-                  { name: "Bob Smith", role: "Editor", email: "bob@acme.com" },
-                ].map((member, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-3 border rounded-md"
-                  >
-                    <div>
-                      <p className="font-medium">{member.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {member.email} • {member.role}
-                      </p>
-                    </div>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="text-destructive hover:text-destructive/90"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
           {/* 4. Notification Settings */}
           <NotificationChannelList />
         </div>

@@ -7,7 +7,7 @@ import { PincodeRecord } from "@/types/region";
 
 interface PincodeSearchAutocompleteProps {
   value?: string; // This will be the pincode directory ID
-  initialRecord?: PincodeRecord;
+  initialRecord?: PincodeRecord | string;
   onRecordSelect?: (record: PincodeRecord) => void;
   onValueChange?: (value: string) => void;
   placeholder?: string;
@@ -26,8 +26,12 @@ export function PincodeSearchAutocomplete({
   className,
   disabled,
 }: PincodeSearchAutocompleteProps) {
-  const [searchValue, setSearchValue] = React.useState("");
-  const [debouncedSearchValue, setDebouncedSearchValue] = React.useState("");
+  const [searchValue, setSearchValue] = React.useState(
+    typeof initialRecord === "string" ? initialRecord : "",
+  );
+  const [debouncedSearchValue, setDebouncedSearchValue] = React.useState(
+    typeof initialRecord === "string" ? initialRecord : "",
+  );
 
   React.useEffect(() => {
     const timer = setTimeout(() => {
@@ -50,7 +54,8 @@ export function PincodeSearchAutocomplete({
 
     if (
       initialRecord &&
-      !baseOptions.find((o) => o.value === initialRecord.id)
+      typeof initialRecord !== "string" &&
+      !baseOptions.find((o) => o.value === (initialRecord as PincodeRecord).id)
     ) {
       baseOptions.unshift({
         label: `${initialRecord.pincode} - ${initialRecord.district}, ${initialRecord.state}`,

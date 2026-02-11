@@ -1,36 +1,15 @@
 import fetchClient from "@/lib/api-client";
 import { API_ENDPOINTS } from "@/lib/api-endpoints";
-
-export interface CoinPackage {
-  id: string;
-  name: string;
-  coins: number;
-  priceInInr: number;
-}
-
-export interface Transaction {
-  id: string;
-  reason: string;
-  amount: number;
-  type: 'CREDIT' | 'DEBIT';
-  createdAt: string;
-  refType?: string;
-  refId?: string;
-  status: string;
-}
-
-export interface WalletDetails {
-  balance: number;
-  transactions: Transaction[];
-}
-
-export interface RechargeResponse {
-  id?: string;
-  orderId: string;
-  amount: number;
-  currency: string;
-  key?: string; // Razorpay Key ID
-}
+import {
+  CoinPackage,
+  WalletDetails,
+  RechargeResponse,
+  WalletTransaction,
+  Wallet,
+  WalletAdjustmentRequest,
+  LeadPricingRequest,
+  LeadPricing,
+} from "@/types/wallet";
 
 export const walletService = {
   getPackages: async (): Promise<CoinPackage[]> => {
@@ -38,14 +17,15 @@ export const walletService = {
   },
 
   getWalletDetails: async (entityId: string): Promise<WalletDetails> => {
-    return fetchClient<WalletDetails>(`${API_ENDPOINTS.WALLET.DETAILS}${entityId}`);
+    return fetchClient<WalletDetails>(
+      `${API_ENDPOINTS.WALLET.DETAILS}${entityId}`,
+    );
   },
 
-  getPricingCost: async (leadType: string): Promise<{ cost: number }> => {
-    return fetchClient<{ cost: number }>(`${API_ENDPOINTS.WALLET.PRICING}${leadType}`);
-  },
-
-  createRechargeOrder: async (packageId: string, entityId: string): Promise<RechargeResponse> => {
+  createRechargeOrder: async (
+    packageId: string,
+    entityId: string,
+  ): Promise<RechargeResponse> => {
     return fetchClient<RechargeResponse>(API_ENDPOINTS.WALLET.RECHARGE, {
       method: "POST",
       body: { packageId, entityId },
@@ -56,11 +36,11 @@ export const walletService = {
     walletId: string;
     cost: number;
     reason: string;
-    type: 'DEBIT';
+    type: "DEBIT";
     refType: string;
     refId: string;
-  }): Promise<Transaction> => {
-    return fetchClient<Transaction>(API_ENDPOINTS.WALLET.TRANSACTION, {
+  }): Promise<WalletTransaction> => {
+    return fetchClient<WalletTransaction>(API_ENDPOINTS.TRANSACTION.BASE, {
       method: "POST",
       body: data,
     });
@@ -71,7 +51,24 @@ export const walletService = {
     razorpay_payment_id: string;
     razorpay_signature: string;
   }): Promise<{ success: boolean }> => {
-    return fetchClient<{ success: boolean }>(API_ENDPOINTS.WALLET.VERIFY_PAYMENT, {
+    return fetchClient<{ success: boolean }>(
+      API_ENDPOINTS.WALLET.VERIFY_PAYMENT,
+      {
+        method: "POST",
+        body: data,
+      },
+    );
+  },
+
+  // Admin Methods
+  listWallets: async (): Promise<Wallet[]> => {
+    return fetchClient<Wallet[]>(API_ENDPOINTS.WALLET.LIST);
+  },
+
+  adjustWallet: async (
+    data: WalletAdjustmentRequest,
+  ): Promise<WalletTransaction> => {
+    return fetchClient<WalletTransaction>(API_ENDPOINTS.WALLET.ADJUST, {
       method: "POST",
       body: data,
     });

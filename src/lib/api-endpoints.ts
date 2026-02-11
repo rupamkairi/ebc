@@ -143,10 +143,16 @@ export const API_ENDPOINTS = {
   WALLET: {
     PACKAGES: "/wallet/packages",
     DETAILS: "/wallet/", // :entityId
-    PRICING: "/wallet/pricing/cost/", // :leadType
     RECHARGE: "/wallet/recharge",
-    TRANSACTION: "/wallet/transaction",
     VERIFY_PAYMENT: "/wallet/verify-payment",
+    LIST: "/wallet/list",
+    ADJUST: "/wallet/adjust",
+  },
+  PRICING: {
+    BASE: "/wallet/pricing",
+  },
+  TRANSACTION: {
+    BASE: "/wallet/transaction",
   },
   NOTIFICATION: {
     CREATE: "/notification",

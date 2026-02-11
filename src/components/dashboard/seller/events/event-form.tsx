@@ -31,7 +31,6 @@ import { UnifiedRegionSelector } from "@/components/shared/region/unified-region
 import { PincodeSearchAutocomplete } from "@/components/autocompletes/pincode-search-autocomplete";
 import {
   ConferenceHallEvent,
-  CreateEventRequest,
   UpdateEventRequest,
   VERIFICATION_STATUS,
 } from "@/types/conference-hall";
@@ -50,29 +49,13 @@ import {
   Video,
   X,
 } from "lucide-react";
+import { useLeadPricing } from "@/queries/pricingQueries";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 
 interface EventFormProps {
   initialData?: ConferenceHallEvent;
   entityId: string;
-}
-
-interface EventFormValues {
-  name: string;
-  description: string;
-  type: "LIVE" | "RECORDED";
-  isPublic: boolean;
-  isPhysical: boolean;
-  isRemote: boolean;
-  startDate: string;
-  endDate: string;
-  location: string;
-  meetingUrl: string;
-  pincodeId: string;
-  attachmentIds: { mediaId?: string; documentId?: string }[];
-  targetRegions: TargetRegion[];
 }
 
 export function EventForm({ initialData, entityId }: EventFormProps) {
@@ -80,6 +63,10 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
   const createEventMutation = useCreateEventMutation();
   const updateEventMutation = useUpdateEventMutation();
   const publishEventMutation = usePublishEventMutation();
+
+  const { data: pricingData, isLoading: isLoadingPricing } =
+    useLeadPricing("EVENT");
+  const publishingFee = pricingData?.cost ?? 0;
 
   const form = useForm(
     formOptions({
@@ -115,7 +102,9 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                 ? { isPublic: value.isPublic, isActive: initialData.isActive }
                 : {
                     ...restValue,
-                    targetRegionPincodeIds: targetRegions.map((r) => r.pincodeId),
+                    targetRegions: targetRegions.map((r) => ({
+                      pincodeId: r.pincodeId,
+                    })),
                   };
 
               await updateEventMutation.mutateAsync({
@@ -128,7 +117,9 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
             const { targetRegions, ...restValue } = value;
             await createEventMutation.mutateAsync({
               ...restValue,
-              targetRegionPincodeIds: targetRegions.map((r) => r.pincodeId),
+              targetRegions: targetRegions.map((r) => ({
+                pincodeId: r.pincodeId,
+              })),
               entityId,
             });
             const isLive = value.type === "LIVE";
@@ -500,7 +491,9 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                   <CardContent className="space-y-6">
                     <UnifiedRegionSelector
                       selectedRegions={(targetRegions as TargetRegion[]) || []}
-                      onUpdate={(regions) => form.setFieldValue("targetRegions", regions)}
+                      onUpdate={(regions) =>
+                        form.setFieldValue("targetRegions", regions)
+                      }
                     />
                   </CardContent>
                 </Card>
@@ -600,12 +593,18 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                           Publishing Fee
                         </span>
                         <span className="font-semibold text-primary">
-                          500 Coins
+                          {isLoadingPricing ? (
+                            <Loader2 className="h-4 w-4 animate-spin inline-block" />
+                          ) : (
+                            publishingFee
+                          )}{" "}
+                          Coins
                         </span>
                       </div>
                       <div className="p-3 bg-yellow-50 border border-yellow-200 rounded text-[10px] text-yellow-800">
-                        By publishing, you agree that 500 coins will be deducted
-                        from your entity wallet.
+                        By publishing, you agree that{" "}
+                        {isLoadingPricing ? "the applicable" : publishingFee}{" "}
+                        coins will be deducted from your entity wallet.
                       </div>
                       <form.Subscribe
                         selector={(state) => [
@@ -625,7 +624,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                             ) : (
                               <Save className="h-4 w-4" />
                             )}
-                             {initialData
+                            {initialData
                               ? "Update Event"
                               : isLive
                                 ? "Save & Request Approval"

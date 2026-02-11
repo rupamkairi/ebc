@@ -278,10 +278,18 @@ _All routes require `Authorization: Bearer <token>` header._
 - **Delete:** `DELETE /item`
 - **List:** `POST /item/list`
 
-### 3.5 Bulk Upload
+### 3.5 Import Catalog (CSV)
 
-- **POST** `/upload`
-- Accepts an array of objects to create categories, brands, specifications, and items in bulk.
+- **POST** `/import/csv`
+- **Content-Type**: `multipart/form-data`
+- **Body**: `file` (CSV file)
+- **Response**: Streaming JSON (NDJSON) indicating progress.
+  ```json
+  {"status": "started", "message": "Import started..."}
+  {"status": "progress", "processed": 10, "success": 10}
+  ...
+  {"status": "completed", "total": 20, "success": 20, "failed": 0}
+  ```
 
 ---
 
@@ -292,7 +300,6 @@ _All routes require `Authorization: Bearer <token>` header._
 ### 4.1 Item Listing
 
 - **Composite Create**: `POST /listing`
-- **Read**: `GET /listing/:id`
 - **Update**: `PATCH /listing/:id`
 - **Delete**: `DELETE /listing/:id`
 - **List**: `POST /listing/list`
@@ -349,11 +356,24 @@ Updates the verification status of an event and notifies the creator.
 Publishes an event. Deducts coins from entity's wallet.
 _Note: Event must be APPROVED by an admin before it can be published._
 
-#### 5.1.3 Update Event
+#### 5.1.4 Create/Update Event Request Body
 
-**PATCH** `/:id`
-Updates an event.
-_Note: If an event is APPROVED, sellers can only update `isActive` and `isPublic`. Admins can update all fields._
+```json
+{
+  "name": "Event Name",
+  "description": "Description",
+  "type": "LIVE",
+  "isPublic": false,
+  "isPhysical": false,
+  "isRemote": true,
+  "startDate": "2024-01-25T10:00:00.000Z",
+  "endDate": "2024-01-25T12:00:00.000Z",
+  "location": "Venue",
+  "meetingUrl": "https://zoom.us/j/...",
+  "targetRegions": [{ "pincodeId": "uuid" }],
+  "attachmentIds": [{ "mediaId": "uuid" }]
+}
+```
 
 ### 5.2 Offer
 
@@ -378,7 +398,7 @@ Create a new offer draft. Does not publish it.
   "specificationIds": [],
   "itemIds": [],
   "itemListingIds": [],
-  "pincodeIds": ["uuid"],
+  "targetRegions": [{ "pincodeId": "uuid" }],
   "attachmentIds": [{ "mediaId": "uuid" }, { "documentId": "uuid" }],
   "startDate": "2024-01-25T00:00:00.000Z",
   "endDate": "2024-12-25T00:00:00.000Z"
@@ -421,6 +441,7 @@ _Note: If an offer is APPROVED, sellers can only update `isActive`. Admins can u
   "description": "Updated Description",
   "isActive": true,
   "categoryIds": ["uuid"], // Only allowed if NOT published
+  "targetRegions": [{ "pincodeId": "uuid" }],
   "startDate": "2024-01-25T00:00:00.000Z",
   "endDate": "2024-12-25T00:00:00.000Z"
 }
@@ -504,6 +525,7 @@ Create a new content draft.
   "description": "Content Description",
   "entityId": "uuid",
   "isActive": true,
+  "targetRegions": [{ "pincodeId": "uuid" }],
   "attachmentIds": [{ "mediaId": "uuid" }, { "documentId": "uuid" }]
 }
 ```
@@ -516,7 +538,7 @@ Returns the created content object.
 #### 5.3.2 Publish Content
 
 **POST** `/:id/publish`
-Publishes the content.
+Publishes the content. Deducts coins from entity's wallet.
 _Note: Content must be APPROVED by an admin before it can be published._
 
 **Response**
@@ -545,7 +567,8 @@ Updates a content entry.
   "name": "Updated Name",
   "description": "Updated Description",
   "isActive": true,
-  "isPublic": false
+  "isPublic": false,
+  "targetRegions": [{ "pincodeId": "uuid" }]
 }
 ```
 
@@ -651,13 +674,85 @@ Updates the verification status of content and notifies the creator.
 
 - Returns balance and recent transactions.
 
-### 7.2 Process Transaction
+### 7.2 List Wallets
+
+**GET** `/list`
+
+- **Roles:** `ADMIN` (Root Admin), `ADMIN_ACCOUNTANT`
+- Returns all wallets with entity and owner (user) details.
+
+### 7.3 Manual Wallet Adjustment
+
+**POST** `/adjust`
+
+- **Roles:** `ADMIN` (Root Admin)
+- **Request Body:**
+  ```json
+  {
+    "walletId": "uuid",
+    "cost": 100,
+    "type": "CREDIT", // "CREDIT" | "DEBIT"
+    "reason": "MANUAL_ADJUSTMENT"
+  }
+  ```
+
+### 7.4 Get Coin Packages
+
+**GET** `/packages`
+
+- Returns all active coin packages.
+- **Roles:** `AUTHENTICATED`
+
+### 7.5 Create/Update Coin Package
+
+**POST** `/packages`
+
+- **Roles:** `ADMIN`
+- **Request Body:**
+  ```json
+  {
+    "name": "Standard Pack",
+    "coins": 100,
+    "priceInInr": 1000,
+    "description": "Optional"
+  }
+  ```
+
+### 7.6 Get Lead Pricing Configs
+
+**GET** `/pricing`
+
+- **Roles:** `AUTHENTICATED`
+- Returns all lead pricing configurations.
+
+### 7.7 Get Lead Cost
+
+**GET** `/pricing/cost/:leadType`
+
+- **Params:** `leadType` (e.g., `QUOTATION`, `VISIT`, `OFFER`, `EVENT`, `CONTENT`)
+- **Roles:** `AUTHENTICATED`
+- Returns the cost in coins for the specified lead type.
+
+### 7.8 Set Lead Pricing
+
+**POST** `/pricing`
+
+- **Roles:** `ADMIN`
+- **Request Body:**
+  ```json
+  {
+    "leadType": "CONTENT",
+    "costInCoins": 10
+  }
+  ```
+
+### 7.9 Process Transaction
 
 **POST** `/transaction`
 
-- **Reasons:** `QUOTATION_SUMBIT`, `VISIT_SUBMIT`
+- **Reasons:** `QUOTATION_SUMBIT`, `VISIT_SUBMIT`, `OFFER_PUBLISH`, `EVENT_PUBLISH`, `EVENT_JOIN`, `CONTENT_PUBLISH`, `WALLET_TOPUP`, `MANUAL_ADJUSTMENT`, `REFUND`, `BONUS`
 - **Types:** `CREDIT`, `DEBIT`
-- **Ref Types:** `QUOTATION`, `VISIT`
+- **Ref Types:** `QUOTATION`, `VISIT`, `OFFER`, `EVENT`, `CONTENT`
 
 ---
 

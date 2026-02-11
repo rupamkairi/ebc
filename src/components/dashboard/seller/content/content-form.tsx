@@ -21,6 +21,7 @@ import {
 import { UnifiedRegionSelector } from "@/components/shared/region/unified-region-selector";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useLeadPricing } from "@/queries/pricingQueries";
 import {
   Loader2,
   Save,
@@ -50,6 +51,10 @@ export function ContentForm({ initialData, entityId }: ContentFormProps) {
   const createContentMutation = useCreateContentMutation();
   const updateContentMutation = useUpdateContentMutation();
 
+  const { data: pricingData, isLoading: isLoadingPricing } =
+    useLeadPricing("CONTENT");
+  const publishingFee = pricingData?.cost ?? 0;
+
   const form = useForm({
     defaultValues: {
       name: initialData?.name || "",
@@ -66,7 +71,9 @@ export function ContentForm({ initialData, entityId }: ContentFormProps) {
             id: initialData.id,
             data: {
               ...restValue,
-              targetRegionPincodeIds: targetRegions.map((r) => r.pincodeId),
+              targetRegions: targetRegions.map((r) => ({
+                pincodeId: r.pincodeId,
+              })),
             } as UpdateContentRequest,
           });
           toast.success("Content updated successfully!");
@@ -74,7 +81,9 @@ export function ContentForm({ initialData, entityId }: ContentFormProps) {
           const { targetRegions, ...restValue } = value;
           await createContentMutation.mutateAsync({
             ...(restValue as CreateContentRequest),
-            targetRegionPincodeIds: targetRegions.map((r) => r.pincodeId),
+            targetRegions: targetRegions.map((r) => ({
+              pincodeId: r.pincodeId,
+            })),
             entityId,
           });
           toast.success("Content created successfully!");
@@ -140,7 +149,12 @@ export function ContentForm({ initialData, entityId }: ContentFormProps) {
         </Alert>
       )}
 
-      <form.Subscribe selector={(state) => [state.values.isActive, state.values.targetRegions]}>
+      <form.Subscribe
+        selector={(state) => [
+          state.values.isActive,
+          state.values.targetRegions,
+        ]}
+      >
         {([, targetRegions]) => {
           return (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -222,7 +236,8 @@ export function ContentForm({ initialData, entityId }: ContentFormProps) {
                       Target Audience Regions
                     </CardTitle>
                     <CardDescription>
-                      Select specific areas where your content should be promoted.
+                      Select specific areas where your content should be
+                      promoted.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
@@ -330,6 +345,24 @@ export function ContentForm({ initialData, entityId }: ContentFormProps) {
                 <Card className="bg-muted/30">
                   <CardContent className="pt-6">
                     <div className="space-y-4">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">
+                          Publishing Fee
+                        </span>
+                        <span className="font-semibold text-primary">
+                          {isLoadingPricing ? (
+                            <Loader2 className="h-4 w-4 animate-spin inline-block" />
+                          ) : (
+                            publishingFee
+                          )}{" "}
+                          Coins
+                        </span>
+                      </div>
+                      <div className="p-3 bg-yellow-50 border border-yellow-200 rounded text-[10px] text-yellow-800">
+                        By publishing, you agree that{" "}
+                        {isLoadingPricing ? "the applicable" : publishingFee}{" "}
+                        coins will be deducted from your entity wallet.
+                      </div>
                       <form.Subscribe
                         selector={(state) => [
                           state.canSubmit,

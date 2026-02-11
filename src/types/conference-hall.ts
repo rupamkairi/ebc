@@ -80,7 +80,7 @@ export interface CreateEventRequest {
   meetingUrl?: string;
   pincodeId?: string;
   attachmentIds?: { mediaId?: string; documentId?: string }[];
-  targetRegionPincodeIds?: string[];
+  targetRegions?: { pincodeId: string }[];
 }
 
 export type UpdateEventRequest = Partial<CreateEventRequest>;
@@ -188,7 +188,7 @@ export interface CreateOfferRequest {
   specificationIds: string[];
   itemIds: string[];
   itemListingIds: string[];
-  targetRegionPincodeIds: string[];
+  targetRegions: { pincodeId: string }[];
   attachmentIds: { mediaId?: string; documentId?: string }[];
 }
 
@@ -245,7 +245,7 @@ export interface CreateContentRequest {
   entityId: string;
   isActive: boolean;
   attachmentIds: { mediaId?: string; documentId?: string }[];
-  targetRegionPincodeIds?: string[];
+  targetRegions?: { pincodeId: string }[];
 }
 
 export interface UpdateContentRequest {
@@ -253,7 +253,7 @@ export interface UpdateContentRequest {
   description?: string;
   isActive?: boolean;
   isPublic?: boolean;
-  targetRegionPincodeIds?: string[];
+  targetRegions?: { pincodeId: string }[];
   attachmentIds?: { mediaId?: string; documentId?: string }[];
 }
 

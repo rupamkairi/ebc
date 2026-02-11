@@ -70,6 +70,14 @@ const data = {
           title: "Service Providers",
           url: "/admin-dashboard/sellers/service-providers",
         },
+        {
+          title: "Wallets",
+          url: "/admin-dashboard/wallets",
+        },
+        {
+          title: "Costs",
+          url: "/admin-dashboard/costs",
+        },
       ],
     },
     {
