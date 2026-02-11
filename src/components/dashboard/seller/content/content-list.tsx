@@ -146,11 +146,30 @@ export function ContentList() {
             </CardDescription>
           </CardHeader>
           <CardContent className="flex-1 space-y-4">
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <div className="bg-muted p-1.5 rounded-md">
-                <FileText className="h-4 w-4" />
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <div className="bg-muted p-1.5 rounded-md">
+                  <FileText className="h-4 w-4" />
+                </div>
+                <span>{content.attachments?.length || 0} Attachments</span>
               </div>
-              <span>{content.attachments?.length || 0} Attachments</span>
+              {content.targetRegions && content.targetRegions.length > 0 && (
+                <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground line-clamp-1">
+                  <Globe className="h-3 w-3" />
+                  <span>
+                    Targets:{" "}
+                    {content.targetRegions
+                      .map((r) =>
+                        r.pincode
+                          ? r.pincode.pincode ||
+                            r.pincode.district ||
+                            r.pincode.state
+                          : "Area",
+                      )
+                      .join(", ")}
+                  </span>
+                </div>
+              )}
             </div>
           </CardContent>
           <CardFooter className="pt-4 px-6 pb-6 bg-muted/5 gap-2">

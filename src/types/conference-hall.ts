@@ -1,4 +1,5 @@
 import { Category, Brand, Specification, Item, ItemListing } from "./catalog";
+import { TargetRegion } from "./region";
 
 export enum VERIFICATION_STATUS {
   PENDING = "PENDING",
@@ -53,19 +54,7 @@ export interface ConferenceHallEvent {
   _count?: {
     participants: number;
   };
-  eventRegions?: {
-    id: string;
-    state: string | null;
-    wholeState: boolean;
-    district: string | null;
-    wholeDistrict: boolean;
-    pincodeId: string | null;
-    pincode?: {
-      pincode: string;
-      district: string;
-      state: string;
-    };
-  }[];
+  targetRegions?: TargetRegion[];
 }
 
 export interface EventAudience {
@@ -91,7 +80,7 @@ export interface CreateEventRequest {
   meetingUrl?: string;
   pincodeId?: string;
   attachmentIds?: { mediaId?: string; documentId?: string }[];
-  regions?: EventAudience[];
+  targetRegionPincodeIds?: string[];
 }
 
 export type UpdateEventRequest = Partial<CreateEventRequest>;
@@ -175,7 +164,7 @@ export interface Offer {
 
   // Nested Data
   offerDetails: OfferDetail[];
-  offerRegions: OfferRegion[];
+  targetRegions: TargetRegion[];
   offerRelations: OfferRelation[];
 
   // We keep status for frontend logic, but might need to derive it if not in JSON
@@ -194,7 +183,7 @@ export interface CreateOfferRequest {
   specificationIds: string[];
   itemIds: string[];
   itemListingIds: string[];
-  pincodeIds: string[];
+  targetRegionPincodeIds: string[];
   attachmentIds: { mediaId?: string; documentId?: string }[];
 }
 
@@ -242,6 +231,7 @@ export interface Content {
       url: string;
     };
   }[];
+  targetRegions?: TargetRegion[];
 }
 
 export interface CreateContentRequest {
@@ -250,6 +240,7 @@ export interface CreateContentRequest {
   entityId: string;
   isActive: boolean;
   attachmentIds: { mediaId?: string; documentId?: string }[];
+  targetRegionPincodeIds?: string[];
 }
 
 export interface UpdateContentRequest {
@@ -257,6 +248,8 @@ export interface UpdateContentRequest {
   description?: string;
   isActive?: boolean;
   isPublic?: boolean;
+  targetRegionPincodeIds?: string[];
+  attachmentIds?: { mediaId?: string; documentId?: string }[];
 }
 
 export interface ContentListParams {

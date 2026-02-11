@@ -17,7 +17,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { OfferRegion, CreateOfferRequest } from "@/types/conference-hall";
+import { CreateOfferRequest, TargetRegion } from "@/types/conference-hall";
+import { UnifiedRegionSelector } from "@/components/shared/region/unified-region-selector";
 import {
   Category,
   Brand,
@@ -166,52 +167,6 @@ function MultiSelectCombobox({
   );
 }
 
-// Helper Component for Pincode Selection
-function PincodeSelector({
-  selectedIds,
-  onToggle,
-}: {
-  selectedIds: string[];
-  onToggle: (id: string) => void;
-}) {
-  const [search, setSearch] = useState("");
-  const { data: pincodes, isLoading } = usePincodeRecordsQuery({
-    search: search,
-    perPage: 10,
-  });
-
-  const options =
-    pincodes?.map((p) => ({
-      id: p.id,
-      label: `${p.pincode} - ${p.district}, ${p.state}`,
-    })) || [];
-
-  return (
-    <div className="space-y-4">
-      <MultiSelectCombobox
-        options={options}
-        selectedIds={selectedIds}
-        onToggle={onToggle}
-        placeholder="Select Pincodes..."
-        searchPlaceholder="Search pincode or district..."
-        isLoading={isLoading}
-        onSearchChange={setSearch}
-      />
-
-      <div className="flex flex-wrap gap-2">
-        {selectedIds.map((id) => (
-          <Badge key={id} variant="secondary" className="gap-2">
-            Pincode {id.slice(0, 5)}...
-            <X
-              className="h-3 w-3 cursor-pointer hover:text-destructive"
-              onClick={() => onToggle(id)}
-            />
-          </Badge>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 const offerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -234,7 +189,8 @@ const offerSchema = z.object({
       relationId: z.string(),
     }),
   ),
-  pincodeIds: z.array(z.string()),
+  pincodeIds: z.any().optional(), // Old field, kept for safety but not used in new logic
+  targetRegions: z.array(z.any()),
 });
 
 type OfferFormValues = z.infer<typeof offerSchema>;
@@ -276,6 +232,7 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
       documentIds: [],
       relations: [],
       pincodeIds: [],
+      targetRegions: [],
     },
   });
 
@@ -321,9 +278,8 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
 
             return { relationType: rType, relationId: rId };
           }) || [],
-        pincodeIds:
-          existingOffer.offerRegions?.map((r: OfferRegion) => r.pincodeId) ||
-          [],
+        pincodeIds: [],
+        targetRegions: existingOffer.targetRegions || [],
       });
     }
   }, [existingOffer, form]);
@@ -435,7 +391,7 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
       itemListingIds: values.relations
         .filter((r) => r.relationType === "ITEM_LISTING")
         .map((r) => r.relationId),
-      pincodeIds: values.pincodeIds,
+      targetRegionPincodeIds: values.targetRegions.map((r: any) => r.pincodeId),
       attachmentIds: [
         ...values.mediaIds.map((id) => ({ mediaId: id })),
         ...values.documentIds.map((id) => ({ documentId: id })),
@@ -689,7 +645,7 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="space-y-2 flex-[2]">
+                  <div className="space-y-2 flex-2">
                     <FormLabel>
                       Select{" "}
                       {selectedRelationType.toLowerCase().replace("_", " ")}s
@@ -777,20 +733,16 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                 <div
                   className={cn(isReadOnly && "pointer-events-none opacity-60")}
                 >
-                  <PincodeSelector
-                    selectedIds={form.watch("pincodeIds")}
-                    onToggle={(id) => {
-                      if (isReadOnly) return;
-                      const current = form.getValues("pincodeIds") || [];
-                      if (current.includes(id)) {
-                        form.setValue(
-                          "pincodeIds",
-                          current.filter((i) => i !== id),
-                        );
-                      } else {
-                        form.setValue("pincodeIds", [...current, id]);
-                      }
-                    }}
+                  <FormField
+                    control={form.control}
+                    name="targetRegions"
+                    render={({ field }) => (
+                      <UnifiedRegionSelector
+                        selectedRegions={field.value}
+                        onUpdate={field.onChange}
+                        disabled={isReadOnly}
+                      />
+                    )}
                   />
                 </div>
               </CardContent>

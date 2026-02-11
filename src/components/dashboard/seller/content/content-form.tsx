@@ -18,6 +18,8 @@ import {
   useCreateContentMutation,
   useUpdateContentMutation,
 } from "@/queries/conferenceHallQueries";
+import { UnifiedRegionSelector } from "@/components/shared/region/unified-region-selector";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
   Loader2,
@@ -26,14 +28,15 @@ import {
   File,
   AlertTriangle,
   CheckCircle,
+  Globe,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import {
   Content,
   CreateContentRequest,
   UpdateContentRequest,
   VERIFICATION_STATUS,
 } from "@/types/conference-hall";
+import { TargetRegion } from "@/types/region";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 
@@ -53,22 +56,25 @@ export function ContentForm({ initialData, entityId }: ContentFormProps) {
       description: initialData?.description || "",
       isActive: initialData?.isActive ?? true,
       attachmentIds: [] as { mediaId?: string; documentId?: string }[],
+      targetRegions: (initialData?.targetRegions || []) as TargetRegion[],
     },
     onSubmit: async ({ value }) => {
       try {
         if (initialData) {
+          const { targetRegions, ...restValue } = value;
           await updateContentMutation.mutateAsync({
             id: initialData.id,
             data: {
-              name: value.name,
-              description: value.description,
-              isActive: value.isActive,
+              ...restValue,
+              targetRegionPincodeIds: targetRegions.map((r) => r.pincodeId),
             } as UpdateContentRequest,
           });
           toast.success("Content updated successfully!");
         } else {
+          const { targetRegions, ...restValue } = value;
           await createContentMutation.mutateAsync({
-            ...(value as CreateContentRequest),
+            ...(restValue as CreateContentRequest),
+            targetRegionPincodeIds: targetRegions.map((r) => r.pincodeId),
             entityId,
           });
           toast.success("Content created successfully!");
@@ -134,8 +140,8 @@ export function ContentForm({ initialData, entityId }: ContentFormProps) {
         </Alert>
       )}
 
-      <form.Subscribe selector={(state) => [state.values.isActive]}>
-        {() => {
+      <form.Subscribe selector={(state) => [state.values.isActive, state.values.targetRegions]}>
+        {([, targetRegions]) => {
           return (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Basic Info */}
@@ -205,6 +211,27 @@ export function ContentForm({ initialData, entityId }: ContentFormProps) {
                         )}
                       </form.Field>
                     </div>
+                  </CardContent>
+                </Card>
+
+                {/* Audience Targeting Section */}
+                <Card className="border-emerald-100 bg-emerald-50/30">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Globe className="h-5 w-5 text-emerald-600" />
+                      Target Audience Regions
+                    </CardTitle>
+                    <CardDescription>
+                      Select specific areas where your content should be promoted.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <UnifiedRegionSelector
+                      selectedRegions={(targetRegions as TargetRegion[]) || []}
+                      onUpdate={(regions) =>
+                        form.setFieldValue("targetRegions", regions)
+                      }
+                    />
                   </CardContent>
                 </Card>
               </div>

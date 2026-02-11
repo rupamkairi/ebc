@@ -18,7 +18,8 @@ import {
   Video, 
   MoreVertical, 
   Trash2, 
-  Users
+  Users,
+  Globe
 } from "lucide-react";
 import { format } from "date-fns";
 import {
@@ -134,12 +135,22 @@ export function EventList() {
                 )}
               </div>
               <div className="flex items-center justify-between pt-4 border-t border-muted/50 mt-auto">
-                <div className="flex items-center gap-1.5">
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                  <span className="font-bold text-foreground">
-                     {event._count?.participants || 0}
-                  </span>
-                  <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Joined</span>
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-1.5">
+                    <Users className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-bold text-foreground">
+                       {event._count?.participants || 0}
+                    </span>
+                    <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Joined</span>
+                  </div>
+                  {event.targetRegions && event.targetRegions.length > 0 && (
+                    <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground line-clamp-1">
+                      <Globe className="h-3 w-3" />
+                      <span>
+                        Targets: {event.targetRegions.map(r => r.pincode ? (r.pincode.pincode || r.pincode.district || r.pincode.state) : "Area").join(", ")}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

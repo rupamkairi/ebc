@@ -1,3 +1,9 @@
+export interface TargetRegion {
+  id: string;
+  pincodeId: string;
+  pincode?: PincodeRecord;
+}
+
 export interface PincodeRecord {
   id: string;
   pincode: string;
@@ -14,4 +20,5 @@ export interface PincodeListParams {
   search?: string;
   page?: number;
   perPage?: number;
+  isSpecial?: boolean; // Added for fetching whole state/district entries
 }

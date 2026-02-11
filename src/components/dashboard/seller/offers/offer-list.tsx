@@ -85,9 +85,25 @@ export function OfferList() {
                 return (
                   <TableRow key={offer.id}>
                     <TableCell className="font-medium">
-                      <div className="flex flex-col">
+                      <div className="flex flex-col gap-1">
                         <span>{offer.name}</span>
-                        <span className="text-xs text-muted-foreground truncate max-w-[200px]">
+                        {offer.targetRegions && offer.targetRegions.length > 0 && (
+                          <div className="flex items-center gap-1 text-[10px] text-muted-foreground font-normal">
+                            <Globe className="h-3 w-3" />
+                            <span className="truncate max-w-[200px]">
+                              {offer.targetRegions
+                                .map((r) =>
+                                  r.pincode
+                                    ? r.pincode.pincode ||
+                                      r.pincode.district ||
+                                      r.pincode.state
+                                    : "Area",
+                                )
+                                .join(", ")}
+                            </span>
+                          </div>
+                        )}
+                        <span className="text-xs text-muted-foreground truncate max-w-[200px] font-normal italic">
                           {offer.description}
                         </span>
                       </div>
