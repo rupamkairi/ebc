@@ -1,83 +1,83 @@
 "use client";
 
 import Container from "@/components/containers/containers";
-import Break from "@/components/ui/break";
-import { Card } from "@/components/ui/card";
-import { TypographyH1 } from "@/components/ui/typography";
+import { Button } from "@/components/ui/button";
+import { CheckCircle2, ChevronRight } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 
 export function ConferenceHallSection() {
   return (
-    <section id="conference-hall" className="bg-blue-50/50 py-responsive">
-      <Container size="lg">
-        <div className="text-center">
-          <TypographyH1>EBC Offers Conference Hall</TypographyH1>
+    <section id="conference-hall" className="bg-white py-24 overflow-hidden">
+      <Container size="xl">
+        {/* Section Header */}
+        <div className="text-center mb-16">
+          <h2 className="text-[#445EB4] text-2xl md:text-3xl lg:text-4xl font-black tracking-tight mb-4">
+            Not Sure? Learn from Experts & Real <span className="text-[#FFA500]">Home Builders</span>
+          </h2>
+          <p className="text-slate-500 font-medium text-base md:text-lg">
+            Ask questions. Read real experiences. Decide confidently.
+          </p>
         </div>
 
-        <Break />
-
-        <Link href="/features/conference-hall">
-          <Card className="border-none p-0 overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-101">
+        {/* Main Content Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 items-stretch rounded-3xl overflow-hidden shadow-2xl">
+          {/* Left Side: Illustration Area */}
+          <div className="relative min-h-[400px] lg:min-h-full bg-slate-100">
             <Image
-              className="scale-100 aspect-3/2"
-              width={1500}
-              height={10000}
-              src="/images/conference-hall.png"
-              alt="Conference Hall"
+              src="/images/conference-hall/conference-hall.png"
+              alt="Expert teaching family about construction"
+              fill
+              className="object-cover"
+              priority
+              unoptimized
             />
-          </Card>
-        </Link>
+          </div>
 
-        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <DisplayCard2
-            icon={<BookOpen className="w-10 h-10 text-primary" />}
-            title="1. Access Exclusive Knowledge & Training"
-            items={[
-              "Searchable repository of documents, videos, & webinars with semantic search & auto-summaries.",
-              "Learn from curated content & recorded demos.",
-            ]}
-          />
-          <DisplayCard2
-            icon={<Handshake className="w-10 h-10 text-primary" />}
-            title="2. Connect with Industry Leaders & Peers"
-            items={[
-              "Schedule live meetings & invite selective user groups.",
-              "Manage RSVPs & attendance logs for events.",
-            ]}
-          />
-          <DisplayCard2
-            icon={<Lightbulb className="w-10 h-10 text-primary" />}
-            title="3. Discover New Products & Innovations"
-            items={[
-              "Attend live product launch events.",
-              "Watch recorded product demos to stay updated on solutions.",
-            ]}
-          />
-          <DisplayCard2
-            icon={<Mic2 className="w-10 h-10 text-primary" />}
-            title="4. Engage in Expert-Led Discussions & Q&A"
-            items={[
-              "Participate in community Q&A sessions.",
-              "Join webinars & interact directly with experts.",
-            ]}
-          />
-        </div> */}
+          {/* Right Side: Blue Information Card */}
+          <div className="bg-[#445EB4] p-8 md:p-12 lg:p-16 flex flex-col justify-center text-white">
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <h3 className="text-[#FFA500] text-3xl md:text-4xl font-black tracking-tight leading-tight">
+                  Join The Conference Hall
+                </h3>
+                <p className="text-white/80 text-base md:text-lg max-w-md leading-relaxed">
+                  Discover special discounts, latest construction information, and
+                  best practices from top brands in one place.
+                </p>
+              </div>
 
-        {/* <Break /> */}
+              {/* Bullet Features List */}
+              <div className="space-y-6">
+                {[
+                  "Knowledge & Training",
+                  "Live Meeting",
+                  "Offer Zone",
+                  "Q&A Forum",
+                ].map((item, index) => (
+                  <div key={index} className="flex items-center gap-4 group">
+                    <CheckCircle2 className="size-7 text-[#FFA500] shrink-0" />
+                    <span className="text-xl md:text-2xl font-bold tracking-tight">
+                      {item}
+                    </span>
+                  </div>
+                ))}
+              </div>
 
-        {/* <div className="flex justify-center">
-          <Button
-            size="xl"
-            className="bg-primary hover:bg-primary/90 group"
-            asChild
-          >
-            <a href="#">
-              Check discounts & offers{" "}
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-            </a>
-          </Button>
-        </div> */}
+              {/* Action Button */}
+              <div className="pt-6">
+                <Button 
+                  className="h-14 px-10 bg-[#FFA500] hover:bg-[#FFB733] text-white flex items-center gap-2 rounded-lg transition-all duration-300 shadow-xl group border-none"
+                  asChild
+                >
+                  <a href="#experts" className="text-lg font-bold">
+                    View Expert Answers 
+                    <ChevronRight className="size-5 group-hover:translate-x-1 transition-transform" />
+                  </a>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
       </Container>
     </section>
   );

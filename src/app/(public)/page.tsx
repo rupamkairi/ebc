@@ -37,6 +37,10 @@ export default function HomePage() {
 
       {/* WHAT IS EBC? SECTION (Now SolutionSection) */}
       <SolutionSection />
+
+      {/* CONFERWENCE HALL SECTION */}
+      <ConferenceHallSection />
+
       {/* WHY JOIN EBC? SECTION */}
       <WhySection />
 
@@ -48,9 +52,6 @@ export default function HomePage() {
 
       {/* USE CASES SECTION */}
       <UseCasesSection />
-
-      {/* CONFERWENCE HALL SECTION */}
-      <ConferenceHallSection />
 
       {/* PRICING SECTION */}
       <PricingSection />
