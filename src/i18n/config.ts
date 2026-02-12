@@ -44,10 +44,13 @@ const english = {
   problem_2_desc: "Contractor pushes suppliers where he gets commission",
   problem_3_title: "Quality Issues",
   problem_3_desc: "Wrong materials lead to cracks, damp, and repairs later",
-  problem_4_title: "Vague Quotes",
-  problem_4_desc: "No proper quotation — just 'aap dekh lijiye'",
-  problem_5_title: "Helplessness",
+  problem_4_title: "Vague Quotes", // This title is now for problem_6_desc
+  problem_4_desc: "Unverified Workers & Contractors",
+  problem_5_title: "Helplessness", // This title is now for problem_5_desc
   problem_5_desc: "Busy scheduled / Working Families feel helpless",
+  problem_6_desc: "No proper quotation — just 'aap dekh lijiye'",
+  problem_7_desc: "No clear idea of Total Construction Cost",
+  problem_8_desc: "Lack of Planning before Starting Construction",
   gamble_text: "Dream home shouldn't feel like a gamble.",
   what_is_ebc: "What is EBC?",
   ebc_desc:
@@ -222,11 +225,14 @@ const hinglish = {
   problem_2_desc: "Contractor wahi bhejta hai jahan use commission mile",
   problem_3_title: "Kharaab material",
   problem_3_desc: "Galat material se dararein, seelan, aur baad mein kharcha",
-  problem_4_title: "Adhoori baatein",
-  problem_4_desc: "Koi sahi quotation nahi — bas 'aap dekh lijiye'",
-  problem_5_title: "Bebasi",
+  problem_4_title: "Adhoori baatein", // This title is now for problem_6_desc
+  problem_4_desc: "Bina verify kiye mistry aur contractors",
+  problem_5_title: "Bebasi", // This title is now for problem_5_desc
   // problem_5_desc: "NRE/NRI / Bengal ke baahar rehne waale parivaar bebas mehsoos karte hain",
   problem_5_desc: "Busy schedule aur working families bebas mehsoos karte hain",
+  problem_6_desc: "Koi sahi quotation nahi — bas 'aap dekh lijiye'",
+  problem_7_desc: "Total kitna kharcha hoga iska koi idea nahi",
+  problem_8_desc: "Bina planning ke kaam shuru kar dena",
   gamble_text: "Sapno ka ghar koi jua nahi hona chahiye.",
   what_is_ebc: "EBC kya hai?",
   ebc_desc:

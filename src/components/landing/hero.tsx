@@ -54,7 +54,7 @@ export function Hero() {
           <h1 className="text-xl md:text-2xl lg:text-5xl font-black text-[#445EB4] leading-tight mb-4 tracking-tight">
             Build Your <span className="text-[#FFA500]">Dream Home</span> with Confidence Not Confusion
           </h1>
-          <p className="text-base md:text-lg text-slate-800 font-bold max-w-4xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-slate-600 font-bold max-w-4xl mx-auto leading-relaxed">
             {t("home_subtitle")}
           </p>
         </div>
