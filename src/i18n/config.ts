@@ -18,14 +18,25 @@ const english = {
   engineer_support: "Engineer Support",
   how_it_works: "How it Works",
   contact_us: "Contact Us",
+  home: "Home",
+  cost_calculator: "Cost Calculator",
+  conference_hall: "Conference Hall",
+  offers: "Offers",
+  find_sellers: "Find Sellers",
+  help: "Help",
+  join_as: "Join as",
+  seller_btn: "Seller",
+  buyer_btn: "Buyer",
   home_title: "Build Your Dream Home with Confidence. Not Confusion.",
-  home_subtitle: "Fair material prices • Trusted workers • Engineer guidance — all in one place.",
+  home_subtitle:
+    "Fair material prices • Trusted workers • Engineer guidance — all in one place.",
   home_cta_primary: "Consult with an Expert (Free)",
   home_cta_secondary: "Compare material rate (Free)",
   serving_families: "Serving Indian families since 2004",
   problems_title: "Every home builder faces these problems...",
   problem_1_title: "Price Variation",
-  problem_1_desc: "Rates vary from shop to shop — impossible to know real price",
+  problem_1_desc:
+    "Rates vary from shop to shop — impossible to know real price",
   problem_2_title: "Commission Bias",
   problem_2_desc: "Contractor pushes suppliers where he gets commission",
   problem_3_title: "Quality Issues",
@@ -36,13 +47,16 @@ const english = {
   problem_5_desc: "Busy scheduled / Working Families feel helpless",
   gamble_text: "Dream home shouldn't feel like a gamble.",
   what_is_ebc: "What is EBC?",
-  ebc_desc: "ECON Building Centre (EBC) is a trusted construction marketplace where families get everything needed to build a home — with clarity and support.",
+  ebc_desc:
+    "ECON Building Centre (EBC) is a trusted construction marketplace where families get everything needed to build a home — with clarity and support.",
   feature_1_title: "Fair Material Prices",
   feature_1_desc: "Multiple quotations • Verified dealers • Price transparency",
   feature_2_title: "Trusted Service Providers",
-  feature_2_desc: "Mason, plumber, electrician, painter etc. • Ratings & reviews",
+  feature_2_desc:
+    "Mason, plumber, electrician, painter etc. • Ratings & reviews",
   feature_3_title: "Engineer Support (Optional)",
-  feature_3_desc: "Estimate & quantity check • Site quality visits • Construction stage guidance",
+  feature_3_desc:
+    "Estimate & quantity check • Site quality visits • Construction stage guidance",
   how_it_works_title: "How It Works — 3 Simple Steps",
   step_1_title: "Tell us your requirement",
   step_1_desc: "Plot size or renovation work",
@@ -66,13 +80,16 @@ const english = {
   how_ebc_helps_title: "How EBC Helps You",
   how_ebc_helps_subtitle: "Choose your path to get started with our ecosystem.",
   i_am_buyer_title: "I am a Homeowner (Buyer)",
-  i_am_buyer_desc: "Build your dream home with transparent material prices, verified workers, and expert engineer guidance.",
+  i_am_buyer_desc:
+    "Build your dream home with transparent material prices, verified workers, and expert engineer guidance.",
   get_started_buyer: "Start as Buyer",
   i_am_seller_title: "I am a Vendor (Seller)",
-  i_am_seller_desc: "Grow your business by connecting with thousands of genuine homeowners looking for materials and services.",
+  i_am_seller_desc:
+    "Grow your business by connecting with thousands of genuine homeowners looking for materials and services.",
   get_started_seller: "Start as Seller",
   buyer_hero_title: "Professional Guidance for Every Home Builder.",
-  buyer_hero_subtitle: "Get access to verified rates, trusted workers, and engineer support - all designed to save you time and money.",
+  buyer_hero_subtitle:
+    "Get access to verified rates, trusted workers, and engineer support - all designed to save you time and money.",
   buyer_hinglish_tag: "Sahi decision, sahi ghar.",
   buyer_free_title: "Everything you need, 100% Free.",
   buyer_free_1: "Direct market quotations from multiple sellers.",
@@ -92,23 +109,27 @@ const english = {
   buyer_final_cta: "Talk to an Expert (Free)",
   return_to_selection: "Return to Selection",
   seller_hero_title: "India's Digital Ecosystem for Construction B2B.",
-  seller_hero_subtitle: "Access high-intent leads, scale your reach, and optimize your business with our proprietary tech stack.",
+  seller_hero_subtitle:
+    "Access high-intent leads, scale your reach, and optimize your business with our proprietary tech stack.",
   seller_network_title: "Join the Largest Construction Network in India.",
   seller_path_retailer: "Retailer",
   seller_path_professional: "Professional",
   enquiry_section_title: "Compare material rate (Free)",
-  enquiry_section_subtitle: "Send your requirements to multiple verified sellers and receive the best prices within hours.",
+  enquiry_section_subtitle:
+    "Send your requirements to multiple verified sellers and receive the best prices within hours.",
   enquiry_section_cta: "Post Your Requirement",
   enquiry_benefit_1: "Save money with multiple quotes",
   enquiry_benefit_2: "Verified local sellers only",
   enquiry_benefit_3: "100% Free & No obligation",
   enquiry_landing_title: "How to Create an Enquiry",
-  enquiry_landing_desc: "Follow these simple steps to get competitive prices for your construction materials.",
+  enquiry_landing_desc:
+    "Follow these simple steps to get competitive prices for your construction materials.",
   enquiry_step_1: "Choose the items you need for your building project.",
   enquiry_step_2: "Provide your contact and delivery location details.",
   enquiry_step_3: "Sellers will review and send you their best quotations.",
   enquiry_dashboard_link: "View your enquiries in Buyer Dashboard",
-  enquiry_dashboard_desc: "Manage all your active enquiries and compare incoming quotations in one place.",
+  enquiry_dashboard_desc:
+    "Manage all your active enquiries and compare incoming quotations in one place.",
   home_journey_cta: "Start Your Home Journey",
   // Footer
   quick_links: "Quick Links",
@@ -121,27 +142,40 @@ const english = {
   // FAQs
   faq_title: "Frequently Asked Questions",
   faq_1_q: "What exactly does EBC do?",
-  faq_1_a: "EBC helps you get fair material prices, trusted service providers, and engineer guidance for building or renovating your home — all in one place.",
+  faq_1_a:
+    "EBC helps you get fair material prices, trusted service providers, and engineer guidance for building or renovating your home — all in one place.",
   faq_2_q: "I am building my house in a small town — will you support me?",
-  faq_2_a: "Yes. EBC is designed especially for Tier 2 & Tier 3 towns — including every digitally aware peoples of urban, semi-urban and rural zones in India.",
+  faq_2_a:
+    "Yes. EBC is designed especially for Tier 2 & Tier 3 towns — including every digitally aware peoples of urban, semi-urban and rural zones in India.",
   faq_3_q: "I already have a contractor/mason. Can I still use EBC?",
-  faq_3_a: "Yes! You can use EBC for material price comparison, Engineer BOQ verification, quality check visits, and tracking project budget. Your contractor continues working — EBC adds transparency & support.",
+  faq_3_a:
+    "Yes! You can use EBC for material price comparison, Engineer BOQ verification, quality check visits, and tracking project budget. Your contractor continues working — EBC adds transparency & support.",
   faq_4_q: "Is this more expensive than my local shop?",
-  faq_4_a: "Usually NO — you pay similar or better market prices, and save money by avoiding over-buying materials, reducing rework costs, and getting better material–work match.",
-  faq_5_q: "Can EBC provide service providers like mason, plumber, electrician, painter?",
-  faq_5_a: "Yes — EBC facilitates making appointments with verified workers with ratings & past job records.",
+  faq_4_a:
+    "Usually NO — you pay similar or better market prices, and save money by avoiding over-buying materials, reducing rework costs, and getting better material–work match.",
+  faq_5_q:
+    "Can EBC provide service providers like mason, plumber, electrician, painter?",
+  faq_5_a:
+    "Yes — EBC facilitates making appointments with verified workers with ratings & past job records.",
   faq_6_q: "Will EBC give me guidance on materials — which brand is good?",
-  faq_6_a: "Yes — EBC’s Conference Hall guides you on cement grade, TMT steel type, bricks & aggregates quality, and waterproofing choices for a longer-lasting home.",
-  faq_7_q: "Can I place material orders & fix appointments with professional service providers?",
-  faq_7_a: "Yes — everything is digital: orders & deliveries, quotes & documents, appointment acceptance, and engineer site visits.",
+  faq_6_a:
+    "Yes — EBC’s Conference Hall guides you on cement grade, TMT steel type, bricks & aggregates quality, and waterproofing choices for a longer-lasting home.",
+  faq_7_q:
+    "Can I place material orders & fix appointments with professional service providers?",
+  faq_7_a:
+    "Yes — everything is digital: orders & deliveries, quotes & documents, appointment acceptance, and engineer site visits.",
   faq_8_q: "Do I have to pay for engineer site visits?",
-  faq_8_a: "Basic advice is free. Paid site visits / supervision are optional if you want strong quality control.",
+  faq_8_a:
+    "Basic advice is free. Paid site visits / supervision are optional if you want strong quality control.",
   faq_9_q: "What if the material/service quality is poor or I face any issue?",
-  faq_9_a: "You can return the material, replace the service provider, and mark reviews. Your home is protected by the EBC support layer to ensure fair resolution.",
+  faq_9_a:
+    "You can return the material, replace the service provider, and mark reviews. Your home is protected by the EBC support layer to ensure fair resolution.",
   faq_10_q: "How do I start?",
-  faq_10_a: "Simple: Just consult with an expert with your plot size / renovation need. Alternatively, use EBC's conference hall and AI-powered cost calculator.",
+  faq_10_a:
+    "Simple: Just consult with an expert with your plot size / renovation need. Alternatively, use EBC's conference hall and AI-powered cost calculator.",
   faq_bonus_q: "I live outside India, home is in India — can EBC help?",
-  faq_bonus_a: "Yes — you can monitor everything remotely with updates from your hired responsive manpower (EBC's customer reviewed or verified).",
+  faq_bonus_a:
+    "Yes — you can monitor everything remotely with updates from your hired responsive manpower (EBC's customer reviewed or verified).",
   faq_still_questions: "Still Have Questions? Talk to Us",
 };
 
@@ -160,8 +194,18 @@ const hinglish = {
   engineer_support: "Engineer Support",
   how_it_works: "Kaise kaam karta hai",
   contact_us: "Humein contact karein",
+  home: "Home",
+  cost_calculator: "Cost Calculator",
+  conference_hall: "Conference Hall",
+  offers: "Offers",
+  find_sellers: "Find Sellers",
+  help: "Help",
+  join_as: "Join as",
+  seller_btn: "Seller",
+  buyer_btn: "Buyer",
   home_title: "Apna sapno ka ghar banayein confidence ke saath.",
-  home_subtitle: "Sahi material rates • Bharosemand workers • Engineer ki salah — sab ek jagah.",
+  home_subtitle:
+    "Sahi material rates • Bharosemand workers • Engineer ki salah — sab ek jagah.",
   home_cta_primary: "Expert ke saath ghar plan karein (Free)",
   home_cta_secondary: "Free Material Quotations Payein",
   serving_families: "2004 se Indian parivaron ki seva mein",
@@ -179,11 +223,13 @@ const hinglish = {
   problem_5_desc: "Busy schedule aur working families bebas mehsoos karte hain",
   gamble_text: "Sapno ka ghar koi jua nahi hona chahiye.",
   what_is_ebc: "EBC kya hai?",
-  ebc_desc: "ECON Building Centre (EBC) ek bharosemand marketplace hai jahan parivaron ko ghar banane ki har cheez milti hai — clarity aur support ke saath.",
+  ebc_desc:
+    "ECON Building Centre (EBC) ek bharosemand marketplace hai jahan parivaron ko ghar banane ki har cheez milti hai — clarity aur support ke saath.",
   feature_1_title: "Sahi Material Rates",
   feature_1_desc: "Multiple quotations • Verified dealers • Transparency",
   feature_2_title: "Bharosemand Service Providers",
-  feature_2_desc: "Mistri, plumber, electrician, aur bahut kuch • Ratings & reviews",
+  feature_2_desc:
+    "Mistri, plumber, electrician, aur bahut kuch • Ratings & reviews",
   feature_3_title: "Engineer Support (Optional)",
   feature_3_desc: "Estimate aur quantity check • Quality check • Sahi guidance",
   how_it_works_title: "Kaise kaam karta hai — 3 Aasaan Steps",
@@ -209,13 +255,16 @@ const hinglish = {
   how_ebc_helps_title: "EBC Aapki Kaise Madad Karta Hai",
   how_ebc_helps_subtitle: "Shuru karne ke liye apna raasta chunein.",
   i_am_buyer_title: "Main ek Khareeddar (Buyer) hoon",
-  i_am_buyer_desc: "Apna sapno ka ghar banayein sahi material rates, bharosemand workers aur expert engineer ki salah ke saath.",
+  i_am_buyer_desc:
+    "Apna sapno ka ghar banayein sahi material rates, bharosemand workers aur expert engineer ki salah ke saath.",
   get_started_buyer: "Buyer ke taur par shuru karein",
   i_am_seller_title: "Main ek Bechne wala (Seller) hoon",
-  i_am_seller_desc: "Hazaron genuine homeowners se judkar apna business badhayein jo materials aur services dhoond rahe hain.",
+  i_am_seller_desc:
+    "Hazaron genuine homeowners se judkar apna business badhayein jo materials aur services dhoond rahe hain.",
   get_started_seller: "Seller ke taur par shuru karein",
   buyer_hero_title: "Sahi rasta choice karein, ghar banayein sukoon se.",
-  buyer_hero_subtitle: "Verified rates, bharosemand workers, aur engineer ki help - sab kuch aapka paisa aur samay bachane ke liye.",
+  buyer_hero_subtitle:
+    "Verified rates, bharosemand workers, aur engineer ki help - sab kuch aapka paisa aur samay bachane ke liye.",
   buyer_hinglish_tag: "Sahi decision, sahi ghar.",
   buyer_free_title: "Jo chahiye sab milega, 100% Free.",
   buyer_free_1: "Seedha vendors se market quotations mangwayein.",
@@ -224,7 +273,8 @@ const hinglish = {
   buyer_free_4: "Ghar banane ke har step pe sahi guidance.",
   buyer_why_title: "EBC ke decisions kyun zaroori hain",
   buyer_why_desc: "Ghar banana zindagi ka sabse bada kaam hai.",
-  buyer_why_point_1: "Purana Tarika: Bas andaze aur contractor ki baaton pe bharosa.",
+  buyer_why_point_1:
+    "Purana Tarika: Bas andaze aur contractor ki baaton pe bharosa.",
   buyer_why_result: "Natija: 20-30% फालतू kharcha aur quality ka risk.",
   buyer_trusted_title: "Experts ka bharosa. Parivaron ke liye.",
   buyer_trusted_subtitle: "Aisa vishwas jo peedhiyon tak chale.",
@@ -235,23 +285,27 @@ const hinglish = {
   buyer_final_cta: "Expert se baat karein (Free)",
   return_to_selection: "Wapas jayein",
   seller_hero_title: "India ka sabse bada Digital Construction Ecosystem.",
-  seller_hero_subtitle: "High-intent leads payein, apna reach badhayein aur business ko tech se grow karein.",
+  seller_hero_subtitle:
+    "High-intent leads payein, apna reach badhayein aur business ko tech se grow karein.",
   seller_network_title: "India ke sabse bade Construction Network se judein.",
   seller_path_retailer: "Retailer",
   seller_path_professional: "Professional",
   enquiry_section_title: "Free Material Quotations Payein",
-  enquiry_section_subtitle: "Apni zaroorat verified sellers ko bhejein aur sabse acche rates payein kuch hi ghanton mein.",
+  enquiry_section_subtitle:
+    "Apni zaroorat verified sellers ko bhejein aur sabse acche rates payein kuch hi ghanton mein.",
   enquiry_section_cta: "Apni Requirement Bhejein",
   enquiry_benefit_1: "Multiple quotes se paise bachayein",
   enquiry_benefit_2: "Sirf verified local sellers",
   enquiry_benefit_3: "100% Free aur koi rok-tok nahi",
   enquiry_landing_title: "Enquiry Kaise Banayein",
-  enquiry_landing_desc: "Apne construction material ke liye acche rates paane ke liye ye steps follow karein.",
+  enquiry_landing_desc:
+    "Apne construction material ke liye acche rates paane ke liye ye steps follow karein.",
   enquiry_step_1: "Apne project ke liye zaroori saaman chunein.",
   enquiry_step_2: "Apna contact aur delivery location batayein.",
   enquiry_step_3: "Sellers aapko apne sabse acche rates bhejenge.",
   enquiry_dashboard_link: "Buyer Dashboard mein apni enquiries dekhein",
-  enquiry_dashboard_desc: "Apni saari active enquiries aur quotations ko ek hi jagah manage karein.",
+  enquiry_dashboard_desc:
+    "Apni saari active enquiries aur quotations ko ek hi jagah manage karein.",
   home_journey_cta: "Apna Ghar banana shuru karein",
   // Footer
   quick_links: "Zaroori Links",
@@ -264,27 +318,43 @@ const hinglish = {
   // FAQs
   faq_title: "Sawalaat (FAQs)",
   faq_1_q: "EBC asaliyat mein kya karta hai?",
-  faq_1_a: "EBC aapko sahi material rates, bharosemand service providers, aur engineer ki salah dilata hai — sab kuch ek hi jagah par.",
-  faq_2_q: "Main ek chhote shehar mein ghar bana raha hoon — kya aap meri madad karenge?",
-  faq_2_a: "Haan! EBC khas taur par Tier 2 aur Tier 3 shehron ke liye bana hai — India ke har semi-urban aur rural area ke liye.",
-  faq_3_q: "Mere paas pehle se contractor/mistri hai. Kya main phir bhi EBC use kar sakta hoon?",
-  faq_3_a: "Haan bilkul! Aap EBC ko material price comparison, Engineer se BOQ verify, quality checks aur budget tracking ke liye use kar sakte hain. Aapka contractor kaam jaari rakhega, EBC bas transparency dega.",
+  faq_1_a:
+    "EBC aapko sahi material rates, bharosemand service providers, aur engineer ki salah dilata hai — sab kuch ek hi jagah par.",
+  faq_2_q:
+    "Main ek chhote shehar mein ghar bana raha hoon — kya aap meri madad karenge?",
+  faq_2_a:
+    "Haan! EBC khas taur par Tier 2 aur Tier 3 shehron ke liye bana hai — India ke har semi-urban aur rural area ke liye.",
+  faq_3_q:
+    "Mere paas pehle se contractor/mistri hai. Kya main phir bhi EBC use kar sakta hoon?",
+  faq_3_a:
+    "Haan bilkul! Aap EBC ko material price comparison, Engineer se BOQ verify, quality checks aur budget tracking ke liye use kar sakte hain. Aapka contractor kaam jaari rakhega, EBC bas transparency dega.",
   faq_4_q: "Kya ye local dukaan se zyada mehenga hai?",
-  faq_4_a: "Bilkul nahi — aapko market rates milte hain. Aap faltu material na kharid kar aur rework bachakar paise bachate hain.",
-  faq_5_q: "Kya EBC mistri, plumber, electrician jaise workers provide karta hai?",
-  faq_5_a: "Haan — EBC aapko verified workers se jodta hai jiniki ratings aur pichla kaam aap dekh sakte hain.",
+  faq_4_a:
+    "Bilkul nahi — aapko market rates milte hain. Aap faltu material na kharid kar aur rework bachakar paise bachate hain.",
+  faq_5_q:
+    "Kya EBC mistri, plumber, electrician jaise workers provide karta hai?",
+  faq_5_a:
+    "Haan — EBC aapko verified workers se jodta hai jiniki ratings aur pichla kaam aap dekh sakte hain.",
   faq_6_q: "Kya EBC material ki guidance dega — kaunsa brand accha hai?",
-  faq_6_a: "Haan — EBC ka Conference Hall aapko cement, steel, eent aur waterproofing ke bare mein sahi salah dega taki aapka ghar mazboot bane.",
-  faq_7_q: "Kya main material order aur professionals ki appointment fix kar sakta hoon?",
-  faq_7_a: "Haan — sab kuch digital hai: orders, deliveries, quotes aur engineer site visits sab aap online manage kar sakte hain.",
+  faq_6_a:
+    "Haan — EBC ka Conference Hall aapko cement, steel, eent aur waterproofing ke bare mein sahi salah dega taki aapka ghar mazboot bane.",
+  faq_7_q:
+    "Kya main material order aur professionals ki appointment fix kar sakta hoon?",
+  faq_7_a:
+    "Haan — sab kuch digital hai: orders, deliveries, quotes aur engineer site visits sab aap online manage kar sakte hain.",
   faq_8_q: "Kya mujhe engineer ki site visits ke liye paise dene honge?",
-  faq_8_a: "Basic advice free hai. Site visits aur supervision optional hain agar aap extra quality control chahte hain.",
+  faq_8_a:
+    "Basic advice free hai. Site visits aur supervision optional hain agar aap extra quality control chahte hain.",
   faq_9_q: "Agar material ya service quality kharab hui toh kya hoga?",
-  faq_9_a: "Aap material return kar sakte hain aur service provider badal sakte hain. EBC support layer aapki madad karega sahi resolution paane mein.",
+  faq_9_a:
+    "Aap material return kar sakte hain aur service provider badal sakte hain. EBC support layer aapki madad karega sahi resolution paane mein.",
   faq_10_q: "Shuru kaise karein?",
-  faq_10_a: "Bahut aasaan: Bas ek expert se consult karein. Aap EBC calculator ya conference hall se bhi shuru kar sakte hain.",
-  faq_bonus_q: "Main India se bahar rehta hoon, par ghar India mein hai — kya EBC help karega?",
-  faq_bonus_a: "Haan — aap door baithkar bhi sab kuch monitor kar sakte hain humare verified manpower ki updates ke zariye.",
+  faq_10_a:
+    "Bahut aasaan: Bas ek expert se consult karein. Aap EBC calculator ya conference hall se bhi shuru kar sakte hain.",
+  faq_bonus_q:
+    "Main India se bahar rehta hoon, par ghar India mein hai — kya EBC help karega?",
+  faq_bonus_a:
+    "Haan — aap door baithkar bhi sab kuch monitor kar sakte hain humare verified manpower ki updates ke zariye.",
   faq_still_questions: "Abhi bhi sawal hain? Humse baat karein",
 };
 

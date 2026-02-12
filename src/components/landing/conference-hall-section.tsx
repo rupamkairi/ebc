@@ -9,7 +9,7 @@ import Link from "next/link";
 
 export function ConferenceHallSection() {
   return (
-    <section className="bg-blue-50/50 py-responsive">
+    <section id="conference-hall" className="bg-blue-50/50 py-responsive">
       <Container size="lg">
         <div className="text-center">
           <TypographyH1>EBC Offers Conference Hall</TypographyH1>

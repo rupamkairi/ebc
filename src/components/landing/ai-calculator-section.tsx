@@ -9,7 +9,7 @@ import Link from "next/link";
 
 export function AiCalculatorSection() {
   return (
-    <section className="bg-white py-responsive">
+    <section id="ai-calculator" className="bg-white py-responsive">
       <Container size="lg">
         <div className="text-center">
           <TypographyH1>EBC Offers AI-Powered Cost Calculator</TypographyH1>
