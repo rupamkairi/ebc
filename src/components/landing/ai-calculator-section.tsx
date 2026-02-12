@@ -1,82 +1,104 @@
 "use client";
 
 import Container from "@/components/containers/containers";
-import Break from "@/components/ui/break";
-import { TypographyH1 } from "@/components/ui/typography";
-import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ChevronRight, Calculator, Presentation, Waves } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+
+interface FeatureProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}
+
+function CostFeature({ icon, title, description }: FeatureProps) {
+  return (
+    <div className="flex items-start gap-4">
+      <div className="flex-shrink-0 size-12 rounded-xl bg-white border border-[#FFA500] shadow-sm flex items-center justify-center text-[#FFA500]">
+        {icon}
+      </div>
+      <div className="flex flex-col">
+        <h4 className="text-[#445EB4] font-bold text-lg leading-tight mb-1">
+          {title}
+        </h4>
+        <p className="text-slate-500 text-sm leading-relaxed">
+          {description}
+        </p>
+      </div>
+    </div>
+  );
+}
 
 export function AiCalculatorSection() {
   return (
-    <section id="ai-calculator" className="bg-white py-responsive">
-      <Container size="lg">
-        <div className="text-center">
-          <TypographyH1>EBC Offers AI-Powered Cost Calculator</TypographyH1>
+    <section id="ai-calculator" className="bg-white py-24 overflow-hidden">
+      <Container size="xl">
+        {/* Section Header */}
+        <div className="text-center mb-16">
+          <h2 className="text-[#445EB4] text-2xl md:text-3xl lg:text-4xl font-black tracking-tight mb-4">
+            EBC Offers <span className="text-[#FFA500]">AI-Powered</span> Cost Calculator
+          </h2>
+          <p className="text-slate-600 font-medium text-base md:text-lg">
+            AI-powered estimate based on your location and requirements.
+          </p>
         </div>
 
-        <Break />
-
-        <Link href="/features/conference-hall">
-          <Card className="border-none p-0 overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-101">
+        {/* Main Content: Split Illustration and Features */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+          {/* Left: Illustration */}
+          <div className="relative w-full aspect-square md:aspect-video lg:aspect-square flex items-center justify-center">
             <Image
-              className="aspect-3/2"
-              width={1500}
-              height={10000}
-              src="/images/ai-calculator.png"
-              alt="AI Calculator"
+              src="/images/why/cost-calculator.png"
+              alt="AI Cost Calculator Illustration"
+              fill
+              className="object-contain"
+              priority
             />
-          </Card>
-        </Link>
+          </div>
 
-        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <DisplayCard2
-            icon={<Calculator className="w-10 h-10 text-primary" />}
-            title="Accurate & Dynamic Estimations"
-            items={[
-              "Uses AI and rules for real-time estimates of materials & labour",
-              "accounting for local rates and wastage factors",
-            ]}
-          />
-          <DisplayCard2
-            icon={<Settings className="w-10 h-10 text-primary" />}
-            title="Customizable Project Parameters"
-            items={[
-              "Tailor calculations to specific project details like slab area and concrete grade",
-              "for precise results",
-            ]}
-          />
-          <DisplayCard2
-            icon={<LayoutTemplate className="w-10 h-10 text-primary" />}
-            title="Integrated Marketplace Advantage"
-            items={[
-              "A unique platform differentiator,",
-              "seamlessly connected to the EBC construction ecosystem",
-            ]}
-          />
-          <DisplayCard2
-            icon={<FileText className="w-10 h-10 text-primary" />}
-            title="Actionable & Exportable Bids"
-            items={[
-              "Easily export detailed estimations to PDF format for use in professional bids and planning.",
-            ]}
-          />
-        </div> */}
+          {/* Right: Features List */}
+          <div className="flex flex-col space-y-8 lg:pl-12">
+            <div className="space-y-4 mb-4">
+              <h3 className="text-[#445EB4] text-2xl lg:text-3xl font-black tracking-tight leading-tight">
+                Smart Construction Cost <br className="hidden md:block" /> Calculator
+              </h3>
+              <p className="text-slate-500 text-base md:text-lg max-w-lg">
+                Estimate your home building cost, plan better, and save money with EBC
+              </p>
+            </div>
 
-        {/* <Break /> */}
+            <div className="space-y-8">
+              <CostFeature
+                icon={<Calculator className="size-6" />}
+                title="Accurate Estimation"
+                description="Get reliable cost estimates for your entire home project"
+              />
+              <CostFeature
+                icon={<Presentation className="size-6" />}
+                title="Budget Planning"
+                description="Plan your budget with confidence, no hidden costs"
+              />
+              <CostFeature
+                icon={<Waves className="size-6" />}
+                title="Minimize Wastage"
+                description="Calculate the right quantities, avoid over buying materials"
+              />
+            </div>
+          </div>
+        </div>
 
-        {/* <div className="flex justify-center">
-          <Button
-            size="xl"
-            className="bg-primary hover:bg-primary/90 group"
+        {/* Bottom CTA Button */}
+        <div className="flex justify-center">
+          <Button 
+            className="h-14 px-10 rounded-lg bg-[#2D3663] hover:bg-[#1E2548] text-white flex items-center gap-3 transition-all duration-300 shadow-xl group border-none"
             asChild
           >
-            <a href="#">
-              Calculate cost of work{" "}
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            <a href="#calculator" className="text-lg font-bold">
+              Use AI Calculator 
+              <ChevronRight className="size-5 group-hover:translate-x-1 transition-transform" />
             </a>
           </Button>
-        </div> */}
+        </div>
       </Container>
     </section>
   );

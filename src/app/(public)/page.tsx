@@ -28,6 +28,10 @@ export default function HomePage() {
     <main className="min-h-screen bg-white-background">
       <Navbar />
       <Hero />
+      
+      {/* AI CALCULATOR SECTION */}
+      <AiCalculatorSection />
+
       {/* Existing Header/Banner would go here */}
       <ProblemSection />
 
@@ -47,9 +51,6 @@ export default function HomePage() {
 
       {/* CONFERWENCE HALL SECTION */}
       <ConferenceHallSection />
-
-      {/* AI CALCULATOR SECTION */}
-      <AiCalculatorSection />
 
       {/* PRICING SECTION */}
       <PricingSection />
