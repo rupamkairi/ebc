@@ -24,7 +24,7 @@ export function Hero() {
           src="/images/hero-home.jpg"
           alt="EBC Hero Background"
           fill
-          className="object-cover object-center"
+          className="object-cover object-bottom"
           priority
         />
         {/* Subtle white-to-transparent gradient from top to bottom and left side */}
@@ -50,11 +50,11 @@ export function Hero() {
         </div>
 
         {/* Main Heading Section - Centered */}
-        <div className="w-full text-center max-w-4xl mb-12 mx-auto">
+        <div className="w-full text-center max-w-6xl mb-12 mx-auto">
           <h1 className="text-xl md:text-2xl lg:text-5xl font-black text-[#445EB4] leading-tight mb-4 tracking-tight">
             Build Your <span className="text-[#FFA500]">Dream Home</span> with Confidence Not Confusion
           </h1>
-          <p className="text-base md:text-lg text-slate-600 font-bold max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-slate-800 font-bold max-w-4xl mx-auto leading-relaxed">
             {t("home_subtitle")}
           </p>
         </div>
