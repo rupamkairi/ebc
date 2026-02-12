@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { walletService } from "@/services/walletService";
-import { WalletAdjustmentRequest, LeadPricingRequest } from "@/types/wallet";
+import { WalletAdjustmentRequest } from "@/types/wallet";
 
 export const walletKeys = {
   all: ["wallet"] as const,

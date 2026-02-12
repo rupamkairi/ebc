@@ -40,9 +40,10 @@ import {
 import { format } from "date-fns";
 import { UNIT_TYPE_LABELS } from "@/constants/quantities";
 import { useAcceptQuotationMutation } from "@/queries/activityQueries";
-import { useWalletDetails, useLeadPricing } from "@/queries/walletQueries";
+import { useWalletDetails } from "@/queries/walletQueries";
 import { RechargeModal } from "../../seller/recharge-modal";
 import { toast } from "sonner";
+import { useLeadPricing } from "@/queries/pricingQueries";
 
 interface QuotationFormProps {
   enquiry: Enquiry;
@@ -355,8 +356,10 @@ export function QuotationForm({
                               <span>Business Identity Missing</span>
                             </div>
                             <p className="text-xs">
-                              We couldn&apos;t find a business entity associated with your account ({entities?.length || 0} found). 
-                              You must have an approved business profile to respond to enquiries.
+                              We couldn&apos;t find a business entity associated
+                              with your account ({entities?.length || 0} found).
+                              You must have an approved business profile to
+                              respond to enquiries.
                             </p>
                           </div>
                         )}
