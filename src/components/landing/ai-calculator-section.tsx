@@ -14,7 +14,7 @@ interface FeatureProps {
 function CostFeature({ icon, title, description }: FeatureProps) {
   return (
     <div className="flex items-start gap-4">
-      <div className="flex-shrink-0 size-12 rounded-xl bg-white border border-[#FFA500] shadow-sm flex items-center justify-center text-[#FFA500]">
+      <div className="shrink-0 size-12 rounded-xl bg-white border border-[#FFA500] shadow-sm flex items-center justify-center text-[#FFA500]">
         {icon}
       </div>
       <div className="flex flex-col">

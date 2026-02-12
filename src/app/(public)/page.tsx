@@ -6,7 +6,7 @@ import { BenefitsSection } from "@/components/landing/benefits-section";
 import { ConferenceHallSection } from "@/components/landing/conference-hall-section";
 import { CtaSection } from "@/components/landing/cta-section";
 import { FaqSection } from "@/components/landing/faq-section";
-import { WhatSection } from "@/components/landing/what-section";
+import { SolutionSection } from "@/components/landing/solution-section";
 import { Hero } from "@/components/landing/hero";
 import { HowItWorksSection } from "@/components/landing/how-it-works-section";
 import { PricingSection } from "@/components/landing/pricing-section";
@@ -28,15 +28,15 @@ export default function HomePage() {
     <main className="min-h-screen bg-white-background">
       <Navbar />
       <Hero />
-      
+
       {/* AI CALCULATOR SECTION */}
       <AiCalculatorSection />
 
       {/* Existing Header/Banner would go here */}
       <ProblemSection />
 
-      {/* WHAT IS EBC? SECTION */}
-      <WhatSection />
+      {/* WHAT IS EBC? SECTION (Now SolutionSection) */}
+      <SolutionSection />
       {/* WHY JOIN EBC? SECTION */}
       <WhySection />
 
