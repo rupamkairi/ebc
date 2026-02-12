@@ -124,7 +124,7 @@ export function SolutionSection() {
     },
     {
       title: "Service Support",
-      icon: "/images/solutions/budget.svg",
+      icon: "/images/solutions/technical-support.svg",
       points: [
         "Mason, plumber, electrician, painter etc.",
         "Ratings & reviews",

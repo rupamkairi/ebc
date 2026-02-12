@@ -41,11 +41,12 @@ export default function HomePage() {
       {/* CONFERWENCE HALL SECTION */}
       <ConferenceHallSection />
 
-      {/* WHY JOIN EBC? SECTION */}
-      <WhySection />
-
       {/* HOW IT WORKS SECTION */}
       <HowItWorksSection />
+
+
+      {/* WHY JOIN EBC? SECTION */}
+      <WhySection />
 
       {/* MOST LOVED BENEFITS SECTION */}
       <BenefitsSection />
