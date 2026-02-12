@@ -15,7 +15,7 @@ function ProblemCard({ title, image, icon }: ProblemCardProps) {
   return (
     <div className="bg-white rounded-lg overflow-hidden shadow-xl border-2 border-transparent hover:border-[#FFA500]/50 flex flex-col h-full group transition-all duration-300">
       {/* Top Image Area */}
-      <div className="relative aspect-square w-full p-4 bg-white flex items-center justify-center">
+      <div className="relative aspect-4/3 w-full p-3 bg-white flex items-center justify-center">
         <div className="relative w-full h-full">
           <Image
             src={image}
@@ -69,7 +69,7 @@ export function ProblemSection() {
         />
         {/* Dark Blue Overlay with Multiplay effect to match screenshot depth */}
         <div className="absolute inset-0 bg-[#445EB4]/90 mix-blend-multiply" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#445EB4]/20 via-transparent to-[#445EB4]/20" />
+        <div className="absolute inset-0 bg-linear-to-b from-[#445EB4]/20 via-transparent to-[#445EB4]/20" />
       </div>
 
       <Container size="xl" className="relative z-10">
@@ -80,8 +80,8 @@ export function ProblemSection() {
           </h2>
         </div>
 
-        {/* 4x2 Grid of Problem Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 max-w-6xl mx-auto">
+        {/* 4x2 Grid of Problem Cards - Aligned left with reduced width/height */}
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-5xl">
           {problems.map((problem, index) => (
             <ProblemCard
               key={index}
