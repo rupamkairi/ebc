@@ -15,9 +15,9 @@ interface AdvantageCardProps {
 
 function AdvantageCard({ title, description, detail, image, icon }: AdvantageCardProps) {
   return (
-    <div className="bg-[#1a1a1a] rounded-xl overflow-hidden shadow-2xl border border-white/10 flex flex-col h-full group transition-all duration-300 hover:-translate-y-2">
-      {/* Photo Area */}
-      <div className="relative aspect-4/5 w-full bg-slate-800">
+    <div className="bg-[#1a1a1a] rounded-xl overflow-hidden shadow-xl border border-white/5 flex flex-col h-full group transition-all duration-300 hover:-translate-y-2">
+      {/* Photo Area - More compact aspect ratio */}
+      <div className="relative aspect-square w-full bg-slate-800">
         <Image
           src={image}
           alt={title}
@@ -25,30 +25,29 @@ function AdvantageCard({ title, description, detail, image, icon }: AdvantageCar
           className="object-cover transition-transform duration-700 group-hover:scale-110"
           unoptimized 
         />
-        {/* Subtle overlay to make text pop */}
-        <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
       
-      {/* Info Box */}
-      <div className="bg-white p-5 flex flex-col grow">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="p-1 px-1.5 rounded-md bg-orange-50 text-[#ec8305]">
+      {/* Info Box - Tightened padding and text */}
+      <div className="bg-white p-4 flex flex-col grow">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="p-1 rounded-md bg-orange-50 text-[#ec8305]">
             {icon}
           </div>
-          <h3 className="text-[#ec8305] font-black text-lg md:text-xl tracking-tight">
+          <h3 className="text-[#ec8305] font-black text-base md:text-lg tracking-tight leading-tight">
             {title}
           </h3>
         </div>
 
-        <p className="text-slate-400 text-xs font-bold leading-tight mb-4 uppercase tracking-wide">
+        <p className="text-slate-400 text-[10px] font-bold leading-tight mb-3 uppercase tracking-wide">
           {description}
         </p>
 
-        <div className="mt-auto pt-3 border-t border-slate-100 flex items-start gap-2">
+        <div className="mt-auto pt-2.5 border-t border-slate-100 flex items-start gap-2">
           <div className="shrink-0 mt-0.5">
-            <Check className="size-4 text-green-500 stroke-3" />
+            <Check className="size-3.5 text-green-500 stroke-3" />
           </div>
-          <span className="text-slate-600 text-[10px] md:text-xs font-bold leading-snug">
+          <span className="text-slate-600 text-[9px] md:text-[11px] font-bold leading-snug">
             {detail}
           </span>
         </div>
@@ -109,8 +108,8 @@ export function AdvantagesSection() {
           </h2>
         </div>
 
-        {/* 4 Column Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+        {/* Compact 4 Column Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 max-w-6xl mx-auto">
           {advantages.map((item, index) => (
             <AdvantageCard
               key={index}
