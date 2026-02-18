@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/typography";
 import { IconBrandWhatsapp } from "@tabler/icons-react";
 import { WhySection } from "@/components/landing/why-section";
+import { EcosystemSection } from "@/components/landing/ecosystem-section";
 
 export default function HomePage() {
   return (
@@ -44,6 +45,8 @@ export default function HomePage() {
       {/* HOW IT WORKS SECTION */}
       <HowItWorksSection />
 
+      {/* ECO SYSTEM SECTION */}
+      <EcosystemSection />
 
       {/* WHY JOIN EBC? SECTION */}
       <WhySection />
