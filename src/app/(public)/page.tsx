@@ -1,6 +1,5 @@
 "use client";
 
-import Container from "@/components/containers/containers";
 import { AiCalculatorSection } from "@/components/landing/ai-calculator-section";
 import { ConferenceHallSection } from "@/components/landing/conference-hall-section";
 import { FaqSection } from "@/components/landing/faq-section";
@@ -10,18 +9,15 @@ import { HowItWorksSection } from "@/components/landing/how-it-works-section";
 import { PricingSection } from "@/components/landing/pricing-section";
 import { ProblemSection } from "@/components/landing/problem-section";
 import { Navbar } from "@/components/shared/navbar";
-import { Button } from "@/components/ui/button";
-import {
-  TypographyResponsiveSmall,
-} from "@/components/ui/typography";
-import { IconBrandWhatsapp } from "@tabler/icons-react";
 import { EcosystemSection } from "@/components/landing/ecosystem-section";
 import { AdvantagesSection } from "@/components/landing/advantages-section";
 import { MaterialsSection } from "@/components/landing/materials-section";
 import { ServicesSection } from "@/components/landing/services-section";
 import { ReviewsSection } from "@/components/landing/reviews-section";
 import { FooterSection } from "@/components/landing/footer-section";
+import { WhatsAppButton } from "@/components/shared/whatsapp-button";
 
+// These are currently commented out in the JSX but kept for potential future use
 import { WhySection } from "@/components/landing/why-section";
 import { BenefitsSection } from "@/components/landing/benefits-section";
 import { UseCasesSection } from "@/components/landing/use-cases-section";
@@ -69,6 +65,7 @@ export default function HomePage() {
       {/* REVIEWS SECTION */}
       <ReviewsSection />
 
+      {/* These sections are currently commented out per request */}
       {/* <WhySection /> */}
       {/* <BenefitsSection /> */}
       {/* <UseCasesSection /> */}
@@ -78,14 +75,7 @@ export default function HomePage() {
       <FooterSection />
 
       {/* Floating WhatsApp Button */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <Button className="bg-[#25D366] hover:bg-[#20bd5c] rounded-full px-12 py-6 shadow-xl flex items-center gap-2 group">
-          <IconBrandWhatsapp className="h-8 w-8" />
-          <TypographyResponsiveSmall className="text-sm font-semibold text-white">
-            WhatsApp help
-          </TypographyResponsiveSmall>
-        </Button>
-      </div>
+      <WhatsAppButton />
     </main>
   );
 }
