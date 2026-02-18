@@ -24,6 +24,9 @@ import {
   useSupportQueriesQuery, 
   useCreateSupportQueryMutation 
 } from "@/queries/supportQueries";
+import { 
+  SupportCategory 
+} from "@/types/support";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -35,7 +38,7 @@ export function SupportCenter() {
   const [isOpen, setIsOpen] = useState(false);
   const token = useAuthStore((state) => state.token);
   const [view, setView] = useState<"HOME" | "CATEGORIES" | "FAQ" | "NEW_TICKET" | "MY_TICKETS" | "CHAT">("HOME");
-  const [selectedCategory, setSelectedCategory] = useState<any>(null);
+  const [selectedCategory, setSelectedCategory] = useState<SupportCategory | null>(null);
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
 
   const { data: categories, isLoading: loadingCats } = useSupportCategoriesQuery(!!token);
@@ -83,9 +86,9 @@ export function SupportCenter() {
               >
                 <Clock className="h-6 w-6" />
                 <span>My Active Queries</span>
-                {(myTickets as any)?.length > 0 && (
+                {myTickets && myTickets.length > 0 && (
                   <Badge variant="secondary" className="bg-blue-100 text-blue-700">
-                    {(myTickets as any).length}
+                    {myTickets.length}
                   </Badge>
                 )}
               </Button>
@@ -117,7 +120,7 @@ export function SupportCenter() {
               {loadingCats ? (
                 <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
               ) : (
-                (categories as any)?.map((cat: any) => (
+                categories?.map((cat) => (
                   <button
                     key={cat.id}
                     onClick={() => {
@@ -146,7 +149,7 @@ export function SupportCenter() {
             </Button>
             <h3 className="font-semibold text-lg">{selectedCategory?.name} - FAQs</h3>
             <div className="space-y-3">
-              {selectedCategory?.faqs?.map((faq: any) => (
+              {selectedCategory?.faqs?.map((faq) => (
                 <div key={faq.id} className="p-4 rounded-lg bg-muted/50 border">
                   <p className="font-medium text-sm mb-2 text-primary">{faq.question}</p>
                   <p className="text-xs text-muted-foreground leading-relaxed">{faq.answer}</p>
@@ -210,13 +213,13 @@ export function SupportCenter() {
             <div className="space-y-2">
               {loadingTickets ? (
                 <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
-              ) : (myTickets as any)?.length === 0 ? (
+              ) : (myTickets?.length === 0) ? (
                 <div className="text-center py-12 text-muted-foreground">
                   <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-20" />
                   <p>No active tickets found.</p>
                 </div>
               ) : (
-                (myTickets as any)?.map((ticket: any) => (
+                myTickets?.map((ticket) => (
                   <button
                     key={ticket.id}
                     onClick={() => {
@@ -233,7 +236,7 @@ export function SupportCenter() {
                       )}>
                         {ticket.status}
                       </Badge>
-                      <span className="text-[10px] text-muted-foreground">{new Date(ticket.createdAt).toLocaleDateString()}</span>
+                      <span className="text-[10px] text-muted-foreground">{ticket.createdAt ? new Date(ticket.createdAt).toLocaleDateString() : ""}</span>
                     </div>
                     <span className="font-semibold group-hover:text-primary transition-colors">{ticket.subject}</span>
                     <span className="text-xs text-muted-foreground line-clamp-1">{ticket.description}</span>

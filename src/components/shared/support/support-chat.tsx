@@ -10,10 +10,8 @@ import { Input } from "@/components/ui/input";
 import { 
   Loader2, 
   Send, 
-  User, 
   ShieldCheck, 
   Paperclip,
-  Phone
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
@@ -85,13 +83,13 @@ export function SupportChat({ ticketId }: SupportChatProps) {
               <p className="font-semibold mb-1">Issue Description:</p>
               <p>{ticket?.description}</p>
               <span className="text-[10px] text-muted-foreground mt-2 block opacity-70">
-                {new Date(ticket?.createdAt).toLocaleTimeString()}
+                {ticket?.createdAt ? new Date(ticket.createdAt).toLocaleTimeString() : ""}
               </span>
             </div>
           </div>
 
           {/* Conversation Thread */}
-          {ticket?.conversations?.map((msg: any) => {
+          {ticket?.conversations?.map((msg) => {
             const isMe = msg.senderId === currentUserId;
             return (
               <div key={msg.id} className={cn("flex", isMe ? "justify-end" : "justify-start")}>
@@ -106,7 +104,7 @@ export function SupportChat({ ticketId }: SupportChatProps) {
                     "text-[10px] mt-2 block opacity-70",
                     isMe ? "text-primary-foreground/70" : "text-muted-foreground"
                   )}>
-                    {new Date(msg.createdAt).toLocaleTimeString()}
+                    {msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString() : ""}
                   </span>
                 </div>
               </div>
