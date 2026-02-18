@@ -24,6 +24,7 @@ import { IconBrandWhatsapp } from "@tabler/icons-react";
 import { WhySection } from "@/components/landing/why-section";
 import { EcosystemSection } from "@/components/landing/ecosystem-section";
 import { AdvantagesSection } from "@/components/landing/advantages-section";
+import { MaterialsSection } from "@/components/landing/materials-section";
 
 export default function HomePage() {
   return (
@@ -51,6 +52,9 @@ export default function HomePage() {
 
       {/* ADVANTAGES SECTION */}
       <AdvantagesSection />
+
+      {/* MATERIALS SECTION */}
+      <MaterialsSection />
 
       {/* WHY JOIN EBC? SECTION */}
       <WhySection />
