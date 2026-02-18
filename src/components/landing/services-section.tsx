@@ -19,6 +19,7 @@ function ServiceCard({ title, image }: ServiceCardProps) {
           alt={title}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-105"
+          sizes="(max-width: 768px) 50vw, 25vw"
           unoptimized
         />
       </div>

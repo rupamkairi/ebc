@@ -27,6 +27,7 @@ function EcosystemCard({ title, subtitle, benefits, image, className }: Ecosyste
           alt={title}
           fill
           className="object-contain"
+          sizes="(max-width: 768px) 128px, 160px"
           unoptimized // Useful if assets are not yet present in build time
         />
       </div>

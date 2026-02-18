@@ -17,12 +17,6 @@ import { ReviewsSection } from "@/components/landing/reviews-section";
 import { FooterSection } from "@/components/landing/footer-section";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
 
-// These are currently commented out in the JSX but kept for potential future use
-import { WhySection } from "@/components/landing/why-section";
-import { BenefitsSection } from "@/components/landing/benefits-section";
-import { UseCasesSection } from "@/components/landing/use-cases-section";
-import { CtaSection } from "@/components/landing/cta-section";
-
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-white-background">

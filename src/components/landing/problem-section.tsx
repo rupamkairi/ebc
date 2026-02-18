@@ -22,6 +22,7 @@ function ProblemCard({ title, image, icon }: ProblemCardProps) {
             alt={title}
             fill
             className="object-contain transition-transform duration-500 group-hover:scale-110"
+            sizes="(max-width: 768px) 50vw, 25vw"
             unoptimized
           />
         </div>
@@ -65,6 +66,7 @@ export function ProblemSection() {
           alt="Backdrop"
           fill
           className="object-cover"
+          sizes="100vw"
           priority
         />
         {/* Dark Blue Overlay with Multiplay effect to match screenshot depth */}

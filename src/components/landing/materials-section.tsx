@@ -22,6 +22,7 @@ function MaterialCard({ title, category, image }: MaterialCardProps) {
           alt={title}
           fill
           className="object-contain p-3"
+          sizes="(max-width: 768px) 50vw, 25vw"
           unoptimized 
         />
       </div>

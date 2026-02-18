@@ -1,8 +1,8 @@
 "use client";
 
 import Container from "@/components/containers/containers";
-import Break from "@/components/ui/break";
 import { TypographyH1 } from "@/components/ui/typography";
+
 import { Play } from "lucide-react";
 import Image from "next/image";
 
@@ -23,6 +23,7 @@ function SolutionCard({ title, icon, points }: SolutionCardProps) {
             alt={title}
             fill
             className="object-contain"
+            sizes="48px"
             unoptimized
           />
         </div>
@@ -141,6 +142,7 @@ export function SolutionSection() {
           alt="Solution Background"
           fill
           className="object-cover opacity-30"
+          sizes="100vw"
           priority
         />
         {/* Warm Orange/Yellow Overlay - Lighter for more fade */}

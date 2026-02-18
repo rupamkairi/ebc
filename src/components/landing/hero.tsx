@@ -25,6 +25,7 @@ export function Hero() {
           alt="EBC Hero Background"
           fill
           className="object-cover object-bottom"
+          sizes="100vw"
           priority
         />
         {/* Subtle white-to-transparent gradient from top to bottom and left side */}

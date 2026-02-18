@@ -23,6 +23,7 @@ function ReviewCard({ name, time, rating, review, avatar }: ReviewCardProps) {
             alt={name}
             fill
             className="object-cover"
+            sizes="64px"
             unoptimized
           />
         </div>
