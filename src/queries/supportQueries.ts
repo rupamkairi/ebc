@@ -3,23 +3,25 @@ import fetchClient from "@/lib/api-client";
 
 const SUPPORT_API = "/support";
 
-export const useSupportCategoriesQuery = () => {
+export const useSupportCategoriesQuery = (enabled = true) => {
   return useQuery({
     queryKey: ["support-categories"],
     queryFn: async () => {
       return fetchClient(`${SUPPORT_API}/categories`);
     },
+    enabled,
   });
 };
 
-export const useSupportQueriesQuery = (status?: string) => {
+export const useSupportQueriesQuery = (status?: string, enabled = true) => {
   return useQuery({
     queryKey: ["support-queries", status],
     queryFn: async () => {
       return fetchClient(`${SUPPORT_API}/queries`, {
-        params: status ? { status } : undefined,
+        query: status ? { status } : undefined,
       });
     },
+    enabled,
   });
 };
 

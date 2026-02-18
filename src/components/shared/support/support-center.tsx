@@ -29,15 +29,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { SupportChat } from "@/components/shared/support/support-chat";
+import { useAuthStore } from "@/store/authStore";
 
 export function SupportCenter() {
   const [isOpen, setIsOpen] = useState(false);
+  const token = useAuthStore((state) => state.token);
   const [view, setView] = useState<"HOME" | "CATEGORIES" | "FAQ" | "NEW_TICKET" | "MY_TICKETS" | "CHAT">("HOME");
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
 
-  const { data: categories, isLoading: loadingCats } = useSupportCategoriesQuery();
-  const { data: myTickets, isLoading: loadingTickets } = useSupportQueriesQuery();
+  const { data: categories, isLoading: loadingCats } = useSupportCategoriesQuery(!!token);
+  const { data: myTickets, isLoading: loadingTickets } = useSupportQueriesQuery(undefined, !!token);
   const createMutation = useCreateSupportQueryMutation();
 
   const [subject, setSubject] = useState("");
@@ -273,7 +275,7 @@ export function SupportCenter() {
               EBC Support Center
             </SheetTitle>
             <SheetDescription>
-              We're here to help you grow your business.
+              We&apos;re here to help you grow your business.
             </SheetDescription>
           </SheetHeader>
           

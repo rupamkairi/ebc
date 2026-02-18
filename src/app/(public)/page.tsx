@@ -25,6 +25,7 @@ import { WhySection } from "@/components/landing/why-section";
 import { EcosystemSection } from "@/components/landing/ecosystem-section";
 import { AdvantagesSection } from "@/components/landing/advantages-section";
 import { MaterialsSection } from "@/components/landing/materials-section";
+import { ServicesSection } from "@/components/landing/services-section";
 
 export default function HomePage() {
   return (
@@ -55,6 +56,9 @@ export default function HomePage() {
 
       {/* MATERIALS SECTION */}
       <MaterialsSection />
+
+      {/* SERVICES SECTION */}
+      <ServicesSection />
 
       {/* WHY JOIN EBC? SECTION */}
       <WhySection />

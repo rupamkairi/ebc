@@ -77,6 +77,9 @@ async function fetchClient<T>(
     const response = await fetch(url, config);
 
     if (!response.ok) {
+      if (response.status === 401) {
+        useAuthStore.getState().logout();
+      }
       // Try to parse error message from server
       let errorMessage = `HTTP error! status: ${response.status}`;
       let errorData = null;
