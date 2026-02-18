@@ -132,7 +132,7 @@ export function AdvantagesSection() {
         {/* Concrete Pipes Placeholder Visual (Bottom Right) */}
         <div className="hidden lg:block absolute -bottom-12 -right-12 w-[450px] h-[300px] z-[-1] pointer-events-none">
           <Image
-            src="/images/advantages-pipes.png"
+            src="/images/advantages/advantages-pipes.png"
             alt="Pipes Illustration"
             fill
             className="object-contain opacity-40"
