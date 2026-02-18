@@ -26,6 +26,7 @@ import { EcosystemSection } from "@/components/landing/ecosystem-section";
 import { AdvantagesSection } from "@/components/landing/advantages-section";
 import { MaterialsSection } from "@/components/landing/materials-section";
 import { ServicesSection } from "@/components/landing/services-section";
+import { ReviewsSection } from "@/components/landing/reviews-section";
 
 export default function HomePage() {
   return (
@@ -63,20 +64,16 @@ export default function HomePage() {
       {/* PRICING SECTION */}
       <PricingSection />
 
-      {/* WHY JOIN EBC? SECTION */}
-      <WhySection />
-
-      {/* MOST LOVED BENEFITS SECTION */}
-      <BenefitsSection />
-
-      {/* USE CASES SECTION */}
-      <UseCasesSection />
-
       {/* FAQ SECTION */}
       <FaqSection />
 
-      {/* FINAL CTA SECTION */}
-      <CtaSection />
+      {/* REVIEWS SECTION */}
+      <ReviewsSection />
+
+      {/* <WhySection /> */}
+      {/* <BenefitsSection /> */}
+      {/* <UseCasesSection /> */}
+      {/* <CtaSection /> */}
 
       {/* FOOTER */}
       <footer className="border-t border-border/50 py-lg">
