@@ -60,6 +60,9 @@ export default function HomePage() {
       {/* SERVICES SECTION */}
       <ServicesSection />
 
+      {/* PRICING SECTION */}
+      <PricingSection />
+
       {/* WHY JOIN EBC? SECTION */}
       <WhySection />
 
@@ -68,9 +71,6 @@ export default function HomePage() {
 
       {/* USE CASES SECTION */}
       <UseCasesSection />
-
-      {/* PRICING SECTION */}
-      <PricingSection />
 
       {/* FAQ SECTION */}
       <FaqSection />
