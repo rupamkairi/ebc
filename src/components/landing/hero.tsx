@@ -29,8 +29,8 @@ export function Hero() {
           priority
         />
         {/* Subtle white-to-transparent gradient from top to bottom and left side */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/20 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-white/30 via-transparent to-transparent hidden md:block" />
+        <div className="absolute inset-0 bg-linear-to-b from-white/90 via-white/20 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-r from-white/30 via-transparent to-transparent hidden md:block" />
       </div>
 
       <Container size="xl" className="relative z-10 flex flex-col items-start">
