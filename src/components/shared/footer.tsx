@@ -7,10 +7,13 @@ export function Footer() {
   const { t } = useLanguage();
 
   return (
-    <footer className="bg-[#1a1b1e] text-white py-20 border-t-4 border-secondary">
+    <footer 
+      style={{ background: 'linear-gradient(to bottom, #3B52B1, #19234B)' }}
+      className="text-white py-8 border-t-4 border-secondary"
+    >
       <div className="container mx-auto px-4 md:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-          <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-6">
+          <div className="space-y-4">
             <div className="flex items-center gap-2">
               <div className="bg-primary flex h-10 w-10 items-center justify-center rounded-lg">
                 <svg
@@ -34,8 +37,8 @@ export function Footer() {
             </p>
           </div>
           <div>
-            <h4 className="font-black text-secondary uppercase tracking-widest text-xs mb-6">{t("quick_links")}</h4>
-            <ul className="space-y-3 text-sm font-bold text-slate-300">
+            <h4 className="font-black text-secondary uppercase tracking-widest text-xs mb-4">{t("quick_links")}</h4>
+            <ul className="space-y-2 text-sm font-bold text-slate-300">
               <li><Link href="#" className="hover:text-primary transition-colors">{t("materials")}</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors">{t("services")}</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors">{t("engineer_support")}</Link></li>
@@ -43,8 +46,8 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="font-black text-secondary uppercase tracking-widest text-xs mb-6">{t("company")}</h4>
-            <ul className="space-y-3 text-sm font-bold text-slate-300">
+            <h4 className="font-black text-secondary uppercase tracking-widest text-xs mb-4">{t("company")}</h4>
+            <ul className="space-y-2 text-sm font-bold text-slate-300">
               <li><Link href="#" className="hover:text-primary transition-colors">{t("about_us")}</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors">{t("contact_us")}</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors">{t("privacy_policy")}</Link></li>
@@ -52,7 +55,7 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="font-black text-secondary uppercase tracking-widest text-xs mb-6">{t("contact_info")}</h4>
+            <h4 className="font-black text-secondary uppercase tracking-widest text-xs mb-4">{t("contact_info")}</h4>
             <div className="space-y-4">
               <p className="text-sm font-bold text-slate-300">info@ebc.com</p>
               <p className="text-sm font-bold text-slate-300">+91 98765 43210</p>
@@ -64,7 +67,7 @@ export function Footer() {
             </div>
           </div>
         </div>
-        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-bold text-slate-500 uppercase tracking-widest">
+        <div className="pt-4 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-bold text-slate-500 uppercase tracking-widest">
           <p>© {new Date().getFullYear()} ECON Building Centre. {t("rights_reserved")}</p>
           <div className="flex gap-6">
             <Link href="#" className="hover:text-white transition-colors">Facebook</Link>
