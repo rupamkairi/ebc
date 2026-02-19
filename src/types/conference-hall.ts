@@ -166,6 +166,10 @@ export interface Offer {
   createdById: string;
   verificationStatus?: VERIFICATION_STATUS;
   verificationRemark?: string;
+  entity?: {
+    id: string;
+    name: string;
+  };
 
   // Nested Data
   offerDetails: OfferDetail[];
