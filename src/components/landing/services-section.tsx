@@ -2,6 +2,7 @@
 
 import Container from "@/components/containers/containers";
 import Image from "next/image";
+import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -80,10 +81,12 @@ export function ServicesSection() {
 
           {/* Select Your Service Button */}
           <div className="mt-12 z-10">
-            <Button variant="glow" size="action" className="group">
-              Select your Service
-              <ChevronRight className="size-6 transition-transform group-hover:translate-x-1" />
-            </Button>
+            <Link href="/hire">
+              <Button variant="glow" size="action" className="group">
+                Select your Service
+                <ChevronRight className="size-6 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </Link>
           </div>
         </div>
       </Container>
