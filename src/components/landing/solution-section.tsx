@@ -100,7 +100,7 @@ function SolutionCard({
 
           <div className="flex justify-center pt-4">
             <DialogClose asChild>
-              <Button className="bg-[#FFA500] hover:bg-[#FF8C00] text-black font-black px-12 py-6 text-lg rounded-md transition-all duration-200">
+              <Button className="cursor-pointer bg-[#FFA500] hover:bg-[#FF8C00] text-black font-black px-12 py-6 text-lg rounded-md transition-all duration-200">
                 OK
               </Button>
             </DialogClose>
