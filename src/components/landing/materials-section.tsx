@@ -4,6 +4,7 @@ import Container from "@/components/containers/containers";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 interface MaterialCardProps {
@@ -108,9 +109,11 @@ export function MaterialsSection() {
 
         {/* CTA Button */}
         <div className="flex justify-center mt-20">
-          <Button variant="glow" size="action" className="group">
-            Select your Products
-            <ChevronRight className="size-6 group-hover:translate-x-1 transition-transform" />
+          <Button variant="glow" size="action" className="group" asChild>
+            <Link href="/browse">
+              Select your Products
+              <ChevronRight className="size-6 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </Button>
         </div>
       </Container>

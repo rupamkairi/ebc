@@ -9,6 +9,11 @@ import { useBrowseData } from "@/queries/browse.queries";
 import { useBrowseStore } from "@/store/browseStore";
 import React, { Suspense, useEffect } from "react";
 
+import { InquiryPanel } from "@/components/layouts/browse/inquiry-panel";
+import { Navbar } from "@/components/shared/navbar";
+import { FooterSection } from "@/components/landing/footer-section";
+import { WhatsAppButton } from "@/components/shared/whatsapp-button";
+
 function BrowsePageContent() {
   const { params } = useBrowseParams();
   const { data, isLoading } = useBrowseData(params);
@@ -30,12 +35,26 @@ function BrowsePageContent() {
   }, [data, setBrowseData]);
 
   return (
-    <BrowseLayout
-      sidebar={<Sidebar facets={data?.facets} isLoading={isLoading} />}
-      search={<Search facets={data?.facets} />}
-      // Results now reads from store internaly, just pass loading state
-      results={<Results isLoading={isLoading} />}
-    />
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main className="flex-1">
+        <BrowseLayout
+          sidebar={
+            <Sidebar 
+              categories={data?.categories} 
+              facets={data?.facets} 
+              isLoading={isLoading} 
+            />
+          }
+          search={<Search categories={data?.categories} facets={data?.facets} />}
+          // Results now reads from store internaly, just pass loading state
+          results={<Results isLoading={isLoading} />}
+          inquiry={<InquiryPanel />}
+        />
+      </main>
+      <FooterSection />
+      <WhatsAppButton />
+    </div>
   );
 }
 

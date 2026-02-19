@@ -25,38 +25,17 @@ export function SubCategoryCard({
   onClick,
 }: SubCategoryCardProps) {
   return (
-    <Card
+    <button
       onClick={onClick}
       className={cn(
-        "w-[140px] shrink-0 overflow-hidden cursor-pointer transition-all duration-200",
-        isSelected ? "ring-2 ring-primary shadow-md" : "hover:opacity-90",
+        "px-8 py-2.5 rounded-md text-sm font-black transition-all duration-200 border-2",
+        isSelected
+          ? "bg-[#FFA500] border-[#FFA500] text-white shadow-md"
+          : "bg-white border-slate-300 text-slate-800 hover:border-[#FFA500]/50 hover:bg-slate-50",
       )}
     >
-      <div className="relative h-[80px] w-full">
-        <Image
-          src={item.image}
-          alt={item.name}
-          fill
-          className="object-cover"
-          unoptimized
-        />
-        {isSelected && (
-          <div className="absolute top-2 right-2 bg-primary text-primary-foreground rounded-full p-0.5">
-            <Check className="h-3 w-3" />
-          </div>
-        )}
-      </div>
-      <CardContent className="p-3 text-center">
-        <p
-          className={cn(
-            "text-xs font-medium line-clamp-1",
-            isSelected && "text-primary",
-          )}
-        >
-          {item.name}
-        </p>
-      </CardContent>
-    </Card>
+      {item.name}
+    </button>
   );
 }
 

@@ -2,18 +2,12 @@
 
 import React, { useState } from "react";
 import { Product } from "@/queries/browse.queries";
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { AddToEnquiryModal } from "./add-to-enquiry-modal";
-import { useAppointmentStore } from "@/store/appointmentStore";
+import { useEnquiryStore } from "@/store/enquiryStore";
+import { toast } from "sonner";
 
 interface ItemCardProps {
   product: Product;
@@ -22,93 +16,57 @@ interface ItemCardProps {
 export function ItemCard({ product }: ItemCardProps) {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const setAppointmentItem = useAppointmentStore(
-    (state) => state.setAppointmentItem,
-  );
+  const addItem = useEnquiryStore((state) => state.addItem);
 
   const handleCardClick = () => {
     router.push(`/browse/${product.id}`);
   };
 
-  const handleMakeAppointment = (e: React.MouseEvent) => {
+  const handleAddInquiry = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // Set item in appointment store
-    setAppointmentItem({
-      itemId: product.id,
-      title: product.title,
-      type: "service",
-      price: product.price,
-      image: product.image,
-      description: product.description,
-    });
-    // Navigate to appointment creation page
-    router.push("/appointment/create");
+    addItem(product);
+    toast.success(`${product.title} added to inquiry`);
   };
 
   return (
-    <>
-      <Card
-        className="overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full cursor-pointer hover:border-primary/50"
-        onClick={handleCardClick}
-      >
-        <div className="relative aspect-square w-full">
-          <Image
-            src={product.image}
-            alt={product.title}
-            fill
-            className="object-cover"
-            unoptimized
-          />
-        </div>
-        <CardHeader className="p-4 flex-1">
-          <div className="flex justify-between items-start gap-2">
-            <CardTitle className="text-base line-clamp-1">
-              {product.title}
-            </CardTitle>
-          </div>
-          <CardDescription className="line-clamp-2 text-xs mt-1">
-            {product.description}
-          </CardDescription>
-        </CardHeader>
-        <CardFooter className="p-4 pt-0 flex flex-col gap-3">
-          <div className="flex gap-2 w-full text-xs text-muted-foreground">
-            <span className="bg-secondary px-2 py-1 rounded-md">
-              {product.category}
-            </span>
-            <span className="bg-secondary px-2 py-1 rounded-md">
-              {product.brand}
-            </span>
-          </div>
-          {product.type === "PRODUCT" && (
-            <Button
-              className="w-full"
-              size="sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsModalOpen(true);
-              }}
-            >
-              Add to Enquiry
-            </Button>
-          )}
-          {product.type === "SERVICE" && (
-            <Button
-              className="w-full"
-              size="sm"
-              onClick={handleMakeAppointment}
-            >
-              Make an Appointment
-            </Button>
-          )}
-        </CardFooter>
-      </Card>
+    <div
+      className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full cursor-pointer group"
+      onClick={handleCardClick}
+    >
+      <div className="relative aspect-square w-full p-6 pb-2">
+        <Image
+          src={product.image}
+          alt={product.title}
+          fill
+          className="object-contain p-4 group-hover:scale-110 transition-transform duration-500"
+          unoptimized
+        />
+      </div>
+      <div className="p-4 pt-1 flex flex-col gap-1 items-start">
+        <h3 className="text-[#445EB4] font-black text-lg line-clamp-1 leading-tight group-hover:text-[#FFA500] transition-colors">
+          {product.title}
+        </h3>
+        <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">
+          {product.category}
+        </p>
+      </div>
+
+      <div className="p-4 pt-2 mt-auto">
+        <Button
+          className="w-full bg-[#FFA500] hover:bg-[#E69500] text-white font-black rounded-md h-10 shadow-sm active:scale-95 transition-all"
+          size="sm"
+          onClick={handleAddInquiry}
+        >
+          Make enquiry
+        </Button>
+      </div>
 
       <AddToEnquiryModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         product={product}
       />
-    </>
+    </div>
   );
 }
 

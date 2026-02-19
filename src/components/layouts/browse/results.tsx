@@ -9,7 +9,6 @@ import { useBrowseStore } from "@/store/browseStore";
 import { ItemCardGrid } from "@/components/browse/item-card";
 import { SubCategoryCardContainer } from "@/components/browse/sub-category-card";
 import { CategoryCarousel } from "@/components/browse/category-carousel";
-import { SelectedFiltersChips } from "@/components/browse/selected-filters-chips";
 
 interface ResultsProps {
   isLoading: boolean;
@@ -70,12 +69,22 @@ export function Results({ isLoading }: ResultsProps) {
         />
       )}
 
-      {/* 3. Selected Filters Chips */}
-      <SelectedFiltersChips />
+      {/* 4. Results Breadcrumb/Line */}
+      <div className="border-b border-slate-200 pb-2">
+         <p className="text-sm font-bold text-slate-400">
+           Result : <span className="text-[#445EB4]">
+             {categories.find(c => c.id === parentCategory)?.name || (parentCategory ? "Loading..." : "All Materials")}
+           </span> 
+           {subCategory.length > 0 && " > "}
+           <span className="text-slate-500">
+             {subCategories.find(s => subCategory.includes(s.id))?.name}
+           </span>
+         </p>
+      </div>
 
-      {/* 4. Results Count */}
+      {/* 5. Results Count */}
       <div className="flex items-center justify-between text-sm text-muted-foreground">
-        <p>
+        <p className="font-bold text-slate-500">
           Showing {products.length} of {total}{" "}
           {type === "SERVICE" ? "services" : "products"}
         </p>

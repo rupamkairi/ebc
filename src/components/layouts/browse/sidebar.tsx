@@ -1,7 +1,3 @@
-"use client";
-
-import React from "react";
-import { Label } from "@/components/ui/label";
 import { useBrowseParams } from "@/hooks/useBrowseParams";
 import { Facet } from "@/queries/browse.queries";
 import { Separator } from "@/components/ui/separator";
@@ -9,6 +5,7 @@ import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SidebarProps {
+  categories?: { id: string; name: string }[];
   facets?: {
     brands: Facet[];
     specifications: Facet[];
@@ -16,8 +13,12 @@ interface SidebarProps {
   isLoading?: boolean;
 }
 
-export function Sidebar({ facets, isLoading }: SidebarProps) {
+export function Sidebar({ categories, facets, isLoading }: SidebarProps) {
   const { params, updateParams } = useBrowseParams();
+
+  const handleCategoryChange = (catId: string) => {
+    updateParams({ parentCategory: catId, subCategory: [] });
+  };
 
   const handleBrandChange = (brand: string, checked: boolean) => {
     const current = params.brand;
@@ -30,16 +31,6 @@ export function Sidebar({ facets, isLoading }: SidebarProps) {
     updateParams({ brand: next });
   };
 
-  const handleSpecChange = (spec: string, checked: boolean) => {
-    const current = params.specification || [];
-    let next: string[];
-    if (checked) {
-      next = [...current, spec];
-    } else {
-      next = current.filter((s) => s !== spec);
-    }
-    updateParams({ specification: next });
-  };
 
   if (isLoading) {
     return (
@@ -51,96 +42,71 @@ export function Sidebar({ facets, isLoading }: SidebarProps) {
   }
 
   return (
-    <div className="space-y-8">
-      {/* Brands Section */}
-      <div>
-        <h3 className="font-semibold mb-4 text-sm tracking-wide uppercase text-muted-foreground">
-          Brands
-        </h3>
-        <div className="h-[200px] overflow-y-auto pr-4">
-          <div className="space-y-3">
+    <div className="flex flex-col h-full bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+      {/* Sidebar Header */}
+      <div className="bg-[#445EB4] p-4">
+        <h2 className="text-white font-black text-2xl tracking-tight">Materials</h2>
+      </div>
+
+      <div className="p-4 flex flex-col gap-8">
+        {/* Categories Section */}
+        <div>
+          <h3 className="text-[#445EB4] font-black text-lg mb-2">Filter</h3>
+           <Separator className="mb-4 bg-slate-100" />
+          <h4 className="font-bold text-xs uppercase tracking-widest text-slate-400 mb-4">Categories</h4>
+          <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+             {categories?.map((cat) => {
+               const isActive = params.parentCategory === cat.id;
+               return (
+                 <div 
+                   key={cat.id} 
+                   className="flex items-center gap-2 group cursor-pointer"
+                   onClick={() => handleCategoryChange(cat.id)}
+                 >
+                    <div className={cn(
+                      "size-4 rounded border transition-colors",
+                      isActive ? "bg-[#FFA500] border-[#FFA500]" : "border-slate-300 group-hover:border-[#FFA500]"
+                    )} />
+                    <span className={cn(
+                      "text-[11px] font-bold transition-colors uppercase",
+                      isActive ? "text-slate-900" : "text-slate-600 group-hover:text-slate-900"
+                    )}>
+                      {cat.name}
+                    </span>
+                 </div>
+               );
+             })}
+             {(!categories || categories.length === 0) && (
+               <p className="text-[10px] text-slate-400 italic">No categories available</p>
+             )}
+          </div>
+        </div>
+
+        {/* Brands Section */}
+        <div>
+          <h3 className="text-[#445EB4] font-black text-lg mb-2">Brands</h3>
+          <Separator className="mb-4 bg-slate-100" />
+          <h4 className="font-bold text-xs uppercase tracking-widest text-slate-400 mb-4">Brand Filter</h4>
+          <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
             {facets?.brands.map((brand) => {
               const isChecked = params.brand.includes(brand.value);
               return (
-                <div key={brand.value} className="flex items-center space-x-2">
-                  <div
-                    onClick={() => handleBrandChange(brand.value, !isChecked)}
-                    className={cn(
-                      "size-4 shrink-0 rounded-[4px] border border-input shadow-xs flex items-center justify-center transition-all cursor-pointer",
-                      isChecked
-                        ? "bg-primary border-primary text-primary-foreground"
-                        : "bg-background",
-                    )}
-                  >
-                    {isChecked && <Check className="size-3" />}
-                  </div>
-                  <Label
-                    htmlFor={`brand-${brand.value}`}
-                    onClick={() => handleBrandChange(brand.value, !isChecked)}
-                    className="flex-1 cursor-pointer font-normal text-sm flex justify-between"
-                  >
-                    <span>{brand.label}</span>
-                    <span className="text-muted-foreground text-xs">
-                      {brand.count}
-                    </span>
-                  </Label>
+                <div key={brand.value} className="flex items-center gap-2 group cursor-pointer" onClick={() => handleBrandChange(brand.value, !isChecked)}>
+                   <div className={cn(
+                     "size-4 rounded border flex items-center justify-center transition-all",
+                     isChecked ? "bg-[#FFA500] border-[#FFA500] text-white" : "border-slate-300 group-hover:border-[#FFA500]"
+                   )}>
+                     {isChecked && <Check className="size-2.5" />}
+                   </div>
+                   <span className={cn(
+                     "text-[11px] font-bold transition-colors uppercase",
+                     isChecked ? "text-slate-900" : "text-slate-600 group-hover:text-slate-900"
+                   )}>
+                     {brand.label}
+                   </span>
                 </div>
               );
             })}
-            {(!facets?.brands || facets.brands.length === 0) && (
-              <p className="text-xs text-muted-foreground">
-                No brands available
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <Separator />
-
-      {/* Specifications Section */}
-      <div>
-        <h3 className="font-semibold mb-4 text-sm tracking-wide uppercase text-muted-foreground">
-          Specifications
-        </h3>
-        <div className="h-[200px] overflow-y-auto pr-4">
-          <div className="space-y-3">
-            {facets?.specifications.map((spec) => {
-              const isChecked = (params.specification || []).includes(
-                spec.value,
-              );
-              return (
-                <div key={spec.value} className="flex items-center space-x-2">
-                  <div
-                    onClick={() => handleSpecChange(spec.value, !isChecked)}
-                    className={cn(
-                      "size-4 shrink-0 rounded-[4px] border border-input shadow-xs flex items-center justify-center transition-all cursor-pointer",
-                      isChecked
-                        ? "bg-primary border-primary text-primary-foreground"
-                        : "bg-background",
-                    )}
-                  >
-                    {isChecked && <Check className="size-3" />}
-                  </div>
-                  <Label
-                    htmlFor={`spec-${spec.value}`}
-                    onClick={() => handleSpecChange(spec.value, !isChecked)}
-                    className="flex-1 cursor-pointer font-normal text-sm flex justify-between"
-                  >
-                    <span>{spec.label}</span>
-                    <span className="text-muted-foreground text-xs">
-                      {spec.count}
-                    </span>
-                  </Label>
-                </div>
-              );
-            })}
-            {(!facets?.specifications ||
-              facets.specifications.length === 0) && (
-              <p className="text-xs text-muted-foreground">
-                No specifications available
-              </p>
-            )}
           </div>
         </div>
       </div>

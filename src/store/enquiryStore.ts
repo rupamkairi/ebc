@@ -1,81 +1,32 @@
-import { UnitType } from "@/constants/quantities";
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { persist } from "zustand/middleware";
+import { Product } from "@/queries/browse.queries";
 
-export interface EnquiryItem {
-  itemId: string;
-  title: string;
-  quantity: number;
-  remarks?: string;
-  type: "product" | "service";
-  unitType?: UnitType;
-  price?: number;
-}
-
-export interface BuyerDetails {
-  name: string;
-  email: string;
-  phoneNumber: string;
-  address: string;
-  pincode: string;
-  pincodeDirectoryId: string;
-  description?: string;
-  purpose?: string;
-  attachments?: string[]; // URLs or IDs
-}
-
-interface EnquiryState {
-  items: EnquiryItem[];
-  buyerDetails: BuyerDetails | null;
-  addItem: (item: EnquiryItem) => void;
-  removeItem: (itemId: string) => void;
-  updateItem: (itemId: string, updates: Partial<EnquiryItem>) => void;
-  setBuyerDetails: (details: BuyerDetails) => void;
+interface EnquiryStore {
+  items: Product[];
+  addItem: (product: Product) => void;
+  removeItem: (productId: string) => void;
   clearEnquiry: () => void;
-  resetEnquiry: () => void;
 }
 
-export const useEnquiryStore = create<EnquiryState>()(
+export const useEnquiryStore = create<EnquiryStore>()(
   persist(
     (set) => ({
       items: [],
-      buyerDetails: null,
-      addItem: (item) =>
+      addItem: (product) =>
         set((state) => {
-          const existing = state.items.find((i) => i.itemId === item.itemId);
-          if (existing) {
-            return {
-              items: state.items.map((i) =>
-                i.itemId === item.itemId
-                  ? { ...i, quantity: i.quantity + item.quantity }
-                  : i,
-              ),
-            };
-          }
-          return { items: [...state.items, item] };
+          const exists = state.items.find((item) => item.id === product.id);
+          if (exists) return state;
+          return { items: [...state.items, product] };
         }),
-      removeItem: (itemId) =>
+      removeItem: (productId) =>
         set((state) => ({
-          items: state.items.filter((i) => i.itemId !== itemId),
+          items: state.items.filter((item) => item.id !== productId),
         })),
-      updateItem: (itemId, updates) =>
-        set((state) => ({
-          items: state.items.map((i) =>
-            i.itemId === itemId ? { ...i, ...updates } : i,
-          ),
-        })),
-      setBuyerDetails: (details) =>
-        set((state) => {
-          if (JSON.stringify(state.buyerDetails) === JSON.stringify(details))
-            return state;
-          return { buyerDetails: details };
-        }),
-      clearEnquiry: () => set({ items: [] }), // Just clears items
-      resetEnquiry: () => set({ items: [], buyerDetails: null }), // Clears everything
+      clearEnquiry: () => set({ items: [] }),
     }),
     {
-      name: "ebc-enquiry-storage",
-      storage: createJSONStorage(() => localStorage),
-    },
-  ),
+      name: "enquiry-storage",
+    }
+  )
 );
