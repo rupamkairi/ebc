@@ -91,12 +91,13 @@ export function AiCalculatorSection() {
         {/* Bottom CTA Button */}
         <div className="flex justify-center">
           <Button 
-            className="h-14 px-10 rounded-lg bg-[#2D3663] hover:bg-[#1E2548] text-white flex items-center gap-3 transition-all duration-300 shadow-xl group border-none"
+            variant="glow"
+            size="action"
             asChild
           >
-            <a href="#calculator" className="text-lg font-bold">
+            <a href="#calculator" className="flex items-center justify-center gap-3">
               Use AI Calculator 
-              <ChevronRight className="size-5 group-hover:translate-x-1 transition-transform" />
+              <ChevronRight className="size-6 group-hover:translate-x-1 transition-transform" />
             </a>
           </Button>
         </div>

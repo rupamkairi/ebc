@@ -108,12 +108,9 @@ export function MaterialsSection() {
 
         {/* CTA Button */}
         <div className="flex justify-center mt-20">
-          <Button
-            size="xl"
-            className="bg-[#1e233b] hover:bg-[#1a1e33] px-12 py-7 text-lg rounded-xl shadow-xl transition-all duration-300 group flex items-center gap-2"
-          >
-            <span>Select your Products</span>
-            <ChevronRight className="group-hover:translate-x-1 transition-transform" />
+          <Button variant="glow" size="action" className="group">
+            Select your Products
+            <ChevronRight className="size-6 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>
       </Container>

@@ -72,13 +72,9 @@ export function FaqSection() {
         <Break />
 
         <div className="flex justify-center">
-          <Button
-            size="xl"
-            variant="default"
-            className="bg-primary hover:bg-primary/90 group"
-          >
-            {t("faq_still_questions")}{" "}
-            <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+          <Button variant="glow" size="action" className="group">
+            {t("faq_still_questions")}
+            <ArrowRight className="size-6 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>
       </Container>

@@ -80,9 +80,9 @@ export function ServicesSection() {
 
           {/* Select Your Service Button */}
           <div className="mt-12 z-10">
-            <Button className="bg-[#1B2559] hover:bg-[#1B2559]/90 text-white px-8 py-6 rounded-md flex items-center gap-2 text-lg font-semibold group shadow-lg">
+            <Button variant="glow" size="action" className="group">
               Select your Service
-              <ChevronRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+              <ChevronRight className="size-6 transition-transform group-hover:translate-x-1" />
             </Button>
           </div>
         </div>

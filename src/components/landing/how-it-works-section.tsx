@@ -82,8 +82,9 @@ export function HowItWorksSection() {
         <Break />
 
         <div className="flex justify-center">
-          <Button size="xl" className="bg-primary hover:bg-primary/90 group">
-            Start Your Home Journey <ArrowRight className="ml-2 w-4 h-4" />
+          <Button variant="glow" size="action" className="group">
+            Start Your Home Journey 
+            <ArrowRight className="size-6 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>
       </Container>
