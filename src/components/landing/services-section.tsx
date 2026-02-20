@@ -35,14 +35,42 @@ function ServiceCard({ title, image }: ServiceCardProps) {
 
 export function ServicesSection() {
   const services = [
-    { title: "Public or private projects of any size", image: "/images/services/architecture.png" },
-    { title: "Floor extension or upgradation", image: "/images/services/construction-residential-new-house-progress-building-site 1.png" },
-    { title: "Building repair or renovation", image: "/images/services/skilled-worker-installing-ceramic-wood-effect-tiles-floor-worker-making-laminate-flooring-construction-site-new-apartment 1.png" },
-    { title: "Work Monitoring from anywhere", image: "/images/services/site-engineer-construction-site 1.png" },
-    { title: "Custom Home Design & Planning", image: "/images/services/architecture.png" },
-    { title: "Commercial Space Renovation", image: "/images/services/construction-residential-new-house-progress-building-site 1.png" },
-    { title: "Industrial Flooring & Upgrades", image: "/images/services/skilled-worker-installing-ceramic-wood-effect-tiles-floor-worker-making-laminate-flooring-construction-site-new-apartment 1.png" },
-    { title: "Remote Technical Supervision", image: "/images/services/site-engineer-construction-site 1.png" },
+    {
+      title: "Public or private projects of any size",
+      image: "/images/services/architecture.png",
+    },
+    {
+      title: "Floor extension or upgradation",
+      image:
+        "/images/services/construction-residential-new-house-progress-building-site 1.png",
+    },
+    {
+      title: "Building repair or renovation",
+      image:
+        "/images/services/skilled-worker-installing-ceramic-wood-effect-tiles-floor-worker-making-laminate-flooring-construction-site-new-apartment 1.png",
+    },
+    {
+      title: "Work Monitoring from anywhere",
+      image: "/images/services/site-engineer-construction-site 1.png",
+    },
+    {
+      title: "Custom Home Design & Planning",
+      image: "/images/services/architecture.png",
+    },
+    {
+      title: "Commercial Space Renovation",
+      image:
+        "/images/services/construction-residential-new-house-progress-building-site 1.png",
+    },
+    {
+      title: "Industrial Flooring & Upgrades",
+      image:
+        "/images/services/skilled-worker-installing-ceramic-wood-effect-tiles-floor-worker-making-laminate-flooring-construction-site-new-apartment 1.png",
+    },
+    {
+      title: "Remote Technical Supervision",
+      image: "/images/services/site-engineer-construction-site 1.png",
+    },
   ];
 
   return (
@@ -70,13 +98,13 @@ export function ServicesSection() {
 
           {/* Steamroller Asset (Bottom Left - needs to be absolute or positioned carefully) */}
           <div className="hidden lg:block absolute -bottom-20 -left-80 w-[400px] h-[300px] pointer-events-none">
-             <Image 
-                src="/images/services/roller.png" 
-                alt="Construction Equipment"
-                width={400}
-                height={300}
-                className="object-contain"
-             />
+            <Image
+              src="/images/services/roller.png"
+              alt="Construction Equipment"
+              fill
+              className="object-contain"
+              sizes="400px"
+            />
           </div>
 
           {/* Select Your Service Button */}

@@ -4,6 +4,7 @@ import Container from "@/components/containers/containers";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, ChevronRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export function ConferenceHallSection() {
   return (
@@ -69,10 +70,10 @@ export function ConferenceHallSection() {
                   className="h-14 px-10 bg-[#FFA500] hover:bg-[#FFB733] text-white flex items-center gap-2 rounded-lg transition-all duration-300 shadow-xl group border-none"
                   asChild
                 >
-                  <a href="#experts" className="text-lg font-bold">
+                  <Link href="/conference-hall" className="text-lg font-bold">
                     View Expert Answers 
                     <ChevronRight className="size-5 group-hover:translate-x-1 transition-transform" />
-                  </a>
+                  </Link>
                 </Button>
               </div>
             </div>
