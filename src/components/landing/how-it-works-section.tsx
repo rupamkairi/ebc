@@ -24,16 +24,14 @@ export function HowItWorksSection() {
         </div>
 
         <div className="relative mb-8 md:mb-16">
-          <div className="overflow-x-auto no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
-            <div className="min-w-[700px] md:min-w-0 w-full aspect-[22/9] relative">
-              <Image
-                src="/images/how-it-works/steps.png"
-                alt="1. Tell us your requirement - Plot size or renovation work, 2. Compare quotations & hire manpower - Choose what fits budget and trust, 3. Build with support and quality checks - EBC tracks & assists throughout"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
+          <div className="w-full aspect-22/9 relative">
+            <Image
+              src="/images/how-it-works/steps.png"
+              alt="1. Tell us your requirement - Plot size or renovation work, 2. Compare quotations & hire manpower - Choose what fits budget and trust, 3. Build with support and quality checks - EBC tracks & assists throughout"
+              fill
+              className="object-contain px-2 md:px-0"
+              priority
+            />
           </div>
         </div>
 
