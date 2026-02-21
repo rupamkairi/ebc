@@ -5,12 +5,16 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useEnquiryStore } from "@/store/enquiryStore";
 import { X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-export function InquiryPanel() {
+export function InquiryPanel({ isMobile }: { isMobile?: boolean }) {
   const { items, removeItem } = useEnquiryStore();
 
   return (
-    <div className="bg-[#FFA500] rounded-lg overflow-hidden flex flex-col h-[calc(100vh-120px)] shadow-lg">
+    <div className={cn(
+      "bg-[#FFA500] overflow-hidden flex flex-col shadow-lg",
+      isMobile ? "h-full rounded-none" : "h-[calc(100vh-120px)] rounded-lg"
+    )}>
       <div className="p-4 bg-orange-600/10 border-b border-orange-600/20">
         <h2 className="text-white font-black text-xl text-center">
           Total Inquiry : {items.length}
@@ -23,7 +27,7 @@ export function InquiryPanel() {
             <p className="font-bold text-sm leading-tight">Your inquiry list is empty</p>
           </div>
         ) : (
-          items.map((item, index) => (
+          items.map((item, index: number) => (
             <div
               key={item.id}
               className="bg-white rounded p-2 flex items-center gap-3 relative shadow-sm group"

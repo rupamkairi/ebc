@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useBrowseParams, SortOption } from "@/hooks/useBrowseParams";
-import { SearchIcon, SlidersHorizontal } from "lucide-react";
+import { ClipboardList, SearchIcon, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -19,6 +19,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Sidebar } from "./sidebar";
+import { InquiryPanel } from "./inquiry-panel";
 import { Facet } from "@/queries/browse.queries";
 import { useDebounce } from "@uidotdev/usehooks";
 import { useEnquiryStore } from "@/store/enquiryStore";
@@ -98,11 +99,23 @@ export function Search({ categories, facets }: SearchProps) {
             </Select>
           </div>
 
-          <div className="bg-[#2D3663] text-white px-4 py-1.5 rounded text-sm font-bold flex items-center gap-2">
-            <span className="opacity-70 text-[10px] uppercase font-bold tracking-wider">Total inquiry:</span>
-             <span>{inquiryCount}</span>
-             <SlidersHorizontal className="size-3 text-[#FFA500]" />
-          </div>
+          <Sheet>
+            <SheetTrigger asChild>
+              <div className="bg-[#2D3663] text-white px-4 py-1.5 rounded text-sm font-bold flex items-center gap-2 cursor-pointer hover:bg-[#3d487a] transition-colors">
+                <span className="opacity-70 text-[10px] uppercase font-bold tracking-wider">Total inquiry:</span>
+                <span>{inquiryCount}</span>
+                <ClipboardList className="size-4 text-[#FFA500]" />
+              </div>
+            </SheetTrigger>
+            <SheetContent side="right" className="p-0 border-none bg-transparent">
+              <SheetHeader className="sr-only">
+                <SheetTitle>Your Inquiry List</SheetTitle>
+              </SheetHeader>
+              <div className="h-full p-4 pt-12">
+                <InquiryPanel isMobile />
+              </div>
+            </SheetContent>
+          </Sheet>
 
           <Sheet>
             <SheetTrigger asChild>

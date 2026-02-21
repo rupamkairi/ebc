@@ -4,14 +4,12 @@ interface BrowseLayoutProps {
   sidebar: React.ReactNode;
   search: React.ReactNode;
   results: React.ReactNode;
-  inquiry?: React.ReactNode;
 }
 
 export function BrowseLayout({
   sidebar,
   search,
   results,
-  inquiry,
 }: BrowseLayoutProps) {
   return (
     <div className="w-full bg-[#f8faff] min-h-screen">
@@ -28,13 +26,6 @@ export function BrowseLayout({
             {results}
           </div>
         </main>
-
-        {/* Right Column: Total Inquiry */}
-        {inquiry && (
-          <aside className="hidden xl:block w-[300px] shrink-0">
-            <div className="sticky top-24">{inquiry}</div>
-          </aside>
-        )}
       </div>
     </div>
   );

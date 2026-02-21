@@ -9,10 +9,10 @@ import { useBrowseData } from "@/queries/browse.queries";
 import { useBrowseStore } from "@/store/browseStore";
 import React, { Suspense, useEffect } from "react";
 
-import { InquiryPanel } from "@/components/layouts/browse/inquiry-panel";
 import { Navbar } from "@/components/shared/navbar";
 import { FooterSection } from "@/components/landing/footer-section";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
+import { FloatingInquiryButton } from "@/components/layouts/browse/floating-inquiry-button";
 
 function BrowsePageContent() {
   const { params } = useBrowseParams();
@@ -49,11 +49,11 @@ function BrowsePageContent() {
           search={<Search categories={data?.categories} facets={data?.facets} />}
           // Results now reads from store internaly, just pass loading state
           results={<Results isLoading={isLoading} />}
-          inquiry={<InquiryPanel />}
         />
       </main>
       <FooterSection />
       <WhatsAppButton />
+      <FloatingInquiryButton />
     </div>
   );
 }
