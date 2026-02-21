@@ -1,12 +1,9 @@
 "use client";
 
 import Container from "@/components/containers/containers";
-import Break from "@/components/ui/break";
 import { Button } from "@/components/ui/button";
 import {
-  TypographyH1,
   TypographyH2,
-  TypographyLarge,
   TypographyP,
 } from "@/components/ui/typography";
 import { ArrowRight } from "lucide-react";
@@ -15,103 +12,38 @@ import React from "react";
 
 export function HowItWorksSection() {
   return (
-    <section className="py-responsive">
+    <section className="py-responsive bg-white">
       <Container size="lg">
-        <div className="text-center">
-          <TypographyH2>How it works</TypographyH2>
-          <br />
-          <TypographyH1>3 Simple Steps</TypographyH1>
+        <div className="text-center mb-12">
+          <TypographyH2 className="text-4xl lg:text-5xl font-black text-primary">
+            How It <span className="text-secondary">Works?</span>
+          </TypographyH2>
+          <TypographyP className="text-muted-foreground mt-4 text-base md:text-lg font-medium">
+            3 Simple Steps
+          </TypographyP>
         </div>
 
-        <Break />
-
-        <div className="relative">
-          {/* Connection Arrows (Desktop) */}
-          <div className="hidden md:flex absolute top-[15%] left-[27%] w-[10%] items-center justify-center opacity-20">
-            <div className="h-px bg-slate-900 w-full" />
-            <ArrowRight className="w-5 h-5 -ml-1" />
-          </div>
-          <div className="hidden md:flex absolute top-[15%] left-[63%] w-[10%] items-center justify-center opacity-20">
-            <div className="h-px bg-slate-900 w-full" />
-            <ArrowRight className="w-5 h-5 -ml-1" />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-            <StepItem
-              icon={
-                <Image
-                  src="/icons/house-hand.png"
-                  alt="Requirement"
-                  width={48}
-                  height={48}
-                  className="object-contain"
-                />
-              }
-              title="1 Tell us your requirement"
-              description="Plot size or renovation work"
-            />
-            <StepItem
-              icon={
-                <Image
-                  src="/icons/compare-quotes.png"
-                  alt="Compare"
-                  width={48}
-                  height={48}
-                  className="object-contain"
-                />
-              }
-              title="2 Compare quotations & hire manpower"
-              description="Choose what fits budget and trust"
-            />
-            <StepItem
-              icon={
-                <Image
-                  src="/icons/quality-check.png"
-                  alt="Quality Check"
-                  width={48}
-                  height={48}
-                  className="object-contain"
-                />
-              }
-              title="3 Build with support and quality checks"
-              description="EBC tracks & assists throughout"
-            />
+        <div className="relative mb-8 md:mb-16">
+          <div className="overflow-x-auto no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
+            <div className="min-w-[700px] md:min-w-0 w-full aspect-[22/9] relative">
+              <Image
+                src="/images/how-it-works/steps.png"
+                alt="1. Tell us your requirement - Plot size or renovation work, 2. Compare quotations & hire manpower - Choose what fits budget and trust, 3. Build with support and quality checks - EBC tracks & assists throughout"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
           </div>
         </div>
-
-        <Break />
 
         <div className="flex justify-center">
-          <Button variant="glow" size="action" className="group">
+          <Button variant="glow" size="action" className="group max-w-full md:w-[399px]">
             Start Your Home Journey 
             <ArrowRight className="size-6 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>
       </Container>
     </section>
-  );
-}
-
-function StepItem({
-  icon,
-  title,
-  description,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="space-y-4">
-      <div className="bg-slate-50 w-24 h-24 rounded-full flex items-center justify-center mx-auto border border-slate-100 shadow-inner">
-        {icon}
-      </div>
-      <div>
-        <TypographyLarge className="font-bold mb-1">{title}</TypographyLarge>
-        <TypographyP className="text-muted-foreground text-sm">
-          {description}
-        </TypographyP>
-      </div>
-    </div>
   );
 }
