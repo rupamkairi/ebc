@@ -60,7 +60,7 @@ export default function BuyerDashboardPage() {
 
   return (
     <AuthGuard allowedRoles={["USER_BUYER_ADMIN"]}>
-      <div className="flex flex-col gap-10 w-full">
+      <div className="flex flex-col gap-10 w-full max-w-7xl mx-auto">
         {/* Profile Section */}
         {session?.user && (
           <BuyerProfileCard
