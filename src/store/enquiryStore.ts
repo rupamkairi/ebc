@@ -1,6 +1,16 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Product } from "@/queries/browse.queries";
+import { UnitType } from "@/constants/quantities";
+
+export interface EnquiryItem {
+  itemId: string;
+  title: string;
+  type: string;
+  quantity: number;
+  unitType: UnitType;
+  remarks?: string;
+  price?: number;
+}
 
 export interface BuyerDetails {
   name: string;
@@ -14,10 +24,10 @@ export interface BuyerDetails {
 }
 
 interface EnquiryStore {
-  items: Product[];
+  items: EnquiryItem[];
   buyerDetails: BuyerDetails | null;
-  addItem: (product: Product) => void;
-  removeItem: (productId: string) => void;
+  addItem: (item: EnquiryItem) => void;
+  removeItem: (itemId: string) => void;
   setBuyerDetails: (details: BuyerDetails) => void;
   clearEnquiry: () => void;
 }
@@ -27,15 +37,15 @@ export const useEnquiryStore = create<EnquiryStore>()(
     (set) => ({
       items: [],
       buyerDetails: null,
-      addItem: (product) =>
+      addItem: (item) =>
         set((state) => {
-          const exists = state.items.find((item) => item.id === product.id);
+          const exists = state.items.find((i) => i.itemId === item.itemId);
           if (exists) return state;
-          return { items: [...state.items, product] };
+          return { items: [...state.items, item] };
         }),
-      removeItem: (productId) =>
+      removeItem: (itemId) =>
         set((state) => ({
-          items: state.items.filter((item) => item.id !== productId),
+          items: state.items.filter((i) => i.itemId !== itemId),
         })),
       setBuyerDetails: (details) => set({ buyerDetails: details }),
       clearEnquiry: () => set({ items: [], buyerDetails: null }),

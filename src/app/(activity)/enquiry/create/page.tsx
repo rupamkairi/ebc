@@ -1,7 +1,7 @@
 "use client";
 
-import { AddEnquiryItemWrapper } from "@/components/dashboard/buyer/enquiry/add-enquiry-item-wrapper";
-import { EnquiryForm } from "@/components/dashboard/buyer/enquiry/enquiry-form";
+import { NewEnquiryItemSearch } from "@/components/dashboard/buyer/enquiry/new-enquiry-item-search";
+import { NewBuyerDetailsForm } from "@/components/dashboard/buyer/enquiry/new-buyer-details-form";
 import { EnquiryLineItems } from "@/components/dashboard/buyer/enquiry/enquiry-line-items";
 import { Button } from "@/components/ui/button";
 import { useEnquiryStore } from "@/store/enquiryStore";
@@ -10,11 +10,11 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
 import { useSessionQuery, useSendOtpMutation } from "@/queries/authQueries";
-import { ProfileCard } from "@/components/dashboard/seller/profile-card";
+import { BuyerProfileCard } from "@/components/dashboard/buyer/dashboard-v2-components";
 
 export default function CreateEnquiryPage() {
   const router = useRouter();
-  const { items, buyerDetails } = useEnquiryStore();
+  const { items, buyerDetails, setBuyerDetails } = useEnquiryStore();
   const { data: session } = useSessionQuery();
   const sendOtp = useSendOtpMutation();
 
@@ -53,53 +53,64 @@ export default function CreateEnquiryPage() {
       return;
     }
 
-    // If session exists, proceed to review or verify (depending on if we want to skip OTP)
-    // For now, let's proceed to review if already logged in?
-    // Or does the user always want OTP verify?
-    // Prompt says: "If there is not active session found... Create the user silently & verify in the otp step, then later move to review-submit page."
-    // This implies if session FOUND, we skip OTP.
     router.push("/enquiry/create/review-submit");
   };
 
   return (
-    <div className="container mx-auto space-y-8 py-8 px-4">
+    <div className="w-full max-w-5xl mx-auto space-y-12 py-10 px-4 mb-20 animate-in fade-in duration-700">
       {/* Session Profile Card */}
       {session?.user && (
-        <ProfileCard
-          user={{
-            name: session.user.name,
-            role: session.user.role || "Buyer",
-            avatarUrl: session.user.image || undefined,
-          }}
+        <BuyerProfileCard
+          name={session.user.name}
+          role={session.user.role || "Buyer"}
+          avatarUrl={session.user.image || undefined}
         />
       )}
 
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">
-          Create New Enquiry
+      <div className="space-y-2">
+        <h1 className="text-4xl font-black italic tracking-tighter text-[#3D52A0] uppercase">
+          Create New Enquiries
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-[#3D52A0]/60 font-medium ml-1">
           Fill in the details below to request a quote.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Col: Items & Search (Takes 2 cols) */}
-        <div className="lg:col-span-2 space-y-8">
-          <EnquiryLineItems />
-          <AddEnquiryItemWrapper />
-        </div>
+      <div className="space-y-16">
+        {/* Step 1: Items Selector */}
+        <section className="space-y-8">
+          <NewEnquiryItemSearch />
+          
+          {items.length > 0 && (
+            <div className="pt-4 border-t border-[#3D52A0]/10">
+              <h3 className="text-sm font-black tracking-widest text-[#3D52A0]/40 uppercase mb-4 ml-1">
+                Items Added to Enquiry ({items.length})
+              </h3>
+              <EnquiryLineItems />
+            </div>
+          )}
+        </section>
 
-        {/* Right Col: Buyer Details Form (Sticky?) */}
-        <div className="lg:col-span-1">
-          <div className="sticky top-24 space-y-6">
-            <EnquiryForm />
+        {/* Step 2: Buyer Details Form */}
+        <section className="space-y-10 pt-8">
+          <h2 className="text-4xl font-black italic tracking-tighter text-[#3D52A0] uppercase">
+            Buyer Details
+          </h2>
+          <NewBuyerDetailsForm 
+            defaultValues={buyerDetails} 
+            onChange={setBuyerDetails} 
+          />
+        </section>
 
-            <Button onClick={handleNext} className="w-full" size="lg">
-              Proceed to Verify
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
+        {/* Action Footer */}
+        <div className="flex justify-center pt-10">
+          <Button 
+            onClick={handleNext} 
+            className="bg-gradient-to-r from-[#0F28A9] to-[#0A1B75] hover:from-[#FFA500] hover:to-[#FF8C00] text-white font-black italic tracking-tight py-8 px-14 rounded-2xl text-2xl shadow-[0_20px_50px_rgba(15,40,169,0.3)] transition-all duration-500 hover:scale-105 active:scale-95 group border-none"
+          >
+            Proceed To Verify 
+            <ArrowRight className="ml-4 h-8 w-8 transition-transform group-hover:translate-x-3 duration-500" />
+          </Button>
         </div>
       </div>
     </div>
