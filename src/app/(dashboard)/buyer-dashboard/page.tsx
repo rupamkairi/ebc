@@ -1,34 +1,37 @@
 "use client";
 
-import Container from "@/components/containers/containers";
 import { AuthGuard } from "@/components/auth/auth-guard";
 import { AICalculator } from "@/components/dashboard/buyer/ai-calculator";
-import { DashboardCard } from "@/components/dashboard/seller/dashboard-card";
-import { DashboardContainerCard } from "@/components/dashboard/seller/dashboard-container-card";
-import { Button } from "@/components/ui/button";
 import {
   Armchair,
   Bath,
   Bed,
-  CalendarDays,
   FileText,
   Info,
   LifeBuoy,
   MessageSquare,
-  Settings,
-  Tv,
-  Users,
   Video,
+  Users,
+  CalendarDays,
+  Tv,
+  CheckCircle2,
+  Clock,
 } from "lucide-react";
-import Link from "next/link";
 import {
   useEnquiriesQuery,
   useAppointmentsQuery,
 } from "@/queries/activityQueries";
 import { useSessionQuery } from "@/queries/authQueries";
-import { ProfileCard } from "@/components/dashboard/seller/profile-card";
 import { useMemo } from "react";
-import { NotificationInbox } from "@/components/dashboard/notifications/notification-inbox";
+import { 
+  BuyerProfileCard, 
+  RoomCard, 
+  ActivitySectionCard, 
+  ActivityStatCard,
+  ConferenceHallItem
+} from "@/components/dashboard/buyer/dashboard-v2-components";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function BuyerDashboardPage() {
   const { data: enquiries } = useEnquiriesQuery({});
@@ -41,7 +44,6 @@ export default function BuyerDashboardPage() {
     const approvedEnquiries =
       enquiries?.filter((e) => e.status === "Approved").length || 0;
 
-    // Appointments
     const upcomingAppointments =
       appointments?.filter((a) => a.status === "Upcoming").length || 0;
     const pastAppointments =
@@ -58,230 +60,119 @@ export default function BuyerDashboardPage() {
 
   return (
     <AuthGuard allowedRoles={["USER_BUYER_ADMIN"]}>
-      <Container>
-        <div className="flex flex-col gap-8 py-6">
-          {/* User Profile Card */}
-          {session?.user && (
-            <ProfileCard
-              user={{
-                name: session.user.name,
-                role: session.user.role || "Buyer",
-                avatarUrl: session.user.image || undefined,
-              }}
-            />
-          )}
+      <div className="flex flex-col gap-10 w-full">
+        {/* Profile Section */}
+        {session?.user && (
+          <BuyerProfileCard
+            name={session.user.name || "Buyer"}
+            role={session.user.role || "Buyer"}
+            avatarUrl={session.user.image || undefined}
+          />
+        )}
 
-          {/* 1. Rooms Section */}
-          <section>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-semibold tracking-tight">Rooms</h2>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-                {
-                  title: "Material cepo.",
-                  icon: <Armchair className="h-6 w-6" />,
-                  href: "/browse?categoryId=",
-                },
-                {
-                  title: "Technical cabin",
-                  icon: <Bed className="h-6 w-6" />,
-                  href: "/browse?categoryId=",
-                },
-                {
-                  title: "Fabricator area",
-                  icon: <Bath className="h-6 w-6" />,
-                  href: "/browse?categoryId=",
-                },
-                {
-                  title: "Contract desk",
-                  icon: <Tv className="h-6 w-6" />,
-                  href: "/browse?categoryId=",
-                },
-              ].map((room) => (
-                <Link
-                  key={room.title}
-                  href={room.href}
-                  className="block h-full"
-                >
-                  <DashboardCard
-                    title={room.title}
-                    iconComponent={room.icon}
-                    className="h-full hover:bg-muted/50 transition-colors cursor-pointer"
-                    subtext="Browse items"
-                  />
-                </Link>
-              ))}
-            </div>
-          </section>
+        {/* Rooms Section */}
+        <section>
+          <h2 className="text-2xl font-black text-[#3D52A0] uppercase tracking-wider mb-6">Rooms</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            <RoomCard title="Material Depo" icon={Armchair} href="/browse?categoryId=" />
+            <RoomCard title="Technical Cabin" icon={Bed} href="/browse?categoryId=" />
+            <RoomCard title="Fabricator Area" icon={Bath} href="/browse?categoryId=" />
+            <RoomCard title="Contract Desk" icon={Tv} href="/browse?categoryId=" />
+          </div>
+        </section>
 
-          {/* 2. Activity Section */}
-          <section>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-semibold tracking-tight">
-                Activity
-              </h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <DashboardCard
-                title="My Enquiries"
-                subtext="Track your product enquiries"
-                iconComponent={<FileText className="h-5 w-5 text-primary" />}
-                contentComponent={
-                  <div className="flex flex-col gap-2 mt-4">
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-muted-foreground">Pending</span>
-                      <span className="font-bold">
-                        {stats.pendingEnquiries}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-muted-foreground">Approved</span>
-                      <span className="font-bold">
-                        {stats.approvedEnquiries}
-                      </span>
-                    </div>
-                  </div>
-                }
-                footerComponent={
-                  <Link href="/buyer-dashboard/enquiries" className="w-full">
-                    <Button className="w-full" variant="outline">
-                      View Enquiries
-                    </Button>
-                  </Link>
-                }
+        {/* Activity Section */}
+        <section>
+          <h2 className="text-2xl font-black text-[#3D52A0] uppercase tracking-wider mb-6">Activity</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <ActivitySectionCard 
+              title="My Enquiries" 
+              icon={FileText}
+              footerLink="/buyer-dashboard/enquiries"
+              footerText="View All Enquiries"
+            >
+              <ActivityStatCard 
+                label="Pending Enquiries" 
+                value={stats.pendingEnquiries} 
+                icon={Clock} 
               />
-              <DashboardCard
-                title="Appointments"
-                subtext="Manage your scheduled visits"
-                iconComponent={
-                  <CalendarDays className="h-5 w-5 text-primary" />
-                }
-                contentComponent={
-                  <div className="flex flex-col gap-2 mt-4">
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-muted-foreground">Upcoming</span>
-                      <span className="font-bold">
-                        {stats.upcomingAppointments}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-muted-foreground">Past</span>
-                      <span className="font-bold">
-                        {stats.pastAppointments}
-                      </span>
-                    </div>
-                  </div>
-                }
-                footerComponent={
-                  <Link href="/buyer-dashboard/appointments" className="w-full">
-                    <Button className="w-full" variant="outline">
-                      View Appointments
-                    </Button>
-                  </Link>
-                }
+              <ActivityStatCard 
+                label="Approved Enquiries" 
+                value={stats.approvedEnquiries} 
+                icon={CheckCircle2} 
               />
+            </ActivitySectionCard>
+
+            <ActivitySectionCard 
+              title="My Appointments" 
+              icon={CalendarDays}
+              footerLink="/buyer-dashboard/appointments"
+              footerText="View All Appointments"
+            >
+              <ActivityStatCard 
+                label="Upcoming Appointments" 
+                value={stats.upcomingAppointments} 
+                icon={Clock} 
+              />
+              <ActivityStatCard 
+                label="Appointments Completed" 
+                value={stats.pastAppointments} 
+                icon={CheckCircle2} 
+              />
+            </ActivitySectionCard>
+          </div>
+        </section>
+
+        {/* Conference Hall & Secondary Profile */}
+        <section>
+          <h2 className="text-2xl font-black text-[#3D52A0] uppercase tracking-wider mb-6">Conference Hall</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 h-fit">
+              <ConferenceHallItem title="Info & Updates" icon={Info} href="/buyer-dashboard/conference-hall" />
+              <ConferenceHallItem title="Meetings" icon={Users} href="/buyer-dashboard/conference-hall" />
+              <ConferenceHallItem title="Forums" icon={MessageSquare} href="/buyer-dashboard/conference-hall" />
+              <ConferenceHallItem title="Demos" icon={Video} href="/buyer-dashboard/conference-hall" />
+              <ConferenceHallItem title="Live" icon={LifeBuoy} href="/buyer-dashboard/conference-hall" />
             </div>
-          </section>
 
-          {/* 3. Conference Hall & Settings */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <section className="md:col-span-2">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  Conference Hall
-                </h2>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {[
-                  {
-                    title: "Info",
-                    icon: <Info className="h-5 w-5" />,
-                    metric: "Updates",
-                  },
-                  {
-                    title: "Meetings",
-                    icon: <Users className="h-5 w-5" />,
-                    metric: "2 Scheduled",
-                  },
-                  {
-                    title: "Forum",
-                    icon: <MessageSquare className="h-5 w-5" />,
-                    metric: "5 New",
-                  },
-                  {
-                    title: "Demos",
-                    icon: <Video className="h-5 w-5" />,
-                    metric: "Available",
-                  },
-                  {
-                    title: "Live",
-                    icon: <LifeBuoy className="h-5 w-5" />,
-                    metric: "On Air",
-                  },
-                ].map((item) => (
-                  <Link
-                    key={item.title}
-                    href="/buyer-dashboard/conference-hall"
-                    className="h-full"
-                  >
-                    <DashboardCard
-                      title={item.title}
-                      iconComponent={item.icon}
-                      subtext={item.metric}
-                      className="h-full hover:bg-muted/50 transition-colors"
-                    />
-                  </Link>
-                ))}
-              </div>
-            </section>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <section className="lg:col-span-1">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-2xl font-semibold tracking-tight">
-                    Settings
-                  </h2>
+            {/* Side Profile Info */}
+            <div className="rounded-2xl bg-[#3D52A0] p-6 text-white shadow-xl flex flex-col items-center">
+              <div className="flex flex-col items-center text-center gap-4 mb-8">
+                <div className="relative">
+                  <Avatar className="h-20 w-20 border-2 border-white/20">
+                    <AvatarImage src={session?.user?.image || undefined} alt={session?.user?.name || ""} />
+                    <AvatarFallback className="bg-white/10 text-white font-bold text-2xl">
+                      {session?.user?.name?.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-green-500 border-2 border-[#3D52A0]" />
                 </div>
-                <DashboardCard
-                  title="Profile Settings"
-                  subtext="Manage your account"
-                  iconComponent={<Settings className="h-5 w-5" />}
-                  contentComponent={
-                    <p className="text-sm text-muted-foreground mt-2">
-                      Update your profile and notification channels.
-                    </p>
-                  }
-                  footerComponent={
-                    <Link href="/buyer-dashboard/settings" className="w-full">
-                      <Button className="w-full">Manage Settings</Button>
-                    </Link>
-                  }
-                  className="h-full"
-                />
-              </section>
-
-              <section className="lg:col-span-2">
-                <NotificationInbox userType="BUYER" />
-              </section>
+                <div>
+                  <h3 className="text-xl font-bold">{session?.user?.name}</h3>
+                  <p className="text-xs text-white/60 uppercase tracking-widest">{session?.user?.role || "Buyer"}</p>
+                </div>
+              </div>
+              
+              <div className="flex flex-col gap-3 w-full">
+                <Button className="w-full bg-[#FFA500] hover:bg-[#E69500] text-white font-bold h-10 text-xs">
+                  View Profile
+                </Button>
+                <Button className="w-full bg-[#FFA500] hover:bg-[#E69500] text-white font-bold h-10 text-xs text-nowrap">
+                  Edit Appearance
+                </Button>
+              </div>
             </div>
           </div>
+        </section>
 
-          {/* 4. AI Calculator */}
-          <section>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-semibold tracking-tight">
-                AI Calculator
-              </h2>
-            </div>
-            <DashboardContainerCard className="border shadow-sm p-0">
-              <div className="p-6">
-                <AICalculator />
-              </div>
-            </DashboardContainerCard>
-          </section>
-        </div>
-      </Container>
+        {/* AI Calculator - Moved to bottom as it's a utility */}
+        <section className="mt-8">
+          <h2 className="text-2xl font-black text-[#3D52A0] uppercase tracking-wider mb-6">AI Cost Calculator</h2>
+          <div className="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-muted/50">
+            <AICalculator />
+          </div>
+        </section>
+      </div>
     </AuthGuard>
   );
 }
