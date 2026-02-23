@@ -63,7 +63,7 @@ export default function EnquiriesPage() {
           })}
         </div>
 
-        <Link href="/browse">
+        <Link href="/enquiry/create">
           <Button className="bg-[#3D52A0] hover:bg-[#2A3B7D] text-white px-8 py-6 rounded-xl font-bold flex items-center gap-2 h-12">
             + Create Enquiry
           </Button>

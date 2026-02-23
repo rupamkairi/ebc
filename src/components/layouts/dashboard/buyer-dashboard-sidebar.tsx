@@ -29,7 +29,7 @@ const navItems = [
   },
   {
     title: "My catalogue",
-    url: "/buyer-dashboard/catalogue",
+    url: "/browse",
     icon: BookOpen,
   },
   {
