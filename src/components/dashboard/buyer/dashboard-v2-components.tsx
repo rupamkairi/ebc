@@ -2,13 +2,25 @@
 
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Scan,
-  Settings,
-  Bell,
+import { 
+  Scan, 
+  Settings, 
+  Bell, 
   ArrowRight,
+  LogOut,
+  User
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { authService } from "@/services/authService";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu";
 
 /**
  * 1. Buyer Profile Card (Orange)
@@ -22,6 +34,13 @@ export function BuyerProfileCard({
   role: string; 
   avatarUrl?: string 
 }) {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    authService.logout();
+    router.replace("/auth/login");
+  };
+
   return (
     <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#FF8C00] to-[#FFA500] p-4 sm:p-8 text-white shadow-lg">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
@@ -39,14 +58,38 @@ export function BuyerProfileCard({
         </div>
         
         <div className="flex items-center gap-2 sm:gap-4">
-          <button className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm transition-all hover:bg-white/30">
-            <Scan className="size-5 sm:size-6 text-white" />
+          <button className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm transition-all hover:bg-white/30 text-white">
+            <Scan className="size-5 sm:size-6" />
           </button>
-          <button className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm transition-all hover:bg-white/30">
-            <Settings className="size-5 sm:size-6 text-white" />
-          </button>
-          <button className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm transition-all hover:bg-white/30">
-            <Bell className="size-5 sm:size-6 text-white" />
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm transition-all hover:bg-white/30 text-white">
+                <Settings className="size-5 sm:size-6" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href="/buyer-dashboard/settings" className="flex items-center w-full">
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Profile Settings</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem 
+                className="text-destructive focus:text-destructive cursor-pointer" 
+                onClick={handleLogout}
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Log out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <button className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm transition-all hover:bg-white/30 text-white">
+            <Bell className="size-5 sm:size-6" />
           </button>
         </div>
       </div>
