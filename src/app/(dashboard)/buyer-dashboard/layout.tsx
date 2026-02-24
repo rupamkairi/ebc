@@ -18,8 +18,8 @@ export default function BuyerDashboardLayout({
         <BuyerDashboardHeader />
         <div className="flex flex-1 w-full flex-row">
           <BuyerDashboardSidebar />
-          <main className="flex-1 overflow-y-auto px-4 sm:px-10 py-6 sm:py-10 w-full">
-            {children}
+          <main className="flex-1 overflow-y-auto px-4 sm:px-10 py-6 sm:py-10 w-full flex flex-col">
+            <div className="flex-1">{children}</div>
           </main>
         </div>
       </div>

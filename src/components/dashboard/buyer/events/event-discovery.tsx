@@ -82,19 +82,41 @@ export function EventDiscovery() {
           />
         </div>
         <Tabs value={timeframe} onValueChange={(v) => setTimeframe(v as "FUTURE" | "PAST" | "ALL")} className="w-full md:w-auto">
-          <TabsList className="grid grid-cols-3 w-full">
-            <TabsTrigger value="FUTURE">Upcoming</TabsTrigger>
-            <TabsTrigger value="PAST">Recorded</TabsTrigger>
-            <TabsTrigger value="ALL">All</TabsTrigger>
+          <TabsList className="grid grid-cols-3 w-full bg-muted/50 p-1 h-11">
+            <TabsTrigger 
+              value="FUTURE" 
+              className="data-[state=active]:bg-[#3D52A0] data-[state=active]:text-white transition-all font-bold"
+            >
+              Upcoming
+            </TabsTrigger>
+            <TabsTrigger 
+              value="PAST" 
+              className="data-[state=active]:bg-[#3D52A0] data-[state=active]:text-white transition-all font-bold"
+            >
+              Recorded
+            </TabsTrigger>
+            <TabsTrigger 
+              value="ALL" 
+              className="data-[state=active]:bg-[#3D52A0] data-[state=active]:text-white transition-all font-bold"
+            >
+              All
+            </TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
 
       {!events || events.length === 0 ? (
-        <div className="text-center py-20 border-2 border-dashed rounded-xl">
-          <Calendar className="h-12 w-12 mx-auto text-muted-foreground opacity-20 mb-4" />
-          <h3 className="text-lg font-medium">No events found</h3>
-          <p className="text-muted-foreground">Try adjusting your filters or search term.</p>
+        <div className="flex flex-col items-center justify-center py-20 animate-in fade-in duration-700">
+          <div className="relative w-full max-w-lg aspect-video mb-8">
+            <img 
+              src="https://placehold.co/600x400/f3f4f6/3D52A0?text=Conference+Hall+Empty" 
+              alt="No events available"
+              className="w-full h-full object-contain rounded-3xl"
+            />
+          </div>
+          <p className="text-[#9CA3AF] text-lg font-medium text-center max-w-md italic">
+            Hmm... Seems quiet down here, Conference videos will appear down here once they are created
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

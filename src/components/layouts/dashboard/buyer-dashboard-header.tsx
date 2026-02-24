@@ -15,11 +15,11 @@ import { SidebarItems } from "./buyer-dashboard-sidebar";
 export default function BuyerDashboardHeader() {
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-white">
-      <div className="flex h-20 items-center justify-between px-4 sm:px-8">
-        <div className="flex items-center gap-4">
+      <div className="flex h-20 items-center justify-between px-4 sm:px-8 relative max-w-[1440px] mx-auto w-full">
+        <div className="flex items-center gap-4 lg:hidden">
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="lg:hidden">
+              <Button variant="ghost" size="icon">
                 <Menu className="size-6 text-[#3D52A0]" />
               </Button>
             </SheetTrigger>
@@ -34,8 +34,11 @@ export default function BuyerDashboardHeader() {
               </div>
             </SheetContent>
           </Sheet>
+        </div>
 
-          <Link href="/" className="flex items-center gap-2 sm:gap-3">
+        {/* Logo - Moved to the left */}
+        <div className="flex items-center">
+          <Link href="/" className="flex items-center">
             <img
               src="/logo.svg"
               alt="E-CON"
@@ -44,9 +47,10 @@ export default function BuyerDashboardHeader() {
           </Link>
         </div>
         
+        {/* Right side: Action Button */}
         <div className="flex items-center gap-4">
           <Button 
-            className="rounded-full bg-[#FFA500] hover:bg-[#E69500] text-white px-4 sm:px-6 py-5 h-auto flex items-center gap-2 font-semibold shadow-sm"
+            className="rounded-full bg-[#FFA500] hover:bg-[#E69500] text-white px-4 sm:px-6 py-5 h-auto flex items-center gap-2 font-semibold shadow-sm text-sm"
           >
             <HeadphonesIcon className="size-4" />
             <span className="hidden sm:inline">Talk To Support Team</span>

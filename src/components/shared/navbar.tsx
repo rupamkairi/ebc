@@ -17,7 +17,7 @@ export function Navbar() {
   const navLinks = [
     { name: t("home"), href: "/" },
     { name: t("cost_calculator"), href: "#ai-calculator" },
-    { name: t("conference_hall"), href: "#conference-hall" },
+    { name: t("conference_hall"), href: "/conference-hall" },
     { name: t("offers"), href: "/offers" },
     { name: t("find_sellers"), href: "#" },
     { name: t("help"), href: "#" },
