@@ -5,9 +5,22 @@ import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Search, UserRound, Scale, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export function Hero() {
   const { t } = useLanguage();
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/browse?q=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      router.push('/browse');
+    }
+  };
   
   const trustFeatures = [
     { key: "verified_seller" },
@@ -19,16 +32,18 @@ export function Hero() {
   const SearchBar = (
     <div className="w-full flex justify-center mb-6 md:mb-12 mt-2 md:mt-0">
       <div className="w-full max-w-2xl px-2 md:px-4">
-        <div className="relative group">
+        <form onSubmit={handleSearch} className="relative group">
           <input
             type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t("search_placeholder")}
             className="w-full h-12 md:h-14 pl-6 pr-14 rounded-full border border-slate-200 bg-white/95 backdrop-blur-md shadow-xl focus:outline-none focus:ring-2 focus:ring-[#FFA500]/40 transition-all text-slate-700 text-base md:text-lg"
           />
-          <button className="absolute right-1.5 top-1.5 h-9 w-9 md:h-11 md:w-11 flex items-center justify-center bg-[#FFA500] hover:bg-[#E69500] rounded-full text-white transition-all shadow-md active:scale-95">
+          <button type="submit" className="absolute right-1.5 top-1.5 h-9 w-9 md:h-11 md:w-11 flex items-center justify-center bg-[#FFA500] hover:bg-[#E69500] rounded-full text-white transition-all shadow-md active:scale-95">
             <Search className="size-4 md:size-5" />
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );
