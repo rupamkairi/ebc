@@ -16,6 +16,7 @@ import { ServicesSection } from "@/components/landing/services-section";
 import { ReviewsSection } from "@/components/landing/reviews-section";
 import { FooterSection } from "@/components/landing/footer-section";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
+import { ScrollToTopButton } from "@/components/shared/scroll-to-top";
 
 export default function HomePage() {
   return (
@@ -67,6 +68,9 @@ export default function HomePage() {
 
       {/* FOOTER */}
       <FooterSection />
+
+      {/* Floating Scroll To Top Button */}
+      <ScrollToTopButton />
 
       {/* Floating WhatsApp Button */}
       <WhatsAppButton />
