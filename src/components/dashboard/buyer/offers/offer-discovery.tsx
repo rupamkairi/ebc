@@ -12,7 +12,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Tag, 
   Calendar, 
   Search,
   ArrowRight,
@@ -22,6 +21,7 @@ import { format } from "date-fns";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import Image from "next/image";
 
 export function OfferDiscovery() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -55,10 +55,18 @@ export function OfferDiscovery() {
       </div>
 
       {activeOffers.length === 0 ? (
-        <div className="text-center py-20 border-2 border-dashed rounded-3xl bg-muted/5">
-          <Tag className="h-12 w-12 mx-auto opacity-20 mb-4 text-primary" />
-          <h3 className="text-lg font-black tracking-tight uppercase">No active offers</h3>
-          <p className="text-muted-foreground text-sm font-medium">Check back soon for exclusive deals from the community.</p>
+        <div className="flex flex-col items-center justify-center py-10 md:py-20 animate-in fade-in duration-700 px-4">
+          <div className="relative w-full max-w-[280px] sm:max-w-sm md:max-w-lg aspect-video mb-6 md:mb-8">
+            <Image 
+              src="/images/conference-hall/conference-hall-empty.png" 
+              alt="No active offers"
+              fill
+              className="object-contain rounded-3xl"
+            />
+          </div>
+          <p className="text-[#9CA3AF] text-base md:text-lg font-medium text-center max-w-md italic px-4">
+            Check back soon for exclusive deals from the community.
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

@@ -29,6 +29,7 @@ import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Image from "next/image";
 
 export function EventDiscovery() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -106,15 +107,16 @@ export function EventDiscovery() {
       </div>
 
       {!events || events.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 animate-in fade-in duration-700">
-          <div className="relative w-full max-w-lg aspect-video mb-8">
-            <img 
-              src="https://placehold.co/600x400/f3f4f6/3D52A0?text=Conference+Hall+Empty" 
+        <div className="flex flex-col items-center justify-center py-10 md:py-20 animate-in fade-in duration-700 px-4">
+          <div className="relative w-full max-w-[280px] sm:max-w-sm md:max-w-lg aspect-video mb-6 md:mb-8">
+            <Image 
+              src="/images/conference-hall/conference-hall-empty.png" 
               alt="No events available"
-              className="w-full h-full object-contain rounded-3xl"
+              fill
+              className="object-contain rounded-3xl"
             />
           </div>
-          <p className="text-[#9CA3AF] text-lg font-medium text-center max-w-md italic">
+          <p className="text-[#9CA3AF] text-base md:text-lg font-medium text-center max-w-md italic px-4">
             Hmm... Seems quiet down here, Conference videos will appear down here once they are created
           </p>
         </div>

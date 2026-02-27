@@ -32,39 +32,39 @@ export default function ConferenceHallPage() {
 
               <Tabs defaultValue="events" className="w-full">
                 {/* Custom Styled Tabs Table-like Header */}
-                <div className="bg-[#D1D5DB] rounded-t-2xl p-0 overflow-hidden border-x border-t border-muted/50">
-                  <TabsList className="bg-transparent h-16 w-full justify-start rounded-none p-0 flex">
+                <div className="bg-[#D1D5DB] rounded-t-2xl p-0 overflow-x-auto overflow-y-hidden no-scrollbar border-x border-t border-muted/50">
+                  <TabsList className="bg-transparent h-16 min-w-max md:w-full justify-start rounded-none p-0 flex">
                     <TabsTrigger
                       value="events"
                       className={cn(
-                        "flex-1 h-full gap-3 font-bold text-base transition-all rounded-none border-r border-[#9CA3AF] last:border-r-0",
-                        "data-[state=active]:bg-[#3D52A0]! data-[state=active]:text-white! data-[state=active]:rounded-tl-2xl",
+                        "flex-1 h-full gap-2 md:gap-3 font-bold text-sm md:text-base border-r border-[#9CA3AF] last:border-r-0 whitespace-nowrap px-6 md:px-0",
+                        "data-[state=active]:bg-[#3D52A0]! data-[state=active]:text-white! data-[state=active]:md:rounded-tl-2xl",
                         "text-muted-foreground"
                       )}
                     >
-                      <GraduationCap className="h-5 w-5" />
+                      <GraduationCap className="h-4 w-4 md:h-5 md:w-5" />
                       Learning Events
                     </TabsTrigger>
                     <TabsTrigger
                       value="offers"
                       className={cn(
-                        "flex-1 h-full gap-3 font-bold text-base transition-all rounded-none border-r border-[#9CA3AF] last:border-r-0",
+                        "flex-1 h-full gap-2 md:gap-3 font-bold text-sm md:text-base transition-all rounded-none border-r border-[#9CA3AF] last:border-r-0 whitespace-nowrap px-6 md:px-0",
                         "data-[state=active]:bg-[#3D52A0]! data-[state=active]:text-white!",
                         "text-muted-foreground"
                       )}
                     >
-                      <Tag className="h-5 w-5" />
+                      <Tag className="h-4 w-4 md:h-5 md:w-5" />
                       Promotions and Offers
                     </TabsTrigger>
                     <TabsTrigger
                       value="lounge"
                       className={cn(
-                        "flex-1 h-full gap-3 font-bold text-base transition-all rounded-none border-r border-[#9CA3AF] last:border-r-0",
-                        "data-[state=active]:bg-[#3D52A0]! data-[state=active]:text-white! data-[state=active]:rounded-tr-2xl",
+                        "flex-1 h-full gap-2 md:gap-3 font-bold text-sm md:text-base transition-all rounded-none border-r border-[#9CA3AF] last:border-r-0 whitespace-nowrap px-6 md:px-0",
+                        "data-[state=active]:bg-[#3D52A0]! data-[state=active]:text-white! data-[state=active]:md:rounded-tr-2xl",
                         "text-muted-foreground"
                       )}
                     >
-                      <Sofa className="h-5 w-5" />
+                      <Sofa className="h-4 w-4 md:h-5 md:w-5" />
                       Community Lounge
                     </TabsTrigger>
                   </TabsList>
