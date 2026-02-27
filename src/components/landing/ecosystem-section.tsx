@@ -62,7 +62,7 @@ export function EcosystemSection() {
     {
       title: "HOMEOWNER (End User)",
       subtitle: "Build Better, Save More",
-      image: "/images/ecosystem/homeowner.svg",
+      image: "/images/ecosystem/homeowner.png",
       benefits: [
         "Save Budget & Costs",
         "Access Verified Professionals",
@@ -73,7 +73,7 @@ export function EcosystemSection() {
     {
       title: "RETAILER / DEALER (B2C Seller)",
       subtitle: "Expand Your Reach",
-      image: "/images/ecosystem/retailer.svg",
+      image: "/images/ecosystem/retailer.png",
       benefits: [
         "Gain New Customers & Orders",
         "Zero Marketing Cost",
@@ -84,7 +84,7 @@ export function EcosystemSection() {
     {
       title: "WHOLESALER (B2B Seller)",
       subtitle: "Bulk Business Made Easy",
-      image: "/images/ecosystem/wholesaler.svg",
+      image: "/images/ecosystem/wholesaler.png",
       benefits: [
         "Receive Bulk Leads & Inquiries",
         "Data-Driven Pricing Insights",
@@ -95,7 +95,7 @@ export function EcosystemSection() {
     {
       title: "MANUFACTURER (B2B Seller)",
       subtitle: "Strengthen Your Channel",
-      image: "/images/ecosystem/manufacturer.svg",
+      image: "/images/ecosystem/manufacturer.png",
       benefits: [
         "Direct Channel Access & Visibility",
         "Push Technical Documents & Offers",
@@ -106,7 +106,7 @@ export function EcosystemSection() {
     {
       title: "SERVICE PROVIDER (Professional)",
       subtitle: "Secure More Jobs",
-      image: "/images/ecosystem/service-provider.svg",
+      image: "/images/ecosystem/service-provider.png",
       benefits: [
         "Access Verified Job Requirements",
         "Better Income & Reliable Payments",
