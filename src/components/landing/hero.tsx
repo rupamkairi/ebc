@@ -17,62 +17,62 @@ export function Hero() {
   ];
 
   return (
-    <section className="relative min-h-[550px] sm:min-h-[600px] md:min-h-[700px] w-full overflow-hidden bg-white pt-12 sm:pt-16 md:pt-12 pb-24 md:pb-36">
+    <section className="relative min-h-[600px] sm:min-h-[650px] md:min-h-[700px] w-full overflow-hidden bg-white pt-6 md:pt-12 pb-24 md:pb-36 flex flex-col">
       {/* Background Image Container */}
       <div className="absolute inset-0 z-0">
         <Image
           src="/images/hero-home.jpg"
           alt="EBC Hero Background"
           fill
-          className="object-cover object-[80%_top] sm:object-center md:object-bottom"
+          className="object-cover object-right sm:object-right md:object-bottom"
           sizes="100vw"
           priority
         />
-        {/* Subtle white-to-transparent gradient from top to bottom and left side */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/95 via-white/70 to-black/10 md:from-white/90 md:via-white/20 md:to-transparent" />
+        {/* Lighter Mobile Gradient to make the image more prominent, while still blending for the text */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/95 via-white/60 to-transparent md:from-white/90 md:via-white/20 md:to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-white/60 via-transparent to-transparent hidden md:block" />
       </div>
 
-      <Container size="xl" className="relative z-10 flex flex-col items-start">
+      <Container size="xl" className="relative z-10 flex flex-col items-center md:items-start h-full grow w-full">
         {/* Centered Search Bar */}
-        <div className="w-full flex justify-center mb-12">
-          <div className="w-full max-w-2xl px-4">
+        <div className="w-full flex justify-center mb-10 md:mb-12 mt-4 md:mt-0">
+          <div className="w-full max-w-2xl px-2 md:px-4">
             <div className="relative group">
               <input
                 type="text"
                 placeholder={t("search_placeholder")}
-                className="w-full h-14 pl-8 pr-16 rounded-full border border-slate-200 bg-white/95 backdrop-blur-md shadow-xl focus:outline-none focus:ring-2 focus:ring-[#FFA500]/40 transition-all text-slate-700 text-lg"
+                className="w-full h-12 md:h-14 pl-6 pr-14 rounded-full border border-slate-200 bg-white/95 backdrop-blur-md shadow-xl focus:outline-none focus:ring-2 focus:ring-[#FFA500]/40 transition-all text-slate-700 text-base md:text-lg"
               />
-              <button className="absolute right-1.5 top-1.5 h-11 w-11 flex items-center justify-center bg-[#FFA500] hover:bg-[#E69500] rounded-full text-white transition-all shadow-md active:scale-95">
-                <Search className="size-5" />
+              <button className="absolute right-1.5 top-1.5 h-9 w-9 md:h-11 md:w-11 flex items-center justify-center bg-[#FFA500] hover:bg-[#E69500] rounded-full text-white transition-all shadow-md active:scale-95">
+                <Search className="size-4 md:size-5" />
               </button>
             </div>
           </div>
         </div>
 
         {/* Main Heading Section - Centered */}
-        <div className="w-full text-center max-w-6xl mb-12 mx-auto">
-          <h1 className="text-xl md:text-2xl lg:text-5xl font-black text-[#445EB4] leading-tight mb-4 tracking-tight">
-            Build Your <span className="text-[#FFA500]">Dream Home</span> with Confidence Not Confusion
+        <div className="w-full text-center max-w-6xl mb-6 md:mb-12 mx-auto px-2">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-[#445EB4] leading-tight mb-3 md:mb-4 tracking-tight">
+            Build Your <span className="text-[#FFA500]">Dream Home</span><br className="md:hidden" /> with Confidence Not Confusion
           </h1>
-          <p className="text-base md:text-lg text-slate-600 font-bold max-w-4xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base md:text-lg text-slate-700 font-bold max-w-4xl mx-auto leading-relaxed">
             {t("home_subtitle")}
           </p>
         </div>
 
-        {/* Styled CTA Buttons - Left Aligned */}
-        <div className="w-full flex justify-start">
-          <div className="flex flex-col gap-4">
+        {/* Styled CTA Buttons - Left Aligned on Desktop, Bottom Aligned on Mobile */}
+        <div className="w-full flex justify-center md:justify-start mt-auto md:mt-0 pt-10 md:pt-0 mb-4 md:mb-0 px-2 sm:px-4">
+          <div className="flex flex-col gap-3.5 md:gap-4 w-full md:w-auto">
             {/* CTA 1: Consult with Expert */}
             <Button
-              className="group h-[60px] pl-1.5 pr-8 py-0 bg-[#445EB4] hover:bg-[#3b519b] text-white rounded-full flex items-center gap-4 transition-all duration-300 hover:translate-x-2 shadow-xl border-none"
+              className="group h-[54px] md:h-[60px] pl-1.5 pr-6 md:pr-8 py-0 bg-[#445EB4] hover:bg-[#3b519b] text-white rounded-full flex items-center gap-4 transition-all duration-300 shadow-xl border-none w-full md:w-auto"
               asChild
             >
               <a href="#consult">
-                <div className="h-11 w-11 rounded-full bg-[#FFA500] flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
-                  <UserRound className="size-6 text-white" />
+                <div className="h-10 w-10 md:h-11 md:w-11 shrink-0 rounded-full bg-[#FFA500] flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
+                  <UserRound className="size-5 md:size-6 text-white" />
                 </div>
-                <span className="text-lg font-extrabold whitespace-nowrap">
+                <span className="text-[15px] md:text-lg font-extrabold whitespace-nowrap mx-auto md:mx-0 pr-4 md:pr-0">
                   {t("home_cta_primary")}
                 </span>
               </a>
@@ -80,14 +80,14 @@ export function Hero() {
 
             {/* CTA 2: Compare Material Rate */}
             <Button
-              className="group h-[60px] pl-1.5 pr-8 py-0 bg-[#445EB4] hover:bg-[#3b519b] text-white rounded-full flex items-center gap-4 transition-all duration-300 hover:translate-x-2 shadow-xl border-none"
+              className="group h-[54px] md:h-[60px] pl-1.5 pr-6 md:pr-8 py-0 bg-[#445EB4] hover:bg-[#3b519b] text-white rounded-full flex items-center gap-4 transition-all duration-300 shadow-xl border-none w-full md:w-auto"
               asChild
             >
               <a href="#compare">
-                <div className="h-11 w-11 rounded-full bg-[#FFA500] flex items-center justify-center shadow-lg group-hover:-rotate-12 transition-transform">
-                  <Scale className="size-6 text-white" />
+                <div className="h-10 w-10 md:h-11 md:w-11 shrink-0 rounded-full bg-[#FFA500] flex items-center justify-center shadow-lg group-hover:-rotate-12 transition-transform">
+                  <Scale className="size-5 md:size-6 text-white" />
                 </div>
-                <span className="text-lg font-extrabold whitespace-nowrap">
+                <span className="text-[15px] md:text-lg font-extrabold whitespace-nowrap mx-auto md:mx-0 pr-4 md:pr-0">
                   {t("home_cta_secondary")}
                 </span>
               </a>
