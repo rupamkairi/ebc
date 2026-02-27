@@ -32,9 +32,9 @@ import { Loader2 } from "lucide-react";
 
 export function UserLoginMobileOtpForm({
   className,
-  role: initialRole,
+  isDarkTheme,
   ...props
-}: React.ComponentProps<"div"> & { role?: string }) {
+}: React.ComponentProps<"div"> & { role?: string; isDarkTheme?: boolean }) {
   const router = useRouter();
   const { setToken, setUser } = useAuthStore();
   const [mobile, setMobile] = useState("");
@@ -61,10 +61,6 @@ export function UserLoginMobileOtpForm({
   }, []);
 
   // Auto-login removed to prevent redirection traps during session issues.
-
-  const displayRole = initialRole
-    ? initialRole.charAt(0).toUpperCase() + initialRole.slice(1)
-    : "";
 
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -131,40 +127,52 @@ export function UserLoginMobileOtpForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle>Login as {displayRole || "User"}</CardTitle>
-          <CardDescription>
-            Enter your mobile below to login to your{" "}
-            {displayRole.toLowerCase() || "user"} account
+      <Card className={cn(
+        isDarkTheme && "border-none bg-transparent shadow-none"
+      )}>
+        <CardHeader className={cn(isDarkTheme && "px-0")}>
+          <CardTitle className={cn(isDarkTheme && "text-white text-3xl font-medium tracking-wide")}>Login To Your Account</CardTitle>
+          <CardDescription className={cn(isDarkTheme && "text-white/70")}>
+            Don&apos;t have an account?{" "}
+            <Link href="/auth/register" className={cn("hover:underline", isDarkTheme ? "text-[#FFA500]" : "text-primary")}>
+              register
+            </Link>
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className={cn(isDarkTheme && "px-0 mt-6")}>
           <div className="space-y-6">
             {step === "phone" ? (
               <form onSubmit={handleSendOtp}>
-                <FieldGroup>
+                <FieldGroup className={cn(isDarkTheme && "gap-6")}>
                   <Field>
-                    <FieldLabel htmlFor="mobile">Mobile</FieldLabel>
-                    <div className="flex gap-2">
-                      <span className="flex items-center px-3 border rounded-md bg-muted text-muted-foreground">
+                    <div className="flex gap-0 w-full">
+                      <span className={cn(
+                        "flex items-center px-4 rounded-l-md text-sm font-medium",
+                        isDarkTheme ? "bg-white/20 text-white border-none shrink-0" : "border rounded-md bg-muted text-muted-foreground"
+                      )}>
                         +91
                       </span>
                       <Input
                         id="mobile"
                         type="tel"
-                        placeholder="9876543210"
+                        placeholder="Phone Number"
                         value={mobile}
                         onChange={(e) => setMobile(e.target.value)}
                         required
+                        className={cn(
+                          isDarkTheme && "bg-white/10 border-none text-white placeholder:text-white/60 rounded-r-md rounded-l-none h-12 focus-visible:ring-1 focus-visible:ring-white/30"
+                        )}
                       />
                     </div>
                   </Field>
-                  <Field>
+                  <Field className="pt-2">
                     <Button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full"
+                      className={cn(
+                        "w-full h-11 text-base font-semibold",
+                        isDarkTheme && "bg-[#FFA500] hover:bg-[#E69500] text-white rounded-md shadow-lg shadow-[#FFA500]/20"
+                      )}
                     >
                       {isLoading && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -178,7 +186,7 @@ export function UserLoginMobileOtpForm({
               <form onSubmit={handleVerifyOtp}>
                 <FieldGroup>
                   <Field>
-                    <FieldLabel htmlFor="otp">Verification code</FieldLabel>
+                    <FieldLabel htmlFor="otp" className={cn(isDarkTheme && "text-white")}>Verification code</FieldLabel>
                     <InputOTP
                       containerClassName="justify-around"
                       maxLength={6}
@@ -187,7 +195,10 @@ export function UserLoginMobileOtpForm({
                       onChange={(val) => setOtp(val)}
                       required
                     >
-                      <InputOTPGroup className="gap-2.5 *:data-[slot=input-otp-slot]:rounded-md *:data-[slot=input-otp-slot]:border">
+                      <InputOTPGroup className={cn(
+                        "gap-2.5 *:data-[slot=input-otp-slot]:rounded-md",
+                        isDarkTheme ? "*:data-[slot=input-otp-slot]:border-none *:data-[slot=input-otp-slot]:bg-white/10 *:data-[slot=input-otp-slot]:text-white *:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-12 transition-all focus-within:ring-white/30" : "*:data-[slot=input-otp-slot]:border"
+                      )}>
                         <InputOTPSlot index={0} />
                         <InputOTPSlot index={1} />
                         <InputOTPSlot index={2} />
@@ -196,27 +207,36 @@ export function UserLoginMobileOtpForm({
                         <InputOTPSlot index={5} />
                       </InputOTPGroup>
                     </InputOTP>
-                    <FieldDescription className="text-center pt-2">
+                    <FieldDescription className={cn(
+                      "text-center pt-2",
+                      isDarkTheme && "text-white/70"
+                    )}>
                       Enter the 6-digit code sent to +91{mobile}.
                     </FieldDescription>
                   </Field>
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-4 mt-2">
                     <Button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full"
+                      className={cn(
+                        "w-full h-11 text-base font-semibold",
+                        isDarkTheme && "bg-[#FFA500] hover:bg-[#E69500] text-white rounded-md shadow-lg shadow-[#FFA500]/20"
+                      )}
                     >
                       {isLoading && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
-                      Verify
+                      Login
                     </Button>
                     <Button
                       type="button"
                       variant="ghost"
                       onClick={() => setStep("phone")}
                       disabled={isLoading}
-                      className="w-full"
+                      className={cn(
+                        "w-full",
+                        isDarkTheme && "text-white hover:text-white hover:bg-white/10"
+                      )}
                     >
                       Change Number
                     </Button>
@@ -227,12 +247,15 @@ export function UserLoginMobileOtpForm({
           </div>
         </CardContent>
       </Card>
-      <p className="text-center text-sm text-muted-foreground">
-        Don&apos;t have an account?{" "}
-        <Link href="/auth/register" className="text-primary hover:underline">
-          Register
-        </Link>
-      </p>
+      
+      {!isDarkTheme && (
+        <p className="text-center text-sm text-muted-foreground">
+          Don&apos;t have an account?{" "}
+          <Link href="/auth/register" className="text-primary hover:underline">
+            Register
+          </Link>
+        </p>
+      )}
     </div>
   );
 }

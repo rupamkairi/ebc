@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -39,8 +40,9 @@ import { PincodeSearchAutocomplete } from "@/components/autocompletes/pincode-se
 
 export function UserRegisterForm({
   className,
+  isDarkTheme,
   ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<"div"> & { isDarkTheme?: boolean }) {
   const router = useRouter();
   const { setToken, setUser } = useAuthStore();
   const [name, setName] = useState("");
@@ -136,57 +138,68 @@ export function UserRegisterForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle>Create an account</CardTitle>
-          <CardDescription>
-            Enter your details below to create your account
+      <Card className={cn(
+        isDarkTheme && "border-none bg-transparent shadow-none"
+      )}>
+        <CardHeader className={cn(isDarkTheme && "px-0")}>
+          <CardTitle className={cn(isDarkTheme && "text-white text-3xl font-medium tracking-wide")}>Create an Account</CardTitle>
+          <CardDescription className={cn(isDarkTheme && "text-white/70")}>
+            Already have an account?{" "}
+            <Link href="/auth/login" className={cn("hover:underline font-semibold", isDarkTheme ? "text-[#FFA500]" : "text-primary")}>
+              Log In
+            </Link>
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className={cn(isDarkTheme && "px-0 mt-6")}>
           <div className="space-y-6">
             {step === "info" ? (
               <form onSubmit={handleSendOtp}>
-                <FieldGroup>
+                <FieldGroup className={cn(isDarkTheme && "gap-6")}>
                   <Field>
-                    <FieldLabel htmlFor="name">Full Name</FieldLabel>
                     <Input
                       id="name"
-                      placeholder="John Doe"
+                      placeholder="Full Name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       required
+                      className={cn(
+                        isDarkTheme && "bg-white/10 border-none text-white placeholder:text-white/60 rounded-md h-12 focus-visible:ring-1 focus-visible:ring-white/30"
+                      )}
                     />
                   </Field>
                   <Field>
-                    <FieldLabel htmlFor="mobile">Mobile</FieldLabel>
-                    <div className="flex gap-2">
-                      <span className="flex items-center px-3 border rounded-md bg-muted text-muted-foreground text-sm">
+                    <div className="flex gap-0 w-full">
+                      <span className={cn(
+                        "flex items-center px-4 rounded-l-md text-sm font-medium",
+                        isDarkTheme ? "bg-white/20 text-white border-none shrink-0" : "border rounded-md bg-muted text-muted-foreground"
+                      )}>
                         +91
                       </span>
                       <Input
                         id="mobile"
                         type="tel"
-                        placeholder="9876543210"
+                        placeholder="Phone Number"
                         value={mobile}
                         onChange={(e) => setMobile(e.target.value)}
                         required
+                        className={cn(
+                          isDarkTheme && "bg-white/10 border-none text-white placeholder:text-white/60 rounded-r-md rounded-l-none h-12 focus-visible:ring-1 focus-visible:ring-white/30"
+                        )}
                       />
                     </div>
                   </Field>
                   <Field>
-                    <FieldLabel>Pincode / Location</FieldLabel>
                     <PincodeSearchAutocomplete
                       value={pincodeId}
                       onValueChange={setPincodeId}
                       placeholder="Search your pincode..."
                       label="Select Pincode"
+                      className={cn(isDarkTheme && "bg-white/10 border-none text-white placeholder:text-white/60 rounded-md h-12 focus-visible:ring-1 focus-visible:ring-white/30 [&>button]:h-12 [&>button]:bg-white/10 [&>button]:border-none [&>button]:text-white")}
                     />
                   </Field>
                   <Field>
-                    <FieldLabel htmlFor="type">I am a</FieldLabel>
                     <Select value={type} onValueChange={setType}>
-                      <SelectTrigger id="type">
+                      <SelectTrigger id="type" className={cn(isDarkTheme && "h-12 bg-white/10 border-none text-white focus:ring-1 focus:ring-white/30")}>
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -198,16 +211,19 @@ export function UserRegisterForm({
                       </SelectContent>
                     </Select>
                   </Field>
-                  <Field>
+                  <Field className="pt-2">
                     <Button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full"
+                      className={cn(
+                        "w-full h-11 text-base font-semibold",
+                        isDarkTheme && "bg-[#FFA500] hover:bg-[#E69500] text-white rounded-md shadow-lg shadow-[#FFA500]/20"
+                      )}
                     >
                       {isLoading && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
-                      Continue
+                      Create Account
                     </Button>
                   </Field>
                 </FieldGroup>
@@ -216,7 +232,7 @@ export function UserRegisterForm({
               <form onSubmit={handleVerifyOtp}>
                 <FieldGroup>
                   <Field>
-                    <FieldLabel htmlFor="otp">Verification code</FieldLabel>
+                    <FieldLabel htmlFor="otp" className={cn(isDarkTheme && "text-white")}>Verification code</FieldLabel>
                     <InputOTP
                       containerClassName="justify-around"
                       maxLength={6}
@@ -225,7 +241,10 @@ export function UserRegisterForm({
                       onChange={(val) => setOtp(val)}
                       required
                     >
-                      <InputOTPGroup className="gap-2.5 *:data-[slot=input-otp-slot]:rounded-md *:data-[slot=input-otp-slot]:border">
+                      <InputOTPGroup className={cn(
+                        "gap-2.5 *:data-[slot=input-otp-slot]:rounded-md",
+                        isDarkTheme ? "*:data-[slot=input-otp-slot]:border-none *:data-[slot=input-otp-slot]:bg-white/10 *:data-[slot=input-otp-slot]:text-white *:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-12 transition-all focus-within:ring-white/30" : "*:data-[slot=input-otp-slot]:border"
+                      )}>
                         <InputOTPSlot index={0} />
                         <InputOTPSlot index={1} />
                         <InputOTPSlot index={2} />
@@ -234,15 +253,21 @@ export function UserRegisterForm({
                         <InputOTPSlot index={5} />
                       </InputOTPGroup>
                     </InputOTP>
-                    <FieldDescription className="text-center pt-2">
+                    <FieldDescription className={cn(
+                      "text-center pt-2",
+                      isDarkTheme && "text-white/70"
+                    )}>
                       Enter the 6-digit code sent to +91{mobile}.
                     </FieldDescription>
                   </Field>
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-4 mt-2">
                     <Button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full"
+                      className={cn(
+                        "w-full h-11 text-base font-semibold",
+                        isDarkTheme && "bg-[#FFA500] hover:bg-[#E69500] text-white rounded-md shadow-lg shadow-[#FFA500]/20"
+                      )}
                     >
                       {isLoading && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -254,7 +279,10 @@ export function UserRegisterForm({
                       variant="ghost"
                       onClick={() => setStep("info")}
                       disabled={isLoading}
-                      className="w-full"
+                      className={cn(
+                        "w-full",
+                        isDarkTheme && "text-white hover:text-white hover:bg-white/10"
+                      )}
                     >
                       Change Details
                     </Button>
