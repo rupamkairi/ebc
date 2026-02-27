@@ -92,6 +92,7 @@ export function FooterSection() {
               <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
               <li><a href="#" className="hover:text-white transition-colors">Seller Agreement</a></li>
               <li><a href="#" className="hover:text-white transition-colors">Consumer Safety Policy</a></li>
+              <li><a href="/auth/admin-login" className="hover:text-white transition-colors">Admin Login</a></li>
             </ul>
           </div>
         </div>

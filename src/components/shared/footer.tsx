@@ -52,6 +52,7 @@ export function Footer() {
               <li><Link href="#" className="hover:text-primary transition-colors">{t("contact_us")}</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors">{t("privacy_policy")}</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors">{t("terms_of_service")}</Link></li>
+              <li><Link href="/auth/admin-login" className="hover:text-primary transition-colors">Admin Login</Link></li>
             </ul>
           </div>
           <div>
