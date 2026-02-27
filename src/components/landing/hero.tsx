@@ -17,20 +17,20 @@ export function Hero() {
   ];
 
   return (
-    <section className="relative min-h-[700px] w-full overflow-hidden bg-white pt-12 pb-24 md:pb-36">
+    <section className="relative min-h-[550px] sm:min-h-[600px] md:min-h-[700px] w-full overflow-hidden bg-white pt-12 sm:pt-16 md:pt-12 pb-24 md:pb-36">
       {/* Background Image Container */}
       <div className="absolute inset-0 z-0">
         <Image
           src="/images/hero-home.jpg"
           alt="EBC Hero Background"
           fill
-          className="object-cover object-bottom"
+          className="object-cover object-[80%_top] sm:object-center md:object-bottom"
           sizes="100vw"
           priority
         />
         {/* Subtle white-to-transparent gradient from top to bottom and left side */}
-        <div className="absolute inset-0 bg-linear-to-b from-white/90 via-white/20 to-transparent" />
-        <div className="absolute inset-0 bg-linear-to-r from-white/30 via-transparent to-transparent hidden md:block" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/95 via-white/70 to-black/10 md:from-white/90 md:via-white/20 md:to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-white/60 via-transparent to-transparent hidden md:block" />
       </div>
 
       <Container size="xl" className="relative z-10 flex flex-col items-start">
