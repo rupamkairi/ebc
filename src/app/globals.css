@@ -1,8 +1,11 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "../styles/app-theme.css";
 
 @theme inline {
-  --font-sans: var(--font-open-sans);
+  --font-sans: var(--font-poppins);
+  --font-poppins: var(--font-poppins);
+  --font-open-sans: var(--font-open-sans);
   --color-white-background: var(--white-background);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -42,39 +45,64 @@
 }
 
 :root {
-  --radius: 0.625rem;
+  /* === EBC Design System Variables === */
+
+  /* Radius */
+  --radius: 0.75rem; /* 12px – slightly rounder for premium feel */
+
+  /* Backgrounds */
   --white-background: #ffffff;
-  --background: #f5f2f2;
-  --foreground: #2b2a2a;
-  --card: #f5f2f2;
+  --background: #f8f9fc; /* Page BG – matches buyer/activity layouts */
+  --foreground: #2b2a2a; /* Body text */
+
+  /* Card / Popover Surfaces */
+  --card: #ffffff; /* Cards should be white, not tinted */
   --card-foreground: #2b2a2a;
-  --popover: #f5f2f2;
+  --popover: #ffffff; /* Popover / dropdown always white */
   --popover-foreground: #2b2a2a;
-  --primary: #024caa;
-  --primary-foreground: #f5f2f2;
-  --secondary: #ec8305;
-  --secondary-foreground: #f5f2f2;
-  --muted: #e0dcdc;
-  --muted-foreground: #5c5a5a;
-  --accent: #e0dcdc;
-  --accent-foreground: #024caa;
+
+  /* Primary – EBC Brand Blue */
+  --primary: #3d52a0; /* Core brand blue used for headings, CTAs */
+  --primary-foreground: #ffffff;
+
+  /* Secondary – Accent Orange */
+  --secondary: #ffa500; /* Accent color: buttons, badges, highlights */
+  --secondary-foreground: #1a1a1a; /* Dark text on orange */
+
+  /* Muted – Blue-grey toned neutrals */
+  --muted: #e8eaf0;
+  --muted-foreground: #5a6080;
+
+  /* Accent – Light blue hover state */
+  --accent: #eef0f8;
+  --accent-foreground: #3d52a0;
+
+  /* Borders & Inputs – Subtle blue-grey */
+  --border: #dde0ec;
+  --input: #dde0ec;
+
+  /* Destructive */
   --destructive: #d32f2f;
-  --border: #d1cdcd;
-  --input: #d1cdcd;
-  --ring: #024caa;
-  --chart-1: #024caa;
-  --chart-2: #ec8305;
-  --chart-3: #2b2a2a;
-  --chart-4: #5c5a5a;
+
+  /* Focus Ring */
+  --ring: #3d52a0;
+
+  /* Charts */
+  --chart-1: #3d52a0;
+  --chart-2: #ffa500;
+  --chart-3: #445eb4;
+  --chart-4: #5a6080;
   --chart-5: #8e8b8b;
-  --sidebar: #e0dcdc;
+
+  /* Sidebar */
+  --sidebar: #e8eaf0;
   --sidebar-foreground: #2b2a2a;
-  --sidebar-primary: #024caa;
-  --sidebar-primary-foreground: #f5f2f2;
-  --sidebar-accent: #d1cdcd;
-  --sidebar-accent-foreground: #024caa;
-  --sidebar-border: #d1cdcd;
-  --sidebar-ring: #024caa;
+  --sidebar-primary: #3d52a0;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #dde0ec;
+  --sidebar-accent-foreground: #3d52a0;
+  --sidebar-border: #dde0ec;
+  --sidebar-ring: #3d52a0;
 }
 
 @layer base {

@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { authService } from "@/services/authService";
 import { useAuthStore } from "@/store/authStore";
 import { ApiError } from "@/lib/api-client";
+import { USER_ROLE } from "@/constants/enums";
 
 export function AdminLoginForm({
   className,

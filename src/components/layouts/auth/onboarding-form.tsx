@@ -27,7 +27,12 @@ import {
 } from "@/components/ui/select";
 import { PincodeSearchAutocomplete } from "@/components/autocompletes/pincode-search-autocomplete";
 import { useAuthStore } from "@/store/authStore";
-import { USER_ROLE } from "@/constants/auth";
+import {
+  USER_ROLE,
+  ENTITY_TYPE,
+  ITEM_TYPE,
+  ENTITY_TYPE_LABELS,
+} from "@/constants/enums";
 import { useCreateEntityMutation } from "@/queries/entityQueries";
 import { toast } from "sonner";
 import { Loader2, CheckCircle2, Building2 } from "lucide-react";
@@ -48,7 +53,8 @@ export function OnboardingForm() {
       name: "",
       legalName: "",
       description: "",
-      primaryContactNumber: user?.phoneNumber || "",
+      primaryContactNumber:
+        (user as { phoneNumber?: string })?.phoneNumber || "",
       secondaryContactNumber: "",
       contactEmail: user?.email || "",
       supportEmail: "",
@@ -57,11 +63,11 @@ export function OnboardingForm() {
       city: "",
       pincodeId: "",
       type: (isServiceProvider
-        ? "SERVICE_PROVIDER"
-        : "RETAILER") as CreateEntityRequest["type"],
+        ? ENTITY_TYPE.SERVICE_PROVIDER
+        : ENTITY_TYPE.RETAILER) as CreateEntityRequest["type"],
       op_type: (isServiceProvider
-        ? "SERVICE"
-        : "PRODUCT") as CreateEntityRequest["op_type"],
+        ? ITEM_TYPE.SERVICE
+        : ITEM_TYPE.PRODUCT) as CreateEntityRequest["op_type"],
     },
     onSubmit: async ({ value }) => {
       try {
@@ -165,28 +171,28 @@ export function OnboardingForm() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem
-                          value="MANUFACTURER"
+                          value={ENTITY_TYPE.MANUFACTURER}
                           disabled={isServiceProvider}
                         >
-                          Manufacturer
+                          {ENTITY_TYPE_LABELS[ENTITY_TYPE.MANUFACTURER]}
                         </SelectItem>
                         <SelectItem
-                          value="WHOLESALER"
+                          value={ENTITY_TYPE.WHOLESALER}
                           disabled={isServiceProvider}
                         >
-                          Wholesaler
+                          {ENTITY_TYPE_LABELS[ENTITY_TYPE.WHOLESALER]}
                         </SelectItem>
                         <SelectItem
-                          value="RETAILER"
+                          value={ENTITY_TYPE.RETAILER}
                           disabled={isServiceProvider}
                         >
-                          Retailer
+                          {ENTITY_TYPE_LABELS[ENTITY_TYPE.RETAILER]}
                         </SelectItem>
                         <SelectItem
-                          value="SERVICE_PROVIDER"
+                          value={ENTITY_TYPE.SERVICE_PROVIDER}
                           disabled={isProductSeller}
                         >
-                          Service Provider
+                          {ENTITY_TYPE_LABELS[ENTITY_TYPE.SERVICE_PROVIDER]}
                         </SelectItem>
                       </SelectContent>
                     </Select>

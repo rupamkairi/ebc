@@ -14,13 +14,16 @@ import { authService } from "@/services/authService";
 import { useAuthStore } from "@/store/authStore";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { USER_ROLE } from "@/constants/enums";
 
 export function RoleSelection() {
   const { setUser } = useAuthStore();
   const [isLoading, setIsLoading] = useState<string | null>(null);
 
   const handleRoleSelection = async (
-    role: "USER_PRODUCT_SELLER_ADMIN" | "USER_SERVICE_PROVIDER_ADMIN"
+    role:
+      | USER_ROLE.USER_PRODUCT_SELLER_ADMIN
+      | USER_ROLE.USER_SERVICE_PROVIDER_ADMIN,
   ) => {
     setIsLoading(role);
     try {
@@ -63,7 +66,7 @@ export function RoleSelection() {
               "group relative overflow-hidden border-2 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/10",
               isLoading === "USER_PRODUCT_SELLER_ADMIN"
                 ? "border-primary ring-2 ring-primary/20"
-                : "hover:border-primary/50"
+                : "hover:border-primary/50",
             )}
           >
             <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity">
@@ -101,7 +104,9 @@ export function RoleSelection() {
                 ))}
               </ul>
               <Button
-                onClick={() => handleRoleSelection("USER_PRODUCT_SELLER_ADMIN")}
+                onClick={() =>
+                  handleRoleSelection(USER_ROLE.USER_PRODUCT_SELLER_ADMIN)
+                }
                 disabled={!!isLoading}
                 className="w-full h-14 rounded-2xl bg-foreground text-background hover:bg-primary hover:text-white transition-all duration-300 font-black text-xs uppercase tracking-widest group/btn"
               >
@@ -126,7 +131,7 @@ export function RoleSelection() {
               "group relative overflow-hidden border-2 transition-all duration-300 hover:shadow-2xl hover:shadow-secondary/10",
               isLoading === "USER_SERVICE_PROVIDER_ADMIN"
                 ? "border-secondary ring-2 ring-secondary/20"
-                : "hover:border-secondary/50"
+                : "hover:border-secondary/50",
             )}
           >
             <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity">
@@ -165,7 +170,7 @@ export function RoleSelection() {
               </ul>
               <Button
                 onClick={() =>
-                  handleRoleSelection("USER_SERVICE_PROVIDER_ADMIN")
+                  handleRoleSelection(USER_ROLE.USER_SERVICE_PROVIDER_ADMIN)
                 }
                 disabled={!!isLoading}
                 className="w-full h-14 rounded-2xl bg-foreground text-background hover:bg-secondary hover:text-white transition-all duration-300 font-black text-xs uppercase tracking-widest group/btn"

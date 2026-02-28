@@ -7,7 +7,7 @@ import { Loader2, AlertCircle, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { ForumSection } from "@/components/shared/forum";
-import { Navbar } from "@/components/shared/navbar";
+import { Header } from "@/components/shared/header";
 import { FooterSection } from "@/components/landing/footer-section";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
 import Container from "@/components/containers/containers";
@@ -77,7 +77,9 @@ export default function ItemDetailsPage() {
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm overflow-hidden">
-          <h2 className="text-xl font-black text-[#445EB4] mb-4">Raw Details</h2>
+          <h2 className="text-xl font-black text-[#445EB4] mb-4">
+            Raw Details
+          </h2>
           <pre className="whitespace-pre-wrap bg-slate-50 p-4 rounded-md text-xs sm:text-sm overflow-auto max-h-[600px] border border-slate-100 text-slate-700 font-mono">
             {JSON.stringify(item, null, 2)}
           </pre>
@@ -92,7 +94,7 @@ export default function ItemDetailsPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#f8faff]">
-      <Navbar />
+      <Header />
       <main className="flex-1 py-10">
         <Container size="lg">{renderContent()}</Container>
       </main>

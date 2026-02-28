@@ -18,6 +18,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useAppTheme } from "@/components/providers/app-theme-provider";
 
 export interface ComboboxOption {
   label: string;
@@ -52,6 +53,8 @@ export function Combobox({
   disabled = false,
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
+  const { variant } = useAppTheme();
+  const isAppVariant = variant === "app";
 
   const selectedOption = React.useMemo(() => {
     return options.find((opt) => opt.value === value);
@@ -61,53 +64,75 @@ export function Combobox({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
+          variant={isAppVariant ? "ghost" : "outline"}
           role="combobox"
           aria-expanded={open}
-          className={cn("w-full justify-between", className)}
+          className={cn(
+            "w-full justify-between font-normal",
+            isAppVariant && "combobox-trigger-app",
+            !isAppVariant && "border-input bg-background",
+            className,
+          )}
           disabled={disabled}
         >
-          {selectedOption ? selectedOption.label : label}
+          <span className="truncate">
+            {selectedOption ? selectedOption.label : label}
+          </span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0" align="start">
+      <PopoverContent
+        className={cn(
+          "w-full p-0 overflow-hidden",
+          isAppVariant && "combobox-content-app",
+        )}
+        align="start"
+      >
         <Command shouldFilter={false} className="border-none">
           <CommandInput
             placeholder={placeholder}
             value={searchValue}
             onValueChange={onSearchValueChange}
+            className={cn(isAppVariant && "combobox-input-app")}
           />
-          <CommandList>
+          <CommandList className="max-h-[300px] overflow-y-auto no-scrollbar">
             {loading ? (
-              <div className="flex items-center justify-center py-6 text-sm">
+              <div className="flex items-center justify-center py-6 text-sm text-muted-foreground">
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Searching...
               </div>
             ) : (
-              options.length === 0 && <CommandEmpty>{emptyText}</CommandEmpty>
+              options.length === 0 && (
+                <CommandEmpty className="py-6 text-center text-sm text-muted-foreground">
+                  {emptyText}
+                </CommandEmpty>
+              )
             )}
 
             {!loading && (
-              <CommandGroup>
+              <CommandGroup className="p-1">
                 {options.map((option) => (
                   <CommandItem
                     key={option.value}
                     value={option.value}
                     onSelect={(currentValue) => {
                       onValueChange?.(
-                        currentValue === value ? "" : currentValue
+                        currentValue === value ? "" : currentValue,
                       );
                       setOpen(false);
                     }}
+                    className={cn(
+                      "cursor-pointer",
+                      isAppVariant && "combobox-item-app",
+                    )}
                   >
                     <Check
                       className={cn(
-                        "mr-2 h-4 w-4",
-                        value === option.value ? "opacity-100" : "opacity-0"
+                        "mr-2 h-4 w-4 shrink-0",
+                        value === option.value ? "opacity-100" : "opacity-0",
                       )}
                     />
-                    {option.label}
+                    <span className="flex-1 truncate">{option.label}</span>
                   </CommandItem>
                 ))}
               </CommandGroup>

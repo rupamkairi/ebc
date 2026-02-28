@@ -9,7 +9,7 @@ import { useBrowseData } from "@/queries/browse.queries";
 import { useBrowseStore } from "@/store/browseStore";
 import React, { Suspense, useEffect } from "react";
 
-import { Navbar } from "@/components/shared/navbar";
+import { Header } from "@/components/shared/header";
 import { FooterSection } from "@/components/landing/footer-section";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
 import { FloatingInquiryButton } from "@/components/layouts/browse/floating-inquiry-button";
@@ -36,17 +36,19 @@ function BrowsePageContent() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
+      <Header />
       <main className="flex-1">
         <BrowseLayout
           sidebar={
-            <Sidebar 
-              categories={data?.categories} 
-              facets={data?.facets} 
-              isLoading={isLoading} 
+            <Sidebar
+              categories={data?.categories}
+              facets={data?.facets}
+              isLoading={isLoading}
             />
           }
-          search={<Search categories={data?.categories} facets={data?.facets} />}
+          search={
+            <Search categories={data?.categories} facets={data?.facets} />
+          }
           // Results now reads from store internaly, just pass loading state
           results={<Results isLoading={isLoading} />}
         />

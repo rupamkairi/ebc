@@ -1,3 +1,5 @@
+import { ENTITY_TYPE, VERIFICATION_STATUS, ITEM_TYPE } from "@/constants/enums";
+
 export interface Entity {
   id: string;
   name: string;
@@ -13,9 +15,9 @@ export interface Entity {
   pincodeId?: string | null;
   createdById: string;
   deletedById?: string | null;
-  type?: string | null;
-  op_type: "PRODUCT" | "SERVICE";
-  verificationStatus: "PENDING" | "APPROVED" | "REJECTED";
+  type?: ENTITY_TYPE | null;
+  op_type: ITEM_TYPE;
+  verificationStatus: VERIFICATION_STATUS;
   verificaitonRemark?: string | null;
   verifiedById?: string | null;
   documents?: string[] | null;
@@ -55,8 +57,8 @@ export interface CreateEntityRequest {
   addressLine2?: string;
   city?: string;
   pincodeId?: string;
-  type: "MANUFACTURER" | "WHOLESALER" | "RETAILER" | "SERVICE_PROVIDER";
-  op_type: "PRODUCT" | "SERVICE";
+  type: ENTITY_TYPE;
+  op_type: ITEM_TYPE;
 }
 
 export interface UpdateEntityRequest {
@@ -75,6 +77,6 @@ export interface UpdateEntityRequest {
 }
 
 export interface VerifyEntityRequest {
-  status: "APPROVED" | "REJECTED";
+  status: VERIFICATION_STATUS;
   remark?: string;
 }

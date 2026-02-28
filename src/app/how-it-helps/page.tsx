@@ -4,7 +4,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Home, Briefcase, ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { Navbar } from "@/components/shared/navbar";
+import { Header } from "@/components/shared/header";
 import { Footer } from "@/components/shared/footer";
 
 export default function HowItHelpsPage() {
@@ -12,7 +12,7 @@ export default function HowItHelpsPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <Navbar />
+      <Header />
 
       <main className="flex-1 flex flex-col items-center justify-center py-20 px-4 relative overflow-hidden">
         {/* Background Decorative Elements */}

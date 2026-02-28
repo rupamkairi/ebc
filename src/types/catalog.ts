@@ -1,3 +1,4 @@
+import { ITEM_TYPE } from "@/constants/enums";
 import { UnitType } from "@/constants/quantities";
 import { Entity } from "./entity";
 
@@ -12,7 +13,7 @@ export interface Media {
 export interface Category {
   id: string;
   name: string;
-  type: string;
+  type: ITEM_TYPE;
   parentCategoryId?: string | null;
   createdAt?: string;
   updatedAt?: string;
@@ -43,7 +44,7 @@ export interface Item {
   id: string;
   name: string;
   description: string;
-  type: string;
+  type: ITEM_TYPE;
   HSNCode: string;
   GSTPercentage: number;
   categoryId: string;
@@ -58,7 +59,7 @@ export interface Item {
 
 export interface CreateCategoryRequest {
   name: string;
-  type: string;
+  type: ITEM_TYPE;
   isSubCategory: boolean;
   parentCategoryId?: string;
   categoryIconId?: string;
@@ -67,14 +68,14 @@ export interface CreateCategoryRequest {
 export interface UpdateCategoryRequest {
   id: string;
   name?: string;
-  type?: string;
+  type?: ITEM_TYPE;
   isSubCategory?: boolean;
   parentCategoryId?: string | null;
   categoryIconId?: string | null;
 }
 
 export interface CategoryListParams {
-  type?: string;
+  type?: ITEM_TYPE;
   isSubCategory?: boolean;
   parentCategoryId?: string;
   search?: string;
@@ -125,7 +126,7 @@ export interface SpecificationListParams {
 export interface CreateItemRequest {
   name: string;
   description: string;
-  type: string;
+  type: ITEM_TYPE;
   HSNCode: string;
   GSTPercentage: number;
   categoryId: string;
@@ -137,7 +138,7 @@ export interface UpdateItemRequest {
   id: string;
   name?: string;
   description?: string;
-  type?: string;
+  type?: ITEM_TYPE;
   HSNCode?: string;
   GSTPercentage?: number;
   categoryId?: string;
@@ -149,7 +150,7 @@ export interface ItemListParams {
   categoryId?: string;
   brandId?: string;
   specificationId?: string;
-  type?: string;
+  type?: ITEM_TYPE;
   search?: string;
   page?: number;
   perPage?: number;
@@ -215,7 +216,7 @@ export interface ItemListingListParams {
   // added for browse
   categoryId?: string[];
   brandId?: string[];
-  type?: string;
+  type?: ITEM_TYPE;
   page?: number;
   perPage?: number;
   sort?: string;

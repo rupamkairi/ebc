@@ -1,4 +1,10 @@
-export type NotificationChannelType = "EMAIL" | "PHONE" | "PUSH" | "WHATSAPP";
+import {
+  NOTIFICATION_CHANNEL_TYPE,
+  NOTIFICATION_TYPE,
+  ACTIVITY_TYPE,
+} from "@/constants/enums";
+
+export type NotificationChannelType = NOTIFICATION_CHANNEL_TYPE;
 
 export interface NotificationChannel {
   id: string;
@@ -27,14 +33,14 @@ export interface UpdateChannelRequest {
 
 export interface Notification {
   id: string;
-  type: string;
+  type: NOTIFICATION_TYPE;
   title: string;
   message: string;
   metadata: Record<string, unknown>;
   isRead: boolean;
   createdAt: string;
   activityId?: string;
-  activityType?: string;
+  activityType?: ACTIVITY_TYPE;
 }
 
 export interface NotificationListResponse {

@@ -35,6 +35,7 @@ import { authService } from "@/services/authService";
 import { useAuthStore } from "@/store/authStore";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { USER_ROLE, ITEM_TYPE } from "@/constants/enums";
 
 import { PincodeSearchAutocomplete } from "@/components/autocompletes/pincode-search-autocomplete";
 
@@ -48,7 +49,7 @@ export function UserRegisterForm({
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
   const [pincodeId, setPincodeId] = useState("");
-  const [type, setType] = useState<string>("BUYER");
+  const [type, setType] = useState<string>(USER_ROLE.USER_BUYER_ADMIN);
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"info" | "otp">("info");
   const [isNewUser, setIsNewUser] = useState<boolean | null>(null);
@@ -72,12 +73,17 @@ export function UserRegisterForm({
     setIsLoading(true);
     try {
       const phone = mobile.startsWith("+") ? mobile : `+91${mobile}`;
-      const response = await authService.sendOtp({ phone, name, type, pincodeId });
+      const response = await authService.sendOtp({
+        phone,
+        name,
+        type,
+        pincodeId,
+      });
 
       if (response.isNewUser === false) {
         toast.info("User already exists. Redirecting to login...");
         router.push(
-          `/auth/login?phone=${encodeURIComponent(phone)}&otp_sent=true`
+          `/auth/login?phone=${encodeURIComponent(phone)}&otp_sent=true`,
         );
         return;
       }
@@ -117,7 +123,7 @@ export function UserRegisterForm({
       if (isNewUser && (role.includes("SELLER") || role.includes("SERVICE"))) {
         router.push("/auth/register/onboarding");
       } else if (
-        role === "UNASSIGNED" ||
+        role === USER_ROLE.UNASSIGNED ||
         role.includes("SELLER") ||
         role.includes("SERVICE")
       ) {
@@ -138,14 +144,26 @@ export function UserRegisterForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className={cn(
-        isDarkTheme && "border-none bg-transparent shadow-none"
-      )}>
+      <Card
+        className={cn(isDarkTheme && "border-none bg-transparent shadow-none")}
+      >
         <CardHeader className={cn(isDarkTheme && "px-0")}>
-          <CardTitle className={cn(isDarkTheme && "text-white text-3xl font-medium tracking-wide")}>Create an Account</CardTitle>
+          <CardTitle
+            className={cn(
+              isDarkTheme && "text-white text-3xl font-medium tracking-wide",
+            )}
+          >
+            Create an Account
+          </CardTitle>
           <CardDescription className={cn(isDarkTheme && "text-white/70")}>
             Already have an account?{" "}
-            <Link href="/auth/login" className={cn("hover:underline font-semibold", isDarkTheme ? "text-[#FFA500]" : "text-primary")}>
+            <Link
+              href="/auth/login"
+              className={cn(
+                "hover:underline font-semibold",
+                isDarkTheme ? "text-[#FFA500]" : "text-primary",
+              )}
+            >
               Log In
             </Link>
           </CardDescription>
@@ -163,16 +181,21 @@ export function UserRegisterForm({
                       onChange={(e) => setName(e.target.value)}
                       required
                       className={cn(
-                        isDarkTheme && "bg-white/10 border-none text-white placeholder:text-white/60 rounded-md h-12 focus-visible:ring-1 focus-visible:ring-white/30"
+                        isDarkTheme &&
+                          "bg-white/10 border-none text-white placeholder:text-white/60 rounded-md h-12 focus-visible:ring-1 focus-visible:ring-white/30",
                       )}
                     />
                   </Field>
                   <Field>
                     <div className="flex gap-0 w-full">
-                      <span className={cn(
-                        "flex items-center px-4 rounded-l-md text-sm font-medium",
-                        isDarkTheme ? "bg-white/20 text-white border-none shrink-0" : "border rounded-md bg-muted text-muted-foreground"
-                      )}>
+                      <span
+                        className={cn(
+                          "flex items-center px-4 rounded-l-md text-sm font-medium",
+                          isDarkTheme
+                            ? "bg-white/20 text-white border-none shrink-0"
+                            : "border rounded-md bg-muted text-muted-foreground",
+                        )}
+                      >
                         +91
                       </span>
                       <Input
@@ -183,7 +206,8 @@ export function UserRegisterForm({
                         onChange={(e) => setMobile(e.target.value)}
                         required
                         className={cn(
-                          isDarkTheme && "bg-white/10 border-none text-white placeholder:text-white/60 rounded-r-md rounded-l-none h-12 focus-visible:ring-1 focus-visible:ring-white/30"
+                          isDarkTheme &&
+                            "bg-white/10 border-none text-white placeholder:text-white/60 rounded-r-md rounded-l-none h-12 focus-visible:ring-1 focus-visible:ring-white/30",
                         )}
                       />
                     </div>
@@ -194,20 +218,33 @@ export function UserRegisterForm({
                       onValueChange={setPincodeId}
                       placeholder="Search your pincode..."
                       label="Select Pincode"
-                      className={cn(isDarkTheme && "bg-white/10 border-none text-white placeholder:text-white/60 rounded-md h-12 focus-visible:ring-1 focus-visible:ring-white/30 [&>button]:h-12 [&>button]:bg-white/10 [&>button]:border-none [&>button]:text-white")}
+                      className={cn(
+                        isDarkTheme &&
+                          "bg-white/10 border-none text-white placeholder:text-white/60 rounded-md h-12 focus-visible:ring-1 focus-visible:ring-white/30 [&>button]:h-12 [&>button]:bg-white/10 [&>button]:border-none [&>button]:text-white",
+                      )}
                     />
                   </Field>
                   <Field>
                     <Select value={type} onValueChange={setType}>
-                      <SelectTrigger id="type" className={cn(isDarkTheme && "h-12 bg-white/10 border-none text-white focus:ring-1 focus:ring-white/30")}>
+                      <SelectTrigger
+                        id="type"
+                        className={cn(
+                          isDarkTheme &&
+                            "h-12 bg-white/10 border-none text-white focus:ring-1 focus:ring-white/30",
+                        )}
+                      >
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="PRODUCT">Product Seller</SelectItem>
-                        <SelectItem value="SERVICE">
+                        <SelectItem value={ITEM_TYPE.PRODUCT}>
+                          Product Seller
+                        </SelectItem>
+                        <SelectItem value={ITEM_TYPE.SERVICE}>
                           Service Provider
                         </SelectItem>
-                        <SelectItem value="BUYER">Buyer / Customer</SelectItem>
+                        <SelectItem value={USER_ROLE.USER_BUYER_ADMIN}>
+                          Buyer / Customer
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </Field>
@@ -217,7 +254,8 @@ export function UserRegisterForm({
                       disabled={isLoading}
                       className={cn(
                         "w-full h-11 text-base font-semibold",
-                        isDarkTheme && "bg-[#FFA500] hover:bg-[#E69500] text-white rounded-md shadow-lg shadow-[#FFA500]/20"
+                        isDarkTheme &&
+                          "bg-[#FFA500] hover:bg-[#E69500] text-white rounded-md shadow-lg shadow-[#FFA500]/20",
                       )}
                     >
                       {isLoading && (
@@ -232,7 +270,12 @@ export function UserRegisterForm({
               <form onSubmit={handleVerifyOtp}>
                 <FieldGroup>
                   <Field>
-                    <FieldLabel htmlFor="otp" className={cn(isDarkTheme && "text-white")}>Verification code</FieldLabel>
+                    <FieldLabel
+                      htmlFor="otp"
+                      className={cn(isDarkTheme && "text-white")}
+                    >
+                      Verification code
+                    </FieldLabel>
                     <InputOTP
                       containerClassName="justify-around"
                       maxLength={6}
@@ -241,10 +284,14 @@ export function UserRegisterForm({
                       onChange={(val) => setOtp(val)}
                       required
                     >
-                      <InputOTPGroup className={cn(
-                        "gap-2.5 *:data-[slot=input-otp-slot]:rounded-md",
-                        isDarkTheme ? "*:data-[slot=input-otp-slot]:border-none *:data-[slot=input-otp-slot]:bg-white/10 *:data-[slot=input-otp-slot]:text-white *:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-12 transition-all focus-within:ring-white/30" : "*:data-[slot=input-otp-slot]:border"
-                      )}>
+                      <InputOTPGroup
+                        className={cn(
+                          "gap-2.5 *:data-[slot=input-otp-slot]:rounded-md",
+                          isDarkTheme
+                            ? "*:data-[slot=input-otp-slot]:border-none *:data-[slot=input-otp-slot]:bg-white/10 *:data-[slot=input-otp-slot]:text-white *:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-12 transition-all focus-within:ring-white/30"
+                            : "*:data-[slot=input-otp-slot]:border",
+                        )}
+                      >
                         <InputOTPSlot index={0} />
                         <InputOTPSlot index={1} />
                         <InputOTPSlot index={2} />
@@ -253,10 +300,12 @@ export function UserRegisterForm({
                         <InputOTPSlot index={5} />
                       </InputOTPGroup>
                     </InputOTP>
-                    <FieldDescription className={cn(
-                      "text-center pt-2",
-                      isDarkTheme && "text-white/70"
-                    )}>
+                    <FieldDescription
+                      className={cn(
+                        "text-center pt-2",
+                        isDarkTheme && "text-white/70",
+                      )}
+                    >
                       Enter the 6-digit code sent to +91{mobile}.
                     </FieldDescription>
                   </Field>
@@ -266,7 +315,8 @@ export function UserRegisterForm({
                       disabled={isLoading}
                       className={cn(
                         "w-full h-11 text-base font-semibold",
-                        isDarkTheme && "bg-[#FFA500] hover:bg-[#E69500] text-white rounded-md shadow-lg shadow-[#FFA500]/20"
+                        isDarkTheme &&
+                          "bg-[#FFA500] hover:bg-[#E69500] text-white rounded-md shadow-lg shadow-[#FFA500]/20",
                       )}
                     >
                       {isLoading && (
@@ -281,7 +331,8 @@ export function UserRegisterForm({
                       disabled={isLoading}
                       className={cn(
                         "w-full",
-                        isDarkTheme && "text-white hover:text-white hover:bg-white/10"
+                        isDarkTheme &&
+                          "text-white hover:text-white hover:bg-white/10",
                       )}
                     >
                       Change Details

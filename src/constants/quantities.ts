@@ -1,27 +1,10 @@
-export const UNIT_TYPES = [
-  "Nos",
-  "Meter",
-  "Feet",
-  "Kilogram",
-  "Litre",
-  "SquareMeter",
-  "SquareFeet",
-  "CubicMeter",
-  "CubicFeet",
-  "Bag_50_KG",
-] as const;
+import { UNIT_TYPE, UNIT_TYPE_LABELS } from "./enums";
 
-export type UnitType = (typeof UNIT_TYPES)[number];
+export { UNIT_TYPE, UNIT_TYPE_LABELS };
 
-export const UNIT_TYPE_LABELS: Record<UnitType, string> = {
-  Nos: "Nos",
-  Meter: "Meter",
-  Feet: "Feet",
-  Kilogram: "Kilogram",
-  Litre: "Litre",
-  SquareMeter: "Square Meter",
-  SquareFeet: "Square Feet",
-  CubicMeter: "Cubic Meter",
-  CubicFeet: "Cubic Feet",
-  Bag_50_KG: "Bag (50 kg)",
-};
+export const UNIT_TYPES = Object.values(UNIT_TYPE) as [
+  UNIT_TYPE,
+  ...UNIT_TYPE[],
+];
+
+export type UnitType = UNIT_TYPE;

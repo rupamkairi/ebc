@@ -1,42 +1,44 @@
 "use client";
 
 import { useState } from "react";
-import { 
-  useSupportQueriesQuery, 
-  useUpdateSupportQueryMutation 
+import {
+  useSupportQueriesQuery,
+  useUpdateSupportQueryMutation,
 } from "@/queries/supportQueries";
-import { 
-  Card, 
-  CardContent, 
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { 
-  Search, 
-  MessageSquare, 
-  Phone, 
-  User, 
-  CheckCircle2, 
+import {
+  Search,
+  MessageSquare,
+  Phone,
+  User,
+  CheckCircle2,
   MoreVertical,
-  Loader2
+  Loader2,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { SupportChat } from "@/components/shared/support/support-chat";
+import { SUPPORT_QUERY_STATUS } from "@/constants/enums";
 
 export default function AdminSupportInbox() {
-  const [statusFilter, setStatusFilter] = useState<string>("OPEN");
+  const [statusFilter, setStatusFilter] = useState<string>(
+    SUPPORT_QUERY_STATUS.OPEN,
+  );
   const { data: queries, isLoading } = useSupportQueriesQuery(statusFilter);
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
 
-  const selectedTicket = ((queries as any)?.data || queries as any)?.find?.((q: any) => q.id === selectedTicketId);
+  const selectedTicket = ((queries as any)?.data || (queries as any))?.find?.(
+    (q: any) => q.id === selectedTicketId,
+  );
   const updateMutation = useUpdateSupportQueryMutation(selectedTicketId || "");
 
   const handleUpdateStatus = async (status: string) => {
@@ -62,45 +64,67 @@ export default function AdminSupportInbox() {
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="OPEN">Open</SelectItem>
-              <SelectItem value="ASSIGNED">Assigned</SelectItem>
-              <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
-              <SelectItem value="RESOLVED">Resolved</SelectItem>
-              <SelectItem value="CLOSED">Closed</SelectItem>
+              <SelectItem value={SUPPORT_QUERY_STATUS.OPEN}>Open</SelectItem>
+              <SelectItem value={SUPPORT_QUERY_STATUS.ASSIGNED}>
+                Assigned
+              </SelectItem>
+              <SelectItem value={SUPPORT_QUERY_STATUS.IN_PROGRESS}>
+                In Progress
+              </SelectItem>
+              <SelectItem value={SUPPORT_QUERY_STATUS.RESOLVED}>
+                Resolved
+              </SelectItem>
+              <SelectItem value={SUPPORT_QUERY_STATUS.CLOSED}>
+                Closed
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         <div className="flex-1 overflow-y-auto space-y-2 pr-2">
           {isLoading ? (
-            <div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>
-          ) : ((queries as any)?.data || queries as any)?.length === 0 ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : ((queries as any)?.data || (queries as any))?.length === 0 ? (
             <div className="text-center py-12 border rounded-xl bg-muted/20">
-              <p className="text-sm text-muted-foreground">No tickets in this category.</p>
+              <p className="text-sm text-muted-foreground">
+                No tickets in this category.
+              </p>
             </div>
           ) : (
-            ((queries as any)?.data || queries as any)?.map?.((query: any) => (
-              <Card 
-                key={query.id}
-                onClick={() => setSelectedTicketId(query.id)}
-                className={cn(
-                  "cursor-pointer transition-all hover:border-primary/50 shadow-sm",
-                  selectedTicketId === query.id ? "border-primary bg-primary/5 ring-1 ring-primary" : ""
-                )}
-              >
-                <CardContent className="p-4">
-                  <div className="flex justify-between items-start mb-2">
-                    <Badge variant="outline" className="text-[10px]">{query.category?.name}</Badge>
-                    <span className="text-[10px] text-muted-foreground">{new Date(query.createdAt).toLocaleDateString()}</span>
-                  </div>
-                  <h4 className="font-semibold text-sm mb-1 line-clamp-1">{query.subject}</h4>
-                  <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-                    <User className="h-3 w-3" />
-                    <span>{query.createdBy?.name}</span>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
+            ((queries as any)?.data || (queries as any))?.map?.(
+              (query: any) => (
+                <Card
+                  key={query.id}
+                  onClick={() => setSelectedTicketId(query.id)}
+                  className={cn(
+                    "cursor-pointer transition-all hover:border-primary/50 shadow-sm",
+                    selectedTicketId === query.id
+                      ? "border-primary bg-primary/5 ring-1 ring-primary"
+                      : "",
+                  )}
+                >
+                  <CardContent className="p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <Badge variant="outline" className="text-[10px]">
+                        {query.category?.name}
+                      </Badge>
+                      <span className="text-[10px] text-muted-foreground">
+                        {new Date(query.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <h4 className="font-semibold text-sm mb-1 line-clamp-1">
+                      {query.subject}
+                    </h4>
+                    <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                      <User className="h-3 w-3" />
+                      <span>{query.createdBy?.name}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              ),
+            )
           )}
         </div>
       </div>
@@ -116,24 +140,33 @@ export default function AdminSupportInbox() {
                   {selectedTicket?.createdBy?.name?.[0] || "U"}
                 </div>
                 <div>
-                  <h3 className="font-bold">{selectedTicket?.createdBy?.name}</h3>
+                  <h3 className="font-bold">
+                    {selectedTicket?.createdBy?.name}
+                  </h3>
                   <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                    <a href={`tel:${selectedTicket?.createdBy?.phone}`} className="flex items-center gap-1 text-primary hover:underline">
+                    <a
+                      href={`tel:${selectedTicket?.createdBy?.phone}`}
+                      className="flex items-center gap-1 text-primary hover:underline"
+                    >
                       <Phone className="h-3 w-3" />
                       {selectedTicket?.createdBy?.phone}
                     </a>
                     <span>•</span>
-                    <span className="text-xs uppercase font-medium">{selectedTicket?.status}</span>
+                    <span className="text-xs uppercase font-medium">
+                      {selectedTicket?.status}
+                    </span>
                   </div>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                {selectedTicket?.status !== "RESOLVED" && (
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
+                {selectedTicket?.status !== SUPPORT_QUERY_STATUS.RESOLVED && (
+                  <Button
+                    variant="outline"
+                    size="sm"
                     className="text-green-600 border-green-200 hover:bg-green-50"
-                    onClick={() => handleUpdateStatus("RESOLVED")}
+                    onClick={() =>
+                      handleUpdateStatus(SUPPORT_QUERY_STATUS.RESOLVED)
+                    }
                     disabled={updateMutation.isPending}
                   >
                     <CheckCircle2 className="h-4 w-4 mr-2" />
@@ -155,8 +188,13 @@ export default function AdminSupportInbox() {
             <div className="h-20 w-20 rounded-full bg-muted flex items-center justify-center mb-6">
               <MessageSquare className="h-10 w-10 opacity-20" />
             </div>
-            <h3 className="text-xl font-bold text-foreground mb-2">Support Command Center</h3>
-            <p className="max-w-md">Select a support ticket from the list to start conversation with the user or resolve their issue.</p>
+            <h3 className="text-xl font-bold text-foreground mb-2">
+              Support Command Center
+            </h3>
+            <p className="max-w-md">
+              Select a support ticket from the list to start conversation with
+              the user or resolve their issue.
+            </p>
           </div>
         )}
       </div>

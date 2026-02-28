@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { Bell, ScanLine, Settings, LogOut } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
+import { USER_ROLE_LABELS } from "@/constants/roles";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,16 +48,13 @@ export function ProfileCard({ user }: ProfileCardProps) {
             {user.name}
           </h2>
           <p className="text-sm text-muted-foreground font-medium">
-            {user.role}
+            {USER_ROLE_LABELS[user.role as keyof typeof USER_ROLE_LABELS] ||
+              user.role}
           </p>
         </div>
       </div>
 
       <div className="flex flex-row items-center gap-2 w-full sm:w-auto justify-end">
-        <Button variant="outline" size="icon" className="h-9 w-9">
-          <ScanLine className="h-4 w-4 text-muted-foreground" />
-        </Button>
-
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon" className="h-9 w-9">

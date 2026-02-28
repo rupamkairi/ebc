@@ -8,7 +8,7 @@ import { Hero } from "@/components/landing/hero";
 import { HowItWorksSection } from "@/components/landing/how-it-works-section";
 import { PricingSection } from "@/components/landing/pricing-section";
 import { ProblemSection } from "@/components/landing/problem-section";
-import { Navbar } from "@/components/shared/navbar";
+import { Header } from "@/components/shared/header";
 import { EcosystemSection } from "@/components/landing/ecosystem-section";
 import { AdvantagesSection } from "@/components/landing/advantages-section";
 import { MaterialsSection } from "@/components/landing/materials-section";
@@ -21,7 +21,7 @@ import { ScrollToTopButton } from "@/components/shared/scroll-to-top";
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-white-background">
-      <Navbar />
+      <Header />
       <Hero />
 
       {/* AI CALCULATOR SECTION */}

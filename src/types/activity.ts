@@ -1,11 +1,9 @@
+import { REF_TYPE, ACTIVITY_TYPE } from "@/constants/enums";
 import { UnitType } from "@/constants/quantities";
 import { Item } from "./catalog";
 
 // Shared definitions
-export enum REF_TYPE {
-  QUOTATION = "QUOTATION",
-  VISIT = "VISIT",
-}
+export { REF_TYPE };
 
 export interface LineItem {
   id?: string;
@@ -118,7 +116,7 @@ export interface AppointmentListParams {
 // Assignment Specifics
 export interface ActivityAssignment {
   id: string;
-  type: "ENQUIRY_ASSIGNMENT" | "APPOINTMENT_ASSIGNMENT";
+  type: ACTIVITY_TYPE;
   enquiryId?: string;
   appointmentId?: string;
   toEntityId: string;
@@ -129,7 +127,7 @@ export interface ActivityAssignment {
 }
 
 export interface AssignmentListParams {
-  type?: "ENQUIRY_ASSIGNMENT" | "APPOINTMENT_ASSIGNMENT";
+  type?: ACTIVITY_TYPE;
   toEntityId?: string;
   enquiryId?: string;
   appointmentId?: string;

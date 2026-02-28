@@ -2,7 +2,7 @@
 
 import { AppThemeProvider } from "@/components/providers/app-theme-provider";
 
-export default function AppointmentLayout({
+export default function ConferenceHallLayout({
   children,
 }: {
   children: React.ReactNode;

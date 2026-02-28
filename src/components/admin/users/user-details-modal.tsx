@@ -26,6 +26,8 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { USER_ROLE_LABELS, ENTITY_TYPE_LABELS } from "@/constants/roles";
+import { VERIFICATION_STATUS } from "@/constants/enums";
 
 interface UserDetailsModalProps {
   user: AdminUser | null;
@@ -52,7 +54,7 @@ export function UserDetailsModal({
       await verifyMutation.mutateAsync({
         id: entity.id,
         data: {
-          status,
+          status: status as VERIFICATION_STATUS,
           remark:
             status === "APPROVED" ? "Verified by Admin" : "Rejected by Admin",
         },
@@ -75,7 +77,11 @@ export function UserDetailsModal({
                 User Details
               </DialogTitle>
               <Badge variant="outline" className="uppercase font-mono">
-                {user.role?.replace("USER_", "").replace("_ADMIN", "")}
+                {user.role
+                  ? USER_ROLE_LABELS[
+                      user.role as keyof typeof USER_ROLE_LABELS
+                    ] || user.role
+                  : "Unknown"}
               </Badge>
             </div>
             <DialogDescription>
@@ -115,12 +121,12 @@ export function UserDetailsModal({
                         entity.verificationStatus === "APPROVED"
                           ? "default"
                           : entity.verificationStatus === "REJECTED"
-                          ? "destructive"
-                          : "secondary"
+                            ? "destructive"
+                            : "secondary"
                       }
                       className={cn(
                         entity.verificationStatus === "APPROVED" &&
-                          "bg-emerald-500 hover:bg-emerald-600 border-none"
+                          "bg-emerald-500 hover:bg-emerald-600 border-none",
                       )}
                     >
                       {entity.verificationStatus}
@@ -134,7 +140,13 @@ export function UserDetailsModal({
                     />
                     <InfoItem
                       label="Entity Type"
-                      value={entity.type || "N/A"}
+                      value={
+                        entity.type
+                          ? ENTITY_TYPE_LABELS[
+                              entity.type as keyof typeof ENTITY_TYPE_LABELS
+                            ] || entity.type
+                          : "N/A"
+                      }
                     />
                     <InfoItem label="Operating Type" value={entity.op_type} />
                     <div className="md:col-span-2">

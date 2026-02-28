@@ -31,11 +31,12 @@ import { Button } from "@/components/ui/button";
 import { useAdjustWalletMutation } from "@/queries/walletQueries";
 import { toast } from "sonner";
 import { Wallet } from "@/types/wallet";
+import { TRANSACTION_REASON } from "@/constants/enums";
 
 const adjustmentSchema = z.object({
   type: z.enum(["CREDIT", "DEBIT"]),
   cost: z.number().positive("Amount must be positive"),
-  reason: z.string().min(3, "Reason must be at least 3 characters"),
+  reason: z.nativeEnum(TRANSACTION_REASON),
 });
 
 type AdjustmentFormValues = z.infer<typeof adjustmentSchema>;
@@ -58,7 +59,7 @@ export function WalletAdjustmentModal({
     defaultValues: {
       type: "CREDIT",
       cost: 1,
-      reason: "MANUAL_ADJUSTMENT",
+      reason: TRANSACTION_REASON.MANUAL_ADJUSTMENT,
     },
   });
 
@@ -151,12 +152,20 @@ export function WalletAdjustmentModal({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Reason</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter reason for adjustment"
-                      {...field}
-                    />
-                  </FormControl>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select reason" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.values(TRANSACTION_REASON).map((reason) => (
+                        <SelectItem key={reason} value={reason}>
+                          {reason.replace(/_/g, " ")}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

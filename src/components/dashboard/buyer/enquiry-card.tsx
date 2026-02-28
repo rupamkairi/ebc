@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Enquiry } from "@/types/activity";
 import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
+import { VERIFICATION_STATUS } from "@/constants/enums";
 import { format } from "date-fns";
 import { Package, MapPin, Calendar, ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -20,11 +21,11 @@ export function EnquiryCard({ enquiry }: EnquiryCardProps) {
 
   const getStatusColor = (status: string) => {
     switch (status.toUpperCase()) {
-      case "APPROVED":
+      case VERIFICATION_STATUS.APPROVED:
         return "bg-green-100 text-green-700 hover:bg-green-100";
-      case "REJECTED":
+      case VERIFICATION_STATUS.REJECTED:
         return "bg-red-100 text-red-700 hover:bg-red-100";
-      case "PENDING":
+      case VERIFICATION_STATUS.PENDING:
         return "bg-yellow-100 text-yellow-700 hover:bg-yellow-100";
       default:
         return "bg-blue-100 text-blue-700 hover:bg-blue-100";

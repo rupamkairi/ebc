@@ -29,6 +29,7 @@ import { authService } from "@/services/authService";
 import { useAuthStore } from "@/store/authStore";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { USER_ROLE } from "@/constants/enums";
 
 export function UserLoginMobileOtpForm({
   className,
@@ -106,7 +107,7 @@ export function UserLoginMobileOtpForm({
       // Redirection logic
       const role = user.role?.toUpperCase() || "";
       if (
-        role === "UNASSIGNED" ||
+        role === USER_ROLE.UNASSIGNED ||
         role.includes("SELLER") ||
         role.includes("SERVICE")
       ) {
@@ -127,14 +128,26 @@ export function UserLoginMobileOtpForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className={cn(
-        isDarkTheme && "border-none bg-transparent shadow-none"
-      )}>
+      <Card
+        className={cn(isDarkTheme && "border-none bg-transparent shadow-none")}
+      >
         <CardHeader className={cn(isDarkTheme && "px-0")}>
-          <CardTitle className={cn(isDarkTheme && "text-white text-3xl font-medium tracking-wide")}>Login To Your Account</CardTitle>
+          <CardTitle
+            className={cn(
+              isDarkTheme && "text-white text-3xl font-medium tracking-wide",
+            )}
+          >
+            Login To Your Account
+          </CardTitle>
           <CardDescription className={cn(isDarkTheme && "text-white/70")}>
             Don&apos;t have an account?{" "}
-            <Link href="/auth/register" className={cn("hover:underline", isDarkTheme ? "text-[#FFA500]" : "text-primary")}>
+            <Link
+              href="/auth/register"
+              className={cn(
+                "hover:underline",
+                isDarkTheme ? "text-[#FFA500]" : "text-primary",
+              )}
+            >
               register
             </Link>
           </CardDescription>
@@ -146,10 +159,14 @@ export function UserLoginMobileOtpForm({
                 <FieldGroup className={cn(isDarkTheme && "gap-6")}>
                   <Field>
                     <div className="flex gap-0 w-full">
-                      <span className={cn(
-                        "flex items-center px-4 rounded-l-md text-sm font-medium",
-                        isDarkTheme ? "bg-white/20 text-white border-none shrink-0" : "border rounded-md bg-muted text-muted-foreground"
-                      )}>
+                      <span
+                        className={cn(
+                          "flex items-center px-4 rounded-l-md text-sm font-medium",
+                          isDarkTheme
+                            ? "bg-white/20 text-white border-none shrink-0"
+                            : "border rounded-md bg-muted text-muted-foreground",
+                        )}
+                      >
                         +91
                       </span>
                       <Input
@@ -160,7 +177,8 @@ export function UserLoginMobileOtpForm({
                         onChange={(e) => setMobile(e.target.value)}
                         required
                         className={cn(
-                          isDarkTheme && "bg-white/10 border-none text-white placeholder:text-white/60 rounded-r-md rounded-l-none h-12 focus-visible:ring-1 focus-visible:ring-white/30"
+                          isDarkTheme &&
+                            "bg-white/10 border-none text-white placeholder:text-white/60 rounded-r-md rounded-l-none h-12 focus-visible:ring-1 focus-visible:ring-white/30",
                         )}
                       />
                     </div>
@@ -171,7 +189,8 @@ export function UserLoginMobileOtpForm({
                       disabled={isLoading}
                       className={cn(
                         "w-full h-11 text-base font-semibold",
-                        isDarkTheme && "bg-[#FFA500] hover:bg-[#E69500] text-white rounded-md shadow-lg shadow-[#FFA500]/20"
+                        isDarkTheme &&
+                          "bg-[#FFA500] hover:bg-[#E69500] text-white rounded-md shadow-lg shadow-[#FFA500]/20",
                       )}
                     >
                       {isLoading && (
@@ -186,7 +205,12 @@ export function UserLoginMobileOtpForm({
               <form onSubmit={handleVerifyOtp}>
                 <FieldGroup>
                   <Field>
-                    <FieldLabel htmlFor="otp" className={cn(isDarkTheme && "text-white")}>Verification code</FieldLabel>
+                    <FieldLabel
+                      htmlFor="otp"
+                      className={cn(isDarkTheme && "text-white")}
+                    >
+                      Verification code
+                    </FieldLabel>
                     <InputOTP
                       containerClassName="justify-around"
                       maxLength={6}
@@ -195,10 +219,14 @@ export function UserLoginMobileOtpForm({
                       onChange={(val) => setOtp(val)}
                       required
                     >
-                      <InputOTPGroup className={cn(
-                        "gap-2.5 *:data-[slot=input-otp-slot]:rounded-md",
-                        isDarkTheme ? "*:data-[slot=input-otp-slot]:border-none *:data-[slot=input-otp-slot]:bg-white/10 *:data-[slot=input-otp-slot]:text-white *:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-12 transition-all focus-within:ring-white/30" : "*:data-[slot=input-otp-slot]:border"
-                      )}>
+                      <InputOTPGroup
+                        className={cn(
+                          "gap-2.5 *:data-[slot=input-otp-slot]:rounded-md",
+                          isDarkTheme
+                            ? "*:data-[slot=input-otp-slot]:border-none *:data-[slot=input-otp-slot]:bg-white/10 *:data-[slot=input-otp-slot]:text-white *:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-12 transition-all focus-within:ring-white/30"
+                            : "*:data-[slot=input-otp-slot]:border",
+                        )}
+                      >
                         <InputOTPSlot index={0} />
                         <InputOTPSlot index={1} />
                         <InputOTPSlot index={2} />
@@ -207,10 +235,12 @@ export function UserLoginMobileOtpForm({
                         <InputOTPSlot index={5} />
                       </InputOTPGroup>
                     </InputOTP>
-                    <FieldDescription className={cn(
-                      "text-center pt-2",
-                      isDarkTheme && "text-white/70"
-                    )}>
+                    <FieldDescription
+                      className={cn(
+                        "text-center pt-2",
+                        isDarkTheme && "text-white/70",
+                      )}
+                    >
                       Enter the 6-digit code sent to +91{mobile}.
                     </FieldDescription>
                   </Field>
@@ -220,7 +250,8 @@ export function UserLoginMobileOtpForm({
                       disabled={isLoading}
                       className={cn(
                         "w-full h-11 text-base font-semibold",
-                        isDarkTheme && "bg-[#FFA500] hover:bg-[#E69500] text-white rounded-md shadow-lg shadow-[#FFA500]/20"
+                        isDarkTheme &&
+                          "bg-[#FFA500] hover:bg-[#E69500] text-white rounded-md shadow-lg shadow-[#FFA500]/20",
                       )}
                     >
                       {isLoading && (
@@ -235,7 +266,8 @@ export function UserLoginMobileOtpForm({
                       disabled={isLoading}
                       className={cn(
                         "w-full",
-                        isDarkTheme && "text-white hover:text-white hover:bg-white/10"
+                        isDarkTheme &&
+                          "text-white hover:text-white hover:bg-white/10",
                       )}
                     >
                       Change Number
@@ -247,7 +279,7 @@ export function UserLoginMobileOtpForm({
           </div>
         </CardContent>
       </Card>
-      
+
       {!isDarkTheme && (
         <p className="text-center text-sm text-muted-foreground">
           Don&apos;t have an account?{" "}

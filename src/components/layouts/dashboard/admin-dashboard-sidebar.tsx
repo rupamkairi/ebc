@@ -39,6 +39,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { useAuthStore } from "@/store/authStore";
+import { USER_ROLE } from "@/constants/enums";
 import Link from "next/link";
 
 // This is sample data.
@@ -160,17 +161,17 @@ export function AdminDashboardSidebar({
       if (group.title === "Admin") {
         const filteredItems = group.items?.filter((item) => {
           // Admin (Super Admin) sees everything
-          if (role === "ADMIN") return true;
+          if (role === USER_ROLE.ADMIN) return true;
 
-          if (role === "ADMIN_MANAGER") {
+          if (role === USER_ROLE.ADMIN_MANAGER) {
             // Manager hides Accountants
             return item.title !== "Accountants";
           }
-          if (role === "ADMIN_ACCOUNTANT") {
+          if (role === USER_ROLE.ADMIN_ACCOUNTANT) {
             // Accountant hides Managers and Executives
             return item.title !== "Managers" && item.title !== "Executives";
           }
-          if (role === "ADMIN_EXECUTIVE") {
+          if (role === USER_ROLE.ADMIN_EXECUTIVE) {
             // Executive hides Managers, Accountants, and Executives
             return (
               item.title !== "Managers" &&

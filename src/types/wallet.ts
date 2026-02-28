@@ -1,3 +1,4 @@
+import { TRANSACTION_REASON, REF_TYPE } from "@/constants/enums";
 import { Entity } from "./entity";
 import { AdminUser } from "./auth";
 
@@ -14,10 +15,10 @@ export interface CoinPackage {
 export interface WalletTransaction {
   id: string;
   walletId: string;
-  reason: string;
+  reason: TRANSACTION_REASON;
   amount: number;
   type: "CREDIT" | "DEBIT";
-  refType?: string;
+  refType?: REF_TYPE;
   refId?: string;
   status: string;
   createdAt: string;
@@ -44,7 +45,7 @@ export interface WalletAdjustmentRequest {
   walletId: string;
   cost: number;
   type: "CREDIT" | "DEBIT";
-  reason: string;
+  reason: TRANSACTION_REASON;
 }
 
 export interface LeadPricingRequest {
