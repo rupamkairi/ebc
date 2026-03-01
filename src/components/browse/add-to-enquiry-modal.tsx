@@ -23,7 +23,12 @@ import {
 import { useEnquiryStore } from "@/store/enquiryStore";
 import { Product } from "@/queries/browse.queries";
 import { toast } from "sonner";
-import { UNIT_TYPE_LABELS, UNIT_TYPES, UnitType } from "@/constants/quantities";
+import {
+  UNIT_TYPE,
+  UNIT_TYPE_LABELS,
+  UNIT_TYPES,
+  UnitType,
+} from "@/constants/quantities";
 
 interface AddToEnquiryModalProps {
   isOpen: boolean;
@@ -38,7 +43,7 @@ export function AddToEnquiryModal({
 }: AddToEnquiryModalProps) {
   const [quantity, setQuantity] = useState("1");
   const [remarks, setRemarks] = useState("");
-  const [unitType, setUnitType] = useState<UnitType>("Nos");
+  const [unitType, setUnitType] = useState<UnitType>(UNIT_TYPE.Nos);
   const addItem = useEnquiryStore((state) => state.addItem);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -57,6 +62,10 @@ export function AddToEnquiryModal({
       remarks: remarks,
       unitType: unitType,
       price: product.price,
+      categoryId: product.categoryId,
+      subCategoryId: product.subCategoryId,
+      categoryName: product.categoryName,
+      subCategoryName: product.subCategoryName,
     });
 
     toast.success("Added to enquiry");
@@ -64,7 +73,7 @@ export function AddToEnquiryModal({
     // Reset form
     setQuantity("1");
     setRemarks("");
-    setUnitType("Nos");
+    setUnitType(UNIT_TYPE.Nos);
   };
 
   return (

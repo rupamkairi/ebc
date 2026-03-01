@@ -1,6 +1,6 @@
 "use client";
 
-import Container from "@/components/containers/containers";
+import Container from "@/components/ui/containers";
 import { Check } from "lucide-react";
 import Image from "next/image";
 import React from "react";
@@ -14,12 +14,20 @@ interface EcosystemCardProps {
   className?: string;
 }
 
-function EcosystemCard({ title, subtitle, benefits, image, className }: EcosystemCardProps) {
+function EcosystemCard({
+  title,
+  subtitle,
+  benefits,
+  image,
+  className,
+}: EcosystemCardProps) {
   return (
-    <div className={cn(
-      "bg-white rounded-2xl shadow-2xl p-6 md:p-8 flex flex-col items-center text-center h-full transition-all duration-300 hover:shadow-primary/20 hover:-translate-y-1 relative",
-      className
-    )}>
+    <div
+      className={cn(
+        "bg-white rounded-2xl shadow-2xl p-6 md:p-8 flex flex-col items-center text-center h-full transition-all duration-300 hover:shadow-primary/20 hover:-translate-y-1 relative",
+        className,
+      )}
+    >
       {/* Top Illustration Placeholder */}
       <div className="mb-6 -mt-20 md:-mt-24 w-32 h-32 md:w-40 md:h-40 relative">
         <Image
@@ -31,7 +39,7 @@ function EcosystemCard({ title, subtitle, benefits, image, className }: Ecosyste
           unoptimized // Useful if assets are not yet present in build time
         />
       </div>
-      
+
       <div className="space-y-1 mb-8">
         <h3 className="text-[#ec8305] font-black text-sm md:text-base tracking-tight uppercase">
           {title}
@@ -45,7 +53,7 @@ function EcosystemCard({ title, subtitle, benefits, image, className }: Ecosyste
         {benefits.map((benefit, index) => (
           <li key={index} className="flex items-start gap-3 group">
             <div className="mt-0.5 shrink-0 bg-slate-100 rounded-full p-0.5 border border-slate-200">
-               <Check className="size-3.5 text-slate-900 stroke-3" />
+              <Check className="size-3.5 text-slate-900 stroke-3" />
             </div>
             <span className="text-slate-700 text-[11px] md:text-xs font-bold leading-snug">
               {benefit}
@@ -119,11 +127,12 @@ export function EcosystemSection() {
   return (
     <section className="bg-[#2b429d] py-32 relative overflow-hidden">
       {/* Optional: Subtle background pattern could go here */}
-      
+
       <Container size="xl">
         <div className="text-center mb-32 space-y-4">
           <h2 className="text-white text-3xl md:text-5xl lg:text-5xl font-black tracking-tight drop-shadow-lg">
-            Local <span className="text-[#ec8305]">Construction</span> Eco-System of India
+            Local <span className="text-[#ec8305]">Construction</span>{" "}
+            Eco-System of India
           </h2>
           <p className="text-white/90 text-xl md:text-2xl font-bold tracking-wide uppercase">
             ECON Building Centre , Benefits for ALL
@@ -146,7 +155,10 @@ export function EcosystemSection() {
         {/* Row 2: 2 cards centered */}
         <div className="flex flex-wrap justify-center gap-x-8 gap-y-24">
           {ecosystemData.slice(3, 5).map((item, index) => (
-            <div key={index} className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.33rem)]">
+            <div
+              key={index}
+              className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.33rem)]"
+            >
               <EcosystemCard
                 title={item.title}
                 subtitle={item.subtitle}

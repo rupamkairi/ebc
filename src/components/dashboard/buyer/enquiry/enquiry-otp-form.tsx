@@ -15,15 +15,12 @@ import { toast } from "sonner";
 
 import { useVerifyOtpMutation } from "@/queries/authQueries";
 
-interface OTPVerificationFormProps {
+interface EnquiryOtpFormProps {
   phoneNumber: string;
   onVerify: () => void;
 }
 
-export function OTPVerificationForm({
-  phoneNumber,
-  onVerify,
-}: OTPVerificationFormProps) {
+export function EnquiryOtpForm({ phoneNumber, onVerify }: EnquiryOtpFormProps) {
   const [otp, setOtp] = useState("");
   const verifyOtp = useVerifyOtpMutation();
 

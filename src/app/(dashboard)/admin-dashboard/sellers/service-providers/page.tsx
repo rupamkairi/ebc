@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Container from "@/components/containers/containers";
+import Container from "@/components/ui/containers";
 import { UserTable } from "@/components/admin/users/user-table";
 import { UserDetailsModal } from "@/components/admin/users/user-details-modal";
 import { useUsersQuery } from "@/queries/adminQueries";

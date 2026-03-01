@@ -1,6 +1,6 @@
 "use client";
 
-import Container from "@/components/containers/containers";
+import Container from "@/components/ui/containers";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";

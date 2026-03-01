@@ -1,6 +1,6 @@
 "use client";
 
-import Container from "@/components/containers/containers";
+import Container from "@/components/ui/containers";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Calculator, Presentation, Waves } from "lucide-react";
 import Image from "next/image";
@@ -21,9 +21,7 @@ function CostFeature({ icon, title, description }: FeatureProps) {
         <h4 className="text-[#445EB4] font-bold text-lg leading-tight mb-1">
           {title}
         </h4>
-        <p className="text-slate-500 text-sm leading-relaxed">
-          {description}
-        </p>
+        <p className="text-slate-500 text-sm leading-relaxed">{description}</p>
       </div>
     </div>
   );
@@ -36,7 +34,8 @@ export function AiCalculatorSection() {
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="text-[#445EB4] text-2xl md:text-3xl lg:text-4xl font-black tracking-tight mb-4">
-            EBC Offers <span className="text-[#FFA500]">AI-Powered</span> Cost Calculator
+            EBC Offers <span className="text-[#FFA500]">AI-Powered</span> Cost
+            Calculator
           </h2>
           <p className="text-slate-600 font-medium text-base md:text-lg">
             AI-powered estimate based on your location and requirements.
@@ -61,10 +60,12 @@ export function AiCalculatorSection() {
           <div className="flex flex-col space-y-8 lg:pl-12">
             <div className="space-y-4 mb-4">
               <h3 className="text-[#445EB4] text-2xl lg:text-3xl font-black tracking-tight leading-tight">
-                Smart Construction Cost <br className="hidden md:block" /> Calculator
+                Smart Construction Cost <br className="hidden md:block" />{" "}
+                Calculator
               </h3>
               <p className="text-slate-500 text-base md:text-lg max-w-lg">
-                Estimate your home building cost, plan better, and save money with EBC
+                Estimate your home building cost, plan better, and save money
+                with EBC
               </p>
             </div>
 
@@ -90,13 +91,12 @@ export function AiCalculatorSection() {
 
         {/* Bottom CTA Button */}
         <div className="flex justify-center">
-          <Button 
-            variant="glow"
-            size="action"
-            asChild
-          >
-            <a href="#calculator" className="flex items-center justify-center gap-3">
-              Use AI Calculator 
+          <Button variant="glow" size="action" asChild>
+            <a
+              href="#calculator"
+              className="flex items-center justify-center gap-3"
+            >
+              Use AI Calculator
               <ChevronRight className="size-6 group-hover:translate-x-1 transition-transform" />
             </a>
           </Button>

@@ -4,11 +4,15 @@ import { useEffect, useRef } from "react";
 import { useAuthStore } from "@/store/authStore";
 import { BuyerDetails } from "@/store/enquiryStore";
 
-interface UserData {
-  name?: string;
-  email?: string;
-  phoneNumber?: string | null;
-}
+type PrefetchUser =
+  | {
+      name?: string | null;
+      email?: string | null;
+      phoneNumber?: string | null;
+      phone?: string | null;
+    }
+  | null
+  | undefined;
 
 /**
  * Prefetches the logged-in user's details and populates the buyer details form/store.
@@ -18,9 +22,9 @@ interface UserData {
 export function usePrefetchBuyerDetails(
   setBuyerDetails: (details: BuyerDetails) => void,
   currentDetails: BuyerDetails | null,
-  sessionUser?: UserData | null
+  sessionUser?: PrefetchUser,
 ) {
-  const { user: storeUser } = useAuthStore();
+  const { user: storeUser } = useAuthStore() as { user: PrefetchUser };
   const hasPrefetched = useRef(false);
 
   useEffect(() => {
@@ -41,7 +45,7 @@ export function usePrefetchBuyerDetails(
       setBuyerDetails({
         name: user.name || "",
         email: user.email || "",
-        phoneNumber: user.phoneNumber || "",
+        phoneNumber: user.phoneNumber || user.phone || "",
         address: "",
         pincode: "",
         pincodeDirectoryId: "",

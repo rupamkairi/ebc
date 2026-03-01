@@ -1,6 +1,6 @@
 "use client";
 
-import Container from "@/components/containers/containers";
+import Container from "@/components/ui/containers";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
@@ -24,10 +24,10 @@ function MaterialCard({ title, category, image }: MaterialCardProps) {
           fill
           className="object-contain p-3"
           sizes="(max-width: 768px) 50vw, 25vw"
-          unoptimized 
+          unoptimized
         />
       </div>
-      
+
       {/* Bottom Text Area - Tightened padding */}
       <div className="py-2 px-2 text-center">
         <h3 className="text-white font-black text-[13px] md:text-sm leading-tight uppercase tracking-tight">

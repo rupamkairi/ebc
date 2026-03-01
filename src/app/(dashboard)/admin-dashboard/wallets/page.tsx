@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Container from "@/components/containers/containers";
+import Container from "@/components/ui/containers";
 import {
   Table,
   TableBody,

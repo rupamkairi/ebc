@@ -9,26 +9,27 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useItemsQuery } from "@/queries/catalogQueries";
 import { Item } from "@/types/catalog";
-import { Loader2, Search, Package, CheckCircle2, Info, ChevronDown } from "lucide-react";
+import { Loader2, Search, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ITEM_TYPE } from "@/constants/enums";
 
 import { Product } from "@/queries/browse.queries";
 import { AddToEnquiryModal } from "@/components/browse/add-to-enquiry-modal";
 
-interface NewEnquiryItemSearchProps {
+interface EnquiryItemSearchProps {
   onItemSelect?: (item: Item) => void;
   className?: string;
 }
 
-export function NewEnquiryItemSearch({
+export function EnquiryItemSearch({
   onItemSelect,
   className,
-}: NewEnquiryItemSearchProps) {
+}: EnquiryItemSearchProps) {
   const [categoryId, setCategoryId] = useState<string>("");
   const [brandId, setBrandId] = useState<string>("");
   const [specificationId, setSpecificationId] = useState<string>("");
   const [search, setSearch] = useState<string>("");
-  
+
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -39,8 +40,23 @@ export function NewEnquiryItemSearch({
       title: item.name,
       description: item.description || "",
       price: 0,
-      image: item.brand?.brandLogo?.url || item.category?.categoryIcon?.url || "https://placehold.co/300x300",
+      image:
+        item.brand?.brandLogo?.url ||
+        item.category?.categoryIcon?.url ||
+        "https://placehold.co/300x300",
       category: item.category?.name || "Unknown",
+      categoryName:
+        item.category?.parentCategory?.name ||
+        (item.category?.parentCategoryId
+          ? "Unknown Parent"
+          : item.category?.name || "Unknown"),
+      subCategoryName: item.category?.parentCategoryId
+        ? item.category?.name
+        : undefined,
+      categoryId: item.category?.parentCategoryId || item.categoryId,
+      subCategoryId: item.category?.parentCategoryId
+        ? item.categoryId
+        : undefined,
       brand: item.brand?.name || "Unknown",
       rating: 0,
       type: (item.type?.toLowerCase() === "service" ? "service" : "product") as
@@ -60,16 +76,16 @@ export function NewEnquiryItemSearch({
     brandId: brandId || undefined,
     specificationId: specificationId || undefined,
     search: isSearchValid ? search : undefined,
-    type: "PRODUCT",
+    type: ITEM_TYPE.PRODUCT,
   });
 
   return (
     <div className={cn("space-y-6", className)}>
       {/* Choose Items Blue Section */}
-      <div className="rounded-[2rem] bg-gradient-to-br from-[#0F28A9] to-[#0A1B75] p-6 sm:p-10 shadow-2xl overflow-hidden relative">
+      <div className="rounded-4xl bg-linear-to-br from-[#0F28A9] to-[#0A1B75] p-6 sm:p-10 shadow-2xl overflow-hidden relative">
         {/* Subtle Background Pattern/Glow */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
-        
+
         <div className="relative z-10 space-y-8">
           <div className="flex items-center gap-3 border-b border-white/20 pb-4">
             <Search className="size-8 text-white" />
@@ -141,7 +157,9 @@ export function NewEnquiryItemSearch({
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20 bg-muted/30 rounded-3xl border-2 border-dashed border-[#3D52A0]/20">
             <Loader2 className="size-10 animate-spin text-[#3D52A0] mb-3" />
-            <p className="text-[#3D52A0] font-bold italic">Searching for items...</p>
+            <p className="text-[#3D52A0] font-bold italic">
+              Searching for items...
+            </p>
           </div>
         ) : items && items.length > 0 ? (
           <div className="max-h-[500px] overflow-y-auto rounded-3xl border border-[#3D52A0]/10 bg-white/50 backdrop-blur-sm p-4 space-y-4 scrollbar-thin scrollbar-thumb-[#3D52A0]/20 scrollbar-track-transparent">
@@ -155,7 +173,9 @@ export function NewEnquiryItemSearch({
                     <Package className="size-6" />
                   </div>
                   <div className="flex flex-col">
-                    <h4 className="font-bold text-[#3D52A0] text-lg leading-tight">{item.name}</h4>
+                    <h4 className="font-bold text-[#3D52A0] text-lg leading-tight">
+                      {item.name}
+                    </h4>
                     <div className="flex items-center gap-3 text-xs font-semibold text-muted-foreground mt-1">
                       {item.brand && (
                         <span className="flex items-center gap-1 bg-[#3D52A0]/5 px-2 py-0.5 rounded-md">
@@ -182,7 +202,9 @@ export function NewEnquiryItemSearch({
         ) : isSearchValid ? (
           <div className="flex flex-col items-center justify-center py-20 bg-muted/30 rounded-3xl border-2 border-dashed border-[#3D52A0]/20">
             <Package className="size-10 text-[#3D52A0]/30 mb-3" />
-            <p className="text-[#3D52A0] font-bold opacity-60">No items found matching your search.</p>
+            <p className="text-[#3D52A0] font-bold opacity-60">
+              No items found matching your search.
+            </p>
           </div>
         ) : null}
       </div>

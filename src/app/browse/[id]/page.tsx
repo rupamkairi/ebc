@@ -10,7 +10,7 @@ import { ForumSection } from "@/components/shared/forum";
 import { Header } from "@/components/shared/header";
 import { FooterSection } from "@/components/landing/footer-section";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
-import Container from "@/components/containers/containers";
+import Container from "@/components/ui/containers";
 
 export default function ItemDetailsPage() {
   const params = useParams();

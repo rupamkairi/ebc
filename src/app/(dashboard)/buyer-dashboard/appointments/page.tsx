@@ -1,6 +1,6 @@
 "use client";
 
-import Container from "@/components/containers/containers";
+import Container from "@/components/ui/containers";
 import { useAppointmentsQuery } from "@/queries/activityQueries";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import { Search } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 
-import { AppointmentCard } from "@/components/dashboard/buyer/appointment-card";
+import { AppointmentCard } from "@/components/dashboard/buyer/appointment/appointment-card";
 
 const filters = ["All", "Upcoming", "Completed", "Cancelled"];
 

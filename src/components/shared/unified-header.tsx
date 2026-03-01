@@ -1,6 +1,6 @@
 "use client";
 
-import Container from "@/components/containers/containers";
+import Container from "@/components/ui/containers";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useSessionQuery } from "@/queries/authQueries";

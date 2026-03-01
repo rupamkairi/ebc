@@ -1,6 +1,6 @@
 "use client";
 
-import Container from "@/components/containers/containers";
+import Container from "@/components/ui/containers";
 import { SellerDashboardHeader } from "@/components/layouts/dashboard/seller-dashboard-header";
 import { BottomNav } from "@/app/(dashboard)/seller-dashboard/bottom-nav";
 import { ProfileCard } from "@/components/dashboard/seller/profile-card";

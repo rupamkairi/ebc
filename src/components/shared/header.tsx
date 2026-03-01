@@ -1,6 +1,6 @@
 "use client";
 
-import Container from "@/components/containers/containers";
+import Container from "@/components/ui/containers";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Menu, X } from "lucide-react";
@@ -10,6 +10,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { UnifiedHeader } from "./unified-header";
 import { useSessionQuery } from "@/queries/authQueries";
+import { USER_ROLE_LABELS } from "@/constants/roles";
 
 export function Header() {
   const { t } = useLanguage();
@@ -105,8 +106,10 @@ export function Header() {
                     <span className="font-semibold text-slate-900">
                       {user.name}
                     </span>
-                    <span className="text-sm text-slate-500 capitalize">
-                      {user.role?.toLowerCase().replace(/_/g, " ")}
+                    <span className="text-sm text-slate-500">
+                      {USER_ROLE_LABELS[
+                        user.role as keyof typeof USER_ROLE_LABELS
+                      ] || user.role}
                     </span>
                   </div>
                 </div>

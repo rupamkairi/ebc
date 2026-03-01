@@ -7,7 +7,7 @@ import { useState } from "react";
 
 import { Item } from "@/types/catalog";
 
-export function AddAppointmentItemWrapper() {
+export function AppointmentItemWrapper() {
   const [selectedItem, setSelectedItem] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -19,6 +19,8 @@ export function AddAppointmentItemWrapper() {
       price: 0,
       image: "https://placehold.co/300x300", // Catalog Item doesn't have image
       category: item.category?.name || "Unknown",
+      categoryName:
+        item.category?.parentCategory?.name || item.category?.name || "Unknown",
       brand: item.brand?.name || "Unknown",
       rating: 0,
       type: (item.type?.toLowerCase() === "service" ? "service" : "product") as

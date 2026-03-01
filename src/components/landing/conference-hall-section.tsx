@@ -1,6 +1,6 @@
 "use client";
 
-import Container from "@/components/containers/containers";
+import Container from "@/components/ui/containers";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, ChevronRight } from "lucide-react";
 import Image from "next/image";
@@ -13,7 +13,8 @@ export function ConferenceHallSection() {
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="text-[#445EB4] text-2xl md:text-3xl lg:text-4xl font-black tracking-tight mb-4">
-            Not Sure? Learn from Experts & Real <span className="text-[#FFA500]">Home Builders</span>
+            Not Sure? Learn from Experts & Real{" "}
+            <span className="text-[#FFA500]">Home Builders</span>
           </h2>
           <p className="text-slate-500 font-medium text-base md:text-lg">
             Ask questions. Read real experiences. Decide confidently.
@@ -42,8 +43,8 @@ export function ConferenceHallSection() {
                   Join The Conference Hall
                 </h3>
                 <p className="text-white/80 text-base md:text-lg max-w-md leading-relaxed">
-                  Discover special discounts, latest construction information, and
-                  best practices from top brands in one place.
+                  Discover special discounts, latest construction information,
+                  and best practices from top brands in one place.
                 </p>
               </div>
 
@@ -66,12 +67,12 @@ export function ConferenceHallSection() {
 
               {/* Action Button */}
               <div className="pt-6">
-                <Button 
+                <Button
                   className="h-14 px-10 bg-[#FFA500] hover:bg-[#FFB733] text-white flex items-center gap-2 rounded-lg transition-all duration-300 shadow-xl group border-none"
                   asChild
                 >
                   <Link href="/conference-hall" className="text-lg font-bold">
-                    View Expert Answers 
+                    View Expert Answers
                     <ChevronRight className="size-5 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </Button>

@@ -37,7 +37,7 @@ import { useCreateEntityMutation } from "@/queries/entityQueries";
 import { toast } from "sonner";
 import { Loader2, CheckCircle2, Building2 } from "lucide-react";
 import { CreateEntityRequest } from "@/types/entity";
-import Container from "@/components/containers/containers";
+import Container from "@/components/ui/containers";
 
 export function OnboardingForm() {
   const router = useRouter();

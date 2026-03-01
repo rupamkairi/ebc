@@ -1,6 +1,6 @@
 "use client";
 
-import Container from "@/components/containers/containers";
+import Container from "@/components/ui/containers";
 import { NotificationChannelList } from "@/components/dashboard/notifications/notification-channel-list";
 import {
   Card,

@@ -1,9 +1,18 @@
 "use client";
 
-import Container from "@/components/containers/containers";
+import Container from "@/components/ui/containers";
 import Image from "next/image";
 import { useLanguage } from "@/hooks/useLanguage";
-import { Wallet, PersonStanding, TriangleAlert, ShieldCheck, Clock, FileText, IndianRupee, ClipboardList } from "lucide-react";
+import {
+  Wallet,
+  PersonStanding,
+  TriangleAlert,
+  ShieldCheck,
+  Clock,
+  FileText,
+  IndianRupee,
+  ClipboardList,
+} from "lucide-react";
 
 interface ProblemCardProps {
   title: string;
@@ -27,14 +36,14 @@ function ProblemCard({ title, image, icon }: ProblemCardProps) {
           />
         </div>
       </div>
-      
+
       {/* Bottom Yellow Info Area */}
       <div className="bg-[#FFA500] p-4 pt-6 flex flex-col grow relative">
         {/* Floating Icon Circle */}
         <div className="absolute -top-4 left-4 size-8 rounded-full bg-white shadow-md flex items-center justify-center text-[#445EB4] border border-[#FFA500] z-10 transition-transform duration-300 group-hover:scale-110">
           {icon}
         </div>
-        
+
         <p className="text-[#445EB4] font-black text-sm sm:text-base leading-tight">
           {title}
         </p>
@@ -47,14 +56,46 @@ export function ProblemSection() {
   const { t } = useLanguage();
 
   const problems = [
-    { key: "problem_1_desc", icon: <Wallet className="size-4" />, image: "/images/problems/price-variation.svg" },
-    { key: "problem_2_desc", icon: <PersonStanding className="size-4" />, image: "/images/problems/commission-bias.svg" },
-    { key: "problem_3_desc", icon: <TriangleAlert className="size-4" />, image: "/images/problems/quality-issues.svg" },
-    { key: "problem_4_desc", icon: <ShieldCheck className="size-4" />, image: "/images/problems/unverified-workers.svg" },
-    { key: "problem_5_desc", icon: <Clock className="size-4" />, image: "/images/problems/helplessness.svg" },
-    { key: "problem_6_desc", icon: <FileText className="size-4" />, image: "/images/problems/vague-quotes.svg" },
-    { key: "problem_7_desc", icon: <IndianRupee className="size-4" />, image: "/images/problems/cost-idea.svg" },
-    { key: "problem_8_desc", icon: <ClipboardList className="size-4" />, image: "/images/problems/lack-of-planning.svg" },
+    {
+      key: "problem_1_desc",
+      icon: <Wallet className="size-4" />,
+      image: "/images/problems/price-variation.svg",
+    },
+    {
+      key: "problem_2_desc",
+      icon: <PersonStanding className="size-4" />,
+      image: "/images/problems/commission-bias.svg",
+    },
+    {
+      key: "problem_3_desc",
+      icon: <TriangleAlert className="size-4" />,
+      image: "/images/problems/quality-issues.svg",
+    },
+    {
+      key: "problem_4_desc",
+      icon: <ShieldCheck className="size-4" />,
+      image: "/images/problems/unverified-workers.svg",
+    },
+    {
+      key: "problem_5_desc",
+      icon: <Clock className="size-4" />,
+      image: "/images/problems/helplessness.svg",
+    },
+    {
+      key: "problem_6_desc",
+      icon: <FileText className="size-4" />,
+      image: "/images/problems/vague-quotes.svg",
+    },
+    {
+      key: "problem_7_desc",
+      icon: <IndianRupee className="size-4" />,
+      image: "/images/problems/cost-idea.svg",
+    },
+    {
+      key: "problem_8_desc",
+      icon: <ClipboardList className="size-4" />,
+      image: "/images/problems/lack-of-planning.svg",
+    },
   ];
 
   return (

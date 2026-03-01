@@ -1,6 +1,6 @@
 "use client";
 
-import Container from "@/components/containers/containers";
+import Container from "@/components/ui/containers";
 import { AccordionBase } from "@/components/shared/accordion-base";
 import Break from "@/components/ui/break";
 import { Button } from "@/components/ui/button";

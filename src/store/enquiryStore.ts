@@ -10,6 +10,10 @@ export interface EnquiryItem {
   unitType: UnitType;
   remarks?: string;
   price?: number;
+  categoryId?: string;
+  subCategoryId?: string;
+  categoryName?: string;
+  subCategoryName?: string;
 }
 
 export interface BuyerDetails {
@@ -19,8 +23,9 @@ export interface BuyerDetails {
   address: string;
   pincode: string;
   pincodeDirectoryId: string;
-  description: string;
-  purpose: string;
+  description?: string;
+  purpose?: string;
+  expectedDate?: string;
 }
 
 interface EnquiryStore {
@@ -52,6 +57,6 @@ export const useEnquiryStore = create<EnquiryStore>()(
     }),
     {
       name: "enquiry-storage",
-    }
-  )
+    },
+  ),
 );

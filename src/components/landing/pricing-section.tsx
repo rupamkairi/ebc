@@ -1,18 +1,36 @@
 "use client";
 
-import Container from "@/components/containers/containers";
+import Container from "@/components/ui/containers";
 import { cn } from "@/lib/utils";
 
 export function PricingSection() {
   const pricingData = [
-    { service: "Latest rate quotation from local material dealers", isFree: true },
+    {
+      service: "Latest rate quotation from local material dealers",
+      isFree: true,
+    },
     { service: "Consultation with Technical Professionals", isFree: true },
-    { service: "Site visit by rated skilled workers & technicians", isFree: true },
+    {
+      service: "Site visit by rated skilled workers & technicians",
+      isFree: true,
+    },
     { service: "Meet at site with local fabricators & fitters", isFree: true },
-    { service: "Easy hiring of construction tools & machineries", isFree: true },
-    { service: "Appointment with customer rated renowned contractors", isFree: true },
-    { service: "Latest information, guidance, discount & offers", isFree: true },
-    { service: "AI-powered, highly predicted project cost calculation", isFree: true },
+    {
+      service: "Easy hiring of construction tools & machineries",
+      isFree: true,
+    },
+    {
+      service: "Appointment with customer rated renowned contractors",
+      isFree: true,
+    },
+    {
+      service: "Latest information, guidance, discount & offers",
+      isFree: true,
+    },
+    {
+      service: "AI-powered, highly predicted project cost calculation",
+      isFree: true,
+    },
   ];
 
   return (
@@ -30,21 +48,25 @@ export function PricingSection() {
           {/* Header Row */}
           <div className="grid grid-cols-12">
             <div className="col-span-7 bg-[#FFA500] py-5 px-4">
-              <h3 className="text-xl md:text-2xl font-bold text-white text-center">Services</h3>
+              <h3 className="text-xl md:text-2xl font-bold text-white text-center">
+                Services
+              </h3>
             </div>
             <div className="col-span-5 bg-[#3B5998] py-5 px-4">
-              <h3 className="text-xl md:text-2xl font-bold text-white text-center">Charges</h3>
+              <h3 className="text-xl md:text-2xl font-bold text-white text-center">
+                Charges
+              </h3>
             </div>
           </div>
 
           {/* Pricing Rows */}
           <div className="flex flex-col">
             {pricingData.map((item, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className={cn(
                   "grid grid-cols-12 border-b border-[#E5E7EB] last:border-b-0",
-                  index % 2 === 1 ? "bg-[#E5E7EB]" : "bg-white"
+                  index % 2 === 1 ? "bg-[#E5E7EB]" : "bg-white",
                 )}
               >
                 {/* Service Column */}
@@ -60,10 +82,12 @@ export function PricingSection() {
                 {/* Charges Column */}
                 <div className="col-span-5 flex items-center justify-center gap-6 py-4">
                   <div className="flex items-center gap-3">
-                     <div className="relative inline-flex h-7 w-14 items-center rounded-full bg-[#00D100]">
-                        <span className="inline-block h-5 w-5 translate-x-8 rounded-full bg-white shadow-sm transition" />
-                     </div>
-                     <span className="text-sm font-bold text-gray-600">Free</span>
+                    <div className="relative inline-flex h-7 w-14 items-center rounded-full bg-[#00D100]">
+                      <span className="inline-block h-5 w-5 translate-x-8 rounded-full bg-white shadow-sm transition" />
+                    </div>
+                    <span className="text-sm font-bold text-gray-600">
+                      Free
+                    </span>
                   </div>
                 </div>
               </div>

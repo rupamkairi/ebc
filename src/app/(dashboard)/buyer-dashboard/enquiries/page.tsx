@@ -5,8 +5,8 @@ import { useSessionQuery } from "@/queries/authQueries";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import Link from "next/link";
-import { EnquiryCard } from "@/components/dashboard/buyer/enquiry-card";
-import { BuyerProfileCard } from "@/components/dashboard/buyer/dashboard-v2-components";
+import { EnquiryCard } from "@/components/dashboard/buyer/enquiry/enquiry-card";
+import { BuyerProfileCard } from "@/components/dashboard/buyer/dashboard-components";
 import { cn } from "@/lib/utils";
 import { Frown } from "lucide-react";
 
@@ -35,7 +35,9 @@ export default function EnquiriesPage() {
 
       {/* Header Section */}
       <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-black text-[#3D52A0] tracking-tight">Enquiries</h1>
+        <h1 className="text-3xl font-black text-[#3D52A0] tracking-tight">
+          Enquiries
+        </h1>
         <p className="text-sm text-muted-foreground font-medium">
           Manage and track your product enquiries
         </p>
@@ -52,9 +54,9 @@ export default function EnquiriesPage() {
                 onClick={() => setActiveFilter(filter)}
                 className={cn(
                   "px-6 py-2 rounded-full text-xs font-bold transition-all shadow-sm",
-                  isActive 
-                    ? "bg-[#3D52A0] text-white shadow-[#3D52A0]/20" 
-                    : "bg-white text-[#3D52A0] hover:bg-muted"
+                  isActive
+                    ? "bg-[#3D52A0] text-white shadow-[#3D52A0]/20"
+                    : "bg-white text-[#3D52A0] hover:bg-muted",
                 )}
               >
                 {filter}
@@ -71,10 +73,10 @@ export default function EnquiriesPage() {
       </div>
 
       {/* Enquiries List Container */}
-      <div className="min-h-[300px] rounded-[2rem] bg-gradient-to-br from-[#2A3B7D] to-[#1D2A5C] p-8 shadow-2xl relative overflow-hidden">
+      <div className="min-h-[300px] relative overflow-hidden">
         {/* Subtle decorative effect */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 blur-3xl" />
-        
+
         <div className="relative z-10">
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">

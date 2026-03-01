@@ -1,6 +1,6 @@
 "use client";
 
-import { AddAppointmentItemWrapper } from "@/components/dashboard/buyer/appointment/add-appointment-item-wrapper";
+import { AppointmentItemWrapper } from "@/components/dashboard/buyer/appointment/appointment-item-wrapper";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppointmentStore } from "@/store/appointmentStore";
@@ -11,7 +11,7 @@ export function AppointmentLineItemWrapper() {
 
   if (!item) {
     // If no item, show the Search Wrapper directly
-    return <AddAppointmentItemWrapper />;
+    return <AppointmentItemWrapper />;
   }
 
   return (

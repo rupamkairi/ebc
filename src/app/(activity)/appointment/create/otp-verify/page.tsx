@@ -1,6 +1,6 @@
 "use client";
 
-import { OTPVerificationForm } from "@/components/dashboard/buyer/enquiry/otp-verification-form";
+import { EnquiryOtpForm } from "@/components/dashboard/buyer/enquiry/enquiry-otp-form";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
@@ -23,7 +23,7 @@ export default function AppointmentOTPVerifyPage() {
 
   return (
     <div className="max-w-md mx-auto py-20 px-4">
-      <OTPVerificationForm
+      <EnquiryOtpForm
         phoneNumber={buyerDetails.phoneNumber}
         onVerify={handleVerify}
       />

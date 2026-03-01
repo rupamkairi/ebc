@@ -1,6 +1,6 @@
 "use client";
 
-import Container from "@/components/containers/containers";
+import Container from "@/components/ui/containers";
 import { Check, PiggyBank, Monitor, HardHat, ShieldCheck } from "lucide-react";
 import Image from "next/image";
 import React from "react";
@@ -13,7 +13,13 @@ interface AdvantageCardProps {
   icon: React.ReactNode;
 }
 
-function AdvantageCard({ title, description, detail, image, icon }: AdvantageCardProps) {
+function AdvantageCard({
+  title,
+  description,
+  detail,
+  image,
+  icon,
+}: AdvantageCardProps) {
   return (
     <div className="bg-[#1a1a1a] rounded-xl overflow-hidden shadow-xl border border-white/5 flex flex-col h-full group transition-all duration-300 hover:-translate-y-2">
       {/* Photo Area - More compact aspect ratio */}
@@ -24,11 +30,11 @@ function AdvantageCard({ title, description, detail, image, icon }: AdvantageCar
           fill
           className="object-cover transition-transform duration-700 group-hover:scale-110"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          unoptimized 
+          unoptimized
         />
         <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
-      
+
       {/* Info Box - Tightened padding and text */}
       <div className="bg-white p-4 flex flex-col grow">
         <div className="flex items-center gap-2 mb-2">
@@ -127,10 +133,12 @@ export function AdvantagesSection() {
         {/* Footer Text */}
         <div className="mt-20 text-center">
           <p className="text-white text-lg md:text-2xl font-black tracking-tight">
-            A better home. <span className="text-white/60">A better decision.</span> A better sleep at night.
+            A better home.{" "}
+            <span className="text-white/60">A better decision.</span> A better
+            sleep at night.
           </p>
         </div>
-        
+
         {/* Concrete Pipes Placeholder Visual (Bottom Right) */}
         <div className="hidden lg:block absolute -bottom-12 -right-12 w-[450px] h-[300px] z-[-1] pointer-events-none">
           <Image

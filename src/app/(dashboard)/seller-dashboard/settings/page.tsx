@@ -7,7 +7,7 @@ import { EntitySettingsForm } from "@/components/dashboard/seller/entity-setting
 import { NotificationChannelList } from "@/components/dashboard/notifications/notification-channel-list";
 import { useEntitiesQuery } from "@/queries/entityQueries";
 import { cn } from "@/lib/utils";
-import Container from "@/components/containers/containers";
+import Container from "@/components/ui/containers";
 
 export default function SettingsPage() {
   const { data: entities = [] } = useEntitiesQuery();

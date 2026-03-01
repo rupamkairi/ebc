@@ -2,14 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
-  Scan, 
-  Settings, 
-  Bell, 
-  ArrowRight,
-  LogOut,
-  User
-} from "lucide-react";
+import { Scan, Settings, Bell, ArrowRight, LogOut, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authService } from "@/services/authService";
@@ -21,18 +14,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
+import { USER_ROLE_LABELS } from "@/constants/roles";
 
 /**
  * 1. Buyer Profile Card (Orange)
  */
-export function BuyerProfileCard({ 
-  name, 
-  role, 
-  avatarUrl 
-}: { 
-  name: string; 
-  role: string; 
-  avatarUrl?: string 
+export function BuyerProfileCard({
+  name,
+  role,
+  avatarUrl,
+}: {
+  name: string;
+  role: string;
+  avatarUrl?: string;
 }) {
   const router = useRouter();
 
@@ -52,16 +46,16 @@ export function BuyerProfileCard({
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <h1 className="text-2xl sm:text-4xl font-bold tracking-tight">{name}</h1>
-            <p className="text-sm sm:text-lg font-medium text-white/80">{role}</p>
+            <h1 className="text-2xl sm:text-4xl font-bold tracking-tight">
+              {name}
+            </h1>
+            <p className="text-sm sm:text-lg font-medium text-white/80">
+              {USER_ROLE_LABELS[role as keyof typeof USER_ROLE_LABELS] || role}
+            </p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2 sm:gap-4">
-          <button className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm transition-all hover:bg-white/30 text-white">
-            <Scan className="size-5 sm:size-6" />
-          </button>
-          
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm transition-all hover:bg-white/30 text-white">
@@ -72,14 +66,17 @@ export function BuyerProfileCard({
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild className="cursor-pointer">
-                <Link href="/buyer-dashboard/settings" className="flex items-center w-full">
+                <Link
+                  href="/buyer-dashboard/settings"
+                  className="flex items-center w-full"
+                >
                   <User className="mr-2 h-4 w-4" />
                   <span>Profile Settings</span>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem 
-                className="text-destructive focus:text-destructive cursor-pointer" 
+              <DropdownMenuItem
+                className="text-destructive focus:text-destructive cursor-pointer"
                 onClick={handleLogout}
               >
                 <LogOut className="mr-2 h-4 w-4" />
@@ -100,14 +97,14 @@ export function BuyerProfileCard({
 /**
  * 2. Room Card
  */
-export function RoomCard({ 
-  title, 
-  icon: Icon, 
-  href 
-}: { 
-  title: string; 
-  icon: React.ElementType; 
-  href: string 
+export function RoomCard({
+  title,
+  icon: Icon,
+  href,
+}: {
+  title: string;
+  icon: React.ElementType;
+  href: string;
 }) {
   return (
     <div className="group flex flex-col items-center gap-4 rounded-xl bg-white p-6 shadow-sm ring-1 ring-muted/50 transition-all hover:shadow-md">
@@ -127,15 +124,15 @@ export function RoomCard({
 /**
  * 3. Activity Container Card
  */
-export function ActivitySectionCard({ 
-  title, 
-  icon: Icon, 
+export function ActivitySectionCard({
+  title,
+  icon: Icon,
   children,
   footerLink,
-  footerText
-}: { 
-  title: string; 
-  icon: React.ElementType; 
+  footerText,
+}: {
+  title: string;
+  icon: React.ElementType;
   children: React.ReactNode;
   footerLink: string;
   footerText: string;
@@ -146,13 +143,11 @@ export function ActivitySectionCard({
         <Icon className="size-8" />
         <h2 className="text-2xl font-bold">{title}</h2>
       </div>
-      
+
       <div className="flex-1 px-6">
-        <div className="grid grid-cols-2 gap-4">
-          {children}
-        </div>
+        <div className="grid grid-cols-2 gap-4">{children}</div>
       </div>
-      
+
       <div className="p-6">
         <Link href={footerLink}>
           <Button className="w-full bg-[#FFA500] hover:bg-[#E69500] text-white font-bold h-12 text-md">
@@ -167,20 +162,22 @@ export function ActivitySectionCard({
 /**
  * 4. Stat Card (Inside Activity)
  */
-export function ActivityStatCard({ 
-  label, 
-  value, 
-  icon: Icon 
-}: { 
-  label: string; 
-  value: number; 
-  icon: React.ElementType 
+export function ActivityStatCard({
+  label,
+  value,
+  icon: Icon,
+}: {
+  label: string;
+  value: number;
+  icon: React.ElementType;
 }) {
   return (
     <div className="flex flex-col items-center gap-2 rounded-xl bg-white p-4 text-[#3D52A0] shadow-inner">
       <div className="flex items-center gap-2">
         <Icon className="size-4 text-[#FFA500]" />
-        <span className="text-[10px] font-bold uppercase tracking-tighter opacity-70">{label}</span>
+        <span className="text-[10px] font-bold uppercase tracking-tighter opacity-70">
+          {label}
+        </span>
       </div>
       <span className="text-4xl font-extrabold">{value}</span>
     </div>
@@ -190,17 +187,20 @@ export function ActivityStatCard({
 /**
  * 5. Conference Hall Section Item
  */
-export function ConferenceHallItem({ 
-  title, 
-  icon: Icon, 
-  href 
-}: { 
-  title: string; 
-  icon: React.ElementType; 
-  href: string 
+export function ConferenceHallItem({
+  title,
+  icon: Icon,
+  href,
+}: {
+  title: string;
+  icon: React.ElementType;
+  href: string;
 }) {
   return (
-    <Link href={href} className="group flex items-center justify-between rounded-xl bg-[#4D65B2] p-4 text-white transition-all hover:bg-[#3D52A0]">
+    <Link
+      href={href}
+      className="group flex items-center justify-between rounded-xl bg-[#4D65B2] p-4 text-white transition-all hover:bg-[#3D52A0]"
+    >
       <div className="flex items-center gap-4">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10">
           <Icon className="size-5" />

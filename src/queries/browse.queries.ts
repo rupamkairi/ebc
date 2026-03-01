@@ -7,6 +7,7 @@ import {
   useSpecificationsQuery,
 } from "./catalogQueries";
 import { ItemListing } from "@/types/catalog";
+import { ITEM_TYPE } from "@/constants/enums";
 
 // UI Types
 export interface Product {
@@ -16,6 +17,10 @@ export interface Product {
   price: number;
   image: string;
   category: string;
+  categoryName: string;
+  subCategoryName?: string;
+  categoryId?: string;
+  subCategoryId?: string;
   brand: string;
   rating: number;
   type: string;
@@ -48,14 +53,18 @@ export const useBrowseData = (params: BrowseParams) => {
   const { data: parentCategories, isLoading: isLoadingCats } =
     useCategoriesQuery({
       isSubCategory: false,
-      type: type, // Pass PRODUCT or SERVICE type to filter categories
+      type: type as ITEM_TYPE, // Pass PRODUCT or SERVICE type to filter categories
     });
 
   // 2. Fetch Subcategories based on selected parent category
   const { data: subCategoriesData, isLoading: isLoadingSubCats } =
     useCategoriesQuery(
       parentCategory
-        ? { parentCategoryId: parentCategory, isSubCategory: true, type: type }
+        ? {
+            parentCategoryId: parentCategory,
+            isSubCategory: true,
+            type: type as ITEM_TYPE,
+          }
         : ({ enabled: false } as never), // Skip query if no parent selected
     );
 
@@ -75,7 +84,7 @@ export const useBrowseData = (params: BrowseParams) => {
     search: params.q || undefined,
     categoryId: categoryFilter,
     brandId: params.brand.length === 1 ? params.brand[0] : undefined,
-    type: type, // Pass type to filter products vs services
+    type: type as ITEM_TYPE, // Pass type to filter products vs services
   });
 
   // 6. Fetch Listings for price/media info
@@ -141,6 +150,13 @@ export const useBrowseData = (params: BrowseParams) => {
   // Map to Product interface
   const products: Product[] = paginatedItems.map((item) => {
     const listing = listingMap.get(item.id);
+
+    // In our schema, item.categoryId usually points to the specific sub-category it belongs to
+    const subCategoryId = item.category?.parentCategoryId
+      ? item.categoryId
+      : undefined;
+    const categoryId = item.category?.parentCategoryId || item.categoryId;
+
     return {
       id: item.id,
       title: item.name,
@@ -148,6 +164,16 @@ export const useBrowseData = (params: BrowseParams) => {
       price: listing?.itemRates?.[0]?.rate || 0,
       image: listing?.mediaIds?.[0] || "https://placehold.co/300x300",
       category: item.category?.name || "Uncategorized",
+      categoryName:
+        item.category?.parentCategory?.name ||
+        (item.category?.parentCategoryId
+          ? "Unknown Parent"
+          : item.category?.name || "Uncategorized"),
+      subCategoryName: item.category?.parentCategoryId
+        ? item.category?.name
+        : undefined,
+      categoryId: categoryId,
+      subCategoryId: subCategoryId,
       brand: brandMap.get(item.brandId)?.name || "Generic",
       rating: 4.5,
       type: item.type || "PRODUCT",

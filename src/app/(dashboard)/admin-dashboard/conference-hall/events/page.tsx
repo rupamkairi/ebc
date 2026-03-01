@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Container from "@/components/containers/containers";
+import Container from "@/components/ui/containers";
 import { EventTable } from "@/components/admin/conference-hall/event-table";
 import { EventVerificationModal } from "@/components/admin/conference-hall/event-verification-modal";
 import { useEventsQuery } from "@/queries/conferenceHallQueries";

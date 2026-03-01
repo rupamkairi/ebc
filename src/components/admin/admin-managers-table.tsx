@@ -17,6 +17,7 @@ import { DataTableColumnHeader } from "@/components/datatable/data-table-column-
 import { AdminUser } from "@/types/auth";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
+import { USER_ROLE_LABELS } from "@/constants/roles";
 
 type User = AdminUser;
 
@@ -41,7 +42,12 @@ const columns: ColumnDef<User>[] = [
   {
     accessorKey: "role",
     header: "Role",
-    cell: ({ row }) => <Badge variant="outline">{row.original.role}</Badge>,
+    cell: ({ row }) => (
+      <Badge variant="outline">
+        {USER_ROLE_LABELS[row.original.role as keyof typeof USER_ROLE_LABELS] ||
+          row.original.role}
+      </Badge>
+    ),
   },
   {
     accessorKey: "createdAt",

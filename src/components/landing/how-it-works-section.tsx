@@ -1,11 +1,8 @@
 "use client";
 
-import Container from "@/components/containers/containers";
+import Container from "@/components/ui/containers";
 import { Button } from "@/components/ui/button";
-import {
-  TypographyH2,
-  TypographyP,
-} from "@/components/ui/typography";
+import { TypographyH2, TypographyP } from "@/components/ui/typography";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import React from "react";
@@ -36,8 +33,12 @@ export function HowItWorksSection() {
         </div>
 
         <div className="flex justify-center">
-          <Button variant="glow" size="action" className="group max-w-full md:w-[399px]">
-            Start Your Home Journey 
+          <Button
+            variant="glow"
+            size="action"
+            className="group max-w-full md:w-[399px]"
+          >
+            Start Your Home Journey
             <ArrowRight className="size-6 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>

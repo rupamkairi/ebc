@@ -1,6 +1,6 @@
 "use client";
 
-import Container from "@/components/containers/containers";
+import Container from "@/components/ui/containers";
 import Image from "next/image";
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -28,7 +28,9 @@ function ReviewCard({ name, time, rating, review, avatar }: ReviewCardProps) {
           />
         </div>
         <div className="flex flex-col">
-          <h4 className="font-bold text-[#1B2559] text-lg leading-tight">{name}</h4>
+          <h4 className="font-bold text-[#1B2559] text-lg leading-tight">
+            {name}
+          </h4>
           <span className="text-xs text-gray-400 font-medium">{time}</span>
           <div className="flex items-center gap-0.5 mt-1">
             {[...Array(5)].map((_, i) => (
@@ -36,7 +38,7 @@ function ReviewCard({ name, time, rating, review, avatar }: ReviewCardProps) {
                 key={i}
                 className={cn(
                   "h-4 w-4 fill-current",
-                  i < rating ? "text-[#FFD700]" : "text-gray-300"
+                  i < rating ? "text-[#FFD700]" : "text-gray-300",
                 )}
               />
             ))}
@@ -57,22 +59,25 @@ export function ReviewsSection() {
       time: "2 week ago",
       rating: 4,
       avatar: "https://placehold.co/100x100?text=AL",
-      review: "These 88 constellations divide the Star maps are made from the brightest stars, and the patterns they form give rise to the constellation names\" entire night sky as seen from Earth."
+      review:
+        'These 88 constellations divide the Star maps are made from the brightest stars, and the patterns they form give rise to the constellation names" entire night sky as seen from Earth.',
     },
     {
       name: "Agusto Lee",
       time: "2 week ago",
       rating: 4,
       avatar: "https://placehold.co/100x100?text=AL",
-      review: "These 88 constellations divide the Star maps are made from the brightest stars, and the patterns they form give rise to the constellation names\" entire night sky as seen from Earth."
+      review:
+        'These 88 constellations divide the Star maps are made from the brightest stars, and the patterns they form give rise to the constellation names" entire night sky as seen from Earth.',
     },
     {
       name: "Agusto Lee",
       time: "2 week ago",
       rating: 4,
       avatar: "https://placehold.co/100x100?text=AL",
-      review: "These 88 constellations divide the Star maps are made from the brightest stars, and the patterns they form give rise to the constellation names\" entire night sky as seen from Earth."
-    }
+      review:
+        'These 88 constellations divide the Star maps are made from the brightest stars, and the patterns they form give rise to the constellation names" entire night sky as seen from Earth.',
+    },
   ];
 
   return (

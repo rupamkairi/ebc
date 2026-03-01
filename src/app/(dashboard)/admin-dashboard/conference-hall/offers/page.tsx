@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Container from "@/components/containers/containers";
+import Container from "@/components/ui/containers";
 import { OfferTable } from "@/components/admin/conference-hall/offer-table";
 import { OfferVerificationModal } from "@/components/admin/conference-hall/offer-verification-modal";
 import { useOffersQuery } from "@/queries/conferenceHallQueries";
