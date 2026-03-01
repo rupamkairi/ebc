@@ -14,6 +14,8 @@ export interface EnquiryItem {
   subCategoryId?: string;
   categoryName?: string;
   subCategoryName?: string;
+  image?: string;
+  brand?: string;
 }
 
 export interface BuyerDetails {

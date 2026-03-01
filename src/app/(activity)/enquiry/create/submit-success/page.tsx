@@ -23,7 +23,7 @@ export default function SubmitSuccessPage() {
 
       {/* Header Section */}
       <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-black text-[#3D52A0] tracking-tight">
+        <h1 className="text-3xl font-bold text-[#3D52A0] tracking-tight">
           Enquiries
         </h1>
         <p className="text-sm text-muted-foreground font-medium">
@@ -44,12 +44,12 @@ export default function SubmitSuccessPage() {
         </div>
 
         <div className="space-y-4 max-w-xl">
-          <h2 className="text-4xl font-black text-[#2e7d32] tracking-tight italic uppercase">
+          <h2 className="text-3xl font-bold text-[#2e7d32] tracking-tight">
             Enquiry Submitted
           </h2>
           <p className="text-lg text-[#3D52A0]/70 font-medium leading-relaxed">
             Thank You for your enquiry. We have received your request and will
-            get back to you with a quotation shortly
+            get back to you with a quotation shortly.
           </p>
         </div>
 
@@ -63,7 +63,7 @@ export default function SubmitSuccessPage() {
           </Button>
           <Button
             asChild
-            className="flex-1 h-14 rounded-xl bg-gradient-to-r from-[#0F28A9] to-[#0A1B75] text-white font-bold text-lg shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-[1.02] active:scale-95 border-none"
+            className="flex-1 h-14 rounded-xl bg-linear-to-r from-[#0F28A9] to-[#0A1B75] text-white font-bold text-lg shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-[1.02] active:scale-95 border-none"
           >
             <Link href="/buyer-dashboard">Goto Dashboard</Link>
           </Button>

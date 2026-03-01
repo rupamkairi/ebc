@@ -7,12 +7,11 @@ import { SpecificationSearchAutocomplete } from "@/components/autocompletes/spec
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useItemsQuery } from "@/queries/catalogQueries";
 import { Item } from "@/types/catalog";
-import { Loader2, Search, Package, Info, CheckCircle2 } from "lucide-react";
-import { toast } from "sonner";
+import { Loader2, Search, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ITEM_TYPE } from "@/constants/enums";
 
 interface ItemSearchProps {
   onItemSelect?: (item: Item) => void;
@@ -30,6 +29,10 @@ export function ItemSearch({
   const [specificationId, setSpecificationId] = useState<string>("");
   const [search, setSearch] = useState<string>("");
 
+  const handleSelectItem = (item: Item) => {
+    onItemSelect?.(item);
+  };
+
   const isSearchValid = search.length >= 3;
 
   const { data: items, isLoading } = useItemsQuery({
@@ -37,171 +40,135 @@ export function ItemSearch({
     brandId: brandId || undefined,
     specificationId: specificationId || undefined,
     search: isSearchValid ? search : undefined,
-    type: type,
+    type: type as ITEM_TYPE,
   });
 
-  const handleSelectItem = (item: Item) => {
-    if (onItemSelect) {
-      onItemSelect(item);
-    } else {
-      toast.success(`Selected item: ${item.name}`);
-      console.log("Selected Item ID:", item.id);
-    }
-  };
-
-  const clearFilters = () => {
-    setCategoryId("");
-    setBrandId("");
-    setSpecificationId("");
-    setSearch("");
-  };
-
   return (
-    <div className={cn("flex flex-col gap-4", className)}>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold flex items-center gap-2">
-            <Search className="size-5" />
-            Find Items
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <Label>Sub Category</Label>
-              <CategorySearchAutocomplete
-                value={categoryId}
-                onValueChange={setCategoryId}
-                placeholder="All Categories"
-                label="Sub Category"
-                additionalParams={{ isSubCategory: true }}
-              />
+    <div className={cn("space-y-6", className)}>
+      {/* Choose Items Blue Section */}
+      <div className="rounded-4xl bg-linear-to-br from-[#0F28A9] to-[#0A1B75] p-6 sm:p-10 shadow-2xl overflow-hidden relative">
+        {/* Subtle Background Pattern/Glow */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
+
+        <div className="relative z-10 space-y-8">
+          <div className="flex items-center gap-3 border-b border-white/20 pb-4">
+            <Search className="size-8 text-white" />
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+              Choose Items to {type === "PRODUCT" ? "Enquire" : "Book"}
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="space-y-2 group">
+              <Label className="text-[10px] font-black tracking-[0.2em] text-white/60 uppercase pl-1">
+                Sub Category
+              </Label>
+              <div className="relative">
+                <CategorySearchAutocomplete
+                  value={categoryId}
+                  onValueChange={setCategoryId}
+                  placeholder="Select Sub Category"
+                  additionalParams={{ isSubCategory: true }}
+                  className="bg-white dark:bg-white hover:bg-white dark:hover:bg-white border-none h-14 rounded-xl text-[#3D52A0] font-bold shadow-lg focus:ring-2 focus:ring-[#FFA500]"
+                />
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Label>Brand</Label>
+            <div className="space-y-2 group">
+              <Label className="text-[10px] font-black tracking-[0.2em] text-white/60 uppercase pl-1">
+                Brand
+              </Label>
               <BrandSearchAutocomplete
                 value={brandId}
                 onValueChange={setBrandId}
-                placeholder="All Brands"
-                label="Brand"
+                placeholder="Select Brand"
+                className="bg-white dark:bg-white hover:bg-white dark:hover:bg-white border-none h-14 rounded-xl text-[#3D52A0] font-bold shadow-lg focus:ring-2 focus:ring-[#FFA500]"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label>Specification</Label>
+            <div className="space-y-2 group">
+              <Label className="text-[10px] font-black tracking-[0.2em] text-white/60 uppercase pl-1">
+                Specification
+              </Label>
               <SpecificationSearchAutocomplete
                 value={specificationId}
                 onValueChange={setSpecificationId}
-                placeholder="All Specifications"
-                label="Specification"
+                placeholder="Select Specification"
+                className="bg-white dark:bg-white hover:bg-white dark:hover:bg-white border-none h-14 rounded-xl text-[#3D52A0] font-bold shadow-lg focus:ring-2 focus:ring-[#FFA500]"
               />
             </div>
           </div>
-          <div className="mt-4">
-            <Label className="mb-2">Item Search</Label>
-            <div className="relative">
+
+          <div className="space-y-2">
+            <Label className="text-[10px] font-black tracking-[0.2em] text-white/60 uppercase pl-1">
+              Item Search
+            </Label>
+            <div className="relative group">
               <Input
-                placeholder="Min. 3 characters..."
+                placeholder="Enter Name..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-9"
+                className="bg-white dark:bg-white border-none h-14 rounded-xl pl-12 text-[#3D52A0] font-bold shadow-lg focus:ring-2 focus:ring-[#FFA500] placeholder:text-[#3D52A0]/30"
               />
-              <Search className="absolute left-3 top-2.5 size-4 text-muted-foreground" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-[#3D52A0]/40 group-focus-within:text-[#FFA500] transition-colors" />
             </div>
           </div>
+        </div>
+      </div>
 
-          <div className="mt-4 flex justify-end">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={clearFilters}
-              className="text-xs"
-            >
-              Reset Filters
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="flex flex-col gap-4">
-        <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-          {isSearchValid ? (
-            <>Search results for &quot;{search}&quot;</>
-          ) : (
-            <>Results will appear after typing at least 3 characters</>
-          )}
-        </h3>
-
+      {/* Results Section */}
+      <div className="pt-4">
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-20 bg-muted/30 rounded-lg border-2 border-dashed">
-            <Loader2 className="size-8 animate-spin text-primary mb-2" />
-            <p className="text-sm text-muted-foreground">Searching items...</p>
+          <div className="flex flex-col items-center justify-center py-20 bg-muted/30 rounded-3xl border-2 border-dashed border-[#3D52A0]/20">
+            <Loader2 className="size-10 animate-spin text-[#3D52A0] mb-3" />
+            <p className="text-[#3D52A0] font-bold">Searching for items...</p>
           </div>
         ) : items && items.length > 0 ? (
-          <div className="h-[360px] overflow-y-auto rounded-lg border bg-background">
-            <div className="p-4 space-y-4">
-              {items.map((item) => (
-                <div
-                  key={item.id}
-                  className="group flex items-start justify-between gap-4 p-4 rounded-xl border bg-card hover:border-primary/50 hover:shadow-md transition-all animate-in fade-in slide-in-from-bottom-2"
-                >
-                  <div className="flex-1 space-y-1">
-                    <div className="flex items-center gap-2">
-                      <div className="bg-primary/10 p-2 rounded-lg group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                        <Package className="size-4" />
-                      </div>
-                      <h4 className="font-semibold text-base">{item.name}</h4>
-                    </div>
-                    <p className="text-sm text-muted-foreground line-clamp-2 pl-8">
-                      {item.description}
-                    </p>
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground pl-8 pt-1">
+          <div className="max-h-[500px] overflow-y-auto rounded-3xl border border-[#3D52A0]/10 bg-white/50 backdrop-blur-sm p-4 space-y-4 scrollbar-thin scrollbar-thumb-[#3D52A0]/20 scrollbar-track-transparent">
+            {items.map((item) => (
+              <div
+                key={item.id}
+                className="group flex items-center justify-between gap-4 p-5 rounded-2xl bg-white shadow-sm ring-1 ring-[#3D52A0]/5 hover:ring-[#FFA500]/50 hover:shadow-xl transition-all animate-in fade-in slide-in-from-bottom-2 duration-300"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="bg-[#3D52A0]/5 p-3 rounded-xl group-hover:bg-[#FFA500] group-hover:text-white transition-all duration-300">
+                    <Package className="size-6" />
+                  </div>
+                  <div className="flex flex-col">
+                    <h4 className="font-bold text-[#3D52A0] text-lg leading-tight">
+                      {item.name}
+                    </h4>
+                    <div className="flex items-center gap-3 text-xs font-semibold text-muted-foreground mt-1">
                       {item.brand && (
-                        <span className="flex items-center gap-1">
-                          <CheckCircle2 className="size-3" />
+                        <span className="flex items-center gap-1 bg-[#3D52A0]/5 px-2 py-0.5 rounded-md">
                           {item.brand.name}
                         </span>
                       )}
                       {item.category && (
-                        <span className="flex items-center gap-1">
-                          <Info className="size-3" />
+                        <span className="flex items-center gap-1 bg-[#3D52A0]/5 px-2 py-0.5 rounded-md">
                           {item.category.name}
                         </span>
                       )}
                     </div>
                   </div>
-                  <Button
-                    onClick={() => handleSelectItem(item)}
-                    size="sm"
-                    className="opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    Select
-                  </Button>
                 </div>
-              ))}
-            </div>
+                <Button
+                  onClick={() => handleSelectItem(item)}
+                  className="rounded-xl bg-[#3D52A0] hover:bg-[#FFA500] text-white font-bold h-11 px-6 shadow-lg shadow-[#3D52A0]/10 hover:shadow-[#FFA500]/20 transition-all duration-300 transform group-hover:scale-105 active:scale-95"
+                >
+                  Select
+                </Button>
+              </div>
+            ))}
           </div>
         ) : isSearchValid ? (
-          <div className="flex flex-col items-center justify-center py-20 bg-muted/30 rounded-lg border-2 border-dashed">
-            <Package className="size-8 text-muted-foreground mb-2" />
-            <p className="text-sm text-muted-foreground">
+          <div className="flex flex-col items-center justify-center py-20 bg-muted/30 rounded-3xl border-2 border-dashed border-[#3D52A0]/20">
+            <Package className="size-10 text-[#3D52A0]/30 mb-3" />
+            <p className="text-[#3D52A0] font-bold opacity-60">
               No items found matching your search.
             </p>
           </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-20 bg-muted/30 rounded-lg border-2 border-dashed">
-            <Search className="size-8 text-muted-foreground mb-2" />
-            <p className="text-sm text-muted-foreground font-medium">
-              Ready to search
-            </p>
-            <p className="text-xs text-muted-foreground mt-1 text-center">
-              Please enter at least 3 characters in the item search field
-              <br />
-              to initiate the search.
-            </p>
-          </div>
-        )}
+        ) : null}
       </div>
     </div>
   );

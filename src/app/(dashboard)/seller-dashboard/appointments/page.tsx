@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import { AppointmentDetailsModal } from "@/components/dashboard/seller/appointment-details-modal";
 import { CoinDeductionModal } from "@/components/dashboard/seller/coin-deduction-modal";
 import { ActivityAssignment, REF_TYPE } from "@/types/activity";
+import { ACTIVITY_TYPE } from "@/constants/enums";
 
 export default function AppointmentsPage() {
   const { data: entities = [] } = useEntitiesQuery();
@@ -33,7 +34,7 @@ export default function AppointmentsPage() {
 
   const { data: assignments = [], isLoading } = useAssignmentsQuery({
     toEntityId: mainEntity?.id,
-    type: "APPOINTMENT_ASSIGNMENT",
+    type: ACTIVITY_TYPE.APPOINTMENT_ASSIGNMENT,
   });
 
   const [selectedAssignment, setSelectedAssignment] =
@@ -69,10 +70,10 @@ export default function AppointmentsPage() {
         },
         onError: (error) => {
           toast.error(
-            "Failed to confirm appointment: " + (error as any).message
+            "Failed to confirm appointment: " + (error as any).message,
           );
         },
-      }
+      },
     );
   };
 
@@ -151,7 +152,7 @@ export default function AppointmentsPage() {
                         "w-full md:w-2 h-2 md:h-auto",
                         apt.status === "PENDING"
                           ? "bg-rose-500"
-                          : "bg-primary/30"
+                          : "bg-primary/30",
                       )}
                     />
 
@@ -170,8 +171,8 @@ export default function AppointmentsPage() {
                                 apt.status === "PENDING"
                                   ? "bg-amber-100 text-amber-700"
                                   : apt.status === "CONFIRMED"
-                                  ? "bg-blue-100 text-blue-700"
-                                  : "bg-emerald-100 text-emerald-700"
+                                    ? "bg-blue-100 text-blue-700"
+                                    : "bg-emerald-100 text-emerald-700"
                               }`}
                             >
                               {apt.status}
@@ -253,9 +254,9 @@ export default function AppointmentsPage() {
                                 if (address) {
                                   window.open(
                                     `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                                      address
+                                      address,
                                     )}`,
-                                    "_blank"
+                                    "_blank",
                                   );
                                 } else {
                                   toast.error("Address not available.");

@@ -168,14 +168,15 @@ export function OfferVerificationModal({
                   Regions
                 </h4>
                 <div className="flex flex-wrap gap-2">
-                  {offer.offerRegions?.map((reg, i) => (
+                  {offer.targetRegions?.map((reg, i) => (
                     <Badge key={i} variant="outline">
                       {reg.pincode
                         ? `${reg.pincode.pincode} (${reg.pincode.district})`
                         : reg.pincodeId}
                     </Badge>
                   ))}
-                  {(!offer.offerRegions || offer.offerRegions.length === 0) && (
+                  {(!offer.targetRegions ||
+                    offer.targetRegions.length === 0) && (
                     <span className="text-sm text-muted-foreground">
                       No specific regions
                     </span>

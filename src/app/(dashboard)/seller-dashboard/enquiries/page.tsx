@@ -17,6 +17,7 @@ import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
+import { ACTIVITY_TYPE } from "@/constants/enums";
 
 export default function EnquiriesPage() {
   const { data: entities = [] } = useEntitiesQuery();
@@ -24,7 +25,7 @@ export default function EnquiriesPage() {
 
   const { data: assignments = [], isLoading: loading } = useAssignmentsQuery({
     toEntityId: mainEntity?.id,
-    type: "ENQUIRY_ASSIGNMENT",
+    type: ACTIVITY_TYPE.ENQUIRY_ASSIGNMENT,
   });
 
   if (loading) {

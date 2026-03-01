@@ -26,14 +26,14 @@ export function AddToAppointmentModal({
   product,
 }: AddToAppointmentModalProps) {
   const setAppointmentItem = useAppointmentStore(
-    (state) => state.setAppointmentItem
+    (state) => state.setAppointmentItem,
   );
 
   const handleConfirm = () => {
     setAppointmentItem({
       itemId: product.id,
       title: product.title,
-      type: product.type,
+      type: product.type.toLowerCase() as "product" | "service",
       price: product.price,
       description: product.description,
       image: product.image,

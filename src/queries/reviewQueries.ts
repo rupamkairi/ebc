@@ -9,7 +9,7 @@ export const useEntityReviewsQuery = (entityId: string) => {
     queryKey: ["entity-reviews", entityId],
     queryFn: async () => {
       const resp = await fetchClient(`${REVIEW_API}/entity/${entityId}`);
-      return (resp.data || resp) as Review[];
+      return ((resp as any).data || resp) as Review[];
     },
     enabled: !!entityId,
   });
@@ -20,7 +20,7 @@ export const useEntityReviewsFullQuery = (entityId: string) => {
     queryKey: ["entity-reviews-full", entityId],
     queryFn: async () => {
       const resp = await fetchClient(`${REVIEW_API}/entity/${entityId}/all`);
-      return (resp.data || resp) as Review[];
+      return ((resp as any).data || resp) as Review[];
     },
     enabled: !!entityId,
   });
@@ -30,8 +30,10 @@ export const useReviewSummaryQuery = (entityId: string) => {
   return useQuery({
     queryKey: ["review-summary", entityId],
     queryFn: async () => {
-      const resp = await fetchClient(`${REVIEW_API}/entity/${entityId}/summary`);
-      return (resp.data || resp) as ReviewSummary;
+      const resp = await fetchClient(
+        `${REVIEW_API}/entity/${entityId}/summary`,
+      );
+      return ((resp as any).data || resp) as ReviewSummary;
     },
     enabled: !!entityId,
   });
@@ -48,7 +50,9 @@ export const useCreateReviewMutation = () => {
     },
     onSuccess: (_, variables) => {
       if (variables.entityId) {
-        queryClient.invalidateQueries({ queryKey: ["entity-reviews", variables.entityId] });
+        queryClient.invalidateQueries({
+          queryKey: ["entity-reviews", variables.entityId],
+        });
       }
     },
   });
@@ -57,15 +61,27 @@ export const useCreateReviewMutation = () => {
 export const useTogglePinReviewMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ reviewId, entityId, isPinned }: { reviewId: string; entityId: string; isPinned: boolean }) => {
+    mutationFn: async ({
+      reviewId,
+      entityId,
+      isPinned,
+    }: {
+      reviewId: string;
+      entityId: string;
+      isPinned: boolean;
+    }) => {
       return fetchClient(`${REVIEW_API}/${reviewId}/pin`, {
         method: "PATCH",
         body: { entityId, isPinned },
       });
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["entity-reviews-full", variables.entityId] });
-      queryClient.invalidateQueries({ queryKey: ["entity-reviews", variables.entityId] });
+      queryClient.invalidateQueries({
+        queryKey: ["entity-reviews-full", variables.entityId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["entity-reviews", variables.entityId],
+      });
     },
   });
 };
@@ -73,14 +89,24 @@ export const useTogglePinReviewMutation = () => {
 export const useToggleHideReviewMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ reviewId, entityId, isHidden }: { reviewId: string; entityId: string; isHidden: boolean }) => {
+    mutationFn: async ({
+      reviewId,
+      entityId,
+      isHidden,
+    }: {
+      reviewId: string;
+      entityId: string;
+      isHidden: boolean;
+    }) => {
       return fetchClient(`${REVIEW_API}/${reviewId}/hide`, {
         method: "PATCH",
         body: { entityId, isHidden },
       });
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["entity-reviews-full", variables.entityId] });
+      queryClient.invalidateQueries({
+        queryKey: ["entity-reviews-full", variables.entityId],
+      });
       queryClient.invalidateQueries({ queryKey: ["admin-hidden-reviews"] });
     },
   });

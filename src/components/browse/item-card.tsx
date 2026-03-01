@@ -24,7 +24,20 @@ export function ItemCard({ product }: ItemCardProps) {
 
   const handleAddInquiry = (e: React.MouseEvent) => {
     e.stopPropagation();
-    addItem(product);
+    addItem({
+      itemId: product.id,
+      title: product.title,
+      type: product.type.toUpperCase(),
+      quantity: 1,
+      unitType: "Nos",
+      price: product.price,
+      categoryId: product.categoryId,
+      subCategoryId: product.subCategoryId,
+      categoryName: product.categoryName,
+      subCategoryName: product.subCategoryName,
+      image: product.image,
+      brand: product.brand,
+    } as any);
     toast.success(`${product.title} added to inquiry`);
   };
 

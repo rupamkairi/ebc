@@ -33,6 +33,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { CreateCategoryRequest } from "@/types/catalog";
 import { Switch } from "@/components/ui/switch";
+import { ITEM_TYPE } from "@/constants/enums";
 
 export function CategoryForm() {
   const {
@@ -52,7 +53,7 @@ export function CategoryForm() {
   const form = useForm({
     defaultValues: {
       name: selectedCategory?.name || "",
-      type: selectedCategory?.type || "PRODUCT",
+      type: selectedCategory?.type || ITEM_TYPE.PRODUCT,
       isSubCategory: !!selectedCategory?.parentCategoryId,
       parentCategoryId: selectedCategory?.parentCategoryId || "",
       categoryIconId: selectedCategory?.categoryIconId || "",
@@ -79,7 +80,7 @@ export function CategoryForm() {
                   : "Failed to update category";
               toast.error(msg);
             },
-          }
+          },
         );
       } else {
         createMutation.mutate(payload as CreateCategoryRequest, {
@@ -112,7 +113,7 @@ export function CategoryForm() {
     } else {
       form.reset({
         name: "",
-        type: "PRODUCT",
+        type: ITEM_TYPE.PRODUCT,
         isSubCategory: false,
         parentCategoryId: "",
         categoryIconId: "",
@@ -242,14 +243,16 @@ export function CategoryForm() {
                 <div className="col-span-3">
                   <Select
                     value={field.state.value}
-                    onValueChange={field.handleChange}
+                    onValueChange={(val) =>
+                      field.handleChange(val as ITEM_TYPE)
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="PRODUCT">Product</SelectItem>
-                      <SelectItem value="SERVICE">Service</SelectItem>
+                      <SelectItem value={ITEM_TYPE.PRODUCT}>Product</SelectItem>
+                      <SelectItem value={ITEM_TYPE.SERVICE}>Service</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -323,8 +326,8 @@ export function CategoryForm() {
                       ? "Updating..."
                       : "Creating..."
                     : isEditing
-                    ? "Update Category"
-                    : "Create Category"}
+                      ? "Update Category"
+                      : "Create Category"}
                 </Button>
               )}
             </form.Subscribe>

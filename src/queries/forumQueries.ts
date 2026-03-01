@@ -19,10 +19,17 @@ export const useForumContextQuery = (params: {
   return useQuery({
     queryKey: ["forum-context", params],
     queryFn: async () => {
-      const resp = await fetchClient(`${FORUM_API}/context?${queryParams.toString()}`);
-      return (resp.data || resp) as ForumContextResponse;
+      const resp = await fetchClient(
+        `${FORUM_API}/context?${queryParams.toString()}`,
+      );
+      return ((resp as any).data || resp) as ForumContextResponse;
     },
-    enabled: !!(params.eventId || params.offerId || params.itemId || params.slug),
+    enabled: !!(
+      params.eventId ||
+      params.offerId ||
+      params.itemId ||
+      params.slug
+    ),
   });
 };
 
@@ -43,7 +50,13 @@ export const useCreatePostMutation = () => {
 
 export const useFlagPostMutation = () => {
   return useMutation({
-    mutationFn: async ({ postId, reason }: { postId: string; reason: string }) => {
+    mutationFn: async ({
+      postId,
+      reason,
+    }: {
+      postId: string;
+      reason: string;
+    }) => {
       return fetchClient(`${FORUM_API}/post/${postId}/flag`, {
         method: "PATCH",
         body: { reason },
@@ -55,7 +68,13 @@ export const useFlagPostMutation = () => {
 export const useToggleHidePostMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ postId, isHidden }: { postId: string; isHidden: boolean }) => {
+    mutationFn: async ({
+      postId,
+      isHidden,
+    }: {
+      postId: string;
+      isHidden: boolean;
+    }) => {
       return fetchClient(`${FORUM_API}/post/${postId}/hide`, {
         method: "PATCH",
         body: { isHidden },

@@ -76,10 +76,12 @@ export default function ReviewSubmitPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto py-10 px-4 space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Review Your Enquiry</h1>
-        <p className="text-muted-foreground">
+    <div className="max-w-3xl mx-auto py-10 px-4 sm:px-6 space-y-8 animate-in fade-in duration-700">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight text-[#3D52A0]">
+          Review Your Enquiry
+        </h1>
+        <p className="text-[#3D52A0]/60 font-medium ml-1">
           Please verify all details before submitting.
         </p>
       </div>

@@ -47,36 +47,45 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
   };
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardHeader className="pb-3 border-b bg-muted/5">
+    <Card className="hover:shadow-lg transition-all duration-300 border-[#3D52A0]/10 overflow-hidden group">
+      <CardHeader className="pb-4 border-b bg-slate-50/50">
         <div className="flex justify-between items-start">
-          <div className="space-y-1">
-            <CardTitle className="text-lg font-bold flex items-center gap-2">
-              <CalendarDays className="h-5 w-5 text-primary" />
+          <div className="flex flex-col gap-1">
+            <span className="text-xs font-semibold text-[#3D52A0]/40">
+              Appointment ID
+            </span>
+            <CardTitle className="text-sm font-bold text-[#3D52A0] flex items-center gap-2">
+              <CalendarDays className="h-4 w-4" />
               <span className="truncate max-w-[200px] sm:max-w-md">
                 {firstItem?.item?.name || "Appointment Item"}
               </span>
             </CardTitle>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <div className="flex items-center gap-2 text-[10px] font-bold text-[#3D52A0]/60 mt-1">
               <span className="font-mono">
-                ID: {appointment.id.slice(0, 8)}
+                #{appointment.id.slice(0, 8).toUpperCase()}
               </span>
               <span>•</span>
               <span>
-                Created {format(new Date(appointment.createdAt), "PP")}
+                {format(new Date(appointment.createdAt), "dd MMM yyyy")}
               </span>
             </div>
           </div>
-          <Badge className={getStatusColor(appointment.status || "PENDING")}>
-            {appointment.status || "PENDING"}
+          <Badge
+            variant="outline"
+            className={`${getStatusColor(appointment.status || "PENDING")} font-semibold text-xs px-3 py-1 rounded-full border shadow-sm`}
+          >
+            {appointment.status
+              ? appointment.status.charAt(0).toUpperCase() +
+                appointment.status.slice(1).toLowerCase()
+              : "Pending"}
           </Badge>
         </div>
       </CardHeader>
-      <CardContent className="pt-4 pb-4">
-        <div className="flex flex-col md:flex-row justify-between gap-6">
-          <div className="space-y-4 flex-1">
+      <CardContent className="pt-6 pb-6">
+        <div className="flex flex-col md:flex-row justify-between gap-8">
+          <div className="space-y-6 flex-1">
             <div>
-              <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground block mb-2">
+              <span className="text-xs font-semibold text-[#3D52A0]/60 block mb-3">
                 Preferred Time Slots
               </span>
               <div className="flex flex-wrap gap-2">
@@ -85,18 +94,22 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
                   return (
                     <div
                       key={slot.id || index}
-                      className="flex items-center gap-2 px-3 py-2 bg-primary/5 rounded-md border border-primary/10"
+                      className="flex items-center gap-2 px-3 py-2 bg-[#3D52A0]/5 rounded-xl border border-[#3D52A0]/10 hover:border-[#3D52A0]/20 transition-colors"
                     >
-                      <Clock className="h-3.5 w-3.5 text-primary" />
+                      <Clock className="h-3.5 w-3.5 text-[#3D52A0]" />
                       <div className="text-xs">
-                        <p className="font-semibold">{parsed.date}</p>
-                        <p className="text-muted-foreground">{parsed.time}</p>
+                        <p className="font-bold text-[#3D52A0]">
+                          {parsed.date}
+                        </p>
+                        <p className="text-[#3D52A0]/60 font-medium">
+                          {parsed.time}
+                        </p>
                       </div>
                     </div>
                   );
                 })}
                 {slots.length === 0 && (
-                  <p className="text-sm text-muted-foreground italic">
+                  <p className="text-sm font-medium text-[#3D52A0]/40">
                     No time slots specified
                   </p>
                 )}
@@ -104,24 +117,24 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
             </div>
 
             {details?.remarks && (
-              <div>
-                <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground block mb-1">
+              <div className="pt-4 border-t border-[#3D52A0]/10">
+                <span className="text-xs font-semibold text-[#3D52A0]/60 block mb-2">
                   Additional Details
                 </span>
-                <div className="flex items-start gap-1.5 text-sm text-muted-foreground">
-                  <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
-                  <p>{details.remarks}</p>
+                <div className="flex items-start gap-2 text-xs font-medium text-[#3D52A0]/70 bg-[#3D52A0]/5 p-3 rounded-xl border border-[#3D52A0]/10">
+                  <MapPin className="h-4 w-4 shrink-0 text-[#3D52A0]/40 mt-0.5" />
+                  <p className="leading-relaxed">{details.remarks}</p>
                 </div>
               </div>
             )}
           </div>
 
-          <div className="flex items-end justify-end shrink-0">
+          <div className="flex items-end justify-end shrink-0 mt-4 md:mt-0">
             <Button
               variant="outline"
               size="sm"
               asChild
-              className="text-primary hover:text-primary hover:bg-primary/5 border-primary/20"
+              className="bg-white border-[#3D52A0]/20 text-[#3D52A0] font-semibold text-sm px-6 h-10 rounded-xl hover:bg-[#3D52A0] hover:text-white transition-all shadow-sm"
             >
               <Link
                 href={`/buyer-dashboard/appointments/${appointment.id}`}

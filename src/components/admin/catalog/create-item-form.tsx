@@ -32,6 +32,7 @@ import { useEffect } from "react";
 import { BrandSearchAutocomplete } from "@/components/autocompletes/brand-search-autocomplete";
 import { CategorySearchAutocomplete } from "@/components/autocompletes/category-search-autocomplete";
 import { SpecificationSearchAutocomplete } from "@/components/autocompletes/specification-search-autocomplete";
+import { ITEM_TYPE } from "@/constants/enums";
 
 export function ItemForm() {
   const { isCreateOpen, setCreateOpen, isEditOpen, setEditOpen, selectedItem } =
@@ -47,7 +48,7 @@ export function ItemForm() {
     defaultValues: {
       name: selectedItem?.name || "",
       description: selectedItem?.description || "",
-      type: selectedItem?.type || "PRODUCT",
+      type: selectedItem?.type || ITEM_TYPE.PRODUCT,
       HSNCode: selectedItem?.HSNCode || "",
       GSTPercentage: selectedItem?.GSTPercentage || 0,
       categoryId: selectedItem?.categoryId || "",
@@ -72,8 +73,8 @@ export function ItemForm() {
           error instanceof ApiError
             ? error.message
             : isEditing
-            ? "Failed to update item"
-            : "Failed to create item";
+              ? "Failed to update item"
+              : "Failed to create item";
         toast.error(msg);
       }
     },
@@ -95,7 +96,7 @@ export function ItemForm() {
       form.reset({
         name: "",
         description: "",
-        type: "PRODUCT",
+        type: ITEM_TYPE.PRODUCT,
         HSNCode: "",
         GSTPercentage: 0,
         categoryId: "",
@@ -204,14 +205,16 @@ export function ItemForm() {
                 <div className="col-span-3">
                   <Select
                     value={field.state.value}
-                    onValueChange={field.handleChange}
+                    onValueChange={(val) =>
+                      field.handleChange(val as ITEM_TYPE)
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="PRODUCT">Product</SelectItem>
-                      <SelectItem value="SERVICE">Service</SelectItem>
+                      <SelectItem value={ITEM_TYPE.PRODUCT}>Product</SelectItem>
+                      <SelectItem value={ITEM_TYPE.SERVICE}>Service</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -384,8 +387,8 @@ export function ItemForm() {
                       ? "Updating..."
                       : "Creating..."
                     : isEditing
-                    ? "Update Item"
-                    : "Create Item"}
+                      ? "Update Item"
+                      : "Create Item"}
                 </Button>
               )}
             </form.Subscribe>

@@ -8,16 +8,68 @@ import { Button } from "@/components/ui/button";
 import { useAppointmentStore } from "@/store/appointmentStore";
 import { AppointmentLineItemWrapper } from "@/components/dashboard/buyer/appointment/appointment-line-item";
 import { DateTimeSlotSelect } from "@/components/advanced-forms/date-time-slot-select/date-time-slot-select";
-import { AppointmentDetailsForm } from "@/components/dashboard/buyer/appointment/appointment-details-form";
+import { BuyerDetailsForm } from "@/components/dashboard/buyer/shared/buyer-details-form";
+import { usePrefetchBuyerDetails } from "@/hooks/usePrefetchBuyerDetails";
 import { useSessionQuery, useSendOtpMutation } from "@/queries/authQueries";
-import { ProfileCard } from "@/components/dashboard/seller/profile-card";
+import { BuyerProfileCard } from "@/components/dashboard/buyer/dashboard-components";
+import { ItemSearch } from "@/components/advanced-forms/item-search/item-search";
+import { AddToAppointmentModal } from "@/components/browse/add-to-appointment-modal";
+import { useState } from "react";
+import { Item } from "@/types/catalog";
+import { Product } from "@/queries/browse.queries";
 
 export default function CreateAppointmentPage() {
   const router = useRouter();
-  const { item, timeSlots, buyerDetails, addTimeSlot, removeTimeSlot } =
-    useAppointmentStore();
+  const {
+    item,
+    timeSlots,
+    buyerDetails,
+    addTimeSlot,
+    removeTimeSlot,
+    setBuyerDetails,
+  } = useAppointmentStore();
   const { data: session } = useSessionQuery();
   const sendOtp = useSendOtpMutation();
+
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleItemSelect = (selectedItem: Item) => {
+    const product: Product = {
+      id: selectedItem.id,
+      title: selectedItem.name,
+      description: selectedItem.description || "",
+      price: 0,
+      image:
+        selectedItem.brand?.brandLogo?.url ||
+        selectedItem.category?.categoryIcon?.url ||
+        "https://placehold.co/300x300",
+      category: selectedItem.category?.name || "Unknown",
+      categoryName:
+        selectedItem.category?.parentCategory?.name ||
+        (selectedItem.category?.parentCategoryId
+          ? "Unknown Parent"
+          : selectedItem.category?.name || "Unknown"),
+      subCategoryName: selectedItem.category?.parentCategoryId
+        ? selectedItem.category?.name
+        : undefined,
+      categoryId:
+        selectedItem.category?.parentCategoryId || selectedItem.categoryId,
+      subCategoryId: selectedItem.category?.parentCategoryId
+        ? selectedItem.categoryId
+        : undefined,
+      brand: selectedItem.brand?.name || "Unknown",
+      rating: 0,
+      type: (selectedItem.type?.toLowerCase() === "service"
+        ? "service"
+        : "product") as "product" | "service",
+    };
+
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  usePrefetchBuyerDetails(setBuyerDetails, buyerDetails, session?.user);
 
   const handleNext = async () => {
     // 1. Validate Item
@@ -64,46 +116,82 @@ export default function CreateAppointmentPage() {
   };
 
   return (
-    <div className="container mx-auto space-y-8 py-8 px-4">
+    <div className="w-full max-w-7xl mx-auto space-y-12 py-10 px-4 sm:px-6 lg:px-8 mb-20 animate-in fade-in duration-700">
       {/* Session Profile Card */}
       {session?.user && (
-        <ProfileCard
-          user={{
-            name: session.user.name,
-            role: session.user.role || "Buyer",
-            avatarUrl: session.user.image || undefined,
-          }}
+        <BuyerProfileCard
+          name={session.user.name}
+          role={session.user.role || "Buyer"}
+          avatarUrl={session.user.image || undefined}
         />
       )}
 
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">
+      <div className="space-y-2">
+        <h1 className="text-4xl font-bold tracking-tight text-[#3D52A0]">
           Create New Appointment
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-[#3D52A0]/60 font-medium ml-1">
           Select an item and choose your preferred time slots.
         </p>
       </div>
 
-      <div className="space-y-8">
-        {/* Step 1: Item Selection */}
-        <AppointmentLineItemWrapper />
+      <div className="grid grid-cols-1 lg:grid-cols-6 gap-8 lg:gap-12">
+        {/* Left Column: Item Selection & Time Slots */}
+        <div className="lg:col-span-4 space-y-12">
+          {/* Item Selection */}
+          <section className="space-y-8">
+            {!item && (
+              <ItemSearch type="SERVICE" onItemSelect={handleItemSelect} />
+            )}
 
-        {/* Step 2: Time Slots & Details (Grid) */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="space-y-8">
+            {selectedProduct && (
+              <AddToAppointmentModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                product={selectedProduct}
+              />
+            )}
+
+            {item && (
+              <div className="pt-4 border-t border-[#3D52A0]/10">
+                <AppointmentLineItemWrapper />
+              </div>
+            )}
+          </section>
+
+          {/* Time Slots */}
+          <section className="space-y-6 pt-4 border-t border-[#3D52A0]/10">
+            <h2 className="text-2xl font-bold text-[#3D52A0] tracking-tight">
+              Preferred Time Slots
+            </h2>
             <DateTimeSlotSelect
               timeSlots={timeSlots}
               onAddSlot={addTimeSlot}
               onRemoveSlot={removeTimeSlot}
             />
-          </div>
-          <div className="space-y-8">
-            <AppointmentDetailsForm />
+          </section>
+        </div>
 
-            <Button onClick={handleNext} className="w-full" size="lg">
+        {/* Right Column: Buyer Details & Action */}
+        <div className="lg:col-span-2 space-y-10">
+          <section className="space-y-8">
+            <h2 className="text-2xl font-bold text-[#3D52A0] tracking-tight">
+              Buyer Details
+            </h2>
+            <BuyerDetailsForm
+              defaultValues={buyerDetails}
+              onChange={setBuyerDetails}
+            />
+          </section>
+
+          {/* Action Footer */}
+          <div className="flex justify-center pt-8">
+            <Button
+              onClick={handleNext}
+              className="w-full bg-linear-to-r from-[#0F28A9] to-[#0A1B75] hover:from-[#FFA500] hover:to-[#FF8C00] text-white font-bold tracking-tight py-7 rounded-2xl text-lg shadow-[0_20px_50px_rgba(15,40,169,0.3)] transition-all duration-500 hover:scale-105 active:scale-95 group border-none"
+            >
               Proceed to Verify
-              <ArrowRight className="ml-2 h-4 w-4" />
+              <ArrowRight className="ml-3 h-5 w-5 transition-transform group-hover:translate-x-2 duration-500" />
             </Button>
           </div>
         </div>

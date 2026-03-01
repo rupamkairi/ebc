@@ -26,6 +26,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { NotificationChannelType } from "@/types/notification";
+import { NOTIFICATION_CHANNEL_TYPE } from "@/constants/enums";
 import {
   useAddChannelMutation,
   useVerifyChannelMutation,
@@ -52,7 +53,7 @@ export function AddChannelModal({
 
   const channelLimits = {
     EMAIL: 2,
-    PHONE: 2,
+    SMS: 2,
     PUSH: 1,
     WHATSAPP: 1,
   };
@@ -177,37 +178,48 @@ export function AddChannelModal({
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem
-                        value="EMAIL"
+                        value={NOTIFICATION_CHANNEL_TYPE.EMAIL}
                         disabled={
-                          getChannelCount("EMAIL") >= channelLimits.EMAIL
+                          getChannelCount(NOTIFICATION_CHANNEL_TYPE.EMAIL) >=
+                          channelLimits.EMAIL
                         }
                       >
-                        Email ({getChannelCount("EMAIL")}/{channelLimits.EMAIL})
+                        Email (
+                        {getChannelCount(NOTIFICATION_CHANNEL_TYPE.EMAIL)}/
+                        {channelLimits.EMAIL})
                       </SelectItem>
                       <SelectItem
-                        value="PHONE"
+                        value={NOTIFICATION_CHANNEL_TYPE.SMS}
                         disabled={
-                          getChannelCount("PHONE") >= channelLimits.PHONE
+                          getChannelCount(NOTIFICATION_CHANNEL_TYPE.SMS) >=
+                          channelLimits.SMS
                         }
                       >
-                        Phone SMS ({getChannelCount("PHONE")}/
-                        {channelLimits.PHONE})
+                        Phone SMS (
+                        {getChannelCount(NOTIFICATION_CHANNEL_TYPE.SMS)}/
+                        {channelLimits.SMS})
                       </SelectItem>
                       <SelectItem
-                        value="WHATSAPP"
+                        value={NOTIFICATION_CHANNEL_TYPE.WHATSAPP}
                         disabled={
-                          getChannelCount("WHATSAPP") >= channelLimits.WHATSAPP
+                          getChannelCount(NOTIFICATION_CHANNEL_TYPE.WHATSAPP) >=
+                          channelLimits.WHATSAPP
                         }
                       >
-                        WhatsApp ({getChannelCount("WHATSAPP")}/
+                        WhatsApp (
+                        {getChannelCount(NOTIFICATION_CHANNEL_TYPE.WHATSAPP)}/
                         {channelLimits.WHATSAPP})
                       </SelectItem>
                       <SelectItem
-                        value="PUSH"
-                        disabled={getChannelCount("PUSH") >= channelLimits.PUSH}
+                        value={NOTIFICATION_CHANNEL_TYPE.PUSH}
+                        disabled={
+                          getChannelCount(NOTIFICATION_CHANNEL_TYPE.PUSH) >=
+                          channelLimits.PUSH
+                        }
                       >
-                        Web Push ({getChannelCount("PUSH")}/{channelLimits.PUSH}
-                        )
+                        Web Push (
+                        {getChannelCount(NOTIFICATION_CHANNEL_TYPE.PUSH)}/
+                        {channelLimits.PUSH})
                       </SelectItem>
                     </SelectContent>
                   </Select>
@@ -229,7 +241,7 @@ export function AddChannelModal({
                           return "Invalid email address";
                         }
                         if (
-                          (type === "PHONE" || type === "WHATSAPP") &&
+                          (type === "SMS" || type === "WHATSAPP") &&
                           !validatePhone(value)
                         ) {
                           return "Invalid phone number (+91...)";

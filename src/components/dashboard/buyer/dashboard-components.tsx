@@ -36,7 +36,7 @@ export function BuyerProfileCard({
   };
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#FF8C00] to-[#FFA500] p-4 sm:p-8 text-white shadow-lg">
+    <div className="relative overflow-hidden rounded-2xl bg-linear-to-r from-[#FF8C00] to-[#FFA500] p-4 sm:p-8 text-white shadow-lg">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
         <div className="flex items-center gap-4 sm:gap-6">
           <Avatar className="h-16 w-16 sm:h-24 sm:w-24 border-2 sm:border-4 border-white/30 shadow-xl">
@@ -113,7 +113,7 @@ export function RoomCard({
       </div>
       <h3 className="text-lg font-bold text-[#3D52A0]">{title}</h3>
       <Link href={href} className="w-full">
-        <Button className="w-full bg-[#2A3B7D] hover:bg-[#1D2A5C] text-xs font-semibold uppercase tracking-wider h-10">
+        <Button className="w-full bg-[#2A3B7D] hover:bg-[#1D2A5C] text-sm font-semibold h-10">
           Browse Area
         </Button>
       </Link>
@@ -175,11 +175,9 @@ export function ActivityStatCard({
     <div className="flex flex-col items-center gap-2 rounded-xl bg-white p-4 text-[#3D52A0] shadow-inner">
       <div className="flex items-center gap-2">
         <Icon className="size-4 text-[#FFA500]" />
-        <span className="text-[10px] font-bold uppercase tracking-tighter opacity-70">
-          {label}
-        </span>
+        <span className="text-xs font-semibold opacity-70">{label}</span>
       </div>
-      <span className="text-4xl font-extrabold">{value}</span>
+      <span className="text-2xl font-bold">{value}</span>
     </div>
   );
 }
@@ -207,9 +205,9 @@ export function ConferenceHallItem({
         </div>
         <span className="font-semibold">{title}</span>
       </div>
-      <div className="flex items-center gap-1 text-[10px] uppercase tracking-wider opacity-60">
+      <div className="flex items-center gap-1 text-xs font-medium opacity-80">
         <span>View More</span>
-        <ArrowRight className="size-2 transition-transform group-hover:translate-x-1" />
+        <ArrowRight className="size-3 transition-transform group-hover:translate-x-1" />
       </div>
     </Link>
   );

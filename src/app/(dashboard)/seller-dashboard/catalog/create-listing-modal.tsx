@@ -12,6 +12,7 @@ import { ItemSelectionStep } from "@/components/dashboard/seller/catalog/steps/i
 import { RateDetailsStep } from "@/components/dashboard/seller/catalog/steps/rate-details-step";
 import { RegionSelectionStep } from "@/components/dashboard/seller/catalog/steps/region-selection-step";
 import { UnitType } from "@/constants/quantities";
+import { UNIT_TYPE } from "@/constants/enums";
 
 interface CreateListingModalProps {
   isOpen: boolean;
@@ -28,7 +29,7 @@ export function CreateListingModal({
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 
   // Rate Details State
-  const [unitType, setUnitType] = useState<UnitType>("Nos");
+  const [unitType, setUnitType] = useState<UnitType>(UNIT_TYPE.Nos);
   const [minQuantity, setMinQuantity] = useState(1);
   const [rate, setRate] = useState(0);
   const [isNegotiable, setIsNegotiable] = useState(false);

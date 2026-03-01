@@ -28,6 +28,7 @@ import {
 import { useSessionQuery } from "@/queries/authQueries";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ReviewSummary } from "@/components/shared/reviews";
+import { ACTIVITY_TYPE } from "@/constants/enums";
 
 export default function SellerDashboardPage() {
   const { data: user } = useSessionQuery();
@@ -40,12 +41,12 @@ export default function SellerDashboardPage() {
 
   const { data: enquiryAssignments = [] } = useAssignmentsQuery({
     toEntityId: mainEntity?.id,
-    type: "ENQUIRY_ASSIGNMENT",
+    type: ACTIVITY_TYPE.ENQUIRY_ASSIGNMENT,
   });
 
   const { data: appointmentAssignments = [] } = useAssignmentsQuery({
     toEntityId: mainEntity?.id,
-    type: "APPOINTMENT_ASSIGNMENT",
+    type: ACTIVITY_TYPE.APPOINTMENT_ASSIGNMENT,
   });
 
   const { data: quotations = [] } = useQuotationsQuery({

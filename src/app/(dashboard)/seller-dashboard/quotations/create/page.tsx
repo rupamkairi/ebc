@@ -13,16 +13,19 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { CreateQuotationRequest } from "@/types/activity";
 import { CoinDeductionModal } from "@/components/dashboard/seller/coin-deduction-modal";
+import { REF_TYPE } from "@/constants/enums";
 
 function CreateQuotationContent() {
   const searchParams = useSearchParams();
   const enquiryId = searchParams.get("enquiryId");
   const router = useRouter();
   const [showDeductionModal, setShowDeductionModal] = useState(false);
-  const [pendingData, setPendingData] = useState<CreateQuotationRequest | null>(null);
+  const [pendingData, setPendingData] = useState<CreateQuotationRequest | null>(
+    null,
+  );
 
   const { data: enquiry, isLoading: isEnquiryLoading } = useEnquiryQuery(
-    enquiryId || ""
+    enquiryId || "",
   );
   const { mutate: createQuotation, isPending: isSubmitting } =
     useCreateQuotationMutation();
@@ -68,7 +71,7 @@ function CreateQuotationContent() {
 
   const handleConfirmDeduction = () => {
     if (!pendingData) return;
-    
+
     createQuotation(pendingData, {
       onSuccess: () => {
         toast.success("Quotation submitted successfully!");
@@ -90,12 +93,12 @@ function CreateQuotationContent() {
         <ArrowLeft className="h-4 w-4" />
         Back to Enquiry details
       </Link>
-      
+
       <CoinDeductionModal
         isOpen={showDeductionModal}
         onClose={() => setShowDeductionModal(false)}
         onConfirm={handleConfirmDeduction}
-        leadType="QUOTATION"
+        leadType={REF_TYPE.QUOTATION}
         isProcessing={isSubmitting}
       />
 

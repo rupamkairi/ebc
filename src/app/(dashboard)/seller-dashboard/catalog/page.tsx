@@ -15,6 +15,7 @@ import {
   NoEntityState,
   EmptyCatalogState,
 } from "@/components/dashboard/seller/catalog/catalog-empty-states";
+import { ENTITY_TYPE, ITEM_TYPE } from "@/constants/enums";
 
 export default function CatalogPage() {
   const [activeTab, setActiveTab] = useState("products");
@@ -31,26 +32,29 @@ export default function CatalogPage() {
   const { data: listings, isLoading: isLoadingListings } = useItemListingsQuery(
     {
       entityId: sellerEntity?.id || "",
-    }
+    },
   );
 
-  const isServiceBusiness = sellerEntity?.type === "SERVICE";
-  const isProductBusiness = sellerEntity?.type === "PRODUCT";
+  const isServiceBusiness = sellerEntity?.type === ENTITY_TYPE.SERVICE_PROVIDER;
+  const isProductBusiness =
+    sellerEntity?.type === ENTITY_TYPE.MANUFACTURER ||
+    sellerEntity?.type === ENTITY_TYPE.WHOLESALER ||
+    sellerEntity?.type === ENTITY_TYPE.RETAILER;
 
   const isLoading = isLoadingEntities || isLoadingListings;
 
   const filteredProducts = (listings || [])
-    .filter((l) => l.item?.type === "PRODUCT")
+    .filter((l) => l.item?.type === ITEM_TYPE.PRODUCT)
     .filter(
       (l) =>
         l.item?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        l.item?.brand?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+        l.item?.brand?.name?.toLowerCase().includes(searchQuery.toLowerCase()),
     );
 
   const filteredServices = (listings || [])
-    .filter((l) => l.item?.type === "SERVICE")
+    .filter((l) => l.item?.type === ITEM_TYPE.SERVICE)
     .filter((l) =>
-      l.item?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+      l.item?.name?.toLowerCase().includes(searchQuery.toLowerCase()),
     );
 
   return (
@@ -64,7 +68,7 @@ export default function CatalogPage() {
             if (isLoadingEntities) return;
             if (!sellerEntity) {
               toast.error(
-                "Business entity not found. Please complete your store setup."
+                "Business entity not found. Please complete your store setup.",
               );
               return;
             }
@@ -106,7 +110,7 @@ export default function CatalogPage() {
                       <ListingCard
                         key={listing.id}
                         listing={listing}
-                        type="PRODUCT"
+                        type={ITEM_TYPE.PRODUCT}
                       />
                     ))
                   ) : (
@@ -128,7 +132,7 @@ export default function CatalogPage() {
                       <ListingCard
                         key={listing.id}
                         listing={listing}
-                        type="SERVICE"
+                        type={ITEM_TYPE.SERVICE}
                       />
                     ))
                   ) : (
@@ -149,7 +153,6 @@ export default function CatalogPage() {
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         entityId={sellerEntity?.id || ""}
-        type={activeTab === "products" ? "PRODUCT" : "SERVICE"}
       />
     </div>
   );

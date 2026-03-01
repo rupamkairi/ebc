@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { NotificationChannelType } from "@/types/notification";
+import { NOTIFICATION_CHANNEL_TYPE } from "@/constants/enums";
 
 export function NotificationChannelList() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -32,13 +33,13 @@ export function NotificationChannelList() {
 
   const getIcon = (type: NotificationChannelType) => {
     switch (type) {
-      case "EMAIL":
+      case NOTIFICATION_CHANNEL_TYPE.EMAIL:
         return Mail;
-      case "PHONE":
+      case NOTIFICATION_CHANNEL_TYPE.SMS:
         return Phone;
-      case "WHATSAPP":
+      case NOTIFICATION_CHANNEL_TYPE.WHATSAPP:
         return MessageSquare;
-      case "PUSH":
+      case NOTIFICATION_CHANNEL_TYPE.PUSH:
         return Bell;
       default:
         return Bell;

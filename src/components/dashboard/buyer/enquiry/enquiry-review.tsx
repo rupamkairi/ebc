@@ -39,7 +39,7 @@ export function EnquiryReview({ onSubmit, isSubmitting }: EnquiryReviewProps) {
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-3">
-              <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">
+              <h3 className="font-semibold text-sm text-muted-foreground">
                 Buyer Information
               </h3>
               <div className="flex items-center gap-2">
@@ -57,7 +57,7 @@ export function EnquiryReview({ onSubmit, isSubmitting }: EnquiryReviewProps) {
             </div>
 
             <div className="space-y-3">
-              <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">
+              <h3 className="font-semibold text-sm text-muted-foreground">
                 Delivery Details
               </h3>
               <div className="flex items-start gap-2">
@@ -73,7 +73,7 @@ export function EnquiryReview({ onSubmit, isSubmitting }: EnquiryReviewProps) {
           <Separator />
 
           <div className="space-y-4">
-            <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">
+            <h3 className="font-semibold text-sm text-muted-foreground">
               Items ({items.length})
             </h3>
 
@@ -118,7 +118,7 @@ export function EnquiryReview({ onSubmit, isSubmitting }: EnquiryReviewProps) {
                       className="flex flex-col"
                     >
                       {Object.keys(groupedItems).length > 1 && (
-                        <div className="bg-slate-50 px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider flex justify-between items-center border-b">
+                        <div className="bg-slate-50 px-4 py-2 text-xs font-bold text-slate-500 flex justify-between items-center border-b">
                           <span>{groupLabel}</span>
                           <span className="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full text-[10px]">
                             {groupItems.length} items
@@ -135,7 +135,7 @@ export function EnquiryReview({ onSubmit, isSubmitting }: EnquiryReviewProps) {
                               <p className="font-semibold text-slate-900">
                                 {item.title}
                               </p>
-                              <span className="bg-blue-50 text-blue-600 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border border-blue-100">
+                              <span className="bg-blue-50 text-blue-600 px-2 py-0.5 rounded text-[10px] font-bold border border-blue-100">
                                 {item.type}
                               </span>
                             </div>
@@ -149,7 +149,7 @@ export function EnquiryReview({ onSubmit, isSubmitting }: EnquiryReviewProps) {
                             )}
                           </div>
                           <div className="sm:text-right bg-slate-50 sm:bg-transparent p-3 sm:p-0 rounded-lg sm:rounded-none flex justify-between sm:block">
-                            <span className="sm:hidden text-xs font-medium text-slate-500 uppercase">
+                            <span className="sm:hidden text-xs font-medium text-slate-500">
                               Quantity:
                             </span>
                             <div>
@@ -177,7 +177,7 @@ export function EnquiryReview({ onSubmit, isSubmitting }: EnquiryReviewProps) {
       <div className="flex justify-end gap-4">
         <Button
           onClick={onSubmit}
-          className="w-full md:w-auto px-8 font-semibold shadow-md active:scale-95 transition-all text-white bg-blue-600 hover:bg-blue-700 h-11"
+          className="w-full md:w-auto bg-linear-to-r from-[#0F28A9] to-[#0A1B75] hover:from-[#FFA500] hover:to-[#FF8C00] text-white font-bold tracking-tight py-7 px-10 rounded-2xl text-lg shadow-[0_20px_50px_rgba(15,40,169,0.3)] transition-all duration-500 hover:scale-105 active:scale-95 border-none flex items-center gap-2 group"
           disabled={isSubmitting}
         >
           {isSubmitting
