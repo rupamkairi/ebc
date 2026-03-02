@@ -26,51 +26,91 @@ export function ListingCard({ listing, type, view = "list" }: ListingCardProps) 
 
   if (view === "grid") {
     return (
-      <Card className="bg-[#001D8D] border-none shadow-xl rounded-[32px] overflow-hidden flex flex-col h-full group">
+      <Card className="bg-white border border-[#3D52A0]/10 hover:border-[#3D52A0]/20 shadow-xs hover:shadow-md rounded-[24px] overflow-hidden flex flex-col h-full group transition-all duration-500">
         <CardContent className="p-0 flex flex-col h-full">
-          {/* Top Placeholder Box */}
-          <div className="aspect-square w-full bg-white flex items-center justify-center p-12">
-            <div className="w-full h-full bg-slate-100/50 rounded-2xl flex items-center justify-center text-slate-300">
-              {isProduct ? <Package size={64} strokeWidth={1} /> : <Clock size={64} strokeWidth={1} />}
-            </div>
-          </div>
-
-          <div className="p-6 space-y-5 flex-1 flex flex-col">
-            {/* Product Heading */}
-            <h3 className="text-2xl font-bold text-white tracking-tight leading-snug">
-              {listing.item?.name}
-            </h3>
-
-            {/* Badges Section */}
-            <div className="flex gap-2">
-              <Badge className="bg-[#FFA000] text-white hover:bg-[#FF8F00] uppercase text-[10px] font-black tracking-widest px-4 py-1.5 rounded-lg border-none">
-                ID: {listing.item?.id.substring(0, 6).toUpperCase() || "N/A"}
-              </Badge>
-              <Badge className="bg-white text-emerald-600 hover:bg-white uppercase text-[10px] font-black tracking-widest px-4 py-1.5 rounded-lg border-none shadow-sm">
-                {listing.isActive ? "Active" : "Inactive"}
-              </Badge>
+          <div className="p-5 md:p-6 flex flex-col h-full space-y-5">
+            {/* Header: ID and Status */}
+            <div className="flex items-center justify-between">
+              <span className="text-[9px] font-black text-[#3D52A0]/30 uppercase tracking-[0.2em] bg-[#3D52A0]/5 px-2.5 py-1 rounded-full">
+                ID: {listing.item?.id.substring(0, 6).toUpperCase()}
+              </span>
+              <div className="flex items-center gap-1.5">
+                <div
+                  className={cn(
+                    "w-1.5 h-1.5 rounded-full",
+                    listing.isActive ? "bg-emerald-500 animate-pulse" : "bg-slate-300",
+                  )}
+                />
+                <span className="text-[9px] font-black text-[#3D52A0]/40 uppercase tracking-widest">
+                  {listing.isActive ? "Active" : "Inactive"}
+                </span>
+              </div>
             </div>
 
-            {/* Stats View */}
-            <div className="bg-white rounded-xl p-4 shadow-inner space-y-1">
-              <div className="flex items-center justify-between">
-                <p className="text-[10px] font-black uppercase tracking-widest text-[#1A237E]/40">
-                  MIN ORDER QUANTITY :
-                </p>
-                <p className="text-[11px] font-black text-[#1A237E]">
-                  {listing.itemRates?.[0]?.minQuantity || 0} {listing.itemRates?.[0]?.unitType && UNIT_TYPE_LABELS[listing.itemRates[0].unitType]}
+            {/* Title Section */}
+            <div className="flex gap-4 items-start">
+              <div className="w-12 h-12 bg-[#F8FAFF] rounded-xl flex items-center justify-center text-[#3D52A0]/40 shrink-0 group-hover:bg-[#0F28A9]/5 group-hover:text-[#0F28A9] transition-all duration-300">
+                {isProduct ? (
+                  <Package size={24} strokeWidth={1.5} />
+                ) : (
+                  <Clock size={24} strokeWidth={1.5} />
+                )}
+              </div>
+              <div className="space-y-1 min-w-0">
+                <h3 className="text-base font-black text-[#3D52A0] tracking-tight leading-tight line-clamp-2 min-h-10">
+                  {listing.item?.name}
+                </h3>
+                <p className="text-[10px] font-bold text-[#3D52A0]/30 uppercase tracking-wider truncate">
+                  {isProduct
+                    ? listing.item?.brand?.name
+                    : listing.itemRegions?.[0]?.state || "Global"}
                 </p>
               </div>
             </div>
 
-            {/* Footer Buttons */}
-            <div className="grid grid-cols-2 gap-3 pt-4 border-t border-white/10 mt-auto">
-              <Button className="bg-[#FFA000] hover:bg-[#FF8F00] text-white font-black rounded-xl h-12 text-sm transition-all shadow-lg active:scale-95">
-                Edit {isProduct ? "Product" : "Service"}
+            {/* Stats Section */}
+            <div className="bg-[#F8FAFF] rounded-2xl p-4 border border-[#3D52A0]/5 space-y-1 mt-auto">
+              <p className="text-[9px] font-black text-[#3D52A0]/30 uppercase tracking-widest leading-none">
+                Min Order Required
+              </p>
+              <p className="text-sm font-black text-[#3D52A0]">
+                {listing.itemRates?.[0]?.minQuantity || 0}{" "}
+                <span className="text-[10px] font-bold text-[#FFA500] ml-0.5 uppercase">
+                  {listing.itemRates?.[0]?.unitType &&
+                    UNIT_TYPE_LABELS[listing.itemRates[0].unitType]}
+                </span>
+              </p>
+            </div>
+
+            {/* Action Row */}
+            <div className="flex gap-2 pt-2">
+              <Button
+                asChild
+                className="flex-1 bg-[#0F28A9] hover:bg-[#1A237E] text-white font-black rounded-xl h-10 text-[10px] tracking-widest uppercase transition-all shadow-sm active:scale-95 border-none"
+              >
+                <Link href={`/seller-dashboard/catalog/${listing.id}`}>
+                  Edit Details
+                </Link>
               </Button>
-              <Button className="bg-white hover:bg-slate-50 text-red-600 font-bold rounded-xl h-12 text-sm transition-all shadow-md active:scale-95 border-none">
-                Delete {isProduct ? "Product" : "Service"}
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-10 w-10 border-[#3D52A0]/10 text-[#3D52A0]/40 hover:text-red-600 hover:border-red-100 hover:bg-red-50 rounded-xl transition-all"
+                  >
+                    <MoreVertical size={16} />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="rounded-xl border-[#3D52A0]/10 shadow-xl"
+                >
+                  <DropdownMenuItem className="text-red-600 font-bold cursor-pointer text-[10px] uppercase tracking-widest py-2.5">
+                    Delete Listing
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </CardContent>
