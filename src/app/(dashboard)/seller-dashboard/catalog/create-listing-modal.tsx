@@ -12,18 +12,20 @@ import { ItemSelectionStep } from "@/components/dashboard/seller/catalog/steps/i
 import { RateDetailsStep } from "@/components/dashboard/seller/catalog/steps/rate-details-step";
 import { RegionSelectionStep } from "@/components/dashboard/seller/catalog/steps/region-selection-step";
 import { UnitType } from "@/constants/quantities";
-import { UNIT_TYPE } from "@/constants/enums";
+import { UNIT_TYPE, ITEM_TYPE } from "@/constants/enums";
 
 interface CreateListingModalProps {
   isOpen: boolean;
   onClose: () => void;
   entityId: string;
+  itemType: ITEM_TYPE;
 }
 
 export function CreateListingModal({
   isOpen,
   onClose,
   entityId,
+  itemType,
 }: CreateListingModalProps) {
   const [step, setStep] = useState(1);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
@@ -105,6 +107,7 @@ export function CreateListingModal({
                 setSelectedItem(item);
                 setStep(2);
               }}
+              itemType={itemType}
             />
           )}
 

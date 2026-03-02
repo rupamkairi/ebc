@@ -18,10 +18,6 @@ import {
 import { ENTITY_TYPE, ITEM_TYPE } from "@/constants/enums";
 
 export default function CatalogPage() {
-  const [activeTab, setActiveTab] = useState("products");
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-
   const {
     data: entities,
     isLoading: isLoadingEntities,
@@ -29,17 +25,21 @@ export default function CatalogPage() {
   } = useEntitiesQuery();
   const sellerEntity = entities?.[0];
 
-  const { data: listings, isLoading: isLoadingListings } = useItemListingsQuery(
-    {
-      entityId: sellerEntity?.id || "",
-    },
-  );
-
   const isServiceBusiness = sellerEntity?.type === ENTITY_TYPE.SERVICE_PROVIDER;
   const isProductBusiness =
     sellerEntity?.type === ENTITY_TYPE.MANUFACTURER ||
     sellerEntity?.type === ENTITY_TYPE.WHOLESALER ||
     sellerEntity?.type === ENTITY_TYPE.RETAILER;
+
+  const [activeTab, setActiveTab] = useState(isServiceBusiness ? "services" : "products");
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const { data: listings, isLoading: isLoadingListings } = useItemListingsQuery(
+    {
+      entityId: sellerEntity?.id || "",
+    },
+  );
 
   const isLoading = isLoadingEntities || isLoadingListings;
 
@@ -100,49 +100,53 @@ export default function CatalogPage() {
             />
           ) : (
             <>
-              <TabsContent
-                value="products"
-                className="mt-0 space-y-4 outline-none"
-              >
-                <div className="grid gap-4">
-                  {filteredProducts.length > 0 ? (
-                    filteredProducts.map((listing) => (
-                      <ListingCard
-                        key={listing.id}
-                        listing={listing}
-                        type={ITEM_TYPE.PRODUCT}
+              {!isServiceBusiness && (
+                <TabsContent
+                  value="products"
+                  className="mt-0 space-y-4 outline-none"
+                >
+                  <div className="grid gap-4">
+                    {filteredProducts.length > 0 ? (
+                      filteredProducts.map((listing) => (
+                        <ListingCard
+                          key={listing.id}
+                          listing={listing}
+                          type={ITEM_TYPE.PRODUCT}
+                        />
+                      ))
+                    ) : (
+                      <EmptyCatalogState
+                        type="products"
+                        onAddClick={() => setIsCreateModalOpen(true)}
                       />
-                    ))
-                  ) : (
-                    <EmptyCatalogState
-                      type="products"
-                      onAddClick={() => setIsCreateModalOpen(true)}
-                    />
-                  )}
-                </div>
-              </TabsContent>
+                    )}
+                  </div>
+                </TabsContent>
+              )}
 
-              <TabsContent
-                value="services"
-                className="mt-0 space-y-4 outline-none"
-              >
-                <div className="grid gap-4">
-                  {filteredServices.length > 0 ? (
-                    filteredServices.map((listing) => (
-                      <ListingCard
-                        key={listing.id}
-                        listing={listing}
-                        type={ITEM_TYPE.SERVICE}
+              {isServiceBusiness && (
+                <TabsContent
+                  value="services"
+                  className="mt-0 space-y-4 outline-none"
+                >
+                  <div className="grid gap-4">
+                    {filteredServices.length > 0 ? (
+                      filteredServices.map((listing) => (
+                        <ListingCard
+                          key={listing.id}
+                          listing={listing}
+                          type={ITEM_TYPE.SERVICE}
+                        />
+                      ))
+                    ) : (
+                      <EmptyCatalogState
+                        type="services"
+                        onAddClick={() => setIsCreateModalOpen(true)}
                       />
-                    ))
-                  ) : (
-                    <EmptyCatalogState
-                      type="services"
-                      onAddClick={() => setIsCreateModalOpen(true)}
-                    />
-                  )}
-                </div>
-              </TabsContent>
+                    )}
+                  </div>
+                </TabsContent>
+              )}
             </>
           )}
         </Tabs>
@@ -153,6 +157,7 @@ export default function CatalogPage() {
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         entityId={sellerEntity?.id || ""}
+        itemType={isServiceBusiness ? ITEM_TYPE.SERVICE : ITEM_TYPE.PRODUCT}
       />
     </div>
   );

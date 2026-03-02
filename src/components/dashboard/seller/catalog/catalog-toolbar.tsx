@@ -20,22 +20,25 @@ export function CatalogToolbar({
 }: CatalogToolbarProps) {
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-      <TabsList className="bg-muted p-1 rounded-md h-auto">
-        <TabsTrigger
-          value="products"
-          disabled={isServiceBusiness}
-          className="rounded-sm px-8 py-2 font-semibold text-xs transition-all uppercase tracking-widest disabled:opacity-30 disabled:cursor-not-allowed"
-        >
-          Products
-        </TabsTrigger>
-        <TabsTrigger
-          value="services"
-          disabled={isProductBusiness}
-          className="rounded-sm px-8 py-2 font-semibold text-xs transition-all uppercase tracking-widest disabled:opacity-30 disabled:cursor-not-allowed"
-        >
-          Services
-        </TabsTrigger>
-      </TabsList>
+      {/* 
+        Hide the tabs list entirely if the business is restricted to one type 
+      */}
+      {isServiceBusiness && isProductBusiness && (
+        <TabsList className="bg-muted p-1 rounded-md h-auto">
+          <TabsTrigger
+            value="products"
+            className="rounded-sm px-8 py-2 font-semibold text-xs transition-all uppercase tracking-widest"
+          >
+            Products
+          </TabsTrigger>
+          <TabsTrigger
+            value="services"
+            className="rounded-sm px-8 py-2 font-semibold text-xs transition-all uppercase tracking-widest"
+          >
+            Services
+          </TabsTrigger>
+        </TabsList>
+      )}
 
       <div className="relative w-full md:w-80 group">
         <Search
