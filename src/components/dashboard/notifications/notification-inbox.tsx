@@ -24,12 +24,14 @@ interface NotificationInboxProps {
   userType: "ADMIN" | "SELLER" | "BUYER";
   className?: string;
   limit?: number;
+  hideHeader?: boolean;
 }
 
 export function NotificationInbox({
   userType,
   className,
   limit,
+  hideHeader = false,
 }: NotificationInboxProps) {
   const { data: notifications = [], isLoading } = useNotificationsQuery();
   const markReadMutation = useMarkNotificationReadMutation();
@@ -101,17 +103,19 @@ export function NotificationInbox({
     <Card
       className={cn("w-full border-none shadow-none bg-transparent", className)}
     >
-      <CardHeader className="px-0 pt-0">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-bold flex items-center gap-2">
-            <Bell className="size-5" />
-            Notifications
-          </CardTitle>
-          <span className="text-xs text-muted-foreground">
-            {notifications.filter((n) => !n.isRead).length} Unread
-          </span>
-        </div>
-      </CardHeader>
+      {!hideHeader && (
+        <CardHeader className="px-0 pt-0">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-lg font-bold flex items-center gap-2">
+              <Bell className="size-5" />
+              Notifications
+            </CardTitle>
+            <span className="text-xs text-muted-foreground">
+              {notifications.filter((n) => !n.isRead).length} Unread
+            </span>
+          </div>
+        </CardHeader>
+      )}
       <CardContent className="px-0">
         <ScrollArea className="h-[400px]">
           {displayedNotifications.length === 0 ? (

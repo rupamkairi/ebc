@@ -19,6 +19,7 @@ import {
   Quote,
   MapPin,
   FileCheck,
+  Bell,
 } from "lucide-react";
 import {
   useEnquiriesQuery,
@@ -26,25 +27,15 @@ import {
   useQuotationsQuery,
   useVisitsQuery,
 } from "@/queries/activityQueries";
-import { useSessionQuery } from "@/queries/authQueries";
 import { useMemo } from "react";
-import {
-  BuyerProfileCard,
-  RoomCard,
-  ActivitySectionCard,
-  ActivityStatCard,
-  ConferenceHallItem,
-} from "@/components/dashboard/buyer/dashboard-components";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { USER_ROLE_LABELS } from "@/constants/roles";
+import { RoomCard, ActivitySectionCard, ActivityStatCard, ConferenceHallItem } from "@/components/dashboard/buyer/dashboard-components";
+import { NotificationInbox } from "@/components/dashboard/notifications/notification-inbox";
 
 export default function BuyerDashboardPage() {
   const { data: enquiries } = useEnquiriesQuery({});
   const { data: appointments } = useAppointmentsQuery({});
   const { data: quotations } = useQuotationsQuery({});
   const { data: visits } = useVisitsQuery({});
-  const { data: session } = useSessionQuery();
 
   const stats = useMemo(() => {
     const pendingEnquiries =
@@ -85,207 +76,189 @@ export default function BuyerDashboardPage() {
 
   return (
     <AuthGuard allowedRoles={["USER_BUYER_ADMIN"]}>
-      <div className="flex flex-col gap-10 w-full max-w-7xl mx-auto">
-        {/* Profile Section */}
-        {/* {session?.user && (
-          <BuyerProfileCard
-            name={session.user.name || "Buyer"}
-            role={session.user.role || "Buyer"}
-            avatarUrl={session.user.image || undefined}
-          />
-        )} */}
-
-        {/* Rooms Section */}
-        <section>
-          <h2 className="text-2xl font-black text-[#3D52A0] uppercase tracking-wider mb-6">
-            Rooms
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            <RoomCard
-              title="Material Depo"
-              icon={Armchair}
-              href="/browse?categoryId="
-            />
-            <RoomCard
-              title="Technical Cabin"
-              icon={Bed}
-              href="/browse?categoryId="
-            />
-            <RoomCard
-              title="Fabricator Area"
-              icon={Bath}
-              href="/browse?categoryId="
-            />
-            <RoomCard
-              title="Contract Desk"
-              icon={Tv}
-              href="/browse?categoryId="
-            />
-          </div>
-        </section>
-
-        {/* Activity Section */}
-        <section>
-          <h2 className="text-2xl font-black text-[#3D52A0] uppercase tracking-wider mb-6">
-            Activity
-          </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <ActivitySectionCard
-              title="My Enquiries"
-              icon={FileText}
-              footerLink="/buyer-dashboard/enquiries"
-              footerText="View All Enquiries"
-            >
-              <ActivityStatCard
-                label="Pending Enquiries"
-                value={stats.pendingEnquiries}
-                icon={Clock}
-              />
-              <ActivityStatCard
-                label="Approved Enquiries"
-                value={stats.approvedEnquiries}
-                icon={CheckCircle2}
-              />
-            </ActivitySectionCard>
-
-            <ActivitySectionCard
-              title="My Appointments"
-              icon={CalendarDays}
-              footerLink="/buyer-dashboard/appointments"
-              footerText="View All Appointments"
-            >
-              <ActivityStatCard
-                label="Upcoming"
-                value={stats.upcomingAppointments}
-                icon={Clock}
-              />
-              <ActivityStatCard
-                label="Completed"
-                value={stats.pastAppointments}
-                icon={CheckCircle2}
-              />
-            </ActivitySectionCard>
-
-            <ActivitySectionCard
-              title="My Quotations"
-              icon={Quote}
-              footerLink="/buyer-dashboard/quotations"
-              footerText="View All Quotations"
-            >
-              <ActivityStatCard
-                label="Pending"
-                value={stats.pendingQuotations}
-                icon={Clock}
-              />
-              <ActivityStatCard
-                label="Accepted"
-                value={stats.acceptedQuotations}
-                icon={FileCheck}
-              />
-            </ActivitySectionCard>
-
-            <ActivitySectionCard
-              title="My Site Visits"
-              icon={MapPin}
-              footerLink="/buyer-dashboard/visits"
-              footerText="View All Visits"
-            >
-              <ActivityStatCard
-                label="Scheduled"
-                value={stats.scheduledVisits}
-                icon={Clock}
-              />
-              <ActivityStatCard
-                label="Completed"
-                value={stats.completedVisits}
-                icon={CheckCircle2}
-              />
-            </ActivitySectionCard>
-          </div>
-        </section>
-
-        {/* Conference Hall & Secondary Profile */}
-        <section>
-          <h2 className="text-2xl font-black text-[#3D52A0] uppercase tracking-wider mb-6">
-            Conference Hall
-          </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 h-fit">
-              <ConferenceHallItem
-                title="Info & Updates"
-                icon={Info}
-                href="/buyer-dashboard/conference-hall"
-              />
-              <ConferenceHallItem
-                title="Meetings"
-                icon={Users}
-                href="/buyer-dashboard/conference-hall"
-              />
-              <ConferenceHallItem
-                title="Forums"
-                icon={MessageSquare}
-                href="/buyer-dashboard/conference-hall"
-              />
-              <ConferenceHallItem
-                title="Demos"
-                icon={Video}
-                href="/buyer-dashboard/conference-hall"
-              />
-              <ConferenceHallItem
-                title="Live"
-                icon={LifeBuoy}
-                href="/buyer-dashboard/conference-hall"
-              />
-            </div>
-
-            {/* Side Profile Info */}
-            <div className="rounded-2xl bg-[#3D52A0] p-6 text-white shadow-xl flex flex-col items-center">
-              <div className="flex flex-col items-center text-center gap-4 mb-8">
-                <div className="relative">
-                  <Avatar className="h-20 w-20 border-2 border-white/20">
-                    <AvatarImage
-                      src={session?.user?.image || undefined}
-                      alt={session?.user?.name || ""}
-                    />
-                    <AvatarFallback className="bg-white/10 text-white font-bold text-2xl">
-                      {session?.user?.name?.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-green-500 border-2 border-[#3D52A0]" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold">{session?.user?.name}</h3>
-                  <p className="text-xs text-white/60 uppercase tracking-widest text-center">
-                    {USER_ROLE_LABELS[
-                      session?.user?.role as keyof typeof USER_ROLE_LABELS
-                    ] ||
-                      session?.user?.role ||
-                      "Buyer"}
-                  </p>
-                </div>
+      <div className="max-w-[1600px] mx-auto p-4 md:p-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Main Content - Left Side */}
+          <div className="lg:col-span-3 flex flex-col gap-10">
+            {/* Project Pulse - Rooms */}
+            <section>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-8 w-1.5 bg-[#FFA500] rounded-full" />
+                <h2 className="text-2xl font-black text-[#3D52A0] uppercase tracking-wider">
+                  Project Pulse
+                </h2>
               </div>
-
-              <div className="flex flex-col gap-3 w-full">
-                <Button className="w-full bg-[#FFA500] hover:bg-[#E69500] text-white font-bold h-10 text-xs">
-                  View Profile
-                </Button>
-                <Button className="w-full bg-[#FFA500] hover:bg-[#E69500] text-white font-bold h-10 text-xs text-nowrap">
-                  Edit Appearance
-                </Button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <RoomCard
+                  title="Material Depo"
+                  icon={Armchair}
+                  href="/browse?categoryId="
+                />
+                <RoomCard
+                  title="Technical Cabin"
+                  icon={Bed}
+                  href="/browse?categoryId="
+                />
+                <RoomCard
+                  title="Fabricator Area"
+                  icon={Bath}
+                  href="/browse?categoryId="
+                />
+                <RoomCard
+                  title="Contract Desk"
+                  icon={Tv}
+                  href="/browse?categoryId="
+                />
               </div>
+            </section>
+
+            {/* Operations Center - Activity Stats */}
+            <section>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-8 w-1.5 bg-[#FFA500] rounded-full" />
+                <h2 className="text-2xl font-black text-[#3D52A0] uppercase tracking-wider">
+                  Operations Center
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <ActivitySectionCard
+                  title="My Enquiries"
+                  icon={FileText}
+                  footerLink="/buyer-dashboard/enquiries"
+                  footerText="View All Enquiries"
+                >
+                  <ActivityStatCard
+                    label="Pending Enquiries"
+                    value={stats.pendingEnquiries}
+                    icon={Clock}
+                  />
+                  <ActivityStatCard
+                    label="Approved Enquiries"
+                    value={stats.approvedEnquiries}
+                    icon={CheckCircle2}
+                  />
+                </ActivitySectionCard>
+
+                <ActivitySectionCard
+                  title="My Appointments"
+                  icon={CalendarDays}
+                  footerLink="/buyer-dashboard/appointments"
+                  footerText="View All Appointments"
+                >
+                  <ActivityStatCard
+                    label="Upcoming"
+                    value={stats.upcomingAppointments}
+                    icon={Clock}
+                  />
+                  <ActivityStatCard
+                    label="Completed"
+                    value={stats.pastAppointments}
+                    icon={CheckCircle2}
+                  />
+                </ActivitySectionCard>
+
+                <ActivitySectionCard
+                  title="My Quotations"
+                  icon={Quote}
+                  footerLink="/buyer-dashboard/quotations"
+                  footerText="View All Quotations"
+                >
+                  <ActivityStatCard
+                    label="Pending"
+                    value={stats.pendingQuotations}
+                    icon={Clock}
+                  />
+                  <ActivityStatCard
+                    label="Accepted"
+                    value={stats.acceptedQuotations}
+                    icon={FileCheck}
+                  />
+                </ActivitySectionCard>
+
+                <ActivitySectionCard
+                  title="My Site Visits"
+                  icon={MapPin}
+                  footerLink="/buyer-dashboard/visits"
+                  footerText="View All Visits"
+                >
+                  <ActivityStatCard
+                    label="Scheduled"
+                    value={stats.scheduledVisits}
+                    icon={Clock}
+                  />
+                  <ActivityStatCard
+                    label="Completed"
+                    value={stats.completedVisits}
+                    icon={CheckCircle2}
+                  />
+                </ActivitySectionCard>
+              </div>
+            </section>
+
+            {/* Project Domains - Conference Hall */}
+            <section>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-8 w-1.5 bg-[#FFA500] rounded-full" />
+                <h2 className="text-2xl font-black text-[#3D52A0] uppercase tracking-wider">
+                  Project Domains
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <ConferenceHallItem
+                  title="Info & Updates"
+                  icon={Info}
+                  href="/buyer-dashboard/conference-hall"
+                />
+                <ConferenceHallItem
+                  title="Meetings"
+                  icon={Users}
+                  href="/buyer-dashboard/conference-hall"
+                />
+                <ConferenceHallItem
+                  title="Forums"
+                  icon={MessageSquare}
+                  href="/buyer-dashboard/conference-hall"
+                />
+                <ConferenceHallItem
+                  title="Demos"
+                  icon={Video}
+                  href="/buyer-dashboard/conference-hall"
+                />
+                <ConferenceHallItem
+                  title="Live"
+                  icon={LifeBuoy}
+                  href="/buyer-dashboard/conference-hall"
+                />
+              </div>
+            </section>
+
+            {/* Precision Tools - AI Calculator */}
+            <section>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-8 w-1.5 bg-[#FFA500] rounded-full" />
+                <h2 className="text-2xl font-black text-[#3D52A0] uppercase tracking-wider">
+                  Precision Tools
+                </h2>
+              </div>
+              <div className="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-muted/50">
+                <AICalculator />
+              </div>
+            </section>
+          </div>
+
+          {/* Sidebar Column (Notifications) */}
+          <div className="space-y-8 h-full">
+            <div className="sticky top-24 pt-4 lg:pt-0">
+              <div className="flex items-center gap-2 mb-4 px-2">
+                <Bell className="h-5 w-5 text-[#3D52A0]" />
+                <h2 className="text-xl font-bold text-[#3D52A0] tracking-tight">
+                  Notifications
+                </h2>
+              </div>
+              <NotificationInbox userType="BUYER" hideHeader />
             </div>
           </div>
-        </section>
-
-        {/* AI Calculator - Moved to bottom as it's a utility */}
-        <section className="mt-8">
-          <h2 className="text-2xl font-black text-[#3D52A0] uppercase tracking-wider mb-6">
-            AI Cost Calculator
-          </h2>
-          <div className="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-muted/50">
-            <AICalculator />
-          </div>
-        </section>
+        </div>
       </div>
     </AuthGuard>
   );
