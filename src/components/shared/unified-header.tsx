@@ -152,11 +152,18 @@ export function UnifiedHeader({
                         <span>Dashboard</span>
                       </Link>
                     </DropdownMenuItem>
-                    {isSeller && (
+                    {(isSeller || isBuyer) && (
                       <DropdownMenuItem className="cursor-pointer" asChild>
-                        <Link href="/seller-dashboard/settings" className="flex items-center w-full">
+                        <Link
+                          href={
+                            isSeller
+                              ? "/seller-dashboard/settings"
+                              : "/buyer-dashboard/settings"
+                          }
+                          className="flex items-center w-full"
+                        >
                           <Settings className="mr-2 h-4 w-4" />
-                          <span>Settings</span>
+                          <span>Profile Settings</span>
                         </Link>
                       </DropdownMenuItem>
                     )}
