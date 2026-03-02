@@ -87,13 +87,13 @@ export default function BuyerDashboardPage() {
     <AuthGuard allowedRoles={["USER_BUYER_ADMIN"]}>
       <div className="flex flex-col gap-10 w-full max-w-7xl mx-auto">
         {/* Profile Section */}
-        {session?.user && (
+        {/* {session?.user && (
           <BuyerProfileCard
             name={session.user.name || "Buyer"}
             role={session.user.role || "Buyer"}
             avatarUrl={session.user.image || undefined}
           />
-        )}
+        )} */}
 
         {/* Rooms Section */}
         <section>
