@@ -8,11 +8,20 @@ import { NotificationChannelList } from "@/components/dashboard/notifications/no
 import { useEntitiesQuery } from "@/queries/entityQueries";
 import { cn } from "@/lib/utils";
 import Container from "@/components/ui/containers";
+import { useAuthStore } from "@/store/authStore";
+import { useRouter } from "next/navigation";
 
 export default function SettingsPage() {
   const { data: entities = [] } = useEntitiesQuery();
   const mainEntity = entities[0];
   const status = mainEntity?.verificationStatus;
+  const { logout } = useAuthStore();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout();
+    router.push("/");
+  };
 
   return (
     <Container className="py-8 space-y-8 max-w-[1400px] mx-auto">
@@ -110,7 +119,7 @@ export default function SettingsPage() {
               </CardContent>
             </Card>
 
-            <Button variant="destructive" className="w-full" disabled>
+            <Button variant="destructive" className="w-full" onClick={handleLogout}>
               Log Out
             </Button>
           </div>
