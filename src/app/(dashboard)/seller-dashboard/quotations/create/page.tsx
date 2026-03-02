@@ -88,9 +88,11 @@ function CreateQuotationContent() {
     <div className="space-y-6">
       <Link
         href={`/seller-dashboard/enquiries/${enquiryId}`}
-        className="flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-primary transition-colors"
+        className="inline-flex items-center gap-2 text-sm font-black text-[#3D52A0]/60 hover:text-[#3D52A0] transition-colors"
       >
-        <ArrowLeft className="h-4 w-4" />
+        <span className="h-8 w-8 rounded-xl bg-[#FFA500] hover:bg-[#e69500] flex items-center justify-center shadow-sm transition-colors">
+          <ArrowLeft className="h-4 w-4 text-white" />
+        </span>
         Back to Enquiry details
       </Link>
 

@@ -152,11 +152,11 @@ export function QuotationForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8 max-w-5xl mx-auto pb-20">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-3xl font-black text-[#1e2b6b] tracking-tight">
           {isUpdate ? "Update Quotation" : "Create Quotation"}
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-[#3D52A0]/60 font-medium text-sm">
           Provide your best pricing for the buyer&apos;s requirement.
         </p>
       </div>
@@ -225,108 +225,100 @@ export function QuotationForm({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
           {/* Enquiry Information Card */}
-          <Card className="bg-muted/30">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Package className="h-5 w-5 text-primary" />
-                Enquiry Details
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-1">
-                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  Buyer
-                </span>
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
+            <h2 className="text-lg font-black text-[#1e2b6b] flex items-center gap-2 border-b border-gray-100 pb-3">
+              <Package className="h-5 w-5 text-[#3D52A0]" />
+              Enquiry Details
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {/* Buyer */}
+              <div className="space-y-1.5">
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#3D52A0]/50">Buyer</span>
                 <div className="flex items-center gap-2">
-                  <User className="h-4 w-4 text-primary" />
-                  <span className="font-medium">
+                  <User className="h-4 w-4 text-[#3D52A0]" />
+                  <span className="font-bold text-[#1e2b6b] text-sm">
                     {enquiry.createdBy?.name || "Anonymous"}
                   </span>
                 </div>
               </div>
-              <div className="space-y-1">
-                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  Location
-                </span>
+              {/* Contact Details */}
+              <div className="space-y-1.5">
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#3D52A0]/50">Contact Details</span>
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2">
+                    <Phone className="h-4 w-4 text-[#3D52A0]" />
+                    <span className={`font-medium text-sm text-[#3D52A0] ${quotation && !quotation.isActive ? "blur-md select-none" : ""}`}>
+                      {quotation?.isActive ? enquiry.createdBy?.phone : "+91 ••••• •••••"}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Mail className="h-4 w-4 text-[#3D52A0]" />
+                    <span className={`font-medium text-sm text-[#3D52A0] ${quotation && !quotation.isActive ? "blur-md select-none" : ""}`}>
+                      {quotation?.isActive ? enquiry.createdBy?.email || "No email" : "••••••••@••••.com"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              {/* Location */}
+              <div className="space-y-1.5 md:col-span-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#3D52A0]/50">Location</span>
                 <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-primary" />
-                  <span className="font-medium line-clamp-1">
+                  <MapPin className="h-4 w-4 text-[#3D52A0]" />
+                  <span className="font-medium text-sm text-[#3D52A0] line-clamp-1">
                     {enquiry.enquiryDetails?.[0]?.address || "N/A"}
                   </span>
                 </div>
               </div>
-              <div className="space-y-1">
-                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  Contact Details
-                </span>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Phone className="h-4 w-4 text-primary" />
-                    <span
-                      className={`font-medium ${quotation && !quotation.isActive ? "blur-md select-none" : ""}`}
-                    >
-                      {quotation?.isActive
-                        ? enquiry.createdBy?.phone
-                        : "+91 ••••• •••••"}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Mail className="h-4 w-4 text-primary" />
-                    <span
-                      className={`font-medium ${quotation && !quotation.isActive ? "blur-md select-none" : ""}`}
-                    >
-                      {quotation?.isActive
-                        ? enquiry.createdBy?.email || "No email"
-                        : "••••••••@••••.com"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Line Items Section */}
-          <div className="space-y-6">
-            <h2 className="text-xl font-bold flex items-center gap-2 px-2">
-              Items to Quote
+          <div className="space-y-5">
+            <h2 className="text-2xl font-black text-[#1e2b6b] px-1">
+              Items to quote
             </h2>
             {enquiry.enquiryLineItems.map((eli, index) => {
               const currentLineItem = lineItems[index];
               return (
-                <Card
+                <div
                   key={eli.id}
-                  className="overflow-hidden border-l-4 border-l-primary"
+                  className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden"
                 >
-                  <CardHeader className="bg-muted/20 pb-4">
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="space-y-1">
-                        <CardTitle className="text-lg">
-                          {eli.item?.name}
-                        </CardTitle>
-                        <CardDescription>
-                          Requested:{" "}
-                          <span className="font-bold text-foreground">
-                            {eli.quantity} {UNIT_TYPE_LABELS[eli.unitType]}
-                          </span>
-                        </CardDescription>
+                  {/* Item header */}
+                  <div className="px-5 py-4 border-b border-gray-50">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                      <div>
+                        <p className="font-black text-[#FFA500] text-base">{eli.item?.name}</p>
+                        <p className="text-sm text-gray-400 font-medium mt-0.5">
+                          Requested {eli.quantity} {UNIT_TYPE_LABELS[eli.unitType]}
+                        </p>
                       </div>
-                      {eli.flexibleWithBrands && (
-                        <div className="px-2 py-1 bg-blue-100 text-blue-700 text-[10px] font-bold uppercase rounded">
-                          Flexible with Brands
-                        </div>
-                      )}
+                      <div className="flex flex-wrap gap-2 shrink-0">
+                        {enquiry.enquiryDetails?.[0]?.expectedDate && (
+                          <span className="px-3 py-1 rounded-full bg-[#3D52A0] text-white text-[10px] font-black tracking-wide whitespace-nowrap">
+                            Deliver Within 7 days
+                          </span>
+                        )}
+                        {eli.flexibleWithBrands && (
+                          <span className="px-3 py-1 rounded-full bg-[#FFA500] text-white text-[10px] font-black tracking-wide whitespace-nowrap">
+                            Flexible with brands
+                          </span>
+                        )}
+                      </div>
                     </div>
                     {eli.remarks && (
-                      <div className="mt-2 flex items-start gap-2 text-sm text-muted-foreground bg-white/50 p-2 rounded italic">
-                        <MessageSquare className="h-4 w-4 shrink-0 mt-0.5" />
+                      <div className="mt-3 flex items-start gap-2 text-xs text-gray-400 italic">
+                        <MessageSquare className="h-3.5 w-3.5 shrink-0 mt-0.5" />
                         &quot;{eli.remarks}&quot;
                       </div>
                     )}
-                  </CardHeader>
-                  <CardContent className="pt-6 space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label className="text-xs font-bold uppercase text-muted-foreground">
+                  </div>
+
+                  {/* Item form fields */}
+                  <div className="p-5 space-y-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      <div className="space-y-1.5">
+                        <Label className="text-[10px] font-black uppercase tracking-widest text-[#3D52A0]/50">
                           Select Your Matching Listing
                         </Label>
                         {sellerEntityId ? (
@@ -339,9 +331,7 @@ export function QuotationForm({
                             value={currentLineItem?.itemListingId}
                             placeholder={`Select ${eli.item?.name}...`}
                             onValueChange={(val) => {
-                              const selectedListing = listings?.find(
-                                (l) => l.id === val,
-                              );
+                              const selectedListing = listings?.find((l) => l.id === val);
                               updateLineItem(index, {
                                 itemListingId: val,
                                 itemId: selectedListing?.itemId || eli.itemId,
@@ -350,54 +340,44 @@ export function QuotationForm({
                             disabled={killSwitchUpdateDisabled && isUpdate}
                           />
                         ) : (
-                          <div className="p-4 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm flex flex-col gap-2">
+                          <div className="p-4 bg-red-50 border border-red-200 text-red-600 rounded-xl text-sm flex flex-col gap-2">
                             <div className="flex items-center gap-2 font-bold">
                               <AlertCircle className="h-5 w-5" />
                               <span>Business Identity Missing</span>
                             </div>
                             <p className="text-xs">
-                              We couldn&apos;t find a business entity associated
-                              with your account ({entities?.length || 0} found).
-                              You must have an approved business profile to
-                              respond to enquiries.
+                              We couldn&apos;t find a business entity associated with your account ({entities?.length || 0} found).
+                              You must have an approved business profile to respond to enquiries.
                             </p>
                           </div>
                         )}
                       </div>
                       <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label className="text-xs font-bold uppercase text-muted-foreground">
+                        <div className="space-y-1.5">
+                          <Label className="text-[10px] font-black uppercase tracking-widest text-[#3D52A0]/50">
                             Rate (Per {UNIT_TYPE_LABELS[eli.unitType]})
                           </Label>
                           <div className="relative">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
-                              ₹
-                            </span>
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#3D52A0] text-sm font-bold">₹</span>
                             <Input
                               type="number"
-                              className="pl-7"
-                              placeholder="0.00"
+                              className="pl-7 border-[#3D52A0]/15 focus:border-[#3D52A0] focus:ring-[#3D52A0]/10 rounded-xl"
+                              placeholder=""
                               value={currentLineItem?.rate || ""}
-                              onChange={(e) =>
-                                updateLineItem(index, {
-                                  rate: parseFloat(e.target.value) || 0,
-                                })
-                              }
+                              onChange={(e) => updateLineItem(index, { rate: parseFloat(e.target.value) || 0 })}
                               disabled={killSwitchUpdateDisabled && isUpdate}
                             />
                           </div>
                         </div>
-                        <div className="space-y-2">
-                          <Label className="text-xs font-bold uppercase text-muted-foreground">
+                        <div className="space-y-1.5">
+                          <Label className="text-[10px] font-black uppercase tracking-widest text-[#3D52A0]/50">
                             Total Amount
                           </Label>
                           <div className="relative">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm font-bold">
-                              ₹
-                            </span>
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#3D52A0] text-sm font-bold">₹</span>
                             <Input
                               type="number"
-                              className="pl-7 bg-muted/50 font-bold"
+                              className="pl-7 bg-gray-50 font-bold rounded-xl"
                               value={currentLineItem?.amount || 0}
                               readOnly
                             />
@@ -405,114 +385,105 @@ export function QuotationForm({
                         </div>
                       </div>
                     </div>
-
-                    <div className="space-y-2">
-                      <Label className="text-xs font-bold uppercase text-muted-foreground">
+                    <div className="space-y-1.5">
+                      <Label className="text-[10px] font-black uppercase tracking-widest text-[#3D52A0]/50">
                         Item Specific Remarks (Optional)
                       </Label>
                       <Input
-                        placeholder="e.g. Delivery included, Brand specifics, etc."
+                        placeholder="e.g. Write Delivery Included, Brand Specifics, etc."
+                        className="border-[#3D52A0]/15 focus:border-[#3D52A0] rounded-xl"
                         value={currentLineItem?.remarks || ""}
-                        onChange={(e) =>
-                          updateLineItem(index, { remarks: e.target.value })
-                        }
+                        onChange={(e) => updateLineItem(index, { remarks: e.target.value })}
                         disabled={killSwitchUpdateDisabled && isUpdate}
                       />
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               );
             })}
           </div>
         </div>
 
-        <div className="space-y-8">
-          {/* Summary & Terms Card */}
-          <Card className="sticky top-24">
-            <CardHeader className="border-b">
-              <CardTitle className="text-lg">Quotation Summary</CardTitle>
-            </CardHeader>
-            <CardContent className="pt-6 space-y-6">
-              <div className="space-y-4">
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-muted-foreground">Total Items</span>
-                  <span className="font-bold">
-                    {enquiry.enquiryLineItems.length}
-                  </span>
+        {/* Summary sidebar — dark blue gradient */}
+        <div className="space-y-4">
+          <div
+            className="sticky top-24 rounded-2xl overflow-hidden"
+            style={{ background: "linear-gradient(145deg, #3D52A0 0%, #2a3a7c 100%)" }}
+          >
+            <div className="px-6 py-5 border-b border-white/10">
+              <h3 className="text-white font-black text-lg">Quotation Summary</h3>
+            </div>
+            <div className="p-6 space-y-6">
+              {/* Item rows */}
+              <div className="space-y-3">
+                <div className="flex justify-between items-center text-xs font-black uppercase tracking-widest text-white/40">
+                  <span>Total Items</span>
+                  <span>Quantity</span>
                 </div>
-                <Separator />
-                <div className="flex justify-between items-center text-lg">
-                  <span className="font-bold">Grand Total</span>
-                  <span className="font-black text-primary">
-                    ₹{totalAmount.toLocaleString()}
-                  </span>
-                </div>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase text-muted-foreground flex items-center gap-1">
-                    <Calendar className="h-3 w-3" /> Expected Delivery
-                  </Label>
-                  <Input
-                    type="date"
-                    value={
-                      details.expectedDate
-                        ? format(new Date(details.expectedDate), "yyyy-MM-dd")
-                        : ""
-                    }
-                    onChange={(e) => {
-                      if (e.target.value) {
-                        setDetails({
-                          expectedDate: new Date(e.target.value).toISOString(),
-                        });
-                      }
-                    }}
-                    disabled={killSwitchUpdateDisabled && isUpdate}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase text-muted-foreground flex items-center gap-1">
-                    <MessageSquare className="h-3 w-3" /> Overall Remarks
-                  </Label>
-                  <Textarea
-                    placeholder="General terms and conditions..."
-                    className="min-h-[100px]"
-                    value={details.remarks || ""}
-                    onChange={(e) => setDetails({ remarks: e.target.value })}
-                    disabled={killSwitchUpdateDisabled && isUpdate}
-                  />
-                </div>
-              </div>
-
-              <div className="pt-4">
-                {killSwitchUpdateDisabled && isUpdate ? (
-                  <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg flex items-start gap-3">
-                    <AlertCircle className="h-5 w-5 text-yellow-600 shrink-0 mt-0.5" />
-                    <p className="text-xs text-yellow-700">
-                      <strong>Kill Switch Active:</strong> Quotations cannot be
-                      updated at this moment. This feature is coming soon.
-                    </p>
+                {enquiry.enquiryLineItems.map((eli, i) => (
+                  <div key={i} className="flex justify-between items-center text-sm">
+                    <span className="text-white/80 font-medium">{eli.item?.name}</span>
+                    <span className="text-white font-black">{String(eli.quantity).padStart(2, "0")}</span>
                   </div>
-                ) : (
-                  <Button
-                    type="submit"
-                    className="w-full h-12 text-lg font-bold"
-                    disabled={isLoading}
-                  >
-                    {isLoading
-                      ? "Processing..."
-                      : isUpdate
-                        ? "Update Quotation"
-                        : "Submit Quotation"}
-                  </Button>
-                )}
+                ))}
+                <div className="h-px bg-white/10" />
+                <div className="flex justify-between items-center">
+                  <span className="text-white font-black text-base">Grand Total</span>
+                  <span className="text-white font-black text-lg">₹{totalAmount.toLocaleString()}</span>
+                </div>
               </div>
-            </CardContent>
-          </Card>
+
+              <div className="h-px bg-white/10" />
+
+              {/* Expected Delivery */}
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-white/40 flex items-center gap-1.5">
+                  <Calendar className="h-3 w-3" /> Expected Delivery
+                </Label>
+                <Input
+                  type="date"
+                  className="bg-white/10 border-white/20 text-white placeholder-white/30 rounded-xl focus:border-[#FFA500] focus:ring-[#FFA500]/20 [color-scheme:dark]"
+                  value={details.expectedDate ? format(new Date(details.expectedDate), "yyyy-MM-dd") : ""}
+                  onChange={(e) => {
+                    if (e.target.value) setDetails({ expectedDate: new Date(e.target.value).toISOString() });
+                  }}
+                  disabled={killSwitchUpdateDisabled && isUpdate}
+                />
+              </div>
+
+              {/* Overall Remarks */}
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-white/40 flex items-center gap-1.5">
+                  <MessageSquare className="h-3 w-3" /> Overall Remarks
+                </Label>
+                <Textarea
+                  placeholder="Write Something..."
+                  className="bg-white border-0 rounded-xl placeholder:text-gray-300 text-[#1e2b6b] min-h-[100px] resize-none focus:ring-0"
+                  value={details.remarks || ""}
+                  onChange={(e) => setDetails({ remarks: e.target.value })}
+                  disabled={killSwitchUpdateDisabled && isUpdate}
+                />
+              </div>
+
+              {/* Submit / Kill switch */}
+              {killSwitchUpdateDisabled && isUpdate ? (
+                <div className="p-4 bg-yellow-500/20 border border-yellow-400/30 rounded-xl flex items-start gap-3">
+                  <AlertCircle className="h-5 w-5 text-yellow-300 shrink-0 mt-0.5" />
+                  <p className="text-xs text-yellow-200">
+                    <strong>Kill Switch Active:</strong> Quotations cannot be updated at this moment.
+                  </p>
+                </div>
+              ) : (
+                <Button
+                  type="submit"
+                  className="w-full h-12 bg-[#FFA500] hover:bg-[#e69500] active:scale-95 text-white font-black text-base rounded-xl border-0 shadow-lg shadow-orange-300/20 transition-all"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Processing..." : isUpdate ? "Update Quotation" : "Submit Quotation"}
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
