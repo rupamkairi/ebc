@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface CatalogHeaderProps {
@@ -17,33 +17,29 @@ export function CatalogHeader({
   onCreateClick,
 }: CatalogHeaderProps) {
   return (
-    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 bg-card p-6 md:p-8 rounded-lg border shadow-sm">
+    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 py-6">
       <div className="space-y-1">
-        <h1 className="text-3xl font-bold tracking-tight">Store Catalog</h1>
-        <p className="text-muted-foreground">
-          {businessName
-            ? `Managing ${
-                isServiceBusiness ? "service offerings" : "product listings"
-              } for ${businessName}`
-            : "Showcase your professional catalog to verified buyers."}
-        </p>
+        <h1 className="text-3xl font-black text-[#1A237E] tracking-tight">
+          Store Catalogue
+        </h1>
+        {businessName && (
+          <p className="text-[#3D52A0]/60 font-medium italic">
+            Managing {isServiceBusiness ? "service offerings" : "products"} for {businessName}
+          </p>
+        )}
       </div>
       <div className="flex items-center gap-3">
         <Button
           onClick={onCreateClick}
           disabled={isLoading}
-          size="lg"
-          className="font-semibold shadow-sm flex items-center gap-2 group transition-all"
+          className="bg-[#FFA000] hover:bg-[#FF8F00] text-white font-black px-6 h-12 rounded-xl shadow-lg shadow-amber-200/50 transition-all active:scale-95 flex items-center gap-2 border-none"
         >
           {isLoading ? (
             <Loader2 className="h-5 w-5 animate-spin" />
           ) : (
-            <Plus
-              size={20}
-              className="group-hover:rotate-90 transition-transform"
-            />
+            <span className="text-lg font-bold">+</span>
           )}
-          Create {isServiceBusiness ? "Service Offering" : "Product Listing"}
+          Create {isServiceBusiness ? "Service" : "Product"} Listing
         </Button>
       </div>
     </div>
