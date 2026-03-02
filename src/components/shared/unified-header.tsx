@@ -4,6 +4,7 @@ import Container from "@/components/ui/containers";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useSessionQuery } from "@/queries/authQueries";
+import { useEntitiesQuery } from "@/queries/entityQueries";
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
@@ -14,6 +15,17 @@ import {
   USER_ROLE,
 } from "@/constants/roles";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useAuthStore } from "@/store/authStore";
+import { useRouter } from "next/navigation";
+import { LogOut, Settings, LayoutDashboard } from "lucide-react";
 
 interface UnifiedHeaderProps {
   variant?: "public" | "buyer" | "seller";
@@ -34,6 +46,26 @@ export function UnifiedHeader({
 }: UnifiedHeaderProps) {
   const { data: sessionData } = useSessionQuery();
   const user = sessionData?.user;
+  const { data: entities = [] } = useEntitiesQuery();
+  const mainEntity = entities[0];
+
+  const displayName = mainEntity?.name || user?.name || "Member";
+  const { logout } = useAuthStore();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout();
+    router.push("/");
+  };
+
+  const getInitials = (name?: string | null) => {
+    if (!name) return "U";
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return name.charAt(0).toUpperCase();
+  };
 
   const isAdmin = user?.role && ADMIN_ROLES.includes(user.role as USER_ROLE);
   const isSeller = user?.role && SELLER_ROLES.includes(user.role as USER_ROLE);
@@ -97,14 +129,47 @@ export function UnifiedHeader({
               )}
 
               {user && !isAdmin && (
-                <Link href={getDashboardLink()}>
-                  <Avatar className="h-10 w-10 border-2 border-[#FFA500] hover:opacity-80 transition-opacity cursor-pointer">
-                    <AvatarImage src={user.image || ""} alt={user.name || ""} />
-                    <AvatarFallback className="bg-[#445EB4] text-white">
-                      {user.name?.charAt(0) || "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                </Link>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Avatar className="h-10 w-10 border-2 border-[#FFA500] hover:opacity-80 transition-opacity cursor-pointer">
+                      <AvatarImage src={user.image || ""} alt={displayName} />
+                      <AvatarFallback className="bg-gray-100 text-gray-600 font-semibold text-lg">
+                        {getInitials(displayName)}
+                      </AvatarFallback>
+                    </Avatar>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56 mt-1">
+                    <DropdownMenuLabel className="font-normal">
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">{displayName}</p>
+                        <p className="text-xs leading-none text-muted-foreground">{user.email || ""}</p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="cursor-pointer" asChild>
+                      <Link href={getDashboardLink()} className="flex items-center w-full">
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        <span>Dashboard</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    {isSeller && (
+                      <DropdownMenuItem className="cursor-pointer" asChild>
+                        <Link href="/seller-dashboard/settings" className="flex items-center w-full">
+                          <Settings className="mr-2 h-4 w-4" />
+                          <span>Settings</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={handleLogout}
+                      className="cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10"
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Logout</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               )}
             </div>
 
