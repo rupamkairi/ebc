@@ -127,58 +127,65 @@ export function UnifiedHeader({
                   </Link>
                 </>
               )}
+            </div>
 
-              {user && !isAdmin && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Avatar className="h-10 w-10 border-2 border-[#FFA500] hover:opacity-80 transition-opacity cursor-pointer">
-                      <AvatarImage src={user.image || ""} alt={displayName} />
-                      <AvatarFallback className="bg-gray-100 text-gray-600 font-semibold text-lg">
-                        {getInitials(displayName)}
-                      </AvatarFallback>
-                    </Avatar>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56 mt-1">
-                    <DropdownMenuLabel className="font-normal">
-                      <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">{displayName}</p>
-                        <p className="text-xs leading-none text-muted-foreground">{user.email || ""}</p>
-                      </div>
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
+            {user && !isAdmin && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Avatar className="h-10 w-10 border-2 border-[#FFA500] hover:opacity-80 transition-opacity cursor-pointer">
+                    <AvatarImage src={user.image || ""} alt={displayName} />
+                    <AvatarFallback className="bg-gray-100 text-gray-600 font-semibold text-lg">
+                      {getInitials(displayName)}
+                    </AvatarFallback>
+                  </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 mt-1">
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        {displayName}
+                      </p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user.email || ""}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="cursor-pointer" asChild>
+                    <Link
+                      href={getDashboardLink()}
+                      className="flex items-center w-full"
+                    >
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      <span>Dashboard</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  {(isSeller || isBuyer) && (
                     <DropdownMenuItem className="cursor-pointer" asChild>
-                      <Link href={getDashboardLink()} className="flex items-center w-full">
-                        <LayoutDashboard className="mr-2 h-4 w-4" />
-                        <span>Dashboard</span>
+                      <Link
+                        href={
+                          isSeller
+                            ? "/seller-dashboard/settings"
+                            : "/buyer-dashboard/settings"
+                        }
+                        className="flex items-center w-full"
+                      >
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>Profile Settings</span>
                       </Link>
                     </DropdownMenuItem>
-                    {(isSeller || isBuyer) && (
-                      <DropdownMenuItem className="cursor-pointer" asChild>
-                        <Link
-                          href={
-                            isSeller
-                              ? "/seller-dashboard/settings"
-                              : "/buyer-dashboard/settings"
-                          }
-                          className="flex items-center w-full"
-                        >
-                          <Settings className="mr-2 h-4 w-4" />
-                          <span>Profile Settings</span>
-                        </Link>
-                      </DropdownMenuItem>
-                    )}
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={handleLogout}
-                      className="cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10"
-                    >
-                      <LogOut className="mr-2 h-4 w-4" />
-                      <span>Logout</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
-            </div>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleLogout}
+                    className="cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Logout</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
 
             {mobileMenu}
           </div>
