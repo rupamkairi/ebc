@@ -72,9 +72,10 @@ export default function CreateEnquiryPage() {
       !buyerDetails ||
       !buyerDetails.name ||
       !buyerDetails.phoneNumber ||
-      !buyerDetails.pincodeDirectoryId
+      !buyerDetails.pincodeDirectoryId ||
+      !buyerDetails.address
     ) {
-      toast.error("Please fill in all required buyer details.");
+      toast.error("Please fill in all required buyer details including address.");
       return;
     }
 

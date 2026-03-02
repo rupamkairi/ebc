@@ -46,11 +46,14 @@ export default function ReviewSubmitPage() {
         details: {
           address: buyerDetails.address,
           remarks:
-            Object.keys(groupedItems).length > 1
+            buyerDetails.description ||
+            (Object.keys(groupedItems).length > 1
               ? "Split Enquiry via Web"
-              : "Enquiry via Web",
+              : "Enquiry via Web"),
           pincodeDirectoryId: buyerDetails.pincodeDirectoryId,
-          expectedDate: buyerDetails.expectedDate,
+          ...(buyerDetails.expectedDate && {
+            expectedDate: new Date(buyerDetails.expectedDate).toISOString(),
+          }),
         },
       }));
 
