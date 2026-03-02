@@ -2,7 +2,6 @@
 
 import Container from "@/components/ui/containers";
 import { SellerDashboardHeader } from "@/components/layouts/dashboard/seller-dashboard-header";
-import { BottomNav } from "@/app/(dashboard)/seller-dashboard/bottom-nav";
 import { AppThemeProvider } from "@/components/providers/app-theme-provider";
 
 export default function SellerDashboardLayoutComponent({
@@ -12,12 +11,11 @@ export default function SellerDashboardLayoutComponent({
 }) {
   return (
     <AppThemeProvider variant="app">
-      <div className="min-h-screen bg-muted/30 pb-32">
+      <div className="min-h-screen bg-muted/30">
         <SellerDashboardHeader />
         <div className="flex flex-col gap-6 py-6">
           <Container>{children}</Container>
         </div>
-        <BottomNav />
       </div>
     </AppThemeProvider>
   );
