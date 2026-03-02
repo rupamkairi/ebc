@@ -16,6 +16,8 @@ import {
   EmptyCatalogState,
 } from "@/components/dashboard/seller/catalog/catalog-empty-states";
 import { ENTITY_TYPE, ITEM_TYPE } from "@/constants/enums";
+import { NotificationInbox } from "@/components/dashboard/notifications/notification-inbox";
+import { Bell } from "lucide-react";
 
 export default function CatalogPage() {
   const {
@@ -59,7 +61,9 @@ export default function CatalogPage() {
     );
 
   return (
-    <div className="space-y-10">
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      {/* Main Content */}
+      <div className="lg:col-span-3 space-y-10">
       <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <CatalogHeader
           isLoading={isLoadingEntities}
@@ -164,6 +168,18 @@ export default function CatalogPage() {
         entityId={sellerEntity?.id || ""}
         itemType={isServiceBusiness ? ITEM_TYPE.SERVICE : ITEM_TYPE.PRODUCT}
       />
+      </div>
+
+      {/* Notification Sidebar */}
+      <div className="space-y-8 h-full">
+        <div className="sticky top-24 pt-4 lg:pt-0">
+          <div className="flex items-center gap-2 mb-4 px-2">
+            <Bell className="h-5 w-5 text-[#173072]" />
+            <h2 className="text-xl font-bold text-[#173072] tracking-tight">Notifications</h2>
+          </div>
+          <NotificationInbox userType="SELLER" />
+        </div>
+      </div>
     </div>
   );
 }

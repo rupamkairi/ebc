@@ -13,6 +13,8 @@ import { Input } from "@/components/ui/input";
 import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
 import { ACTIVITY_TYPE } from "@/constants/enums";
 import { cn } from "@/lib/utils";
+import { NotificationInbox } from "@/components/dashboard/notifications/notification-inbox";
+import { Bell } from "lucide-react";
 
 export default function EnquiriesPage() {
   const { data: entities = [] } = useEntitiesQuery();
@@ -46,7 +48,9 @@ export default function EnquiriesPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6 p-4 md:p-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      {/* Main Content */}
+      <div className="lg:col-span-3 flex flex-col gap-6 p-4 md:p-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 px-2">
         <div className="space-y-1">
           <h1 className="text-3xl font-black tracking-tight text-[#3D52A0]">
@@ -164,6 +168,18 @@ export default function EnquiriesPage() {
             );
           })
         )}
+      </div>
+      </div>
+
+      {/* Notification Sidebar */}
+      <div className="space-y-8 h-full">
+        <div className="sticky top-24 pt-4 lg:pt-0">
+          <div className="flex items-center gap-2 mb-4 px-2">
+            <Bell className="h-5 w-5 text-[#173072]" />
+            <h2 className="text-xl font-bold text-[#173072] tracking-tight">Notifications</h2>
+          </div>
+          <NotificationInbox userType="SELLER" />
+        </div>
       </div>
     </div>
   );
