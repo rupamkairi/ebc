@@ -50,6 +50,7 @@ export function CoinBalance({
             size="icon"
             variant="outline"
             className="h-9 w-9 rounded-full"
+            style={{ backgroundColor: "#22c55e", borderColor: "#22c55e", color: "#fff" }}
             title="Add Coins"
           >
             <Plus className="h-4 w-4" />
