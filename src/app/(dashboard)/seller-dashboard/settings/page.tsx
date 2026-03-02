@@ -15,13 +15,10 @@ export default function SettingsPage() {
   const status = mainEntity?.verificationStatus;
 
   return (
-    <Container className="py-8 space-y-8">
+    <Container className="py-8 space-y-8 max-w-[1400px] mx-auto">
       {/* Header */}
       <div className="space-y-1">
-        <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-        <p className="text-muted-foreground">
-          Manage your business profile and notification preferences.
-        </p>
+        <h1 className="text-[32px] font-bold tracking-tight text-[#445EB4]">Profile Settings</h1>
       </div>
 
       {/* Verification Status Banner */}
@@ -55,7 +52,7 @@ export default function SettingsPage() {
                 <p className="text-xs text-muted-foreground">
                   {status === "PENDING"
                     ? "Our team is reviewing your business profile. Some features may be restricted until approved."
-                    : mainEntity.verificaitonRemark ||
+                    : mainEntity?.verificaitonRemark ||
                       "Your business profile was rejected. Please contact support for more information."}
                 </p>
               </div>
@@ -67,9 +64,9 @@ export default function SettingsPage() {
         </Card>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Main Content: Entity Details */}
-        <div className="lg:col-span-2 space-y-8">
+        <div className="lg:col-span-3 space-y-8">
           <EntitySettingsForm />
         </div>
 
