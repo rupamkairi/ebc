@@ -207,6 +207,12 @@ export interface OfferListParams {
   status?: OfferStatus;
   search?: string;
   isActive?: boolean;
+  isPublic?: boolean;
+  targeting?: {
+    pincodeId?: string;
+    district?: string;
+    state?: string;
+  };
 }
 
 export interface Content {
