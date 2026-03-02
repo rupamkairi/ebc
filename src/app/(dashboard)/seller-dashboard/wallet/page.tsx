@@ -2,10 +2,8 @@
 
 import { useState } from "react";
 import { 
-  IndianRupee, 
   History,
   Plus,
-  TrendingUp,
   ArrowDownLeft,
   ArrowUpRight
 } from "lucide-react";
@@ -17,6 +15,7 @@ import { useWalletDetails } from "@/queries/walletQueries";
 import { RechargeModal } from "@/components/dashboard/seller/recharge-modal";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 export default function WalletPage() {
   const [isRechargeOpen, setIsRechargeOpen] = useState(false);
@@ -26,14 +25,15 @@ export default function WalletPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-8">
-        <Skeleton className="h-64 w-full rounded-[2.5rem]" />
+      <div className="space-y-8 animate-pulse p-4 md:p-8">
+        <div className="h-48 w-full bg-muted rounded-3xl" />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-4">
-            <Skeleton className="h-48 w-full rounded-2xl" />
-            <Skeleton className="h-48 w-full rounded-2xl" />
+            <div className="h-32 w-full bg-muted rounded-2xl" />
+            <div className="h-32 w-full bg-muted rounded-2xl" />
+            <div className="h-32 w-full bg-muted rounded-2xl" />
           </div>
-          <Skeleton className="h-80 w-full rounded-2xl" />
+          <div className="h-96 w-full bg-muted rounded-3xl" />
         </div>
       </div>
     );
@@ -43,143 +43,132 @@ export default function WalletPage() {
   const transactions = wallet?.transactions ?? [];
 
   const REASON_LABELS: Record<string, string> = {
-    VISIT_SUBMIT: "Site Visit Lead Unlock",
-    QUOTATION_SUBMIT: "Product Lead Unlock",
-    CREDIT_RECHARGE: "Wallet Recharge",
+    VISIT_SUBMIT: "SITE VISIT LEADS UNLOCK",
+    QUOTATION_SUBMIT: "PRODUCT LEADS UNLOCK",
+    CREDIT_RECHARGE: "WALLET_TOPUP",
   };
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6 md:gap-10 p-4 md:p-8 max-w-7xl mx-auto">
       <RechargeModal 
         isOpen={isRechargeOpen} 
         onClose={() => setIsRechargeOpen(false)} 
       />
 
-      {/* Coin Balance Card */}
-      <div className="relative group">
-        <div className="absolute -inset-1 bg-linear-to-r from-amber-400 via-amber-500 to-amber-600 rounded-[2.5rem] blur opacity-10 group-hover:opacity-25 transition duration-1000 group-hover:duration-200" />
-        <div className="relative bg-white border border-border rounded-[2.5rem] p-8 md:p-12 overflow-hidden shadow-sm text-center md:text-left">
-          <div className="absolute top-0 right-0 p-8 opacity-5">
-            <IndianRupee size={120} className="text-amber-500" />
-          </div>
-          
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 relative z-10">
-            <div className="space-y-4">
-              <div className="flex items-center justify-center md:justify-start gap-2 text-sm font-black uppercase tracking-widest text-foreground/40 italic">
-                <TrendingUp size={16} className="text-amber-500" />
-                Available Coin Balance
-              </div>
-              <div className="flex items-center justify-center md:justify-start gap-3 text-5xl md:text-7xl font-black text-foreground tracking-tight">
-                <IndianRupee className="md:size-16 size-12 text-amber-500 shadow-amber-200" />
-                {balance.toLocaleString()}
-              </div>
-              <p className="text-xs font-bold text-foreground/40 italic">
-                Use coins to unlock enquiries and premium appointments.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button 
-                onClick={() => setIsRechargeOpen(true)}
-                className="h-16 px-10 bg-amber-600 hover:bg-amber-700 text-white font-black text-lg rounded-2xl shadow-xl shadow-amber-200 flex items-center gap-3 group"
-              >
-                Add Coins
-                <Plus size={20} className="group-hover:rotate-90 transition-transform" />
-              </Button>
-            </div>
+      {/* Header Balance Card */}
+      <div className="w-full bg-linear-to-r from-[#F57C00] to-[#FFA000] rounded-3xl p-6 md:p-10 shadow-lg shadow-orange-500/20 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 relative overflow-hidden group">
+        {/* Decorative Coin Silhouette */}
+        <div className="absolute -bottom-10 -right-10 opacity-10 group-hover:scale-110 transition-transform duration-700 hidden md:block">
+           <div className="size-64 rounded-full border-[20px] border-white" />
+        </div>
+        
+        <div className="flex flex-col gap-3 md:gap-4 text-center md:text-left relative z-10">
+          <h2 className="text-white/90 text-sm md:text-xl font-bold tracking-tight uppercase md:normal-case">Available Coin Balance</h2>
+          <div className="flex items-center justify-center md:justify-start gap-3 md:gap-4">
+             <div className="size-10 md:size-16 rounded-full border-4 md:border-[6px] border-[#E65100] bg-[#FFB300] flex items-center justify-center shadow-inner">
+                <div className="size-6 md:size-10 rounded-full border-2 border-[#E65100]/30" />
+             </div>
+             <span className="text-4xl md:text-7xl font-black text-white drop-shadow-sm tracking-tight italic">
+               {balance.toLocaleString()}
+             </span>
           </div>
         </div>
+
+        <Button 
+          onClick={() => setIsRechargeOpen(true)}
+          className="bg-white hover:bg-white/90 text-[#F57C00] h-12 md:h-16 w-full md:w-auto px-10 rounded-2xl font-black text-base md:text-xl shadow-xl shadow-black/5 flex items-center gap-3 active:scale-95 transition-all relative z-10"
+        >
+          <Plus size={20} className="md:size-6" strokeWidth={3} />
+          Add Coins
+        </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Transactions History */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="bg-amber-100/50 p-2.5 rounded-xl text-amber-700">
-                <History size={24} />
-              </div>
-              <h2 className="text-2xl font-black text-foreground">Transaction History</h2>
-            </div>
-          </div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10">
+        {/* Left Column: Transaction History */}
+        <div className="lg:col-span-7 bg-white rounded-3xl p-5 md:p-8 border border-slate-100 shadow-xs space-y-6 md:space-y-8">
+           <div className="flex items-center gap-3">
+              <h3 className="text-lg md:text-xl font-black text-[#1A237E] uppercase tracking-wider">Transaction History</h3>
+           </div>
 
-          <div className="grid gap-3">
-            {transactions.length === 0 ? (
-              <div className="py-12 text-center bg-white rounded-3xl border border-dashed border-border">
-                <div className="bg-gray-50 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <History className="text-gray-300" size={32} />
-                </div>
-                <h3 className="text-lg font-black text-foreground">No Transactions Yet</h3>
-                <p className="text-sm font-bold text-muted-foreground italic">Your coin history will appear here.</p>
-              </div>
-            ) : (
-              transactions.map((txn) => (
-                <Card key={txn.id} className="border-none shadow-sm hover:shadow-md transition-all group/card">
-                  <CardContent className="p-5 flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                      <div className={`h-12 w-12 rounded-2xl flex items-center justify-center shadow-sm ${
-                        txn.type === 'CREDIT' ? 'bg-amber-50 text-amber-600' : 'bg-slate-50 text-slate-400'
-                      }`}>
-                        {txn.type === 'CREDIT' ? <ArrowUpRight size={24} /> : <ArrowDownLeft size={24} />}
+           <div className="space-y-3">
+             {transactions.length === 0 ? (
+               <div className="py-20 text-center opacity-30">
+                 <History size={48} className="mx-auto mb-4" />
+                 <p className="font-bold uppercase tracking-widest text-sm">No Transactions Found</p>
+               </div>
+             ) : (
+               transactions.map((txn) => {
+                 const isTopup = txn.type === 'CREDIT';
+                 return (
+                   <div key={txn.id} className="group border-2 border-slate-50 hover:border-slate-100 rounded-2xl p-4 md:p-6 transition-all duration-300 flex items-center gap-4 md:gap-6">
+                      <div className={cn(
+                        "size-10 md:size-14 rounded-xl flex items-center justify-center shrink-0 border-2 transition-colors",
+                        isTopup 
+                          ? "bg-orange-50/50 border-orange-100 text-[#F57C00]" 
+                          : "bg-slate-50 border-slate-100 text-[#1A237E]"
+                      )}>
+                        {isTopup ? <ArrowUpRight size={20} className="md:size-7" strokeWidth={2.5} /> : <ArrowDownLeft size={20} className="md:size-7" strokeWidth={2.5} />}
                       </div>
-                      <div>
-                        <h4 className="font-bold text-foreground leading-snug group-hover/card:text-amber-600 transition-colors uppercase text-sm tracking-tight">
-                          {REASON_LABELS[txn.reason] || txn.reason}
+
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-black text-[#1A237E] text-xs md:text-base mb-0.5 md:mb-1 tracking-tight truncate leading-tight">
+                          {REASON_LABELS[txn.reason] || txn.reason.replace(/_/g, ' ')}
                         </h4>
-                        <div className="flex items-center gap-3 mt-1">
-                          <span className="text-[10px] font-black uppercase tracking-widest text-foreground/30">{txn.id}</span>
-                          <span className="text-[10px] font-bold text-foreground/30 italic">
-                            {format(new Date(txn.createdAt), "dd MMM yyyy, hh:mm a")}
-                          </span>
+                        <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-4 text-[9px] md:text-xs">
+                           <span className="font-bold text-slate-300 uppercase truncate">ID: {txn.id.slice(0, 12)}...</span>
+                           <span className="hidden md:inline text-slate-200">|</span>
+                           <span className="font-bold text-slate-300 italic">
+                             {format(new Date(txn.createdAt), "dd MMM yyyy")}
+                           </span>
                         </div>
                       </div>
-                    </div>
-                    <div className="text-right">
-                      <div className={`text-xl font-black flex items-center justify-end ${
-                        txn.type === 'CREDIT' ? 'text-emerald-600' : 'text-rose-600'
-                      }`}>
-                        {txn.type === 'CREDIT' ? '+' : '-'}
-                        {txn.amount}
+
+                      <div className={cn(
+                        "text-lg md:text-2xl font-black italic shrink-0",
+                        isTopup ? "text-[#F57C00]" : "text-[#1A237E]"
+                      )}>
+                        {isTopup ? '+' : '-'}{txn.amount}
                       </div>
-                      <Badge variant="outline" className={`text-[9px] font-black uppercase tracking-tighter mt-1 outline-none border-none py-0 h-4 ${
-                        txn.status === 'SUCCESS' ? 'bg-emerald-100/50 text-emerald-700' : 'bg-amber-100/50 text-amber-700'
-                      }`}>
-                        {txn.status}
-                      </Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            )}
-          </div>
+                   </div>
+                 );
+               })
+             )}
+           </div>
         </div>
 
-        {/* Why use coins? */}
-        <div className="space-y-6">
-           <div className="bg-white p-8 rounded-4xl border border-border space-y-6 sticky top-24">
-              <div className="h-14 w-14 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-600 shadow-sm">
-                <IndianRupee size={28} />
+        {/* Right Column: Why EBC Coins Section */}
+        <div className="lg:col-span-5">
+           <div className="bg-[#1A237E] rounded-[2rem] p-6 md:p-10 space-y-6 md:space-y-8 text-white relative overflow-hidden lg:sticky lg:top-8">
+              {/* Background Accent */}
+              <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full -mr-24 -mt-24 blur-3xl" />
+              
+              <div className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6 relative z-10 text-center md:text-left">
+                <div className="size-16 md:size-20 bg-white/10 rounded-2xl border border-white/20 flex items-center justify-center shrink-0 shadow-2xl">
+                   <div className="size-10 md:size-12 rounded-full border-4 border-[#FFA000] bg-[#FFB300] shadow-inner" />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-2xl md:text-4xl font-black text-[#FFD54F] italic leading-tight uppercase md:normal-case">Why EBC Coins?</h3>
+                  <p className="text-[10px] md:text-sm text-white/50 font-bold leading-relaxed italic max-w-xs mx-auto md:mx-0">
+                    Our secure coin system ensures faster unlocks and seamless appointment management without needing external payment everytime
+                  </p>
+                </div>
               </div>
-              <div className="space-y-2">
-                <h3 className="text-xl font-black text-foreground italic">Why EBC Coins?</h3>
-                <p className="text-sm font-medium text-foreground/60 leading-relaxed">
-                  Our secure coin system ensures faster unlocks and seamless appointment management without needing external payment every time.
-                </p>
+
+              <div className="space-y-4 md:space-y-6 relative z-10 max-w-sm mx-auto md:mx-0">
+                 {[
+                   "Unlock Quotations instantly",
+                   "Priority site visit requests",
+                   "Featured search visibility",
+                   "Exclusive seller deals"
+                 ].map((benefit) => (
+                   <div key={benefit} className="flex items-center gap-3 md:gap-4">
+                      <div className="size-2 md:size-3 rounded-full bg-[#FFA000] shadow-[0_0_10px_rgba(255,160,0,0.5)] shrink-0" />
+                      <span className="text-xs md:text-base font-black italic text-white/90">{benefit}</span>
+                   </div>
+                 ))}
               </div>
-              <ul className="space-y-3">
-                {[
-                  "Unlock Quotations Instantly",
-                  "Priority Site Visit Requests",
-                  "Featured Search Visibility",
-                  "Exclusive Seller Rewards"
-                ].map((benefit) => (
-                  <li key={benefit} className="flex items-center gap-2 text-xs font-bold text-foreground/70 italic">
-                    <div className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-                    {benefit}
-                  </li>
-                ))}
-              </ul>
-              <Button variant="outline" className="w-full h-12 border-amber-600/20 text-amber-700 font-black rounded-xl hover:bg-amber-50">
+
+              <Button className="w-full h-14 md:h-16 bg-white hover:bg-slate-50 text-[#1A237E] font-black text-base md:text-xl rounded-2xl shadow-2xl relative z-10 transition-transform active:scale-[0.98] uppercase md:normal-case">
                 Learn More
               </Button>
            </div>
