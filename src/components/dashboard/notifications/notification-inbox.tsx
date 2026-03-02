@@ -49,28 +49,36 @@ export function NotificationInbox({
   };
 
   const getNotificationPath = (notification: Notification, role: string) => {
-    const { activityId, type } = notification;
-    if (!activityId) return null;
+    const { activityId, type, metadata } = notification;
 
     if (role === "SELLER") {
-      if (type.includes("ENQUIRY"))
-        return `/seller-dashboard/enquiries/${activityId}`;
-      if (type.includes("APPOINTMENT"))
-        return `/seller-dashboard/appointments/${activityId}`;
-      if (type.includes("QUOTATION"))
-        return `/seller-dashboard/quotations/${activityId}`;
+      if (type.includes("ENQUIRY")) {
+        const id = (metadata?.enquiryId as string) || activityId;
+        return id ? `/seller-dashboard/enquiries/${id}` : null;
+      }
+      if (type.includes("APPOINTMENT")) {
+        return `/seller-dashboard/appointments`;
+      }
+      if (type.includes("QUOTATION")) {
+        const id = (metadata?.quotationId as string) || activityId;
+        return id ? `/seller-dashboard/quotations/${id}` : null;
+      }
     }
 
     if (role === "BUYER") {
-      if (type.includes("QUOTATION"))
-        return `/buyer-dashboard/enquiries/${notification.metadata?.enquiryId || ""}`;
-      if (type.includes("VISIT"))
-        return `/buyer-dashboard/appointments/${activityId}`;
+      if (type.includes("QUOTATION")) {
+        const id = (metadata?.enquiryId as string) || activityId;
+        return id ? `/buyer-dashboard/enquiries/${id}` : null;
+      }
+      if (type.includes("VISIT")) {
+        const id = (metadata?.appointmentId as string) || activityId;
+        return id ? `/buyer-dashboard/appointments/${id}` : null;
+      }
     }
 
     if (role === "ADMIN") {
       if (type.includes("ENTITY"))
-        return `/admin-dashboard/sellers/product-sellers/${activityId}`;
+        return activityId ? `/admin-dashboard/sellers/product-sellers/${activityId}` : null;
       if (type.includes("OFFER")) return `/admin-dashboard/catalog/offers`;
     }
 
