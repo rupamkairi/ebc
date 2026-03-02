@@ -9,6 +9,9 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { NotificationInbox } from "@/components/dashboard/notifications/notification-inbox";
+import { useAssignmentsQuery } from "@/queries/activityQueries";
+import { useEntitiesQuery } from "@/queries/entityQueries";
+import { ACTIVITY_TYPE } from "@/constants/enums";
 
 const faqs = [
   {
@@ -61,6 +64,18 @@ export default function SupportPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
+
+  const { data: entities = [] } = useEntitiesQuery();
+  const sellerEntity = entities[0];
+  const { data: enquiryAssignments = [] } = useAssignmentsQuery({
+    toEntityId: sellerEntity?.id,
+    type: ACTIVITY_TYPE.ENQUIRY_ASSIGNMENT,
+  });
+  const respondedEnquiryIds = new Set(
+    enquiryAssignments
+      .filter((a) => a.enquiry?.status && a.enquiry.status !== "PENDING")
+      .map((a) => a.enquiry!.id),
+  );
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -199,7 +214,7 @@ export default function SupportPage() {
             <Bell className="h-5 w-5 text-[#173072]" />
             <h2 className="text-xl font-bold text-[#173072] tracking-tight">Notifications</h2>
           </div>
-          <NotificationInbox userType="SELLER" />
+          <NotificationInbox userType="SELLER" respondedEnquiryIds={respondedEnquiryIds} />
         </div>
       </div>
     </div>

@@ -14,6 +14,7 @@ import {
   Calendar,
   MessageSquare,
   Briefcase,
+  CheckCircle2,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -25,6 +26,8 @@ interface NotificationInboxProps {
   className?: string;
   limit?: number;
   hideHeader?: boolean;
+  /** Set of enquiry IDs that have already been responded to — used to update the badge label */
+  respondedEnquiryIds?: Set<string>;
 }
 
 export function NotificationInbox({
@@ -32,6 +35,7 @@ export function NotificationInbox({
   className,
   limit,
   hideHeader = false,
+  respondedEnquiryIds,
 }: NotificationInboxProps) {
   const { data: notifications = [], isLoading } = useNotificationsQuery();
   const markReadMutation = useMarkNotificationReadMutation();
@@ -182,18 +186,23 @@ export function NotificationInbox({
 
                         {/* Slot implementation for specific user content */}
                         {userType === "SELLER" &&
-                          notification.type.includes("ENQUIRY") && (
-                            <div className="mt-2 flex items-center gap-2">
-                              <span className="text-[10px] px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded font-medium">
-                                New Enquiry
-                              </span>
-                              {/* {notification.metadata?.itemName && (
-                                <span className="text-[10px] text-muted-foreground truncate italic">
-                                  for {notification.metadata.itemName}
-                                </span>
-                              )} */}
-                            </div>
-                          )}
+                          notification.type.includes("ENQUIRY") && (() => {
+                            const enquiryId = notification.metadata?.enquiryId as string | undefined;
+                            const isResponded = enquiryId && respondedEnquiryIds?.has(enquiryId);
+                            return (
+                              <div className="mt-2 flex items-center gap-2">
+                                {isResponded ? (
+                                  <span className="text-[10px] px-1.5 py-0.5 bg-green-100 text-green-700 rounded font-medium flex items-center gap-1">
+                                    <CheckCircle2 size={10} /> Responded
+                                  </span>
+                                ) : (
+                                  <span className="text-[10px] px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded font-medium">
+                                    New Enquiry
+                                  </span>
+                                )}
+                              </div>
+                            );
+                          })()}
 
                         {userType === "BUYER" &&
                           notification.type.includes("QUOTATION") && (

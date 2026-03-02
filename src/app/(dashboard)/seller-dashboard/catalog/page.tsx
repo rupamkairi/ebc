@@ -15,9 +15,10 @@ import {
   NoEntityState,
   EmptyCatalogState,
 } from "@/components/dashboard/seller/catalog/catalog-empty-states";
-import { ENTITY_TYPE, ITEM_TYPE } from "@/constants/enums";
+import { ENTITY_TYPE, ITEM_TYPE, ACTIVITY_TYPE } from "@/constants/enums";
 import { NotificationInbox } from "@/components/dashboard/notifications/notification-inbox";
 import { Bell } from "lucide-react";
+import { useAssignmentsQuery } from "@/queries/activityQueries";
 
 export default function CatalogPage() {
   const {
@@ -42,6 +43,16 @@ export default function CatalogPage() {
     {
       entityId: sellerEntity?.id || "",
     },
+  );
+
+  const { data: enquiryAssignments = [] } = useAssignmentsQuery({
+    toEntityId: sellerEntity?.id,
+    type: ACTIVITY_TYPE.ENQUIRY_ASSIGNMENT,
+  });
+  const respondedEnquiryIds = new Set(
+    enquiryAssignments
+      .filter((a) => a.enquiry?.status && a.enquiry.status !== "PENDING")
+      .map((a) => a.enquiry!.id),
   );
 
   const isLoading = isLoadingEntities || isLoadingListings;
@@ -177,7 +188,7 @@ export default function CatalogPage() {
             <Bell className="h-5 w-5 text-[#173072]" />
             <h2 className="text-xl font-bold text-[#173072] tracking-tight">Notifications</h2>
           </div>
-          <NotificationInbox userType="SELLER" />
+          <NotificationInbox userType="SELLER" respondedEnquiryIds={respondedEnquiryIds} />
         </div>
       </div>
     </div>

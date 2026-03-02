@@ -22,6 +22,7 @@ import {
   Eye,
   Store,
   ChevronRight,
+  CheckCircle2,
 } from "lucide-react";
 import Link from "next/link";
 import { useEntitiesQuery } from "@/queries/entityQueries";
@@ -61,6 +62,21 @@ export default function SellerDashboardPage() {
     (q) => q.status === "PENDING",
   ).length;
   const sentQuotations = quotations.length;
+
+  // Split enquiry assignments into pending vs responded
+  const pendingEnquiryCount = enquiryAssignments.filter(
+    (a) => !a.enquiry?.status || a.enquiry.status === "PENDING",
+  ).length;
+  const respondedEnquiryCount = enquiryAssignments.filter(
+    (a) => a.enquiry?.status && a.enquiry.status !== "PENDING",
+  ).length;
+
+  // Build a Set of responded enquiry IDs for the notification inbox badge
+  const respondedEnquiryIds = new Set(
+    enquiryAssignments
+      .filter((a) => a.enquiry?.status && a.enquiry.status !== "PENDING")
+      .map((a) => a.enquiry!.id),
+  );
 
   return (
     <div className="flex flex-col gap-8 py-2">
@@ -140,7 +156,10 @@ export default function SellerDashboardPage() {
                     <span className="font-semibold text-lg">New Enquirers</span>
                   </div>
                   <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 bg-white min-h-[100px] sm:min-h-[120px]">
-                    <span className="text-4xl sm:text-5xl font-bold text-[#173072]">{enquiryAssignments.length}</span>
+                    <span className="text-4xl sm:text-5xl font-bold text-[#173072]">{pendingEnquiryCount}</span>
+                    {respondedEnquiryCount > 0 && (
+                      <span className="text-[11px] text-muted-foreground font-semibold mt-1">{respondedEnquiryCount} responded</span>
+                    )}
                   </div>
                 </Card>
               </Link>
@@ -183,15 +202,23 @@ export default function SellerDashboardPage() {
               {/* Active Leads */}
               <Card className="bg-[#173072] text-white p-5 rounded-2xl shadow-sm flex flex-col justify-between h-full border-0 relative overflow-hidden">
                   <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-500 rounded-full blur-3xl opacity-20 pointer-events-none"></div>
-                  <div className="flex items-center justify-between mb-6 z-10">
+                  <div className="flex items-center justify-between mb-4 z-10">
                       <div className="flex items-center gap-2">
                           <div className="bg-white/10 p-2 rounded-lg">
                               <Bell className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                           </div>
                           <span className="font-semibold text-base sm:text-lg tracking-tight">Active Leads</span>
                       </div>
-                      <span className="text-4xl sm:text-5xl font-bold text-[#EF8A17] drop-shadow-md">{enquiryAssignments.length}</span>
+                      <span className="text-4xl sm:text-5xl font-bold text-[#EF8A17] drop-shadow-md">{pendingEnquiryCount}</span>
                   </div>
+                  {respondedEnquiryCount > 0 && (
+                    <div className="z-10 mb-3 flex items-center gap-2 bg-white/10 rounded-xl px-3 py-2">
+                      <CheckCircle2 className="h-4 w-4 text-green-400 shrink-0" />
+                      <span className="text-xs font-semibold text-white/80">
+                        {respondedEnquiryCount} past {respondedEnquiryCount === 1 ? "enquiry" : "enquiries"} responded
+                      </span>
+                    </div>
+                  )}
                   <Link href="/seller-dashboard/enquiries" className="w-full z-10">
                       <Button className="w-full bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-lg h-11 text-sm font-semibold shadow-md active:scale-[0.98] transition-all">
                           <ChevronRight className="mr-1 h-4 w-4" /> Open Leads
@@ -413,7 +440,7 @@ export default function SellerDashboardPage() {
                  <Bell className="h-5 w-5 text-[#173072]" />
                  <h2 className="text-xl font-bold text-[#173072] tracking-tight">Notifications</h2>
              </div>
-             <NotificationInbox userType="SELLER" />
+             <NotificationInbox userType="SELLER" respondedEnquiryIds={respondedEnquiryIds} />
           </div>
         </div>
       </div>

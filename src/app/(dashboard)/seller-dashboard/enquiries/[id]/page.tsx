@@ -86,7 +86,9 @@ export default function EnquiryDetailsPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Enquiry Details</h1>
           <p className="text-sm text-muted-foreground">
-            Review buyer requirements and submit your quotation.
+            {enquiry.status === "PENDING"
+              ? "Review buyer requirements and submit your quotation."
+              : "This enquiry has already been responded to."}
           </p>
         </div>
       </div>
@@ -219,25 +221,46 @@ export default function EnquiryDetailsPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-primary text-primary-foreground">
-            <CardHeader>
-              <CardTitle>Submit Quotation</CardTitle>
-              <CardDescription className="text-primary-foreground/80">
-                Ready to fulfill this requirement? Send your best price to the
-                buyer.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button className="w-full" variant="secondary" asChild>
-                <Link
-                  href={`/seller-dashboard/quotations/create?enquiryId=${enquiry.id}`}
-                >
-                  <FileText className="mr-2 h-4 w-4" />
-                  Create Quotation
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
+          {enquiry.status === "PENDING" ? (
+            <Card className="bg-primary text-primary-foreground">
+              <CardHeader>
+                <CardTitle>Submit Quotation</CardTitle>
+                <CardDescription className="text-primary-foreground/80">
+                  Ready to fulfill this requirement? Send your best price to the
+                  buyer.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button className="w-full" variant="secondary" asChild>
+                  <Link
+                    href={`/seller-dashboard/quotations/create?enquiryId=${enquiry.id}`}
+                  >
+                    <FileText className="mr-2 h-4 w-4" />
+                    Create Quotation
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="bg-green-50 border-green-200">
+              <CardHeader>
+                <CardTitle className="text-green-800 flex items-center gap-2">
+                  <PackageCheck className="h-5 w-5 text-green-600" />
+                  Quotation Submitted
+                </CardTitle>
+                <CardDescription className="text-green-700/80">
+                  You have already responded to this enquiry. The buyer has been notified.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button className="w-full" variant="outline" asChild>
+                  <Link href="/seller-dashboard/enquiries">
+                    Back to Enquiries
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+          )}
 
           <div className="bg-muted p-4 rounded-lg flex items-start gap-4">
             <AlertCircle className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />

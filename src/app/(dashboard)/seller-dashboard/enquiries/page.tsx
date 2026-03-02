@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, ChevronRight, Loader2 } from "lucide-react";
+import { Search, ChevronRight, Loader2, CheckCircle2, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import {
@@ -8,17 +8,19 @@ import {
 } from "@/components/ui/card";
 import { useEntitiesQuery } from "@/queries/entityQueries";
 import { useAssignmentsQuery } from "@/queries/activityQueries";
-import { ActivityAssignment } from "@/types/activity";
 import { Input } from "@/components/ui/input";
 import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
 import { ACTIVITY_TYPE } from "@/constants/enums";
 import { cn } from "@/lib/utils";
 import { NotificationInbox } from "@/components/dashboard/notifications/notification-inbox";
 import { Bell } from "lucide-react";
+import { useState } from "react";
 
 export default function EnquiriesPage() {
   const { data: entities = [] } = useEntitiesQuery();
   const mainEntity = entities[0];
+  const [showResponded, setShowResponded] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: assignments = [], isLoading: loading } = useAssignmentsQuery({
     toEntityId: mainEntity?.id,
@@ -47,6 +49,39 @@ export default function EnquiriesPage() {
     };
   };
 
+  // Split into pending (active) vs responded
+  const pendingAssignments = assignments.filter(
+    (a) => !a.enquiry?.status || a.enquiry.status === "PENDING",
+  );
+  const respondedAssignments = assignments.filter(
+    (a) => a.enquiry?.status && a.enquiry.status !== "PENDING",
+  );
+
+  // Apply search to both
+  const filterBySearch = (list: typeof assignments) =>
+    searchQuery.trim()
+      ? list.filter((a) => {
+          const enq = a.enquiry;
+          if (!enq) return false;
+          const q = searchQuery.toLowerCase();
+          return (
+            enq.id.toLowerCase().includes(q) ||
+            enq.createdBy?.name?.toLowerCase().includes(q) ||
+            enq.enquiryLineItems.some((li) =>
+              li.item?.name?.toLowerCase().includes(q),
+            )
+          );
+        })
+      : list;
+
+  const visiblePending = filterBySearch(pendingAssignments);
+  const visibleResponded = filterBySearch(respondedAssignments);
+
+  // Set of responded enquiry IDs for notification badge
+  const respondedEnquiryIds = new Set(
+    respondedAssignments.map((a) => a.enquiry!.id),
+  );
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
       {/* Main Content */}
@@ -66,19 +101,22 @@ export default function EnquiriesPage() {
             type="search"
             placeholder="Search enquiries..."
             className="h-10 pl-9 bg-white border-[#3D52A0]/10 rounded-xl focus:border-[#3D52A0] focus:ring-[#3D52A0]/10 transition-all placeholder:text-[#3D52A0]/20 text-sm"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
       </div>
 
+      {/* ── Active / Pending ─────────────────────────────────────── */}
       <div className="grid gap-5">
-        {assignments.length === 0 ? (
+        {visiblePending.length === 0 ? (
           <div className="flex h-[240px] flex-col items-center justify-center bg-white rounded-[24px] border-2 border-dashed border-[#3D52A0]/10">
             <p className="text-[#3D52A0]/40 font-bold">
-              No enquiries assigned yet.
+              {searchQuery ? "No matching enquiries." : "All enquiries have been responded to!"}
             </p>
           </div>
         ) : (
-          assignments.map((assignment) => {
+          visiblePending.map((assignment) => {
             const enq = assignment.enquiry;
             if (!enq) return null;
 
@@ -169,6 +207,97 @@ export default function EnquiriesPage() {
           })
         )}
       </div>
+
+      {/* ── Responded section ─────────────────────────────────────── */}
+      {respondedAssignments.length > 0 && (
+        <div className="flex flex-col gap-4">
+          <button
+            type="button"
+            onClick={() => setShowResponded((v) => !v)}
+            className="flex items-center justify-between w-full px-4 py-3 rounded-2xl bg-green-50 border border-green-100 hover:bg-green-100 transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-green-600" />
+              <span className="text-sm font-black text-green-800 tracking-tight">
+                Responded Enquiries
+              </span>
+              <span className="px-2 py-0.5 rounded-full bg-green-600 text-white text-[10px] font-black">
+                {respondedAssignments.length}
+              </span>
+            </div>
+            <ChevronDown
+              className={cn(
+                "h-4 w-4 text-green-600 transition-transform duration-300",
+                showResponded ? "rotate-180" : "",
+              )}
+            />
+          </button>
+
+          {showResponded && (
+            <div className="grid gap-4 animate-in fade-in slide-in-from-top-2 duration-300">
+              {visibleResponded.map((assignment) => {
+                const enq = assignment.enquiry;
+                if (!enq) return null;
+                const firstItem = enq.enquiryLineItems?.[0];
+                const details = enq.enquiryDetails?.[0];
+                return (
+                  <Card
+                    key={assignment.id}
+                    className="bg-white/60 border border-green-100 shadow-xs rounded-[20px] overflow-hidden p-5 md:p-7 opacity-80"
+                  >
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <div className="px-3 py-1 rounded-full border border-[#3D52A0]/10 text-[#3D52A0] text-[9px] font-black tracking-widest bg-[#3D52A0]/5 uppercase">
+                            ID: {enq.id.slice(0, 8)}
+                          </div>
+                        </div>
+                        <div className="px-3 py-1 rounded-lg bg-green-100 text-green-700 font-black text-[9px] tracking-widest uppercase shrink-0 flex items-center gap-1">
+                          <CheckCircle2 size={10} />
+                          {enq.status}
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                        <h3 className="text-base font-black text-[#3D52A0]/70 leading-none">
+                          {enq.createdBy?.name || "Anonymous Buyer"}
+                        </h3>
+                        <p className="text-[9px] font-bold text-[#3D52A0]/30 tracking-widest uppercase truncate sm:max-w-[200px]">
+                          {details?.address || "No Location"}
+                        </p>
+                      </div>
+
+                      <div className="h-px w-full bg-[#3D52A0]/5" />
+
+                      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div className="flex-1">
+                          <p className="text-[9px] font-black text-[#3D52A0]/40 uppercase tracking-[0.25em] mb-1">Requirement</p>
+                          <p className="text-sm font-bold text-[#3D52A0]/60">
+                            {firstItem?.item?.name || "Enquiry Items"}
+                            {enq.enquiryLineItems.length > 1 && (
+                              <span className="text-[10px] ml-1 text-[#3D52A0]/30">(+{enq.enquiryLineItems.length - 1} more)</span>
+                            )}
+                          </p>
+                        </div>
+                        <Button
+                          asChild
+                          variant="outline"
+                          className="h-9 w-full md:w-auto px-5 rounded-xl font-black text-[11px] tracking-widest uppercase border-[#3D52A0]/20 text-[#3D52A0]/60"
+                        >
+                          <Link href={`/seller-dashboard/enquiries/${enq.id}`} className="flex items-center justify-center gap-2">
+                            View Details
+                            <ChevronRight size={13} strokeWidth={3} />
+                          </Link>
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
       </div>
 
       {/* Notification Sidebar */}
@@ -178,7 +307,7 @@ export default function EnquiriesPage() {
             <Bell className="h-5 w-5 text-[#173072]" />
             <h2 className="text-xl font-bold text-[#173072] tracking-tight">Notifications</h2>
           </div>
-          <NotificationInbox userType="SELLER" />
+          <NotificationInbox userType="SELLER" respondedEnquiryIds={respondedEnquiryIds} />
         </div>
       </div>
     </div>
