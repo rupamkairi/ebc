@@ -115,17 +115,17 @@ export default function SellerDashboardPage() {
                 </div>
                 <div className="flex flex-col sm:flex-row flex-wrap gap-3">
                   <Link href="/seller-dashboard/catalog?create=true" className="w-full sm:w-auto">
-                    <Button variant="secondary" className="w-full sm:w-auto bg-white text-[#173072] hover:bg-gray-100 border-0 rounded-full px-4 h-10 text-sm font-semibold">
+                    <Button variant="secondary" className="w-full sm:w-auto bg-white text-[#173072] hover:bg-gray-100 border-0 rounded-lg px-4 h-10 text-sm font-semibold">
                       <Plus className="mr-2 h-4 w-4" /> New Product Listing
                     </Button>
                   </Link>
                   <Link href="/seller-dashboard/catalog" className="w-full sm:w-auto">
-                    <Button variant="outline" className="w-full sm:w-auto text-white border-white hover:bg-white/20 rounded-full px-4 h-10 text-sm font-semibold">
+                    <Button variant="outline" className="w-full sm:w-auto text-white border-white hover:bg-white/20 rounded-lg px-4 h-10 text-sm font-semibold">
                       <Edit2 className="mr-2 h-4 w-4" /> Edit Product Listing
                     </Button>
                   </Link>
                   <Link href="/seller-dashboard/catalog" className="w-full sm:w-auto">
-                    <Button className="w-full sm:w-auto bg-[#EF8A17] hover:bg-[#d87c14] text-white border-0 rounded-full px-4 h-10 text-sm font-semibold">
+                    <Button className="w-full sm:w-auto bg-[#EF8A17] hover:bg-[#d87c14] text-white border-0 rounded-lg px-4 h-10 text-sm font-semibold">
                       <Eye className="mr-2 h-4 w-4" /> View Product Listing
                     </Button>
                   </Link>
@@ -193,7 +193,7 @@ export default function SellerDashboardPage() {
                       <span className="text-4xl sm:text-5xl font-bold text-[#EF8A17] drop-shadow-md">{enquiryAssignments.length}</span>
                   </div>
                   <Link href="/seller-dashboard/enquiries" className="w-full z-10">
-                      <Button className="w-full bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-full h-11 text-sm font-semibold shadow-md active:scale-[0.98] transition-all">
+                      <Button className="w-full bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-lg h-11 text-sm font-semibold shadow-md active:scale-[0.98] transition-all">
                           <ChevronRight className="mr-1 h-4 w-4" /> Open Leads
                       </Button>
                   </Link>
@@ -222,12 +222,12 @@ export default function SellerDashboardPage() {
               </div>
               <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                 <Link href="/seller-dashboard/wallet" className="w-full sm:w-auto">
-                  <Button variant="secondary" className="w-full bg-white text-[#EF8A17] hover:bg-gray-50 border-0 rounded-full px-6 h-11 font-bold shadow-sm">
+                  <Button variant="secondary" className="w-full bg-white text-[#EF8A17] hover:bg-gray-50 border-0 rounded-lg px-6 h-11 font-bold shadow-sm">
                     Add Coins
                   </Button>
                 </Link>
                 <Link href="/seller-dashboard/wallet" className="w-full sm:w-auto">
-                  <Button variant="outline" className="w-full bg-transparent text-white border-white hover:bg-white/10 rounded-full px-5 h-11 font-medium sm:flex items-center">
+                  <Button variant="outline" className="w-full bg-transparent text-white border-white hover:bg-white/10 rounded-lg px-5 h-11 font-medium sm:flex items-center">
                     Transaction History
                   </Button>
                 </Link>
@@ -251,7 +251,7 @@ export default function SellerDashboardPage() {
                   <p className="text-sm text-gray-500 font-medium leading-relaxed">Manage the locations and pincodes where you offer your services or deliver products.</p>
                 </div>
                 <Link href="/seller-dashboard/service-area">
-                  <Button className="w-full sm:w-auto bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-full px-6 h-11 font-medium shadow-sm active:scale-95 transition-all">
+                  <Button className="w-full sm:w-auto bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-lg px-6 h-11 font-medium shadow-sm active:scale-95 transition-all">
                     Manage Coverage Pincode
                   </Button>
                 </Link>
@@ -266,7 +266,7 @@ export default function SellerDashboardPage() {
                   <p className="text-sm text-gray-500 font-medium leading-relaxed">Configure your shop details, policies, and operational hours to optimize your presence.</p>
                 </div>
                 <Link href="/seller-dashboard/settings">
-                  <Button className="w-full sm:w-auto bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-full px-6 h-11 font-medium shadow-sm active:scale-95 transition-all">
+                  <Button className="w-full sm:w-auto bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-lg px-6 h-11 font-medium shadow-sm active:scale-95 transition-all">
                     Manage Store Settings
                   </Button>
                 </Link>
@@ -290,7 +290,7 @@ export default function SellerDashboardPage() {
                   <h3 className="font-bold text-lg tracking-wide">Customers</h3>
                 </div>
                 <Link href="/seller-dashboard/customers" className="w-full relative z-10">
-                  <Button className="w-full bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-full h-11 shadow-md font-semibold text-[15px]">
+                  <Button className="w-full bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-lg h-11 shadow-md font-semibold text-[15px]">
                     My Buyers
                   </Button>
                 </Link>
@@ -305,7 +305,7 @@ export default function SellerDashboardPage() {
                   <h3 className="font-bold text-lg tracking-wide">Reviews</h3>
                 </div>
                 <Link href="/seller-dashboard/reviews" className="w-full relative z-10">
-                  <Button className="w-full bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-full h-11 shadow-md font-semibold text-[15px]">
+                  <Button className="w-full bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-lg h-11 shadow-md font-semibold text-[15px]">
                     View Feedback
                   </Button>
                 </Link>
@@ -321,12 +321,12 @@ export default function SellerDashboardPage() {
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 relative z-10 w-full">
                   <Link href="/seller-dashboard/support" className="w-full sm:flex-1">
-                      <Button className="w-full bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-full h-11 shadow-md text-sm font-semibold truncate px-4">
+                      <Button className="w-full bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-lg h-11 shadow-md text-sm font-semibold truncate px-4">
                       View HelpDesk
                       </Button>
                   </Link>
                   <Link href="/seller-dashboard/support" className="w-full sm:flex-1">
-                      <Button className="w-full bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-full h-11 shadow-md text-sm font-semibold truncate px-4">
+                      <Button className="w-full bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-lg h-11 shadow-md text-sm font-semibold truncate px-4">
                       View Tickets
                       </Button>
                   </Link>
