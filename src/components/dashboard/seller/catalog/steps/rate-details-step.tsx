@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, Package, DollarSign, Scale } from "lucide-react";
+import { ChevronLeft, Package, IndianRupee, Scale } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Item } from "@/types/catalog";
 import { Input } from "@/components/ui/input";
@@ -95,7 +95,7 @@ export function RateDetailsStep({
 
         <div className="space-y-2">
           <Label className="text-sm font-bold flex items-center gap-2">
-            <DollarSign size={14} className="text-primary" /> Base Rate (per{" "}
+            <IndianRupee size={14} className="text-primary" /> Base Rate (per{" "}
             {UNIT_TYPE_LABELS[unitType]})
           </Label>
           <Input
