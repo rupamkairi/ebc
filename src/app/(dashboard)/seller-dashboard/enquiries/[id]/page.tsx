@@ -2,13 +2,6 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { activityService } from "@/services/activityService";
 import { Enquiry } from "@/types/activity";
@@ -19,6 +12,7 @@ import {
   Calendar,
   FileText,
   Loader2,
+  Mail,
   MapPin,
   MessageSquare,
   PackageCheck,
@@ -48,16 +42,13 @@ export default function EnquiryDetailsPage() {
         setLoading(false);
       }
     };
-
-    if (id) {
-      fetchEnquiry();
-    }
+    if (id) fetchEnquiry();
   }, [id]);
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#3D52A0]" />
       </div>
     );
   }
@@ -74,199 +65,264 @@ export default function EnquiryDetailsPage() {
   }
 
   const details = enquiry.enquiryDetails?.[0];
+  const isPending = enquiry.status === "PENDING";
 
   return (
-    <div className="flex flex-col gap-6 p-4 max-w-5xl mx-auto">
+    <div className="flex flex-col gap-6 max-w-5xl mx-auto">
+
+      {/* ── Page Header ─────────────────────────────────────────────── */}
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" asChild>
+        <Button
+          asChild
+          size="icon"
+          className="h-10 w-10 rounded-xl bg-[#FFA500] hover:bg-[#e69500] text-white border-0 shadow-md shrink-0"
+        >
           <Link href="/seller-dashboard/enquiries">
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-5 w-5" />
           </Link>
         </Button>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Enquiry Details</h1>
-          <p className="text-sm text-muted-foreground">
-            {enquiry.status === "PENDING"
-              ? "Review buyer requirements and submit your quotation."
+          <h1 className="text-2xl font-black text-[#1e2b6b] tracking-tight">
+            Active Enquiries
+          </h1>
+          <p className="text-sm text-[#3D52A0]/60 font-medium">
+            {isPending
+              ? "Manage and respond to enquiries from potential Buyer"
               : "This enquiry has already been responded to."}
           </p>
         </div>
       </div>
 
+      {/* ── Main Grid ───────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-              <div className="space-y-1">
-                <CardTitle className="text-xl font-bold">
+
+        {/* ── Left: Requirements ────────────────────────────────────── */}
+        <div className="lg:col-span-2 space-y-5">
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6">
+
+            {/* Title row */}
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+              <div className="space-y-3">
+                <h2 className="text-xl font-black text-[#1e2b6b]">
                   Buyer Requirements
-                </CardTitle>
-                <CardDescription className="flex items-center gap-2">
-                  <Badge variant="outline" className="font-mono">
+                </h2>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="px-3 py-1 rounded-full border-2 border-[#FFA500] text-[#FFA500] text-xs font-black tracking-wide">
                     ID: {enquiry.id.slice(0, 8)}
-                  </Badge>
-                  <Badge>{enquiry.status}</Badge>
-                </CardDescription>
+                  </span>
+                  <span
+                    className={`px-4 py-1 rounded-full text-xs font-black tracking-wide text-white ${
+                      isPending ? "bg-[#3D52A0]" : "bg-green-600"
+                    }`}
+                  >
+                    {enquiry.status}
+                  </span>
+                </div>
               </div>
-              <div className="text-right">
-                <p className="text-sm text-muted-foreground">Submitted on</p>
-                <p className="text-sm font-medium">
-                  {format(new Date(enquiry.createdAt), "PPP")}
+              <div className="text-left sm:text-right shrink-0">
+                <p className="text-xs text-gray-400 font-semibold">Submitted On</p>
+                <p className="text-sm font-black text-[#1e2b6b]">
+                  {format(new Date(enquiry.createdAt), "MMMM do, yyyy")}
                 </p>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="font-semibold flex items-center gap-2">
-                  <PackageCheck className="h-5 w-5 text-primary" />
-                  Items Requested
-                </h3>
-                <div className="grid gap-4">
-                  {enquiry.enquiryLineItems.map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start justify-between p-4 rounded-lg border bg-muted/20"
-                    >
-                      <div className="space-y-1">
-                        <p className="font-bold">{item.item?.name}</p>
-                        <p className="text-sm text-muted-foreground">
+            </div>
+
+            <Separator />
+
+            {/* Items */}
+            <div className="space-y-3">
+              <h3 className="font-black text-[#1e2b6b] flex items-center gap-2 text-base">
+                <PackageCheck className="h-5 w-5 text-[#FFA500]" />
+                Products Requested
+              </h3>
+              <div className="space-y-3">
+                {enquiry.enquiryLineItems.map((item, index) => (
+                  <div
+                    key={index}
+                    className="rounded-xl border border-gray-100 bg-gray-50/50 p-4"
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                      <div className="space-y-0.5">
+                        <p className="font-black text-[#FFA500]">
+                          {item.item?.name || "Unknown Item"}
+                        </p>
+                        <p className="text-sm text-gray-500 font-medium">
                           {item.quantity}{" "}
                           {UNIT_TYPE_LABELS[item.unitType as UnitType]}
                         </p>
                         {item.remarks && (
-                          <p className="text-sm italic text-muted-foreground mt-2">
+                          <p className="text-xs italic text-gray-400 mt-1">
                             {item.remarks}
                           </p>
                         )}
                       </div>
-                      {item.flexibleWithBrands && (
-                        <Badge variant="secondary">Flexible with brands</Badge>
-                      )}
+                      <div className="flex flex-wrap gap-2 shrink-0">
+                        {details?.expectedDate && (
+                          <span className="px-3 py-1 rounded-full bg-[#3D52A0] text-white text-[10px] font-black tracking-wide whitespace-nowrap">
+                            Deliver Within 7 days
+                          </span>
+                        )}
+                        {item.flexibleWithBrands && (
+                          <span className="px-3 py-1 rounded-full bg-[#FFA500] text-white text-[10px] font-black tracking-wide whitespace-nowrap">
+                            Flexible with brands
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
+            </div>
 
-              <Separator />
+            <Separator />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <h3 className="font-semibold flex items-center gap-2">
-                    <MapPin className="h-4 w-4 text-primary" />
-                    Delivery Location
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {details?.address || "N/A"}
-                  </p>
-                </div>
-                <div className="space-y-2">
-                  <h3 className="font-semibold flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-primary" />
-                    Expected Delivery Date
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {details?.expectedDate
-                      ? format(new Date(details.expectedDate), "PPP")
-                      : "Not specified"}
-                  </p>
-                </div>
+            {/* Delivery info */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="space-y-1.5">
+                <h4 className="text-sm font-black text-[#FFA500] flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  Delivery Location
+                </h4>
+                <p className="text-sm text-gray-500 font-medium pl-6">
+                  {details?.address || "Not specified"}
+                </p>
               </div>
+              <div className="space-y-1.5">
+                <h4 className="text-sm font-black text-[#3D52A0] flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  Expected Delivery Date
+                </h4>
+                <p className="text-sm text-gray-500 font-medium pl-6">
+                  {details?.expectedDate
+                    ? `Not Specified / ${format(new Date(details.expectedDate), "dd/MM/yyyy")}`
+                    : "Not specified"}
+                </p>
+              </div>
+            </div>
 
-              {details?.remarks && (
-                <div className="space-y-2">
-                  <h3 className="font-semibold flex items-center gap-2">
-                    <MessageSquare className="h-4 w-4 text-primary" />
-                    Additional Remarks
-                  </h3>
-                  <p className="text-sm text-muted-foreground bg-muted/30 p-4 rounded-lg italic">
-                    {details.remarks}
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+            {/* Additional remarks */}
+            <div className="space-y-2">
+              <h4 className="text-sm font-black text-[#3D52A0] flex items-center gap-2">
+                <MessageSquare className="h-4 w-4" />
+                Additional Remarks
+              </h4>
+              <div className="rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 min-h-[60px]">
+                {details?.remarks ? (
+                  <p className="text-sm text-gray-600">{details.remarks}</p>
+                ) : (
+                  <p className="text-sm text-gray-300 italic">Write Something...</p>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg font-bold flex items-center gap-2">
-                <User className="h-5 w-5 text-primary" />
-                Buyer Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+        {/* ── Right: Sidebar ────────────────────────────────────────── */}
+        <div className="space-y-4">
+
+          {/* Buyer Info — orange card */}
+          <div
+            className="rounded-2xl p-5 space-y-4"
+            style={{ background: "linear-gradient(135deg, #FFA500 0%, #e69500 100%)" }}
+          >
+            <h3 className="text-white font-black text-base flex items-center gap-2">
+              <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+                <User className="h-4 w-4 text-white" />
+              </div>
+              Buyer Information
+            </h3>
+            <div className="space-y-2.5">
+              {/* Avatar + name */}
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
-                  {enquiry.createdBy?.name?.charAt(0) || "B"}
+                <div className="h-9 w-9 rounded-full bg-white/20 border-2 border-white/30 flex items-center justify-center shrink-0">
+                  <span className="text-white font-black text-sm">
+                    {enquiry.createdBy?.name?.[0]?.toUpperCase() || "B"}
+                  </span>
                 </div>
                 <div>
-                  <p className="font-bold leading-none">
+                  <p className="text-white font-black text-sm leading-none">
                     {enquiry.createdBy?.name || "Anonymous Buyer"}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {enquiry.createdBy?.role
-                      ?.replace("USER_", "")
-                      .toLowerCase()
-                      .replace("_", " ")}
+                  <p className="text-white/60 text-[10px] font-semibold mt-0.5 uppercase tracking-wide">
+                    Buyer Seller
                   </p>
                 </div>
               </div>
-              <div className="pt-4 space-y-3">
-                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                  <Phone className="h-4 w-4" />
-                  {enquiry.createdBy?.phone || "N/A"}
+              {/* Phone */}
+              {enquiry.createdBy?.phone && (
+                <div className="flex items-center gap-2 text-white/80 text-xs font-semibold">
+                  <div className="h-6 w-6 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+                    <Phone className="h-3 w-3 text-white" />
+                  </div>
+                  {enquiry.createdBy.phone}
+                </div>
+              )}
+              {/* Email */}
+              {enquiry.createdBy?.email && (
+                <div className="flex items-center gap-2 text-white/80 text-xs font-semibold">
+                  <div className="h-6 w-6 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+                    <Mail className="h-3 w-3 text-white" />
+                  </div>
+                  {enquiry.createdBy.email}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Submit Quotation / Responded — dark blue card */}
+          {isPending ? (
+            <div
+              className="rounded-2xl p-5 space-y-4"
+              style={{ background: "linear-gradient(145deg, #3D52A0 0%, #2a3a7c 100%)" }}
+            >
+              <div>
+                <h3 className="text-white font-black text-lg">Submit Quotation</h3>
+                <p className="text-white/60 text-xs font-medium mt-1">
+                  Ready to fulfil this requirement? Send your best price to the buyer
+                </p>
+              </div>
+              <Button
+                asChild
+                className="w-full bg-[#FFA500] hover:bg-[#e69500] active:scale-95 text-white font-black text-sm rounded-xl h-11 border-0 shadow-md transition-all"
+              >
+                <Link
+                  href={`/seller-dashboard/quotations/create?enquiryId=${enquiry.id}`}
+                  className="flex items-center justify-center gap-2"
+                >
+                  <FileText className="h-4 w-4" />
+                  Submit Quotation
+                </Link>
+              </Button>
+            </div>
+          ) : (
+            <div className="rounded-2xl p-5 space-y-4 bg-green-50 border border-green-200">
+              <div className="flex items-center gap-3">
+                <PackageCheck className="h-6 w-6 text-green-600 shrink-0" />
+                <div>
+                  <h3 className="text-green-800 font-black text-base leading-tight">
+                    Quotation Submitted
+                  </h3>
+                  <p className="text-green-700/70 text-xs font-medium mt-0.5">
+                    You have already responded to this enquiry.
+                  </p>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-
-          {enquiry.status === "PENDING" ? (
-            <Card className="bg-primary text-primary-foreground">
-              <CardHeader>
-                <CardTitle>Submit Quotation</CardTitle>
-                <CardDescription className="text-primary-foreground/80">
-                  Ready to fulfill this requirement? Send your best price to the
-                  buyer.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button className="w-full" variant="secondary" asChild>
-                  <Link
-                    href={`/seller-dashboard/quotations/create?enquiryId=${enquiry.id}`}
-                  >
-                    <FileText className="mr-2 h-4 w-4" />
-                    Create Quotation
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <Card className="bg-green-50 border-green-200">
-              <CardHeader>
-                <CardTitle className="text-green-800 flex items-center gap-2">
-                  <PackageCheck className="h-5 w-5 text-green-600" />
-                  Quotation Submitted
-                </CardTitle>
-                <CardDescription className="text-green-700/80">
-                  You have already responded to this enquiry. The buyer has been notified.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button className="w-full" variant="outline" asChild>
-                  <Link href="/seller-dashboard/enquiries">
-                    Back to Enquiries
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
+              <Button asChild variant="outline" className="w-full rounded-xl font-black text-xs">
+                <Link href="/seller-dashboard/enquiries">Back to Enquiries</Link>
+              </Button>
+            </div>
           )}
 
-          <div className="bg-muted p-4 rounded-lg flex items-start gap-4">
-            <AlertCircle className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              <strong>Tip:</strong> Providing a quick response and accurate
-              breakdown of costs increases your chances of selection by 60%.
+          {/* Tip — dark blue card */}
+          <div
+            className="rounded-2xl p-4 flex items-start gap-3"
+            style={{ background: "linear-gradient(145deg, #3D52A0 0%, #2a3a7c 100%)" }}
+          >
+            <AlertCircle className="h-4 w-4 text-[#FFA500] shrink-0 mt-0.5" />
+            <p className="text-xs text-white/80 leading-relaxed">
+              <span className="text-white font-black">Tip : </span>
+              Providing a quick response and accurate break down of costs increases
+              your chances of selection by 60%
             </p>
           </div>
         </div>
