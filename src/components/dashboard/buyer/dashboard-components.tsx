@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Scan, Settings, Bell, ArrowRight, LogOut, User } from "lucide-react";
+import { Settings, Bell, ArrowRight, LogOut, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authService } from "@/services/authService";
@@ -14,6 +14,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { NotificationInbox } from "@/components/dashboard/notifications/notification-inbox";
+import { useNotificationsQuery } from "@/queries/notificationQueries";
 import { USER_ROLE_LABELS } from "@/constants/roles";
 
 /**
@@ -29,6 +38,8 @@ export function BuyerProfileCard({
   avatarUrl?: string;
 }) {
   const router = useRouter();
+  const { data: notifications = [] } = useNotificationsQuery();
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   const handleLogout = () => {
     authService.logout();
@@ -85,9 +96,35 @@ export function BuyerProfileCard({
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <button className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm transition-all hover:bg-white/30 text-white">
-            <Bell className="size-5 sm:size-6" />
-          </button>
+          {/* Notification Bell — opens slide-out panel */}
+          <Sheet>
+            <SheetTrigger asChild>
+              <button className="relative flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm transition-all hover:bg-white/30 text-white">
+                <Bell className="size-5 sm:size-6" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-black rounded-full flex items-center justify-center leading-none">
+                    {unreadCount > 99 ? "99+" : unreadCount}
+                  </span>
+                )}
+              </button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[360px] sm:w-[420px] p-0">
+              <SheetHeader className="p-6 pb-4 border-b">
+                <SheetTitle className="flex items-center gap-2 text-base font-black">
+                  <Bell className="size-4" />
+                  Notifications
+                  {unreadCount > 0 && (
+                    <span className="ml-auto text-xs font-black text-white bg-red-500 rounded-full px-2 py-0.5">
+                      {unreadCount} unread
+                    </span>
+                  )}
+                </SheetTitle>
+              </SheetHeader>
+              <div className="p-4 overflow-y-auto h-[calc(100vh-80px)]">
+                <NotificationInbox userType="BUYER" hideHeader />
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </div>

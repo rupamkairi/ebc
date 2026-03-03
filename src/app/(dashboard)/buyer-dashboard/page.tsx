@@ -28,14 +28,16 @@ import {
   useVisitsQuery,
 } from "@/queries/activityQueries";
 import { useMemo } from "react";
-import { RoomCard, ActivitySectionCard, ActivityStatCard, ConferenceHallItem } from "@/components/dashboard/buyer/dashboard-components";
+import { RoomCard, ActivitySectionCard, ActivityStatCard, ConferenceHallItem, BuyerProfileCard } from "@/components/dashboard/buyer/dashboard-components";
 import { NotificationInbox } from "@/components/dashboard/notifications/notification-inbox";
+import { useSessionQuery } from "@/queries/authQueries";
 
 export default function BuyerDashboardPage() {
   const { data: enquiries } = useEnquiriesQuery({});
   const { data: appointments } = useAppointmentsQuery({});
   const { data: quotations } = useQuotationsQuery({});
   const { data: visits } = useVisitsQuery({});
+  const { data: session } = useSessionQuery();
 
   const stats = useMemo(() => {
     const pendingEnquiries =
@@ -76,15 +78,24 @@ export default function BuyerDashboardPage() {
 
   return (
     <AuthGuard allowedRoles={["USER_BUYER_ADMIN"]}>
-      <div className="max-w-[1600px] mx-auto p-4 md:p-8">
+      <div className="max-w-[1600px] mx-auto p-4 md:p-8 flex flex-col gap-8">
+        {/* Profile Card */}
+        {session?.user && (
+          <BuyerProfileCard
+            name={session.user.name || "Buyer"}
+            role={session.user.role || "Buyer"}
+            avatarUrl={session.user.image || undefined}
+          />
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Main Content - Left Side */}
           <div className="lg:col-span-3 flex flex-col gap-10">
             {/* Project Pulse - Rooms */}
             <section>
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center gap-3 mb-4 md:mb-6">
                 <div className="h-8 w-1.5 bg-[#FFA500] rounded-full" />
-                <h2 className="text-2xl font-black text-[#3D52A0] uppercase tracking-wider">
+                <h2 className="text-xl md:text-2xl font-black text-[#3D52A0] uppercase tracking-wider">
                   Project Pulse
                 </h2>
               </div>
@@ -114,9 +125,9 @@ export default function BuyerDashboardPage() {
 
             {/* Operations Center - Activity Stats */}
             <section>
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center gap-3 mb-4 md:mb-6">
                 <div className="h-8 w-1.5 bg-[#FFA500] rounded-full" />
-                <h2 className="text-2xl font-black text-[#3D52A0] uppercase tracking-wider">
+                <h2 className="text-xl md:text-2xl font-black text-[#3D52A0] uppercase tracking-wider">
                   Operations Center
                 </h2>
               </div>
@@ -197,9 +208,9 @@ export default function BuyerDashboardPage() {
 
             {/* Project Domains - Conference Hall */}
             <section>
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center gap-3 mb-4 md:mb-6">
                 <div className="h-8 w-1.5 bg-[#FFA500] rounded-full" />
-                <h2 className="text-2xl font-black text-[#3D52A0] uppercase tracking-wider">
+                <h2 className="text-xl md:text-2xl font-black text-[#3D52A0] uppercase tracking-wider">
                   Project Domains
                 </h2>
               </div>
@@ -234,21 +245,21 @@ export default function BuyerDashboardPage() {
 
             {/* Precision Tools - AI Calculator */}
             <section>
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center gap-3 mb-4 md:mb-6">
                 <div className="h-8 w-1.5 bg-[#FFA500] rounded-full" />
-                <h2 className="text-2xl font-black text-[#3D52A0] uppercase tracking-wider">
+                <h2 className="text-xl md:text-2xl font-black text-[#3D52A0] uppercase tracking-wider">
                   Precision Tools
                 </h2>
               </div>
-              <div className="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-muted/50">
+              <div className="rounded-2xl md:rounded-3xl bg-white p-4 md:p-8 shadow-sm ring-1 ring-muted/50">
                 <AICalculator />
               </div>
             </section>
           </div>
 
-          {/* Sidebar Column (Notifications) */}
-          <div className="space-y-8 h-full">
-            <div className="sticky top-24 pt-4 lg:pt-0">
+          {/* Sidebar Column (Notifications) — hidden on mobile, bell in profile card handles it */}
+          <div className="hidden lg:block space-y-8 h-full">
+            <div className="sticky top-24">
               <div className="flex items-center gap-2 mb-4 px-2">
                 <Bell className="h-5 w-5 text-[#3D52A0]" />
                 <h2 className="text-xl font-bold text-[#3D52A0] tracking-tight">
