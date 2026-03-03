@@ -30,7 +30,7 @@ const buttonVariants = cva(
         icon: "size-9",
         "icon-sm": "size-8",
         "icon-lg": "size-10",
-        action: "w-[399px] h-[61px] rounded-[5px] text-xl font-bold flex items-center justify-center gap-3",
+        action: "w-full max-w-[320px] h-[61px] rounded-[5px] text-xl font-bold flex items-center justify-center gap-3",
       },
     },
     defaultVariants: {

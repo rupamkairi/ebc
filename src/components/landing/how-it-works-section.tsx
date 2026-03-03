@@ -36,7 +36,7 @@ export function HowItWorksSection() {
           <Button
             variant="glow"
             size="action"
-            className="group max-w-full md:w-[399px]"
+            className="group"
           >
             Start Your Home Journey
             <ArrowRight className="size-6 group-hover:translate-x-1 transition-transform" />
