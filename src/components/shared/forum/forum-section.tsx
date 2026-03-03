@@ -102,7 +102,7 @@ export function ForumSection({ eventId, offerId, itemId, slug, className }: Foru
     <div key={post.id} className="space-y-4">
       <div 
         className={cn(
-          "group relative flex gap-4 p-6 rounded-3xl transition-all duration-300",
+          "group relative flex gap-3 md:gap-4 p-4 md:p-6 rounded-2xl md:rounded-3xl transition-all duration-300",
           post.isHidden ? "bg-muted/50 grayscale opacity-60" : "bg-white border hover:shadow-xl hover:shadow-black/5",
           depth > 0 && "ml-4 md:ml-12 border-l-4 border-l-primary/10"
         )}
@@ -133,7 +133,7 @@ export function ForumSection({ eventId, offerId, itemId, slug, className }: Foru
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="h-8 gap-2 rounded-full px-3 text-[10px] font-black opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="h-8 gap-2 rounded-full px-3 text-[10px] font-black opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
                   onClick={() => {
                     setReplyingTo(post);
                     document.getElementById("forum-textarea")?.focus();
@@ -241,24 +241,24 @@ export function ForumSection({ eventId, offerId, itemId, slug, className }: Foru
                 placeholder={replyingTo ? `Write your reply to ${replyingTo.createdBy.name}...` : "Share your insights, ask questions, or contribute to the hall..."}
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                className="min-h-[120px] rounded-4xl border-none bg-muted/30 p-8 text-sm focus-visible:ring-primary focus-visible:bg-white transition-all resize-none shadow-inner"
+                className="min-h-[100px] rounded-2xl md:rounded-4xl border-none bg-muted/30 p-4 md:p-8 text-sm focus-visible:ring-primary focus-visible:bg-white transition-all resize-none shadow-inner"
               />
-              <div className="absolute bottom-4 right-4 flex items-center gap-2">
-                <span className={cn(
-                  "text-[10px] font-black transition-opacity",
-                  content.length > 0 ? "opacity-100" : "opacity-0"
-                )}>
-                  {content.length} CHARS
-                </span>
-                <Button 
-                  type="submit" 
-                  disabled={!content.trim() || createMutation.isPending}
-                  className="rounded-2xl h-12 px-6 gap-2 font-black shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
-                >
-                  {createMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                  {replyingTo ? "POST REPLY" : "PUBLISH CONTRIBUTION"}
-                </Button>
-              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className={cn(
+                "text-[10px] font-black transition-opacity",
+                content.length > 0 ? "opacity-100" : "opacity-0"
+              )}>
+                {content.length} CHARS
+              </span>
+              <Button 
+                type="submit" 
+                disabled={!content.trim() || createMutation.isPending}
+                className="rounded-2xl h-10 md:h-12 px-4 md:px-6 gap-2 font-black shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all text-sm"
+              >
+                {createMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                {replyingTo ? "POST REPLY" : "PUBLISH"}
+              </Button>
             </div>
             <p className="text-[10px] font-bold text-center text-muted-foreground uppercase tracking-widest px-10">
               Your contribution will be visible to the public. Please follow the professional code of conduct in the Conference Hall.
