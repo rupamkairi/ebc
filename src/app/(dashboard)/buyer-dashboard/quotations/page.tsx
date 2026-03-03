@@ -1,0 +1,174 @@
+"use client";
+
+import { useQuotationsQuery } from "@/queries/activityQueries";
+import { useSessionQuery } from "@/queries/authQueries";
+import { BuyerProfileCard } from "@/components/dashboard/buyer/dashboard-components";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  FileText,
+  IndianRupee,
+  Clock,
+  CheckCircle2,
+  ChevronRight,
+  Loader2,
+  Package,
+} from "lucide-react";
+import { format } from "date-fns";
+import Link from "next/link";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+
+const filters = ["All", "Pending", "Accepted"];
+
+export default function BuyerQuotationsPage() {
+  const [activeFilter, setActiveFilter] = useState("All");
+  const { data: session } = useSessionQuery();
+  const { data: quotations, isLoading } = useQuotationsQuery({});
+
+  const filtered = (quotations || []).filter((q) => {
+    if (activeFilter === "All") return true;
+    if (activeFilter === "Accepted") return q.status === "ACCEPTED";
+    return q.status === "PENDING";
+  });
+
+  return (
+    <div className="flex flex-col gap-8 w-full max-w-7xl mx-auto">
+      {/* Profile Card */}
+      {session?.user && (
+        <BuyerProfileCard
+          name={session.user.name || "Buyer"}
+          role={session.user.role || "Buyer"}
+          avatarUrl={session.user.image || undefined}
+        />
+      )}
+
+      {/* Header */}
+      <div className="flex flex-col gap-1">
+        <h1 className="text-3xl font-black text-[#3D52A0] tracking-tight">
+          My Quotations
+        </h1>
+        <p className="text-sm text-muted-foreground font-medium">
+          Review and accept price proposals from sellers
+        </p>
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-wrap gap-3">
+        {filters.map((filter) => (
+          <button
+            key={filter}
+            onClick={() => setActiveFilter(filter)}
+            className={cn(
+              "px-6 py-2 rounded-full text-xs font-bold transition-all shadow-sm",
+              activeFilter === filter
+                ? "bg-[#3D52A0] text-white shadow-[#3D52A0]/20"
+                : "bg-white text-[#3D52A0] hover:bg-muted border border-muted",
+            )}
+          >
+            {filter}
+          </button>
+        ))}
+      </div>
+
+      {/* List */}
+      {isLoading ? (
+        <div className="flex flex-col items-center justify-center py-20 gap-4">
+          <Loader2 className="h-10 w-10 animate-spin text-[#3D52A0]" />
+          <p className="text-muted-foreground font-medium">Loading quotations...</p>
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-24 text-center gap-4 bg-muted/20 border border-dashed rounded-2xl">
+          <FileText className="h-10 w-10 text-muted-foreground/30" />
+          <p className="text-muted-foreground font-medium">No quotations found.</p>
+        </div>
+      ) : (
+        <div className="grid gap-4">
+          {filtered.map((q) => {
+            const total = q.quotationLineItems?.reduce(
+              (sum, li) => sum + (li.amount || 0),
+              0,
+            ) ?? 0;
+            const mainItem =
+              q.quotationLineItems?.[0]?.item?.name || "Multiple Items";
+            const itemCount = q.quotationLineItems?.length ?? 0;
+            const isAccepted = q.status === "ACCEPTED";
+
+            return (
+              <Card
+                key={q.id}
+                className="overflow-hidden border-none shadow-sm hover:shadow-lg transition-all bg-white rounded-2xl"
+              >
+                <CardContent className="p-0">
+                  <div className="flex flex-col md:flex-row">
+                    {/* Status bar */}
+                    <div
+                      className={cn(
+                        "w-full md:w-1.5 h-1.5 md:h-auto",
+                        isAccepted ? "bg-emerald-500" : "bg-amber-400",
+                      )}
+                    />
+                    <div className="flex-1 p-5 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      {/* Left: info */}
+                      <div className="flex items-center gap-4">
+                        <div className="h-12 w-12 rounded-xl bg-[#3D52A0]/5 flex items-center justify-center shrink-0">
+                          <Package className="h-6 w-6 text-[#3D52A0]" />
+                        </div>
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] bg-muted px-2 py-0.5 rounded-full text-muted-foreground">
+                              {q.id.slice(-8).toUpperCase()}
+                            </span>
+                            <Badge
+                              className={cn(
+                                "text-[10px] font-black uppercase tracking-wide border-none",
+                                isAccepted
+                                  ? "bg-emerald-100 text-emerald-700"
+                                  : "bg-amber-100 text-amber-700",
+                              )}
+                            >
+                              {isAccepted ? "Accepted" : "Pending"}
+                            </Badge>
+                          </div>
+                          <p className="font-black text-sm">
+                            {itemCount > 1 ? `${mainItem} (+${itemCount - 1} more)` : mainItem}
+                          </p>
+                          <p className="text-xs text-muted-foreground flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            {format(new Date(q.createdAt), "dd MMM yyyy")}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Right: amount + action */}
+                      <div className="flex items-center gap-4 md:gap-6">
+                        <div className="text-right">
+                          <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Total</p>
+                          <div className="flex items-center justify-end font-black text-[#3D52A0] text-xl">
+                            <IndianRupee className="h-4 w-4" />
+                            {total.toLocaleString("en-IN")}
+                          </div>
+                        </div>
+                        <Button
+                          asChild
+                          variant="outline"
+                          className="border-[#3D52A0] text-[#3D52A0] hover:bg-[#3D52A0] hover:text-white font-black rounded-xl h-10 px-5 transition-all group/btn"
+                        >
+                          <Link href={`/buyer-dashboard/enquiries/${q.enquiryId}`}>
+                            View
+                            <ChevronRight className="ml-1 h-4 w-4 group-hover/btn:translate-x-0.5 transition-transform" />
+                          </Link>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}

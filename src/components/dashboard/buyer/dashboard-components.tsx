@@ -150,7 +150,7 @@ export function RoomCard({
       </div>
       <h3 className="text-lg font-bold text-[#3D52A0]">{title}</h3>
       <Link href={href} className="w-full">
-        <Button className="w-full bg-[#2A3B7D] hover:bg-[#1D2A5C] text-sm font-semibold h-10">
+        <Button className="w-full bg-[#2A3B7D] hover:bg-[#1D2A5C] text-sm font-semibold h-10 px-4">
           Browse Area
         </Button>
       </Link>

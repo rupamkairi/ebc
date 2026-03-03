@@ -96,7 +96,7 @@ export default function BuyerEnquiryDetailsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto py-10 px-4 space-y-12">
+    <div className="max-w-7xl mx-auto py-6 md:py-10 px-4 space-y-8 md:space-y-12">
       {/* Header */}
       <div className="flex flex-col gap-4">
         <Link
@@ -106,7 +106,7 @@ export default function BuyerEnquiryDetailsPage() {
           <ArrowLeft className="h-4 w-4" />
           BACK TO ENQUIRIES
         </Link>
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 md:gap-6">
           <div>
             <div className="flex items-center gap-3 mb-2">
               <Badge
@@ -151,7 +151,7 @@ export default function BuyerEnquiryDetailsPage() {
       </div>
 
       {isCompleted && (
-        <div className="p-8 rounded-[3rem] bg-linear-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border border-emerald-500/20 flex flex-col md:flex-row items-center justify-between gap-8 animate-in fade-in slide-in-from-top-4 duration-700">
+        <div className="p-5 md:p-8 rounded-2xl md:rounded-[3rem] bg-linear-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border border-emerald-500/20 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 animate-in fade-in slide-in-from-top-4 duration-700">
           <div className="flex items-center gap-6 text-center md:text-left">
             <div className="h-20 w-20 rounded-3xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
               <PartyPopper className="h-10 w-10" />
@@ -190,29 +190,29 @@ export default function BuyerEnquiryDetailsPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-10">
         {/* Left Side: Enquiry Info */}
         <div className="lg:col-span-2 space-y-10">
-          <section className="space-y-6">
-            <h3 className="text-xl font-black tracking-tight flex items-center gap-2">
+          <section className="space-y-4 md:space-y-6">
+            <h3 className="text-lg md:text-xl font-black tracking-tight flex items-center gap-2">
               <Package className="h-5 w-5 text-primary" />
               Items Requested
             </h3>
-            <div className="grid gap-4">
+            <div className="grid gap-3 md:gap-4">
               {enquiry.enquiryLineItems?.map((item: EnquiryLineItem) => (
                 <Card
                   key={item.id}
                   className="overflow-hidden border-none shadow-sm bg-muted/30"
                 >
-                  <CardContent className="p-6 flex justify-between items-center">
-                    <div>
-                      <h4 className="font-bold text-lg">{item.item?.name}</h4>
+                  <CardContent className="p-4 md:p-6 flex justify-between items-start gap-4">
+                    <div className="min-w-0">
+                      <h4 className="font-bold text-base md:text-lg truncate">{item.item?.name}</h4>
                       <p className="text-sm text-muted-foreground italic">
                         {item.remarks || "No specific remarks"}
                       </p>
                     </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-black">{item.quantity}</div>
+                    <div className="text-right shrink-0">
+                      <div className="text-xl md:text-2xl font-black">{item.quantity}</div>
                       <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                         {UNIT_TYPE_LABELS[item.unitType as UnitType]}
                       </div>
@@ -238,7 +238,7 @@ export default function BuyerEnquiryDetailsPage() {
             </div>
 
             {!quotations || quotations.length === 0 ? (
-              <div className="p-12 text-center bg-muted/20 border border-dashed rounded-3xl">
+              <div className="p-8 md:p-12 text-center bg-muted/20 border border-dashed rounded-2xl md:rounded-3xl">
                 <AlertCircle className="h-10 w-10 text-muted-foreground mx-auto mb-4 opacity-20" />
                 <p className="text-muted-foreground font-medium">
                   No quotations received yet. Sellers are reviewing your
@@ -246,39 +246,40 @@ export default function BuyerEnquiryDetailsPage() {
                 </p>
               </div>
             ) : (
-              <div className="space-y-12">
+              <div className="space-y-6 md:space-y-10">
                 {quotations.map((q: Quotation) => (
                   <div
                     key={q.id}
-                    className="space-y-8 p-8 rounded-4xl bg-white border shadow-xl shadow-black/5 relative overflow-hidden group"
+                    className="space-y-6 md:space-y-8 p-4 md:p-8 rounded-2xl md:rounded-4xl bg-white border shadow-xl shadow-black/5 overflow-hidden"
                   >
-                    <div className="absolute top-0 right-0 p-6">
-                      <Badge className="bg-primary/10 text-primary border-primary/20 uppercase text-[10px] font-black tracking-widest">
+                    {/* Header row: who proposed + badge */}
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">
+                          PROPOSED BY
+                        </p>
+                        <h4 className="text-lg md:text-2xl font-black tracking-tight">
+                          {q.createdBy?.staffAt?.name || q.createdBy?.name}
+                        </h4>
+                      </div>
+                      <Badge className="bg-primary/10 text-primary border-primary/20 uppercase text-[10px] font-black tracking-widest shrink-0 mt-1">
                         PROPOSAL
                       </Badge>
                     </div>
 
-                    <div className="flex flex-col md:flex-row gap-10">
-                      <div className="flex-1 space-y-6">
-                        <div>
-                          <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">
-                            PROPOSED BY
-                          </p>
-                          <h4 className="text-2xl font-black tracking-tight">
-                            {q.createdBy?.staffAt?.name || q.createdBy?.name}
-                          </h4>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-6">
+                    {/* Main content: line items + price/action */}
+                    <div className="flex flex-col md:flex-row gap-6 md:gap-10">
+                      <div className="flex-1 space-y-4 md:space-y-6 min-w-0">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-6">
                           {q.quotationLineItems.map((li: QuotationLineItem) => (
                             <div
                               key={li.id}
-                              className="p-4 rounded-2xl bg-muted/50 border"
+                              className="p-3 md:p-4 rounded-xl md:rounded-2xl bg-muted/50 border"
                             >
-                              <p className="text-[10px] font-bold text-muted-foreground uppercase mb-1">
+                              <p className="text-[10px] font-bold text-muted-foreground uppercase mb-1 truncate">
                                 {li.item?.name}
                               </p>
-                              <div className="text-xl font-black tracking-tight">
+                              <div className="text-base md:text-xl font-black tracking-tight">
                                 ₹{li.rate} /{" "}
                                 {
                                   UNIT_TYPE_LABELS[
@@ -297,18 +298,19 @@ export default function BuyerEnquiryDetailsPage() {
                         </div>
 
                         {q.quotationDetails?.[0]?.remarks && (
-                          <div className="p-4 rounded-2xl bg-primary/5 border border-primary/10 italic text-sm">
+                          <div className="p-3 md:p-4 rounded-xl md:rounded-2xl bg-primary/5 border border-primary/10 italic text-sm">
                             &quot;{q.quotationDetails[0].remarks}&quot;
                           </div>
                         )}
                       </div>
 
-                      <div className="md:w-64 space-y-4">
-                        <div className="p-6 rounded-4xl bg-primary text-primary-foreground text-center space-y-1">
+                      {/* Price + accept */}
+                      <div className="w-full md:w-56 space-y-4 shrink-0">
+                        <div className="p-4 md:p-6 rounded-2xl md:rounded-4xl bg-primary text-primary-foreground text-center space-y-1">
                           <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">
                             Final Proposal
                           </p>
-                          <div className="text-3xl font-black">
+                          <div className="text-2xl md:text-3xl font-black">
                             ₹
                             {q.quotationLineItems.reduce(
                               (acc: number, li: QuotationLineItem) =>
@@ -318,23 +320,21 @@ export default function BuyerEnquiryDetailsPage() {
                           </div>
                         </div>
 
-                        <div className="flex justify-center pb-2">
-                          <ReviewSnapshot
-                            entityId={
-                              q.createdBy?.staffAtEntityId ||
-                              q.createdBy?.createdEntities?.[0]?.id ||
-                              ""
-                            }
-                            entityName={
-                              q.createdBy?.staffAt?.name ||
-                              q.createdBy?.createdEntities?.[0]?.name
-                            }
-                          />
-                        </div>
+                        <ReviewSnapshot
+                          entityId={
+                            q.createdBy?.staffAtEntityId ||
+                            q.createdBy?.createdEntities?.[0]?.id ||
+                            ""
+                          }
+                          entityName={
+                            q.createdBy?.staffAt?.name ||
+                            q.createdBy?.createdEntities?.[0]?.name
+                          }
+                        />
 
                         {q.status === "ACCEPTED" ? (
                           <Button
-                            className="w-full h-14 rounded-3xl bg-emerald-500 hover:bg-emerald-600 font-black gap-2"
+                            className="w-full h-12 md:h-14 rounded-2xl md:rounded-3xl bg-emerald-500 hover:bg-emerald-600 font-black gap-2"
                             disabled
                           >
                             <CheckCircle2 className="h-5 w-5" />
@@ -342,7 +342,7 @@ export default function BuyerEnquiryDetailsPage() {
                           </Button>
                         ) : (
                           <Button
-                            className="w-full h-14 rounded-3xl font-black shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform"
+                            className="w-full h-12 md:h-14 rounded-2xl md:rounded-3xl font-black shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform"
                             onClick={() => handleAccept(q.id)}
                             disabled={acceptMutation.isPending || isCompleted}
                           >
@@ -356,8 +356,8 @@ export default function BuyerEnquiryDetailsPage() {
                       </div>
                     </div>
 
-                    {/* Integrated Reputation Section for the Seller */}
-                    <div className="pt-10 border-t border-dashed">
+                    {/* Reputation Section */}
+                    <div className="pt-6 md:pt-10 border-t border-dashed">
                       <ReputationSection
                         entityId={
                           q.createdBy?.staffAtEntityId ||
@@ -368,7 +368,6 @@ export default function BuyerEnquiryDetailsPage() {
                           q.createdBy?.staffAt?.name ||
                           q.createdBy?.createdEntities?.[0]?.name
                         }
-                        className="scale-95 origin-top"
                         canReview={q.status === "ACCEPTED"}
                       />
                     </div>
