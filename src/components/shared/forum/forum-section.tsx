@@ -269,7 +269,7 @@ export function ForumSection({ eventId, offerId, itemId, slug, className }: Foru
             <h4 className="text-lg font-black tracking-tight">Want to join the conversation?</h4>
             <p className="text-sm text-muted-foreground max-w-sm mx-auto">Login to your account to share insights and interact with the professional community in the hall.</p>
             <Button asChild className="rounded-2xl px-10 font-black gap-2">
-              <a href="/login">LOGIN TO PARTICIPATE</a>
+              <a href="/auth/login">LOGIN TO PARTICIPATE</a>
             </Button>
           </div>
         )}
