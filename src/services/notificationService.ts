@@ -29,6 +29,12 @@ export const notificationService = {
     });
   },
 
+  async markAllAsRead(): Promise<void> {
+    await fetchClient(API_ENDPOINTS.NOTIFICATION.MARK_ALL_READ, {
+      method: "PATCH",
+    });
+  },
+
   // Channels
   async getChannels(): Promise<NotificationChannel[]> {
     return fetchClient<NotificationChannel[]>(

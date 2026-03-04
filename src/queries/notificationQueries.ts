@@ -29,6 +29,16 @@ export const useMarkNotificationReadMutation = () => {
   });
 };
 
+export const useMarkAllNotificationsReadMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => notificationService.markAllAsRead(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: notificationKeys.all });
+    },
+  });
+};
+
 export const useNotificationChannelsQuery = () => {
   return useQuery({
     queryKey: notificationKeys.channels(),

@@ -161,6 +161,7 @@ export const API_ENDPOINTS = {
     UPDATE: "/notification", // :id
     DELETE: "/notification", // :id
     MARK_READ: "/notification/read", // :id
+    MARK_ALL_READ: "/notification/read-all",
   },
   NOTIFICATION_CHANNEL: {
     CREATE: "/notification-channel",

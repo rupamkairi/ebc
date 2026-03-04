@@ -22,8 +22,12 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { NotificationInbox } from "@/components/dashboard/notifications/notification-inbox";
-import { useNotificationsQuery } from "@/queries/notificationQueries";
+import {
+  useNotificationsQuery,
+  useMarkAllNotificationsReadMutation,
+} from "@/queries/notificationQueries";
 import { USER_ROLE_LABELS } from "@/constants/roles";
+import { useState } from "react";
 
 /**
  * 1. Buyer Profile Card (Orange)
@@ -40,10 +44,19 @@ export function BuyerProfileCard({
   const router = useRouter();
   const { data: notifications = [] } = useNotificationsQuery();
   const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const markAllRead = useMarkAllNotificationsReadMutation();
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   const handleLogout = () => {
     authService.logout();
     router.replace("/auth/login");
+  };
+
+  const handleSheetOpenChange = (open: boolean) => {
+    setSheetOpen(open);
+    if (open && unreadCount > 0) {
+      markAllRead.mutate();
+    }
   };
 
   return (
@@ -97,7 +110,7 @@ export function BuyerProfileCard({
           </DropdownMenu>
 
           {/* Notification Bell — opens slide-out panel */}
-          <Sheet>
+          <Sheet open={sheetOpen} onOpenChange={handleSheetOpenChange}>
             <SheetTrigger asChild>
               <button className="relative flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm transition-all hover:bg-white/30 text-white">
                 <Bell className="size-5 sm:size-6" />
@@ -130,6 +143,7 @@ export function BuyerProfileCard({
     </div>
   );
 }
+
 
 /**
  * 2. Room Card
