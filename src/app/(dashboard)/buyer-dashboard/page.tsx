@@ -189,8 +189,8 @@ export default function BuyerDashboardPage() {
                 <ActivitySectionCard
                   title="My Site Visits"
                   icon={MapPin}
-                  footerLink="/buyer-dashboard/visits"
-                  footerText="View All Visits"
+                  footerLink="/buyer-dashboard/appointments"
+                  footerText="View All Appointments"
                 >
                   <ActivityStatCard
                     label="Scheduled"
