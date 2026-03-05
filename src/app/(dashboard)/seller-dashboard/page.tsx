@@ -151,7 +151,7 @@ export default function SellerDashboardPage() {
               {/* New Enquirers */}
               <Link href="/seller-dashboard/enquiries" className="h-full block">
                 <Card className="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col h-full border-0 group relative hover:shadow-md transition-shadow">
-                  <div className="bg-gradient-to-r from-[#173072] to-[#2547a4] text-white py-3 px-4 flex items-center justify-center gap-2">
+                  <div className="bg-gradient-to-r from-[#173072] to-[#2547a4] text-white py-3 px-4 flex items-center justify-center gap-2 -mt-[25px]">
                     <Users className="h-5 w-5" />
                     <span className="font-semibold text-lg">New Enquirers</span>
                   </div>
@@ -167,7 +167,7 @@ export default function SellerDashboardPage() {
               {/* Your Appointments */}
               <Link href="/seller-dashboard/appointments" className="block h-full">
                 <Card className="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col h-full border border-orange-100 hover:shadow-md transition-shadow">
-                  <div className="bg-[#EF8A17] text-white py-3 px-4 flex items-center justify-center gap-2 relative">
+                  <div className="bg-[#EF8A17] text-white h-[54px] shrink-0 px-4 flex items-center justify-center gap-2 relative -mt-[25px] whitespace-nowrap">
                     <CalendarDays className="h-5 w-5" />
                     <span className="font-semibold text-lg">Your Appointments</span>
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full"></div>
@@ -182,7 +182,7 @@ export default function SellerDashboardPage() {
               {/* Your Quotations */}
               <Link href="/seller-dashboard/quotations" className="block h-full">
                 <Card className="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col h-full border border-orange-100 hover:shadow-md transition-shadow">
-                  <div className="bg-[#EF8A17] text-white py-3 px-4 flex items-center justify-center gap-2">
+                  <div className="bg-[#EF8A17] text-white h-[54px] shrink-0 px-4 flex items-center justify-center gap-2 -mt-[25px] whitespace-nowrap">
                     <FileText className="h-5 w-5" />
                     <span className="font-semibold text-lg">Your Quotations</span>
                   </div>
