@@ -16,6 +16,7 @@ import {
   Clock,
   XCircle,
   Package,
+  Briefcase,
   Bell,
   Plus,
   Edit2,
@@ -26,6 +27,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useEntitiesQuery } from "@/queries/entityQueries";
+import { ENTITY_TYPE } from "@/constants/enums";
 import { useWalletDetails } from "@/queries/walletQueries";
 import {
   useAssignmentsQuery,
@@ -40,6 +42,7 @@ export default function SellerDashboardPage() {
   const { data: entities = [] } = useEntitiesQuery();
   const mainEntity = entities[0];
   const status = mainEntity?.verificationStatus;
+  const isServiceProvider = mainEntity?.type === ENTITY_TYPE.SERVICE_PROVIDER;
   const { data: wallet, isLoading: isWalletLoading } = useWalletDetails(
     mainEntity?.id,
   );
@@ -118,31 +121,44 @@ export default function SellerDashboardPage() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Product Catalogue */}
+              {/* Product / Service Catalogue — dynamic based on seller type */}
               <Card className="bg-gradient-to-r from-[#173072] to-[#2547a4] text-white p-6 rounded-2xl shadow-sm flex flex-col justify-between col-span-1 md:col-span-2 border-0 overflow-hidden">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
                   <div className="bg-white/10 p-2 rounded-lg">
-                    <Package className="h-6 w-6" />
+                    {isServiceProvider ? (
+                      <Briefcase className="h-6 w-6" />
+                    ) : (
+                      <Package className="h-6 w-6" />
+                    )}
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold tracking-tight">Product Catalogue</h3>
-                    <p className="text-sm font-normal text-blue-100">[Manage your listings and prices]</p>
+                    <h3 className="text-xl font-bold tracking-tight">
+                      {isServiceProvider ? "Service Catalogue" : "Product Catalogue"}
+                    </h3>
+                    <p className="text-sm font-normal text-blue-100">
+                      {isServiceProvider
+                        ? "Manage your services and pricing"
+                        : "Manage your listings and prices"}
+                    </p>
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row flex-wrap gap-3">
                   <Link href="/seller-dashboard/catalog?create=true" className="w-full sm:w-auto">
                     <Button variant="secondary" className="w-full sm:w-auto bg-white text-[#173072] hover:bg-gray-100 border-0 rounded-lg px-4 h-10 text-sm font-semibold">
-                      <Plus className="mr-2 h-4 w-4" /> New Product Listing
+                      <Plus className="mr-2 h-4 w-4" />
+                      {isServiceProvider ? "New Service Listing" : "New Product Listing"}
                     </Button>
                   </Link>
                   <Link href="/seller-dashboard/catalog" className="w-full sm:w-auto">
                     <Button variant="outline" className="w-full sm:w-auto text-white border-white hover:bg-white/20 rounded-lg px-4 h-10 text-sm font-semibold">
-                      <Edit2 className="mr-2 h-4 w-4" /> Edit Product Listing
+                      <Edit2 className="mr-2 h-4 w-4" />
+                      {isServiceProvider ? "Edit Service Listing" : "Edit Product Listing"}
                     </Button>
                   </Link>
                   <Link href="/seller-dashboard/catalog" className="w-full sm:w-auto">
                     <Button className="w-full sm:w-auto bg-[#EF8A17] hover:bg-[#d87c14] text-white border-0 rounded-lg px-4 h-10 text-sm font-semibold">
-                      <Eye className="mr-2 h-4 w-4" /> View Product Listing
+                      <Eye className="mr-2 h-4 w-4" />
+                      {isServiceProvider ? "View Service Listing" : "View Product Listing"}
                     </Button>
                   </Link>
                 </div>
