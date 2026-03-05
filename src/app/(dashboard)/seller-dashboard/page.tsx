@@ -254,7 +254,7 @@ export default function SellerDashboardPage() {
                   </Button>
                 </Link>
                 <Link href="/seller-dashboard/wallet" className="w-full sm:w-auto">
-                  <Button variant="outline" className="w-full bg-transparent text-white border-white hover:bg-white/10 rounded-lg px-5 h-11 font-medium sm:flex items-center">
+                  <Button variant="outline" className="w-full bg-transparent text-white border-white hover:bg-white/10 rounded-lg px-5 h-11 font-medium flex items-center">
                     Transaction History
                   </Button>
                 </Link>
@@ -346,15 +346,15 @@ export default function SellerDashboardPage() {
                   <Headphones className="h-6 w-6 text-[#EF8A17]" />
                   <h3 className="font-bold text-lg tracking-wide">Technical Support</h3>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-3 relative z-10 w-full">
-                  <Link href="/seller-dashboard/support" className="w-full sm:flex-1">
-                      <Button className="w-full bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-lg h-11 shadow-md text-sm font-semibold truncate px-4">
-                      View HelpDesk
+                <div className="flex flex-col gap-3 relative z-10 w-full">
+                  <Link href="/seller-dashboard/support" className="w-full">
+                      <Button className="w-full bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-lg h-11 shadow-md text-sm font-semibold px-4">
+                        View HelpDesk
                       </Button>
                   </Link>
-                  <Link href="/seller-dashboard/support" className="w-full sm:flex-1">
-                      <Button className="w-full bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-lg h-11 shadow-md text-sm font-semibold truncate px-4">
-                      View Tickets
+                  <Link href="/seller-dashboard/support" className="w-full">
+                      <Button className="w-full bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-lg h-11 shadow-md text-sm font-semibold px-4">
+                        View Tickets
                       </Button>
                   </Link>
                 </div>
@@ -369,7 +369,7 @@ export default function SellerDashboardPage() {
                 Conference Hall
               </h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <Card className="p-5 flex flex-col gap-4 border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-3">
                   <MessageSquare className="h-5 w-5 text-[#173072]" />
@@ -434,7 +434,7 @@ export default function SellerDashboardPage() {
         </div>
 
         {/* Sidebar Column (Notifications) */}
-        <div className="space-y-8 h-full">
+        <div className="hidden lg:block space-y-8 h-full">
           <div className="sticky top-24 pt-4 lg:pt-0">
              <div className="flex items-center gap-2 mb-4 px-2">
                  <Bell className="h-5 w-5 text-[#173072]" />
