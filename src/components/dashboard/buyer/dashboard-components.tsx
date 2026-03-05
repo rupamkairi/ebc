@@ -158,13 +158,13 @@ export function RoomCard({
   href: string;
 }) {
   return (
-    <div className="group flex flex-col items-center gap-4 rounded-xl bg-white p-6 shadow-sm ring-1 ring-muted/50 transition-all hover:shadow-md">
+    <div className="group flex flex-col items-center gap-4 rounded-xl bg-white p-6 shadow-sm ring-1 ring-muted/50 transition-all hover:shadow-md h-full">
       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#FFA500] text-white">
         <Icon className="size-6" />
       </div>
-      <h3 className="text-lg font-bold text-[#3D52A0]">{title}</h3>
-      <Link href={href} className="w-full">
-        <Button className="w-full bg-[#2A3B7D] hover:bg-[#1D2A5C] text-sm font-semibold h-10 px-4">
+      <h3 className="text-lg font-bold text-[#3D52A0] text-center">{title}</h3>
+      <Link href={href} className="w-full mt-auto">
+        <Button className="w-full bg-[#2A3B7D] hover:bg-[#1D2A5C] text-sm font-semibold h-10 px-8">
           Browse Area
         </Button>
       </Link>
