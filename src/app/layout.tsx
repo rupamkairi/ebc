@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import I18NProvider from "@/i18n/I18NProvider";
+import { I18nProvider } from "@/components/providers/I18nProvider";
 import QueryClientProvider from "@/queries/QueryClientProvider";
 import { Poppins, Open_Sans } from "next/font/google";
 import "./globals.css";
@@ -39,10 +39,10 @@ export default function RootLayout({
         className={`${poppins.variable} ${openSans.variable} font-poppins antialiased`}
       >
         <QueryClientProvider>
-          <I18NProvider>
+          <I18nProvider>
             <>{children}</>
             <SupportCenter />
-          </I18NProvider>
+          </I18nProvider>
         </QueryClientProvider>
         <Toaster />
       </body>

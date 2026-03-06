@@ -1,13 +1,13 @@
 "use client";
 
 import { UserLoginMobileOtpForm } from "@/components/layouts/auth/user-login-mobile-otp-form";
-import Link from "next/link";
+import React, { Suspense } from "react";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useSearchParams } from "next/navigation";
 
-export default function AuthLogin() {
+function AuthLoginContent() {
   const searchParams = useSearchParams();
   const role = searchParams.get("role");
   const { t } = useLanguage();
@@ -25,15 +25,19 @@ export default function AuthLogin() {
               className="object-cover"
               priority
             />
-            
+
             <div className="absolute inset-0 p-10 flex flex-col justify-between z-10">
-              <h1 className="text-4xl text-white font-black tracking-tight" style={{ fontFamily: "Outfit, sans-serif" }}>
+              <h1
+                className="text-4xl text-white font-black tracking-tight"
+                style={{ fontFamily: "Outfit, sans-serif" }}
+              >
                 E-con Building Centre
               </h1>
-              
+
               <div className="space-y-6 mt-auto mb-[80px]">
                 <h2 className="text-3xl text-white/90 font-medium leading-tight">
-                  Powered by Engineers<br />
+                  Powered by Engineers
+                  <br />
                   Trusted by Families.
                 </h2>
                 <div className="flex gap-2">
@@ -45,7 +49,10 @@ export default function AuthLogin() {
 
               <div className="absolute bottom-10 left-10">
                 <Link href="/">
-                  <button type="button" className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-black/20 hover:bg-black/40 backdrop-blur-md border border-white/10 text-white font-medium transition-all shadow-lg active:scale-95">
+                  <button
+                    type="button"
+                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-black/20 hover:bg-black/40 backdrop-blur-md border border-white/10 text-white font-medium transition-all shadow-lg active:scale-95"
+                  >
                     <ArrowLeft className="h-4 w-4" />
                     {t("back")}
                   </button>
@@ -59,17 +66,37 @@ export default function AuthLogin() {
         <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 lg:p-16 relative py-16 lg:py-0 overflow-y-auto lg:overflow-visible">
           {/* Mobile Back Button */}
           <div className="lg:hidden absolute top-6 left-6">
-            <Link href="/" className="text-white/80 hover:text-white flex items-center gap-2 transition-colors">
+            <Link
+              href="/"
+              className="text-white/80 hover:text-white flex items-center gap-2 transition-colors"
+            >
               <ArrowLeft className="h-5 w-5" />
               <span className="font-medium">{t("back_to_home")}</span>
             </Link>
           </div>
 
           <div className="w-full max-w-md mt-6 lg:mt-0">
-            <UserLoginMobileOtpForm role={role || undefined} isDarkTheme={true} />
+            <UserLoginMobileOtpForm
+              role={role || undefined}
+              isDarkTheme={true}
+            />
           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AuthLogin() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-[#F5F7FA]">
+          Loading...
+        </div>
+      }
+    >
+      <AuthLoginContent />
+    </Suspense>
   );
 }

@@ -2,6 +2,7 @@
 
 import Container from "@/components/ui/containers";
 import { useLanguage } from "@/hooks/useLanguage";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 export function FooterSection() {
   const { t } = useLanguage();
@@ -112,7 +113,9 @@ export function FooterSection() {
 
           {/* For You Column */}
           <div className="lg:col-span-2 space-y-4 pt-1">
-            <h4 className="text-[17px] font-semibold tracking-wide">{t("footer_for_you")}</h4>
+            <h4 className="text-[17px] font-semibold tracking-wide">
+              {t("footer_for_you")}
+            </h4>
             <ul className="space-y-2 text-[13px] font-medium text-white/90">
               <li>
                 <a href="#" className="hover:text-white transition-colors">
@@ -330,7 +333,8 @@ export function FooterSection() {
               <p>{t("footer_copyright")}</p>
               <p>{t("footer_serving")}</p>
             </div>
-            <div className="text-center md:text-right">
+            <div className="text-center md:text-right flex flex-col items-center md:items-end gap-2">
+              <LanguageSwitcher variant="footer" />
               <p>{t("footer_designed_by")}</p>
             </div>
           </div>

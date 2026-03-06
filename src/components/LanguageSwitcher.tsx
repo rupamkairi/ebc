@@ -6,14 +6,23 @@ import {
   NativeSelect,
   NativeSelectOption,
 } from "@/components/ui/native-select";
+import { cn } from "@/lib/utils";
 
-export const LanguageSwitcher = () => {
+interface LanguageSwitcherProps {
+  className?: string;
+  variant?: "default" | "footer";
+}
+
+export const LanguageSwitcher = ({
+  className,
+  variant = "default",
+}: LanguageSwitcherProps) => {
   const { currentLanguage, changeLanguage, t } = useLanguage();
 
   const isMounted = useSyncExternalStore(
     () => () => {},
     () => true,
-    () => false
+    () => false,
   );
 
   // Don't render anything until we're on the client
@@ -26,9 +35,18 @@ export const LanguageSwitcher = () => {
     { code: "hn-IN", name: t("hinglish") },
   ];
 
+  const isFooter = variant === "footer";
+
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-sm font-medium">{t("language")}:</span>
+    <div className={cn("flex items-center gap-2", className)}>
+      <span
+        className={cn(
+          "text-sm font-medium",
+          isFooter ? "text-white/80" : "text-foreground",
+        )}
+      >
+        {t("language")}:
+      </span>
 
       <NativeSelect
         value={currentLanguage}
@@ -36,9 +54,18 @@ export const LanguageSwitcher = () => {
           changeLanguage(e.target.value);
           window.location.reload();
         }}
+        className={cn(
+          isFooter &&
+            "bg-white/10 border-white/20 text-white focus-visible:ring-white/30",
+        )}
+        size="sm"
       >
         {languages.map((lang) => (
-          <NativeSelectOption key={lang.code} value={lang.code}>
+          <NativeSelectOption
+            key={lang.code}
+            value={lang.code}
+            className="text-black"
+          >
             {lang.name}
           </NativeSelectOption>
         ))}
