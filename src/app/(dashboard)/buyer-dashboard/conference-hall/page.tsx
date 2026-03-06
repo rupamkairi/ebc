@@ -6,18 +6,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GraduationCap, Tag, Sofa } from "lucide-react";
 import { ForumSection } from "@/components/shared/forum";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function BuyerConferenceHallPage() {
+  const { t } = useLanguage();
   return (
     <div className="flex-1 max-w-7xl mx-auto w-full py-6 md:py-12 px-4">
       {/* Header Section */}
       <div className="text-center space-y-4 mb-12">
         <h1 className="text-5xl md:text-6xl font-black tracking-tight text-[#3D52A0]">
-          Conference Hall
+          {t("conference_hall_title")}
         </h1>
         <p className="text-muted-foreground text-lg md:text-xl font-medium max-w-3xl mx-auto leading-relaxed">
-          Discover exclusive webinars, training sessions and professional
-          resources. Engage with the community in our forums.
+          {t("conference_hall_desc_new")}
         </p>
       </div>
 
@@ -34,7 +35,7 @@ export default function BuyerConferenceHallPage() {
               )}
             >
               <GraduationCap className="h-4 w-4 md:h-5 md:w-5" />
-              Learning Events
+              {t("learning_events_tab_new")}
             </TabsTrigger>
             <TabsTrigger
               value="offers"
@@ -45,7 +46,7 @@ export default function BuyerConferenceHallPage() {
               )}
             >
               <Tag className="h-4 w-4 md:h-5 md:w-5" />
-              Promotions and Offers
+              {t("promotions_offers_tab_new")}
             </TabsTrigger>
             <TabsTrigger
               value="lounge"
@@ -56,7 +57,7 @@ export default function BuyerConferenceHallPage() {
               )}
             >
               <Sofa className="h-4 w-4 md:h-5 md:w-5" />
-              Community Lounge
+              {t("community_lounge_tab_new")}
             </TabsTrigger>
           </TabsList>
         </div>

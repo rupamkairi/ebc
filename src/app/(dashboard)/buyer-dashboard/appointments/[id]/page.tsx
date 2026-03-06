@@ -19,10 +19,12 @@ import { format } from "date-fns";
 import Link from "next/link";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function BuyerAppointmentDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const { t } = useLanguage();
 
   const { data: appointment, isLoading: loadingAppointment } = useAppointmentQuery(id);
   const { data: visits, isLoading: loadingVisits } = useVisitsQuery({ appointmentId: id });
@@ -35,18 +37,18 @@ export default function BuyerAppointmentDetailsPage() {
   const handleAccept = async (visitId: string) => {
     try {
       await acceptMutation.mutateAsync(visitId);
-      toast.success("Visit confirmed successfully!");
+      toast.success(t("visit_confirmed_msg"));
     } catch (error: any) {
-      toast.error(error.message || "Failed to confirm visit");
+      toast.error(error.message || t("visit_confirm_failed_msg"));
     }
   };
 
   const handleComplete = async () => {
     try {
       await completeMutation.mutateAsync(id);
-      toast.success("Service marked as completed!");
+      toast.success(t("service_completed_new_msg"));
     } catch (error: any) {
-      toast.error(error.message || "Failed to update status");
+      toast.error(error.message || t("service_update_failed_msg"));
     }
   };
 
@@ -61,8 +63,8 @@ export default function BuyerAppointmentDetailsPage() {
   if (!appointment) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-        <p className="text-xl font-bold">Appointment not found</p>
-        <Button onClick={() => router.back()}>Go Back</Button>
+        <p className="text-xl font-bold">{t("appointment_not_found_text")}</p>
+        <Button onClick={() => router.back()}>{t("go_back_btn")}</Button>
       </div>
     );
   }
@@ -75,7 +77,7 @@ export default function BuyerAppointmentDetailsPage() {
       <div className="flex flex-col gap-4">
         <Link href="/buyer-dashboard/appointments" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors text-sm font-bold">
           <ArrowLeft className="h-4 w-4" />
-          BACK TO APPOINTMENTS
+          {t("back_to_appointments_link")}
         </Link>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
@@ -87,7 +89,7 @@ export default function BuyerAppointmentDetailsPage() {
                 appointment.status === "COMPLETED" ? "bg-blue-600" : "bg-amber-500"
               )}>{appointment.status}</Badge>
             </div>
-            <h1 className="text-4xl font-black tracking-tighter">Visit Confirmation</h1>
+            <h1 className="text-4xl font-black tracking-tighter">{t("visit_confirmation_title")}</h1>
           </div>
 
           {confirmedVisit && !isCompleted && (
@@ -97,7 +99,7 @@ export default function BuyerAppointmentDetailsPage() {
               className="h-14 rounded-3xl bg-blue-600 hover:bg-blue-700 font-black gap-2 px-8 shadow-xl shadow-blue-500/20"
             >
               {completeMutation.isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : <CheckCircle2 className="h-5 w-5" />}
-              MARK AS COMPLETED
+              {t("mark_completed_btn")}
             </Button>
           )}
         </div>
@@ -110,8 +112,8 @@ export default function BuyerAppointmentDetailsPage() {
               <PartyPopper className="h-10 w-10" />
             </div>
             <div>
-              <h2 className="text-2xl font-black tracking-tight">Service Completed!</h2>
-              <p className="text-muted-foreground font-medium max-w-sm">How was your experience with <b>{confirmedVisit?.createdBy?.staffAt?.name || confirmedVisit?.createdBy?.name}</b>?</p>
+              <h2 className="text-2xl font-black tracking-tight">{t("service_completed_title")}</h2>
+              <p className="text-muted-foreground font-medium max-w-sm">{t("how_was_experience_with")} <b>{confirmedVisit?.createdBy?.staffAt?.name || confirmedVisit?.createdBy?.name}</b>?</p>
             </div>
           </div>
           <ReviewForm 
@@ -121,7 +123,7 @@ export default function BuyerAppointmentDetailsPage() {
             trigger={
               <Button size="lg" className="h-16 rounded-full px-10 bg-emerald-500 hover:bg-emerald-600 font-black gap-3 text-lg shadow-xl shadow-emerald-500/20 group">
                 <Star className="h-6 w-6 fill-current group-hover:rotate-12 transition-transform" />
-                RATE YOUR EXPERIENCE
+                {t("rate_your_experience")}
               </Button>
             }
           />
@@ -134,13 +136,13 @@ export default function BuyerAppointmentDetailsPage() {
           <section className="space-y-6">
             <h3 className="text-xl font-black tracking-tight flex items-center gap-2">
               <User className="h-5 w-5 text-primary" />
-              Service & Professional
+              {t("service_professional_title")}
             </h3>
             <Card className="overflow-hidden border-none shadow-sm bg-muted/30">
               <CardContent className="p-8">
                 <div className="space-y-2">
-                  <h4 className="text-3xl font-black tracking-tight">{firstItem?.item?.name || "Service Request"}</h4>
-                  <p className="text-muted-foreground italic">&quot;{firstItem?.remarks || "No specific instructions provided."}&quot;</p>
+                  <h4 className="text-3xl font-black tracking-tight">{firstItem?.item?.name || t("service_request_title")}</h4>
+                  <p className="text-muted-foreground italic">"{firstItem?.remarks || t("no_instructions_text")}"</p>
                 </div>
               </CardContent>
             </Card>
@@ -153,27 +155,27 @@ export default function BuyerAppointmentDetailsPage() {
             <div className="flex items-center justify-between">
               <h3 className="text-2xl font-black tracking-tight flex items-center gap-2">
                 <Bell className="h-6 w-6 text-primary" />
-                Service Provider Responses
+                {t("service_provider_responses_title")}
               </h3>
             </div>
 
             {(!visits || visits.length === 0) ? (
               <div className="p-12 text-center bg-muted/20 border border-dashed rounded-3xl">
                 <Calendar className="h-10 w-10 text-muted-foreground mx-auto mb-4 opacity-20" />
-                <p className="text-muted-foreground font-medium">Waiting for the Service Provider to confirm a slot.</p>
+                <p className="text-muted-foreground font-medium">{t("waiting_provider_slot")}</p>
               </div>
             ) : (
               <div className="space-y-12">
                 {visits.map((v: any) => (
                   <div key={v.id} className="space-y-8 p-8 rounded-4xl bg-white border shadow-xl shadow-black/5 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-6">
-                      <Badge className="bg-primary/10 text-primary border-primary/20 uppercase text-[10px] font-black tracking-widest">SCHEDULED VISIT</Badge>
+                      <Badge className="bg-primary/10 text-primary border-primary/20 uppercase text-[10px] font-black tracking-widest">{t("scheduled_visit_label")}</Badge>
                     </div>
 
                     <div className="flex flex-col md:flex-row gap-10">
                       <div className="flex-1 space-y-6">
                         <div>
-                          <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">SERVICE BY</p>
+                          <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">{t("service_by_text")}</p>
                           <h4 className="text-2xl font-black tracking-tight">{v.createdBy?.staffAt?.name || v.createdBy?.name}</h4>
                         </div>
 
@@ -183,7 +185,7 @@ export default function BuyerAppointmentDetailsPage() {
                               <Calendar className="h-5 w-5 text-primary" />
                             </div>
                             <div>
-                              <p className="text-[10px] font-bold text-muted-foreground uppercase">Date</p>
+                              <p className="text-[10px] font-bold text-muted-foreground uppercase">{t("date_label")}</p>
                               <p className="font-black text-sm">{format(new Date(v.visitSlot.fromDateTime), "PPP")}</p>
                             </div>
                           </div>
@@ -193,7 +195,7 @@ export default function BuyerAppointmentDetailsPage() {
                               <Clock className="h-5 w-5 text-primary" />
                             </div>
                             <div>
-                              <p className="text-[10px] font-bold text-muted-foreground uppercase">Time Slot</p>
+                              <p className="text-[10px] font-bold text-muted-foreground uppercase">{t("time_slot_label")}</p>
                               <p className="font-black text-sm">
                                 {format(new Date(v.visitSlot.fromDateTime), "p")} - {format(new Date(v.visitSlot.toDateTime), "p")}
                               </p>
@@ -206,7 +208,7 @@ export default function BuyerAppointmentDetailsPage() {
                         {v.isActive ? (
                           <Button className="w-full h-14 rounded-3xl bg-emerald-500 hover:bg-emerald-600 font-black gap-2" disabled>
                             <CheckCircle2 className="h-5 w-5" />
-                            CONFIRMED
+                            {t("confirmed_label")}
                           </Button>
                         ) : (
                           <Button 
@@ -214,7 +216,7 @@ export default function BuyerAppointmentDetailsPage() {
                             onClick={() => handleAccept(v.id)}
                             disabled={acceptMutation.isPending || isCompleted}
                           >
-                            {acceptMutation.isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : "CONFIRM SCHEDULE"}
+                            {acceptMutation.isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : t("confirm_schedule_btn")}
                           </Button>
                         )}
                       </div>
@@ -239,13 +241,13 @@ export default function BuyerAppointmentDetailsPage() {
         <div className="space-y-6">
           <Card className="rounded-4xl border-none shadow-lg shadow-black/5 bg-linear-to-b from-primary/5 to-transparent">
             <CardHeader>
-              <CardTitle className="text-lg font-black tracking-tight">Visit Location</CardTitle>
+              <CardTitle className="text-lg font-black tracking-tight">{t("visit_location_title")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-primary mt-1" />
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Address</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{t("address_label_text")}</p>
                   <p className="font-bold text-sm leading-relaxed">{appointment.appointmentDetails?.[0]?.address || "N/A"}</p>
                 </div>
               </div>
