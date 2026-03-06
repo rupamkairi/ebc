@@ -43,10 +43,12 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function BuyerEnquiryDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const { t } = useLanguage();
 
   const { data: enquiry, isLoading: loadingEnquiry } = useEnquiryQuery(id);
   const { data: quotations, isLoading: loadingQuotations } = useQuotationsQuery(
@@ -63,18 +65,18 @@ export default function BuyerEnquiryDetailsPage() {
   const handleAccept = async (quotationId: string) => {
     try {
       await acceptMutation.mutateAsync(quotationId);
-      toast.success("Quotation accepted successfully!");
+      toast.success(t("quotation_accepted_msg"));
     } catch (error: any) {
-      toast.error(error.message || "Failed to accept quotation");
+      toast.error(error.message || t("quotation_failed_msg"));
     }
   };
 
   const handleComplete = async () => {
     try {
       await completeMutation.mutateAsync(id);
-      toast.success("Enquiry marked as delivered!");
+      toast.success(t("enquiry_delivered_msg"));
     } catch (error: any) {
-      toast.error(error.message || "Failed to update status");
+      toast.error(error.message || t("status_update_failed_msg"));
     }
   };
 
@@ -89,8 +91,8 @@ export default function BuyerEnquiryDetailsPage() {
   if (!enquiry) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-        <p className="text-xl font-bold">Enquiry not found</p>
-        <Button onClick={() => router.back()}>Go Back</Button>
+        <p className="text-xl font-bold">{t("enquiry_not_found_text")}</p>
+        <Button onClick={() => router.back()}>{t("go_back_btn")}</Button>
       </div>
     );
   }
@@ -104,7 +106,7 @@ export default function BuyerEnquiryDetailsPage() {
           className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors text-sm font-bold"
         >
           <ArrowLeft className="h-4 w-4" />
-          BACK TO ENQUIRIES
+          {t("back_to_enquiries_link")}
         </Link>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 md:gap-6">
           <div>
@@ -129,7 +131,7 @@ export default function BuyerEnquiryDetailsPage() {
               </Badge>
             </div>
             <h1 className="text-4xl font-black tracking-tighter">
-              Requirement Details
+              {t("requirement_details")}
             </h1>
           </div>
 
@@ -144,7 +146,7 @@ export default function BuyerEnquiryDetailsPage() {
               ) : (
                 <CheckCircle2 className="h-5 w-5" />
               )}
-              MARK AS DELIVERED
+              {t("mark_as_delivered")}
             </Button>
           )}
         </div>
@@ -158,10 +160,10 @@ export default function BuyerEnquiryDetailsPage() {
             </div>
             <div>
               <h2 className="text-2xl font-black tracking-tight">
-                Order Completed!
+                {t("order_completed")}
               </h2>
               <p className="text-muted-foreground font-medium max-w-sm">
-                How was your experience with{" "}
+                {t("how_was_experience_with")}{" "}
                 <b>
                   {acceptedQuotation?.createdBy?.staffAt?.name ||
                     acceptedQuotation?.createdBy?.name}
@@ -183,7 +185,7 @@ export default function BuyerEnquiryDetailsPage() {
                 className="h-16 rounded-full px-10 bg-emerald-500 hover:bg-emerald-600 font-black gap-3 text-lg shadow-xl shadow-emerald-500/20 group"
               >
                 <Star className="h-6 w-6 fill-current group-hover:rotate-12 transition-transform" />
-                RATE YOUR EXPERIENCE
+                {t("rate_your_experience")}
               </Button>
             }
           />
@@ -196,7 +198,7 @@ export default function BuyerEnquiryDetailsPage() {
           <section className="space-y-4 md:space-y-6">
             <h3 className="text-lg md:text-xl font-black tracking-tight flex items-center gap-2">
               <Package className="h-5 w-5 text-primary" />
-              Items Requested
+              {t("items_requested")}
             </h3>
             <div className="grid gap-3 md:gap-4">
               {enquiry.enquiryLineItems?.map((item: EnquiryLineItem) => (
@@ -208,7 +210,7 @@ export default function BuyerEnquiryDetailsPage() {
                     <div className="min-w-0">
                       <h4 className="font-bold text-base md:text-lg truncate">{item.item?.name}</h4>
                       <p className="text-sm text-muted-foreground italic">
-                        {item.remarks || "No specific remarks"}
+                        {item.remarks || t("no_specific_remarks")}
                       </p>
                     </div>
                     <div className="text-right shrink-0">
@@ -230,10 +232,10 @@ export default function BuyerEnquiryDetailsPage() {
             <div className="flex items-center justify-between">
               <h3 className="text-2xl font-black tracking-tight flex items-center gap-2">
                 <FileText className="h-6 w-6 text-primary" />
-                Seller Quotations
+                {t("seller_quotations")}
               </h3>
               <Badge variant="secondary" className="font-bold">
-                {quotations?.length || 0} PROPOSALS
+                {quotations?.length || 0} {t("proposals_count")}
               </Badge>
             </div>
 
@@ -241,8 +243,7 @@ export default function BuyerEnquiryDetailsPage() {
               <div className="p-8 md:p-12 text-center bg-muted/20 border border-dashed rounded-2xl md:rounded-3xl">
                 <AlertCircle className="h-10 w-10 text-muted-foreground mx-auto mb-4 opacity-20" />
                 <p className="text-muted-foreground font-medium">
-                  No quotations received yet. Sellers are reviewing your
-                  requirement.
+                  {t("no_quotations_received_yet")}
                 </p>
               </div>
             ) : (
@@ -256,14 +257,14 @@ export default function BuyerEnquiryDetailsPage() {
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">
-                          PROPOSED BY
+                          {t("proposed_by")}
                         </p>
                         <h4 className="text-lg md:text-2xl font-black tracking-tight">
                           {q.createdBy?.staffAt?.name || q.createdBy?.name}
                         </h4>
                       </div>
                       <Badge className="bg-primary/10 text-primary border-primary/20 uppercase text-[10px] font-black tracking-widest shrink-0 mt-1">
-                        PROPOSAL
+                        {t("proposal_label")}
                       </Badge>
                     </div>
 
@@ -291,7 +292,7 @@ export default function BuyerEnquiryDetailsPage() {
                                 }
                               </div>
                               <p className="text-[10px] text-primary font-bold mt-1 uppercase tracking-tighter">
-                                {li.isNegotiable ? "Negotiable" : "Fixed Price"}
+                                {li.isNegotiable ? t("negotiable_price") : t("fixed_price_label")}
                               </p>
                             </div>
                           ))}
@@ -308,7 +309,7 @@ export default function BuyerEnquiryDetailsPage() {
                       <div className="w-full md:w-56 space-y-4 shrink-0">
                         <div className="p-4 md:p-6 rounded-2xl md:rounded-4xl bg-primary text-primary-foreground text-center space-y-1">
                           <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">
-                            Final Proposal
+                            {t("final_proposal")}
                           </p>
                           <div className="text-2xl md:text-3xl font-black">
                             ₹
@@ -338,7 +339,7 @@ export default function BuyerEnquiryDetailsPage() {
                             disabled
                           >
                             <CheckCircle2 className="h-5 w-5" />
-                            ACCEPTED
+                            {t("accepted_status")}
                           </Button>
                         ) : (
                           <Button
@@ -349,7 +350,7 @@ export default function BuyerEnquiryDetailsPage() {
                             {acceptMutation.isPending ? (
                               <Loader2 className="h-5 w-5 animate-spin" />
                             ) : (
-                              "ACCEPT PROPOSAL"
+                              t("accept_proposal_btn")
                             )}
                           </Button>
                         )}
@@ -383,16 +384,16 @@ export default function BuyerEnquiryDetailsPage() {
           <Card className="rounded-4xl border-none shadow-lg shadow-black/5 bg-linear-to-b from-primary/5 to-transparent">
             <CardHeader>
               <CardTitle className="text-lg font-black tracking-tight">
-                Order Logics
+                {t("order_logics")}
               </CardTitle>
-              <CardDescription>Delivery & Schedule information</CardDescription>
+              <CardDescription>{t("delivery_schedule_info")}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-primary mt-1" />
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                    Location
+                    {t("location_field")}
                   </p>
                   <p className="font-bold text-sm leading-relaxed">
                     {enquiry.enquiryDetails?.[0]?.address || "N/A"}
@@ -404,7 +405,7 @@ export default function BuyerEnquiryDetailsPage() {
                 <Calendar className="h-5 w-5 text-primary mt-1" />
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                    Expected Date
+                    {t("expected_date_field")}
                   </p>
                   <p className="font-bold text-sm">
                     {enquiry.enquiryDetails?.[0]?.expectedDate
@@ -412,7 +413,7 @@ export default function BuyerEnquiryDetailsPage() {
                           new Date(enquiry.enquiryDetails[0].expectedDate),
                           "PPP",
                         )
-                      : "Flexible"}
+                      : t("flexible_date")}
                   </p>
                 </div>
               </div>

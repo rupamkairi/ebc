@@ -6,6 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 function AuthLoginContent() {
   const searchParams = useSearchParams();

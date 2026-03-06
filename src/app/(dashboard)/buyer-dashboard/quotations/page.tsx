@@ -19,6 +19,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const filters = ["All", "Pending", "Accepted"];
 
@@ -26,6 +27,7 @@ export default function BuyerQuotationsPage() {
   const [activeFilter, setActiveFilter] = useState("All");
   const { data: session } = useSessionQuery();
   const { data: quotations, isLoading } = useQuotationsQuery({});
+  const { t } = useLanguage();
 
   const filtered = (quotations || []).filter((q) => {
     if (activeFilter === "All") return true;
@@ -47,10 +49,10 @@ export default function BuyerQuotationsPage() {
       {/* Header */}
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-black text-[#3D52A0] tracking-tight">
-          My Quotations
+          {t("quotation_page_title")}
         </h1>
         <p className="text-sm text-muted-foreground font-medium">
-          Review and accept price proposals from sellers
+          {t("quotation_page_subtitle")}
         </p>
       </div>
 
@@ -67,7 +69,9 @@ export default function BuyerQuotationsPage() {
                 : "bg-white text-[#3D52A0] hover:bg-muted border border-muted",
             )}
           >
-            {filter}
+            {filter === "All" && t("all_filter")}
+            {filter === "Pending" && t("pending_filter")}
+            {filter === "Accepted" && t("accepted_filter")}
           </button>
         ))}
       </div>
@@ -76,12 +80,12 @@ export default function BuyerQuotationsPage() {
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-20 gap-4">
           <Loader2 className="h-10 w-10 animate-spin text-[#3D52A0]" />
-          <p className="text-muted-foreground font-medium">Loading quotations...</p>
+          <p className="text-muted-foreground font-medium">{t("loading_quotations_msg")}</p>
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center gap-4 bg-muted/20 border border-dashed rounded-2xl">
           <FileText className="h-10 w-10 text-muted-foreground/30" />
-          <p className="text-muted-foreground font-medium">No quotations found.</p>
+          <p className="text-muted-foreground font-medium">{t("no_quotations_msg")}</p>
         </div>
       ) : (
         <div className="grid gap-4">
@@ -91,7 +95,7 @@ export default function BuyerQuotationsPage() {
               0,
             ) ?? 0;
             const mainItem =
-              q.quotationLineItems?.[0]?.item?.name || "Multiple Items";
+              q.quotationLineItems?.[0]?.item?.name || t("multiple_items");
             const itemCount = q.quotationLineItems?.length ?? 0;
             const isAccepted = q.status === "ACCEPTED";
 
@@ -128,11 +132,11 @@ export default function BuyerQuotationsPage() {
                                   : "bg-amber-100 text-amber-700",
                               )}
                             >
-                              {isAccepted ? "Accepted" : "Pending"}
+                              {isAccepted ? t("accepted_label") : t("pending_label")}
                             </Badge>
                           </div>
                           <p className="font-black text-sm">
-                            {itemCount > 1 ? `${mainItem} (+${itemCount - 1} more)` : mainItem}
+                            {itemCount > 1 ? `${mainItem} (${t("more_items", { count: itemCount - 1 })})` : mainItem}
                           </p>
                           <p className="text-xs text-muted-foreground flex items-center gap-1">
                             <Clock className="h-3 w-3" />
@@ -144,7 +148,7 @@ export default function BuyerQuotationsPage() {
                       {/* Right: amount + action */}
                       <div className="flex items-center gap-4 md:gap-6">
                         <div className="text-right">
-                          <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Total</p>
+                          <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{t("total_label")}</p>
                           <div className="flex items-center justify-end font-black text-[#3D52A0] text-xl">
                             <IndianRupee className="h-4 w-4" />
                             {total.toLocaleString("en-IN")}
@@ -156,7 +160,7 @@ export default function BuyerQuotationsPage() {
                           className="border-[#3D52A0] text-[#3D52A0] hover:bg-[#3D52A0] hover:text-white font-black rounded-xl h-10 px-5 transition-all group/btn"
                         >
                           <Link href={`/buyer-dashboard/enquiries/${q.enquiryId}`}>
-                            View
+                            {t("view_label")}
                             <ChevronRight className="ml-1 h-4 w-4 group-hover/btn:translate-x-0.5 transition-transform" />
                           </Link>
                         </Button>

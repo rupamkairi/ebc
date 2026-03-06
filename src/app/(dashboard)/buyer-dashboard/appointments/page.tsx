@@ -10,12 +10,14 @@ import { useState } from "react";
 import Link from "next/link";
 
 import { AppointmentCard } from "@/components/dashboard/buyer/appointment/appointment-card";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const filters = ["All", "Upcoming", "Completed", "Cancelled"];
 
 export default function AppointmentsPage() {
   const [activeFilter, setActiveFilter] = useState("All");
   const [search, setSearch] = useState("");
+  const { t } = useLanguage();
 
   const { data: appointments, isLoading } = useAppointmentsQuery({
     search: search,
@@ -31,13 +33,13 @@ export default function AppointmentsPage() {
       <div className="flex flex-col gap-6 py-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Appointments</h1>
+            <h1 className="text-3xl font-bold tracking-tight">{t("appointment_page_title")}</h1>
             <p className="text-muted-foreground">
-              View and manage your scheduled appointments.
+              {t("appointment_page_desc")}
             </p>
           </div>
           <Link href="/appointment/create">
-            <Button>Create New Appointment</Button>
+            <Button>{t("create_appointment_btn")}</Button>
           </Link>
         </div>
 
@@ -50,7 +52,10 @@ export default function AppointmentsPage() {
                 className="cursor-pointer px-4 py-1.5 text-sm"
                 onClick={() => setActiveFilter(filter)}
               >
-                {filter}
+                {filter === "All" && t("all_filter")}
+                {filter === "Upcoming" && t("upcoming_filter")}
+                {filter === "Completed" && t("completed_filter")}
+                {filter === "Cancelled" && t("cancelled_filter")}
               </Badge>
             ))}
           </div>
@@ -58,7 +63,7 @@ export default function AppointmentsPage() {
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search appointments..."
+              placeholder={t("search_appointments")}
               className="w-full sm:w-[250px] pl-9"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -70,7 +75,7 @@ export default function AppointmentsPage() {
           {isLoading ? (
             <div className="flex justify-center py-12">
               <p className="text-muted-foreground animate-pulse">
-                Loading appointments...
+                {t("loading_appointments_msg")}
               </p>
             </div>
           ) : (
@@ -80,7 +85,7 @@ export default function AppointmentsPage() {
           )}
           {!isLoading && filteredAppointments.length === 0 && (
             <div className="text-center py-12 text-muted-foreground bg-muted/20 border border-dashed rounded-lg">
-              No appointments found.
+              {t("no_appointments_found_msg")}
             </div>
           )}
         </div>

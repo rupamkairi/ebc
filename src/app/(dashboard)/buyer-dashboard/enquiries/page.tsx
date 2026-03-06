@@ -61,7 +61,10 @@ export default function EnquiriesPage() {
                     : "bg-white text-[#3D52A0] hover:bg-muted",
                 )}
               >
-                {filter}
+                {filter === "All" && t("all_filter")}
+                {filter === "Pending" && t("pending_filter")}
+                {filter === "Approved" && t("approved_filter")}
+                {filter === "Rejected" && t("rejected_filter")}
               </button>
             );
           })}
