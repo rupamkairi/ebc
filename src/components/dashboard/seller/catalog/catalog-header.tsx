@@ -20,11 +20,12 @@ export function CatalogHeader({
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 py-6">
       <div className="space-y-1">
         <h1 className="text-3xl font-black text-[#1A237E] tracking-tight">
-          Store Catalogue
+          {isServiceBusiness ? "Service Catalog" : "Product Catalog"}
         </h1>
         {businessName && (
           <p className="text-[#3D52A0]/60 font-medium italic">
-            Managing {isServiceBusiness ? "service offerings" : "products"} for {businessName}
+            Managing {isServiceBusiness ? "service offerings" : "products"} for{" "}
+            {businessName}
           </p>
         )}
       </div>

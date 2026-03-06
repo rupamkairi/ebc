@@ -24,7 +24,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuthStore } from "@/store/authStore";
-import { useRouter } from "next/navigation";
 import { LogOut, Settings, LayoutDashboard } from "lucide-react";
 
 interface UnifiedHeaderProps {
@@ -51,11 +50,9 @@ export function UnifiedHeader({
 
   const displayName = mainEntity?.name || user?.name || "Member";
   const { logout } = useAuthStore();
-  const router = useRouter();
 
   const handleLogout = () => {
     logout();
-    router.push("/");
   };
 
   const getInitials = (name?: string | null) => {

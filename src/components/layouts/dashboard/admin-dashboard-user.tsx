@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Bell,
-  ChevronsUpDown,
-  LogOut,
-  RefreshCcw,
-} from "lucide-react";
+import { Bell, ChevronsUpDown, LogOut, RefreshCcw } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -21,7 +16,6 @@ import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { useAuthStore } from "@/store/authStore";
 import { firstAndLastNameInitials } from "@/lib/utils";
 import { useRefreshSession } from "@/queries/authQueries";
-import { useQueryClient } from "@tanstack/react-query";
 
 // This is sample data.
 // const data = {
@@ -35,11 +29,9 @@ import { useQueryClient } from "@tanstack/react-query";
 export function AdminDashboardUser() {
   const { user, logout } = useAuthStore();
   const refreshSession = useRefreshSession();
-  const queryClient = useQueryClient();
 
   const handleLogout = () => {
     logout();
-    queryClient.clear();
   };
 
   return (

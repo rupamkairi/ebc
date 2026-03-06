@@ -1,20 +1,55 @@
 "use client";
 
-import { Home, Package, Users, Headphones, Wallet } from "lucide-react";
+import {
+  Home,
+  Package,
+  Users,
+  Headphones,
+  Wallet,
+  CalendarDays,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-
-const navItems = [
-  { icon: Home, label: "Home", href: "/seller-dashboard" },
-  { icon: Package, label: "Catalog", href: "/seller-dashboard/catalog" },
-  { icon: Users, label: "Enquiries", href: "/seller-dashboard/enquiries" },
-  { icon: Wallet, label: "Wallet", href: "/seller-dashboard/wallet" },
-  { icon: Headphones, label: "Support", href: "/seller-dashboard/support" },
-];
+import { isServiceBusiness } from "@/constants/roles";
+import { useLanguage } from "@/hooks/useLanguage";
+import { useSessionQuery } from "@/queries/authQueries";
 
 export function BottomNav() {
   const pathname = usePathname();
+  const { t } = useLanguage();
+  const { data: user } = useSessionQuery();
+  const isServiceProvider = isServiceBusiness(user?.user?.role);
+
+  const navItems = [
+    { icon: Home, label: t("home", "Home"), href: "/seller-dashboard" },
+    {
+      icon: Package,
+      label: t("catalog", "Catalog"),
+      href: "/seller-dashboard/catalog",
+    },
+    isServiceProvider
+      ? {
+          icon: CalendarDays,
+          label: t("appointments", "Appointments"),
+          href: "/seller-dashboard/appointments",
+        }
+      : {
+          icon: Users,
+          label: t("enquiries", "Enquiries"),
+          href: "/seller-dashboard/enquiries",
+        },
+    {
+      icon: Wallet,
+      label: t("wallet", "Wallet"),
+      href: "/seller-dashboard/wallet",
+    },
+    {
+      icon: Headphones,
+      label: t("support", "Support"),
+      href: "/seller-dashboard/support",
+    },
+  ];
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-6 px-4 pointer-events-none">

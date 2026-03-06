@@ -15,28 +15,26 @@ import {
   NoEntityState,
   EmptyCatalogState,
 } from "@/components/dashboard/seller/catalog/catalog-empty-states";
-import { ENTITY_TYPE, ITEM_TYPE, ACTIVITY_TYPE } from "@/constants/enums";
-import { NotificationInbox } from "@/components/dashboard/notifications/notification-inbox";
-import { Bell } from "lucide-react";
-import { useAssignmentsQuery } from "@/queries/activityQueries";
+import { ITEM_TYPE } from "@/constants/enums";
+import { isServiceBusiness, isProductBusiness } from "@/constants/roles";
 import { useLanguage } from "@/hooks/useLanguage";
-
+import { useSessionQuery } from "@/queries/authQueries";
 export default function CatalogPage() {
   const { t } = useLanguage();
+  const { data: user } = useSessionQuery(); // Added this line
   const {
     data: entities,
-    isLoading: isLoadingEntities,
+    isLoading: isLoadingEntities, // Kept original name for consistency with other usages
     isError: isErrorEntities,
   } = useEntitiesQuery();
   const sellerEntity = entities?.[0];
 
-  const isServiceBusiness = sellerEntity?.type === ENTITY_TYPE.SERVICE_PROVIDER;
-  const isProductBusiness =
-    sellerEntity?.type === ENTITY_TYPE.MANUFACTURER ||
-    sellerEntity?.type === ENTITY_TYPE.WHOLESALER ||
-    sellerEntity?.type === ENTITY_TYPE.RETAILER;
+  const isService = isServiceBusiness(user?.user?.role); // Modified
+  const isProduct = isProductBusiness(user?.user?.role); // Modified
 
-  const [activeTab, setActiveTab] = useState(isServiceBusiness ? "services" : "products");
+  const [activeTab, setActiveTab] = useState(
+    isService ? "services" : "products",
+  );
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
@@ -45,16 +43,6 @@ export default function CatalogPage() {
     {
       entityId: sellerEntity?.id || "",
     },
-  );
-
-  const { data: enquiryAssignments = [] } = useAssignmentsQuery({
-    toEntityId: sellerEntity?.id,
-    type: ACTIVITY_TYPE.ENQUIRY_ASSIGNMENT,
-  });
-  const respondedEnquiryIds = new Set(
-    enquiryAssignments
-      .filter((a) => a.enquiry?.status && a.enquiry.status !== "PENDING")
-      .map((a) => a.enquiry!.id),
   );
 
   const isLoading = isLoadingEntities || isLoadingListings;
@@ -74,20 +62,16 @@ export default function CatalogPage() {
     );
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-      {/* Main Content */}
-      <div className="lg:col-span-3 space-y-10">
+    <div className="space-y-10">
       <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <CatalogHeader
           isLoading={isLoadingEntities}
-          isServiceBusiness={isServiceBusiness}
+          isServiceBusiness={isService}
           businessName={sellerEntity?.name}
           onCreateClick={() => {
             if (isLoadingEntities) return;
             if (!sellerEntity) {
-              toast.error(
-                t("business_entity_not_found"),
-              );
+              toast.error(t("business_entity_not_found"));
               return;
             }
             setIsCreateModalOpen(true);
@@ -99,8 +83,8 @@ export default function CatalogPage() {
             activeTab={activeTab}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
-            isServiceBusiness={isServiceBusiness}
-            isProductBusiness={isProductBusiness}
+            isServiceBusiness={isService}
+            isProductBusiness={isProduct}
             viewMode={viewMode}
             onViewModeChange={setViewMode}
           />
@@ -120,12 +104,18 @@ export default function CatalogPage() {
             />
           ) : (
             <>
-              {!isServiceBusiness && (
+              {!isService && (
                 <TabsContent
                   value="products"
                   className="mt-0 space-y-4 outline-none"
                 >
-                  <div className={viewMode === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" : "grid gap-4"}>
+                  <div
+                    className={
+                      viewMode === "grid"
+                        ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                        : "grid gap-4"
+                    }
+                  >
                     {filteredProducts.length > 0 ? (
                       filteredProducts.map((listing) => (
                         <ListingCard
@@ -145,12 +135,18 @@ export default function CatalogPage() {
                 </TabsContent>
               )}
 
-              {isServiceBusiness && (
+              {isService && (
                 <TabsContent
                   value="services"
                   className="mt-0 space-y-4 outline-none"
                 >
-                  <div className={viewMode === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" : "grid gap-4"}>
+                  <div
+                    className={
+                      viewMode === "grid"
+                        ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                        : "grid gap-4"
+                    }
+                  >
                     {filteredServices.length > 0 ? (
                       filteredServices.map((listing) => (
                         <ListingCard
@@ -179,20 +175,8 @@ export default function CatalogPage() {
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         entityId={sellerEntity?.id || ""}
-        itemType={isServiceBusiness ? ITEM_TYPE.SERVICE : ITEM_TYPE.PRODUCT}
+        itemType={isService ? ITEM_TYPE.SERVICE : ITEM_TYPE.PRODUCT}
       />
-      </div>
-
-      {/* Notification Sidebar */}
-      <div className="space-y-8 h-full">
-        <div className="sticky top-24 pt-4 lg:pt-0">
-          <div className="flex items-center gap-2 mb-4 px-2">
-            <Bell className="h-5 w-5 text-[#173072]" />
-            <h2 className="text-xl font-bold text-[#173072] tracking-tight">{t("notifications_title")}</h2>
-          </div>
-          <NotificationInbox userType="SELLER" respondedEnquiryIds={respondedEnquiryIds} />
-        </div>
-      </div>
     </div>
   );
 }

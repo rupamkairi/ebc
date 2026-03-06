@@ -34,3 +34,23 @@ export function getDashboardPathForRole(role: string): string {
   if (BUYER_ROLES.includes(r as USER_ROLE)) return "/buyer-dashboard";
   return "/"; // fallback for UNASSIGNED or unknown
 }
+
+/**
+ * Helper to determine if a user role represents a service business
+ */
+export function isServiceBusiness(role?: string | null): boolean {
+  return (
+    role === USER_ROLE.USER_SERVICE_PROVIDER_ADMIN ||
+    role === USER_ROLE.USER_SERVICE_PROVIDER_STAFF
+  );
+}
+
+/**
+ * Helper to determine if a user role represents a product business
+ */
+export function isProductBusiness(role?: string | null): boolean {
+  return (
+    role === USER_ROLE.USER_PRODUCT_SELLER_ADMIN ||
+    role === USER_ROLE.USER_PRODUCT_SELLER_STAFF
+  );
+}

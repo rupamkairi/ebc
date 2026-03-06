@@ -11,11 +11,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 import { useEntitiesQuery } from "@/queries/entityQueries";
-import { useAssignmentsQuery, useQuotationsQuery } from "@/queries/activityQueries";
+import { useAssignmentsQuery, useQuotationsQuery, useVisitsQuery } from "@/queries/activityQueries";
 import { useSessionQuery } from "@/queries/authQueries";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Loader2 } from "lucide-react";
-import { Enquiry, Appointment } from "@/types/activity";
+import { Enquiry, Appointment, Visit } from "@/types/activity";
 import { useLanguage } from "@/hooks/useLanguage";
 
 export default function CustomersPage() {
@@ -23,7 +23,7 @@ export default function CustomersPage() {
   const { data: session } = useSessionQuery();
   const { data: entities = [] } = useEntitiesQuery();
   const mainEntity = entities[0];
-  const searchQuery = ""; // Placeholder for now
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: assignments = [], isLoading: isAssignmentsLoading } = useAssignmentsQuery({
     toEntityId: mainEntity?.id,
@@ -32,6 +32,10 @@ export default function CustomersPage() {
   const { data: quotations = [], isLoading: isQuotationsLoading } = useQuotationsQuery({
     createdById: session?.user?.id,
   });
+
+  const { data: visits = [], isLoading: isVisitsLoading } = useVisitsQuery({});
+
+  const isLoading = isAssignmentsLoading || isQuotationsLoading || isVisitsLoading;
 
   const processedCustomers = useMemo(() => {
     if (!assignments.length) return [];
@@ -99,7 +103,7 @@ export default function CustomersPage() {
     );
   }, [processedCustomers, searchQuery]);
 
-  if (isAssignmentsLoading || isQuotationsLoading) {
+  if (isLoading) {
     return (
       <div className="flex h-[400px] items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />

@@ -17,12 +17,14 @@ interface ItemSearchProps {
   onItemSelect?: (item: Item) => void;
   className?: string;
   type?: "PRODUCT" | "SERVICE";
+  title?: string;
 }
 
 export function ItemSearch({
   onItemSelect,
   className,
   type = "PRODUCT",
+  title,
 }: ItemSearchProps) {
   const [categoryId, setCategoryId] = useState<string>("");
   const [brandId, setBrandId] = useState<string>("");
@@ -54,7 +56,7 @@ export function ItemSearch({
           <div className="flex items-center gap-3 border-b border-white/20 pb-4">
             <Search className="size-8 text-white" />
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-              Choose Items to {type === "PRODUCT" ? "Enquire" : "Book"}
+              {title || `Choose Items to ${type === "PRODUCT" ? "Enquire" : "Book"}`}
             </h2>
           </div>
 

@@ -82,7 +82,9 @@ export function NotificationInbox({
 
     if (role === "ADMIN") {
       if (type.includes("ENTITY"))
-        return activityId ? `/admin-dashboard/sellers/product-sellers/${activityId}` : null;
+        return activityId
+          ? `/admin-dashboard/sellers/product-sellers/${activityId}`
+          : null;
       if (type.includes("OFFER")) return `/admin-dashboard/catalog/offers`;
     }
 
@@ -115,7 +117,7 @@ export function NotificationInbox({
     <Card
       className={cn("w-full border-none shadow-none bg-transparent", className)}
     >
-      {!hideHeader && (
+      {/* {!hideHeader && (
         <CardHeader className="px-0 pt-0">
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg font-bold flex items-center gap-2">
@@ -127,7 +129,7 @@ export function NotificationInbox({
             </span>
           </div>
         </CardHeader>
-      )}
+      )} */}
       <CardContent className="px-0">
         <ScrollArea className="h-[400px]">
           {displayedNotifications.length === 0 ? (
@@ -186,9 +188,12 @@ export function NotificationInbox({
 
                         {/* Slot implementation for specific user content */}
                         {userType === "SELLER" &&
-                          notification.type.includes("ENQUIRY") && (() => {
-                            const enquiryId = notification.metadata?.enquiryId as string | undefined;
-                            const isResponded = enquiryId && respondedEnquiryIds?.has(enquiryId);
+                          notification.type.includes("ENQUIRY") &&
+                          (() => {
+                            const enquiryId = notification.metadata
+                              ?.enquiryId as string | undefined;
+                            const isResponded =
+                              enquiryId && respondedEnquiryIds?.has(enquiryId);
                             return (
                               <div className="mt-2 flex items-center gap-2">
                                 {isResponded ? (

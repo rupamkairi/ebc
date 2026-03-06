@@ -2,9 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Settings, Bell, ArrowRight, LogOut, User } from "lucide-react";
+import { Settings, Bell, LogOut, User, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { authService } from "@/services/authService";
 import {
   DropdownMenu,
@@ -41,7 +40,6 @@ export function BuyerProfileCard({
   role: string;
   avatarUrl?: string;
 }) {
-  const router = useRouter();
   const { data: notifications = [] } = useNotificationsQuery();
   const unreadCount = notifications.filter((n) => !n.isRead).length;
   const markAllRead = useMarkAllNotificationsReadMutation();
@@ -49,7 +47,6 @@ export function BuyerProfileCard({
 
   const handleLogout = () => {
     authService.logout();
-    router.replace("/auth/login");
   };
 
   const handleSheetOpenChange = (open: boolean) => {
@@ -143,7 +140,6 @@ export function BuyerProfileCard({
     </div>
   );
 }
-
 
 /**
  * 2. Room Card

@@ -9,7 +9,6 @@ import { useEntitiesQuery } from "@/queries/entityQueries";
 import { cn } from "@/lib/utils";
 import Container from "@/components/ui/containers";
 import { useAuthStore } from "@/store/authStore";
-import { useRouter } from "next/navigation";
 import { useLanguage } from "@/hooks/useLanguage";
 
 export default function SettingsPage() {
@@ -18,18 +17,18 @@ export default function SettingsPage() {
   const mainEntity = entities[0];
   const status = mainEntity?.verificationStatus;
   const { logout } = useAuthStore();
-  const router = useRouter();
 
   const handleLogout = () => {
     logout();
-    router.push("/");
   };
 
   return (
     <Container className="py-8 space-y-8 max-w-[1400px] mx-auto">
       {/* Header */}
       <div className="space-y-1">
-        <h1 className="text-[32px] font-bold tracking-tight text-[#445EB4]">{t("profile_settings")}</h1>
+        <h1 className="text-[32px] font-bold tracking-tight text-[#445EB4]">
+          {t("profile_settings")}
+        </h1>
       </div>
 
       {/* Verification Status Banner */}
@@ -62,15 +61,17 @@ export default function SettingsPage() {
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {status === "PENDING"
-                    ? t("verification_pending_desc")
+                    ? t("complete_info_in_settings")
                     : mainEntity?.verificaitonRemark ||
                       t("verification_rejected_desc")}
                 </p>
               </div>
             </div>
-            <Button variant="outline" size="sm">
-              {status === "PENDING" ? t("view_details_btn") : t("contact_support_btn")}
-            </Button>
+            {status === "REJECTED" && (
+              <Button variant="outline" size="sm">
+                {t("contact_support_btn")}
+              </Button>
+            )}
           </CardContent>
         </Card>
       )}
@@ -91,7 +92,9 @@ export default function SettingsPage() {
               <CardContent className="p-4 space-y-4">
                 <div className="flex items-center gap-2">
                   <Lock className="size-4 text-muted-foreground" />
-                  <p className="text-sm font-semibold">{t("security_section")}</p>
+                  <p className="text-sm font-semibold">
+                    {t("security_section")}
+                  </p>
                 </div>
                 <div className="space-y-2">
                   <Button
@@ -121,7 +124,11 @@ export default function SettingsPage() {
               </CardContent>
             </Card>
 
-            <Button variant="destructive" className="w-full" onClick={handleLogout}>
+            <Button
+              variant="destructive"
+              className="w-full"
+              onClick={handleLogout}
+            >
               {t("log_out")}
             </Button>
           </div>

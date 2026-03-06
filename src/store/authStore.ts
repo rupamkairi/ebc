@@ -19,7 +19,12 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       setToken: (token) => set({ token }),
       setUser: (user) => set({ user }),
-      logout: () => set({ token: null, user: null }),
+      logout: () => {
+        set({ token: null, user: null });
+        if (typeof window !== "undefined") {
+          window.location.href = "/";
+        }
+      },
     }),
     {
       name: "ebc_auth_storage", // unique name
@@ -32,6 +37,6 @@ export const useAuthStore = create<AuthState>()(
       // Let's persist token only as per original logic, fetching session on load likely happens elsewhere or relied on token presence.
       // Wait, AuthGuard relies on 'token' to deterine auth.
       // Let's persist token only to match previous behavior exactly.
-    }
-  )
+    },
+  ),
 );
