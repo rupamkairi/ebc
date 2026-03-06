@@ -9,12 +9,14 @@ export const useForumContextQuery = (params: {
   offerId?: string;
   itemId?: string;
   slug?: string;
+  pincodeId?: string;
 }) => {
   const queryParams = new URLSearchParams();
   if (params.eventId) queryParams.append("eventId", params.eventId);
   if (params.offerId) queryParams.append("offerId", params.offerId);
   if (params.itemId) queryParams.append("itemId", params.itemId);
   if (params.slug) queryParams.append("slug", params.slug);
+  if (params.pincodeId) queryParams.append("pincodeId", params.pincodeId);
 
   return useQuery({
     queryKey: ["forum-context", params],

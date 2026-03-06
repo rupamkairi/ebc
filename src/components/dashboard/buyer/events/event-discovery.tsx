@@ -5,7 +5,6 @@ import {
   useJoinEventMutation,
 } from "@/queries/conferenceHallQueries";
 import { useEntitiesQuery } from "@/queries/entityQueries";
-import { useSessionQuery } from "@/queries/authQueries";
 import {
   Card,
   CardContent,
@@ -34,13 +33,16 @@ import { toast } from "sonner";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
 
-export function EventDiscovery() {
+interface EventDiscoveryProps {
+  pincodeId: string;
+}
+
+export function EventDiscovery({ pincodeId }: EventDiscoveryProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [timeframe, setTimeframe] = useState<"FUTURE" | "PAST" | "ALL">(
     "FUTURE",
   );
 
-  const { data: session } = useSessionQuery();
   const { data: entities } = useEntitiesQuery();
   const entity = entities?.[0]; // Context entity if available
 
@@ -48,11 +50,7 @@ export function EventDiscovery() {
     isPublic: true,
     search: searchTerm,
     timeframe: timeframe,
-    targeting: session?.user?.pincodeId
-      ? {
-          pincodeId: session.user.pincodeId,
-        }
-      : undefined,
+    targeting: { pincodeId },
   });
 
   const joinEvent = useJoinEventMutation();
