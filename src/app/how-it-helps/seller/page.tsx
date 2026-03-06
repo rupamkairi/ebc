@@ -58,7 +58,7 @@ export default function SellerHowItHelps() {
           <div className="container mx-auto px-4 relative z-10 text-center space-y-8">
             <div className="inline-flex items-center gap-3 rounded-full border border-secondary/20 bg-secondary/10 px-6 py-2 text-sm font-black uppercase tracking-[0.3em] text-secondary">
               <Rocket className="size-4" />
-              Empowering Growth
+              {t("empowering_growth")}
             </div>
             <h1 className="text-4xl md:text-7xl font-black tracking-tight leading-[1.05] max-w-4xl mx-auto text-foreground">
               {t("seller_hero_title")}
@@ -72,7 +72,7 @@ export default function SellerHowItHelps() {
                   size="lg"
                   className="bg-secondary hover:bg-secondary/90 w-full h-16 px-12 text-lg font-black rounded-xl gap-3 shadow-xl shadow-secondary/20 group"
                 >
-                  Join EBC&apos;s B2B Network
+                  {t("join_ebc_b2b")}
                   <ArrowRight className="size-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -89,21 +89,19 @@ export default function SellerHowItHelps() {
                   <div className="bg-primary/10 p-3 rounded-lg text-primary">
                     <TrendingUp className="w-6 h-6" />
                   </div>
-                  <h3 className="text-xl font-bold">Maximize Profit.</h3>
+                  <h3 className="text-xl font-bold">{t("maximize_profit")}</h3>
                 </div>
                 <div className="space-y-4">
                   <p className="font-bold text-foreground/70 leading-relaxed">
-                    Pay-per-lead via Coin Wallet for high-intent enquiries.
-                    Protect margins with negotiable quotations.
+                    {t("maximize_profit_desc")}
                   </p>
                   <ul className="space-y-2 text-xs font-bold text-foreground/40">
                     <li className="flex items-center gap-2">
                       <div className="size-1.5 bg-primary rounded-full" />{" "}
-                      Negotiable Quotations
+                      {t("negotiable_quotations")}
                     </li>
                     <li className="flex items-center gap-2">
-                      <div className="size-1.5 bg-primary rounded-full" /> Bulk
-                      Order Leads
+                      <div className="size-1.5 bg-primary rounded-full" /> {t("bulk_order_leads")}
                     </li>
                   </ul>
                 </div>
@@ -114,21 +112,20 @@ export default function SellerHowItHelps() {
                   <div className="bg-primary/10 p-3 rounded-lg text-primary">
                     <Settings2 className="w-6 h-6" />
                   </div>
-                  <h3 className="text-xl font-bold">Scale Operations.</h3>
+                  <h3 className="text-xl font-bold">{t("scale_operations")}</h3>
                 </div>
                 <div className="space-y-4">
                   <p className="font-bold text-foreground/70 leading-relaxed">
-                    Integrated logistics with LSPs & LTL carriers. Connect with
-                    a wide network of dealers & wholesalers.
+                    {t("scale_operations_desc")}
                   </p>
                   <ul className="space-y-2 text-xs font-bold text-foreground/40">
                     <li className="flex items-center gap-2">
                       <div className="size-1.5 bg-primary rounded-full" />{" "}
-                      Logistics Support
+                      {t("logistics_support")}
                     </li>
                     <li className="flex items-center gap-2">
                       <div className="size-1.5 bg-primary rounded-full" />{" "}
-                      Dealer Network
+                      {t("dealer_network")}
                     </li>
                   </ul>
                 </div>
@@ -139,21 +136,19 @@ export default function SellerHowItHelps() {
                   <div className="bg-primary/10 p-3 rounded-lg text-primary">
                     <Cpu className="w-6 h-6" />
                   </div>
-                  <h3 className="text-xl font-bold">Future-Proof Tech.</h3>
+                  <h3 className="text-xl font-bold">{t("future_proof_tech")}</h3>
                 </div>
                 <div className="space-y-4">
                   <p className="font-bold text-foreground/70 leading-relaxed">
-                    AI-powered Smart Matching. Integrated e-invoicing IRP
-                    support. Actionable data analytics.
+                    {t("future_proof_tech_desc")}
                   </p>
                   <ul className="space-y-2 text-xs font-bold text-foreground/40">
                     <li className="flex items-center gap-2">
-                      <div className="size-1.5 bg-primary rounded-full" /> AI
-                      Matching
+                      <div className="size-1.5 bg-primary rounded-full" /> {t("ai_matching")}
                     </li>
                     <li className="flex items-center gap-2">
                       <div className="size-1.5 bg-primary rounded-full" />{" "}
-                      Compliance Tools
+                      {t("compliance_tools")}
                     </li>
                   </ul>
                 </div>
@@ -171,7 +166,7 @@ export default function SellerHowItHelps() {
                 Paths
               </h2>
               <p className="text-foreground/60 font-bold italic">
-                Tailored toolsets for your growth
+                {t("tailored_toolsets")}
               </p>
             </div>
 
@@ -181,11 +176,10 @@ export default function SellerHowItHelps() {
                   <Store size={40} />
                 </div>
                 <h3 className="text-2xl font-black italic">
-                  {t("seller_path_retailer")} & Dealer Dashboard
+                  {t("retailer_dealer_dashboard")}
                 </h3>
                 <p className="text-foreground/60 font-medium">
-                  Control sourcing costs, manage inventory visibility, and get
-                  higher margins with direct inquiries.
+                  {t("retailer_dealer_desc")}
                 </p>
                 <div className="h-0.5 w-12 bg-primary/20" />
               </div>
@@ -195,11 +189,10 @@ export default function SellerHowItHelps() {
                   <Briefcase size={40} />
                 </div>
                 <h3 className="text-2xl font-black italic">
-                  Consultant & Specialist
+                  {t("consultant_specialist")}
                 </h3>
                 <p className="text-foreground/60 font-medium">
-                  Monetize your expertise, get verified job requirements, and
-                  manage workforce scheduling.
+                  {t("consultant_specialist_desc")}
                 </p>
                 <div className="h-0.5 w-12 bg-secondary/20" />
               </div>
@@ -213,19 +206,19 @@ export default function SellerHowItHelps() {
             <div className="flex flex-col md:flex-row items-center justify-between gap-12 bg-white p-8 md:p-16 rounded-[3rem] border border-border shadow-sm">
               <div className="space-y-6 max-w-xl">
                 <h2 className="text-3xl md:text-5xl font-black leading-tight text-foreground">
-                  Verified Compliance & Secure Operations
+                  {t("verified_compliance")}
                 </h2>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex items-center gap-2">
                     <ShieldCheck className="text-emerald-500 size-5" />
                     <span className="font-bold text-foreground/70 italic">
-                      Fraud Detection
+                      {t("fraud_detection")}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <ShieldCheck className="text-emerald-500 size-5" />
                     <span className="font-bold text-foreground/70 italic">
-                      Secure Payouts
+                      {t("secure_payouts")}
                     </span>
                   </div>
                 </div>
@@ -234,13 +227,13 @@ export default function SellerHowItHelps() {
                 <div className="space-y-1">
                   <div className="text-3xl font-black text-primary">500+</div>
                   <div className="text-[10px] uppercase font-bold text-foreground/40">
-                    Retailers
+                    {t("retailers")}
                   </div>
                 </div>
                 <div className="space-y-1">
                   <div className="text-3xl font-black text-primary">2004</div>
                   <div className="text-[10px] uppercase font-bold text-foreground/40">
-                    Est. Year
+                    {t("est_year")}
                   </div>
                 </div>
               </div>
@@ -264,16 +257,16 @@ export default function SellerHowItHelps() {
                   href="/auth/login?role=seller"
                   className="w-full sm:w-auto"
                 >
-                  <Button
-                    size="lg"
-                    className="bg-primary hover:bg-primary/90 h-20 px-16 text-2xl font-black rounded-2xl shadow-2xl shadow-primary/20 group/btn"
-                  >
-                    JOIN EBC TODAY!
-                    <ArrowRight className="size-6 group-hover/btn:translate-x-2 transition-transform" />
-                  </Button>
+                    <Button
+                      size="lg"
+                      className="bg-primary hover:bg-primary/90 h-20 px-16 text-2xl font-black rounded-2xl shadow-2xl shadow-primary/20 group/btn"
+                    >
+                      {t("join_ebc_today")}
+                      <ArrowRight className="size-6 group-hover/btn:translate-x-2 transition-transform" />
+                    </Button>
                 </Link>
                 <p className="mt-8 text-foreground/40 text-xs font-black tracking-[0.4em] uppercase">
-                  India&apos;s Premier Digital Construction Ecosystem
+                  {t("india_premier_digital")}
                 </p>
               </div>
             </div>

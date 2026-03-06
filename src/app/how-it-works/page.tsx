@@ -35,7 +35,7 @@ export default function HowItWorksPage() {
               className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-primary hover:gap-3 transition-all mb-4"
             >
               <ChevronLeft size={16} />
-              Return to Home
+              {t("return_to_home")}
             </Link>
             <h1 className="text-4xl md:text-6xl font-black text-foreground tracking-tight leading-[1.1]">
               {t("how_ebc_helps_title")}
@@ -70,11 +70,11 @@ export default function HowItWorksPage() {
                   <div className="space-y-4">
                     <div className="flex items-center gap-3 text-sm font-bold text-foreground/80">
                       <ShieldCheck className="text-emerald-500 size-5" />
-                      Verified Material Prices
+                      {t("verified_material_prices")}
                     </div>
                     <div className="flex items-center gap-3 text-sm font-bold text-foreground/80">
                       <Sparkles className="text-amber-500 size-5" />
-                      Expert Engineer Guidance
+                      {t("expert_engineer_guidance")}
                     </div>
                   </div>
 
@@ -114,11 +114,11 @@ export default function HowItWorksPage() {
                   <div className="space-y-4">
                     <div className="flex items-center gap-3 text-sm font-bold text-foreground/80">
                       <TrendingUp className="text-indigo-500 size-5" />
-                      Access High-Intent Leads
+                      {t("access_high_intent_leads")}
                     </div>
                     <div className="flex items-center gap-3 text-sm font-bold text-foreground/80">
                       <Sparkles className="text-secondary size-5" />
-                      Scale Your B2B Operations
+                      {t("scale_b2b_operations")}
                     </div>
                   </div>
 
@@ -137,7 +137,7 @@ export default function HowItWorksPage() {
           </div>
 
           <div className="pt-8 text-foreground/40 text-sm font-bold uppercase tracking-widest animate-in fade-in duration-1000 delay-700">
-            EBC Aapke Sath, Har Kadam Par.
+            {t("ebc_tagline")}
           </div>
         </div>
       </main>

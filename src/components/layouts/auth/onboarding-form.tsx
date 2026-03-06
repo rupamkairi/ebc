@@ -38,11 +38,13 @@ import { toast } from "sonner";
 import { Loader2, CheckCircle2, Building2 } from "lucide-react";
 import { CreateEntityRequest } from "@/types/entity";
 import Container from "@/components/ui/containers";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function OnboardingForm() {
   const router = useRouter();
   const { user } = useAuthStore();
   const createEntityMutation = useCreateEntityMutation();
+  const { t } = useLanguage();
 
   const role = user?.role?.toUpperCase();
   const isProductSeller = role === USER_ROLE.USER_PRODUCT_SELLER_ADMIN;
@@ -88,10 +90,10 @@ export function OnboardingForm() {
     <Container size="md" className="py-16">
       <div className="text-center space-y-2 mb-10">
         <h1 className="text-3xl font-bold tracking-tight">
-          Complete your business profile
+          {t("complete_business_profile")}
         </h1>
         <p className="text-muted-foreground">
-          Set up your business identity to start reaching customers on E-CON.
+          {t("business_identity_description")}
         </p>
       </div>
 
@@ -99,10 +101,10 @@ export function OnboardingForm() {
         <CardHeader>
           <div className="flex items-center gap-2">
             <Building2 className="h-5 w-5 text-muted-foreground" />
-            <CardTitle>Business Details</CardTitle>
+            <CardTitle>{t("business_details")}</CardTitle>
           </div>
           <CardDescription>
-            Provide accurate information for your business identification.
+            {t("business_identification_info")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -115,18 +117,18 @@ export function OnboardingForm() {
             className="space-y-6"
           >
             <div className="space-y-4">
-              <h3 className="text-sm font-medium border-b pb-2">Identity</h3>
+              <h3 className="text-sm font-medium border-b pb-2">{t("identity")}</h3>
 
               <form.Field
                 name="name"
                 validators={{
                   onChange: ({ value }) =>
-                    !value ? "Business name is required" : undefined,
+                    !value ? t("business_name_required") : undefined,
                 }}
               >
                 {(field) => (
                   <Field>
-                    <FieldLabel>Display Name *</FieldLabel>
+                    <FieldLabel>{t("display_name")} *</FieldLabel>
                     <Input
                       placeholder="e.g. Skyline Constructions"
                       value={field.state.value}
@@ -145,7 +147,7 @@ export function OnboardingForm() {
               <form.Field name="legalName">
                 {(field) => (
                   <Field>
-                    <FieldLabel>Legal Name</FieldLabel>
+                    <FieldLabel>{t("legal_name")}</FieldLabel>
                     <Input
                       placeholder="e.g. Skyline Pvt Ltd"
                       value={field.state.value}
@@ -159,7 +161,7 @@ export function OnboardingForm() {
               <form.Field name="type">
                 {(field) => (
                   <Field>
-                    <FieldLabel>Business Type *</FieldLabel>
+                    <FieldLabel>{t("business_type")} *</FieldLabel>
                     <Select
                       value={field.state.value}
                       onValueChange={(val) =>
@@ -167,7 +169,7 @@ export function OnboardingForm() {
                       }
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select type" />
+                        <SelectValue placeholder={t("select_type")} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem
@@ -197,7 +199,7 @@ export function OnboardingForm() {
                       </SelectContent>
                     </Select>
                     <FieldDescription>
-                      This cannot be changed later.
+                      {t("cannot_change_later")}
                     </FieldDescription>
                   </Field>
                 )}
@@ -206,7 +208,7 @@ export function OnboardingForm() {
               <form.Field name="description">
                 {(field) => (
                   <Field>
-                    <FieldLabel>About the Business</FieldLabel>
+                    <FieldLabel>{t("about_business")}</FieldLabel>
                     <Textarea
                       placeholder="Describe your services or products..."
                       value={field.state.value}
@@ -220,14 +222,14 @@ export function OnboardingForm() {
 
             <div className="space-y-4">
               <h3 className="text-sm font-medium border-b pb-2">
-                Contact & Location
+                {t("contact_location")}
               </h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <form.Field name="primaryContactNumber">
                   {(field) => (
                     <Field>
-                      <FieldLabel>Primary Phone</FieldLabel>
+                      <FieldLabel>{t("primary_phone")}</FieldLabel>
                       <Input
                         value={field.state.value}
                         onChange={(e) => field.handleChange(e.target.value)}
@@ -238,7 +240,7 @@ export function OnboardingForm() {
                 <form.Field name="secondaryContactNumber">
                   {(field) => (
                     <Field>
-                      <FieldLabel>Secondary Phone</FieldLabel>
+                      <FieldLabel>{t("secondary_phone")}</FieldLabel>
                       <Input
                         value={field.state.value}
                         onChange={(e) => field.handleChange(e.target.value)}
@@ -251,7 +253,7 @@ export function OnboardingForm() {
               <form.Field name="contactEmail">
                 {(field) => (
                   <Field>
-                    <FieldLabel>Contact Email</FieldLabel>
+                    <FieldLabel>{t("contact_email")}</FieldLabel>
                     <Input
                       type="email"
                       value={field.state.value}
@@ -265,12 +267,12 @@ export function OnboardingForm() {
                 name="pincodeId"
                 validators={{
                   onChange: ({ value }) =>
-                    !value ? "Location selection is required" : undefined,
+                    !value ? t("location_required") : undefined,
                 }}
               >
                 {(field) => (
                   <Field>
-                    <FieldLabel>Area / Pincode *</FieldLabel>
+                    <FieldLabel>{t("area_pincode")} *</FieldLabel>
                     <PincodeSearchAutocomplete
                       value={field.state.value}
                       onValueChange={(val) => field.handleChange(val as string)}
@@ -287,7 +289,7 @@ export function OnboardingForm() {
               <form.Field name="addressLine1">
                 {(field) => (
                   <Field>
-                    <FieldLabel>Street Address</FieldLabel>
+                    <FieldLabel>{t("street_address")}</FieldLabel>
                     <Input
                       placeholder="Bldg No, Street Name"
                       value={field.state.value}
@@ -300,7 +302,7 @@ export function OnboardingForm() {
               <form.Field name="city">
                 {(field) => (
                   <Field>
-                    <FieldLabel>City</FieldLabel>
+                    <FieldLabel>{t("city")}</FieldLabel>
                     <Input
                       placeholder="e.g. Mumbai"
                       value={field.state.value}
@@ -321,14 +323,13 @@ export function OnboardingForm() {
                   <Loader2 className="animate-spin mr-2" />
                 ) : (
                   <>
-                    Launch My Business
+                    {t("launch_business")}
                     <CheckCircle2 className="ml-2" size={18} />
                   </>
                 )}
               </Button>
               <p className="text-xs text-muted-foreground text-center">
-                By clicking launch, you agree to our provider terms and
-                conditions.
+                {t("provider_terms_agreement")}
               </p>
             </div>
           </form>

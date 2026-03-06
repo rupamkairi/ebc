@@ -2,6 +2,7 @@
 
 import React, { Suspense, useState } from "react";
 import Container from "@/components/ui/containers";
+import { useLanguage } from "@/hooks/useLanguage";
 import {
   CheckCircle2,
   ChevronRight,
@@ -75,6 +76,7 @@ function Sidebar({
   selectedCategories: string[];
   onCategoryToggle: (id: string) => void;
 }) {
+  const { t } = useLanguage();
   const { data: categories } = useCategoriesQuery({ isSubCategory: false });
 
   const categoryOptions =
@@ -89,39 +91,39 @@ function Sidebar({
       <div className="bg-[#445EB4] p-5 rounded-t-2xl shadow-lg shadow-[#445EB4]/20">
         <h2 className="text-xl font-black text-white italic tracking-tight flex items-center gap-3">
           <Tag className="size-5 fill-white/20" />
-          Offers
+          {t("offers")}
         </h2>
       </div>
 
       <div className="bg-white border border-slate-100 rounded-b-2xl p-6 shadow-xl shadow-slate-200/50 space-y-10">
         <div className="space-y-1">
           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-            Filter
+            {t("filter")}
           </p>
           <div className="h-px bg-slate-100 w-full" />
         </div>
 
         <FilterSection
-          title="Categories"
+          title={t("offer_categories")}
           options={categoryOptions}
           onToggle={onCategoryToggle}
         />
 
         <FilterSection
-          title="Offer Validity"
+          title={t("offer_validity")}
           options={[
-            { label: "Today", id: "today" },
-            { label: "This Week", id: "week" },
-            { label: "This Month", id: "month" },
+            { label: t("today"), id: "today" },
+            { label: t("this_week"), id: "week" },
+            { label: t("this_month"), id: "month" },
           ]}
           onToggle={() => {}}
         />
 
         <FilterSection
-          title="Use Type"
+          title={t("use_type")}
           options={[
-            { label: "New Home", id: "new" },
-            { label: "Renovation", id: "renovation" },
+            { label: t("new_home"), id: "new" },
+            { label: t("renovation"), id: "renovation" },
           ]}
           onToggle={() => {}}
         />
@@ -131,6 +133,7 @@ function Sidebar({
 }
 
 function OfferCard({ offer }: { offer: Offer }) {
+  const { t } = useLanguage();
   const detail = offer.offerDetails?.[0];
   const isVerified = offer.verificationStatus === "APPROVED";
   const location = offer.targetRegions?.[0]?.pincode;
@@ -181,7 +184,7 @@ function OfferCard({ offer }: { offer: Offer }) {
               <div className="flex items-center gap-2 text-[9px] font-bold text-white/50 uppercase tracking-widest">
                 <Calendar className="size-3" />
                 <span>
-                  Valid till{" "}
+                  {t("valid_till")}{" "}
                   {detail.endDate
                     ? format(new Date(detail.endDate), "dd/MM/yyyy")
                     : "18/01/2026"}
@@ -189,13 +192,13 @@ function OfferCard({ offer }: { offer: Offer }) {
               </div>
             )}
             <div className="text-[9px] font-bold text-[#FFA500]/70 uppercase tracking-widest">
-              Ends in{" "}
+              {t("ends_in")}{" "}
               {(offer.id
                 .split("")
                 .reduce((acc, char) => acc + char.charCodeAt(0), 0) %
                 28) +
                 2}{" "}
-              Days
+              {t("days")}
             </div>
           </div>
         </div>
@@ -204,19 +207,19 @@ function OfferCard({ offer }: { offer: Offer }) {
         <div className="flex items-center gap-2 text-[10px] text-white/80 font-bold bg-white/5 px-3 py-2 rounded-lg border border-white/5">
           <ShieldCheck className="size-3.5 text-[#FFA500]" />
           <span className="truncate uppercase tracking-tight">
-            Recommended for G+1 Houses
+            {t("recommended_houses")}
           </span>
         </div>
 
         <div className="space-y-2 mt-auto">
           <Button className="w-full bg-[#FFA500] hover:bg-[#FFB52E] text-slate-900 font-black rounded-lg h-10 text-[10px] uppercase tracking-[0.1em] transition-all shadow-lg shadow-[#FFA500]/20 border-none">
-            Get the Offer
+            {t("get_offer")}
           </Button>
           <Button
             variant="ghost"
             className="w-full border border-white/20 text-white hover:bg-white/10 hover:text-white font-black rounded-lg h-10 text-[10px] uppercase tracking-[0.1em] transition-all"
           >
-            Ask a Question
+            {t("ask_question")}
           </Button>
         </div>
       </div>
@@ -225,13 +228,14 @@ function OfferCard({ offer }: { offer: Offer }) {
 }
 
 function OffersHeader() {
+  const { t } = useLanguage();
   return (
     <div className="py-12 text-center space-y-8">
       <div className="space-y-4">
         <h1 className="text-4xl md:text-5xl font-black tracking-tight">
           <span className="text-[#445EB4]">EBC</span>{" "}
-          <span className="text-[#FFA500]">Conference Hall</span>{" "}
-          <span className="text-[#445EB4]">Offers</span>
+          <span className="text-[#FFA500]">{t("conference_hall")}</span>{" "}
+          <span className="text-[#445EB4]">{t("offers")}</span>
         </h1>
         <p className="text-slate-500 font-medium text-lg max-w-2xl mx-auto italic">
           &ldquo;Limited-time offers from verified sellers &amp; service
@@ -241,10 +245,10 @@ function OffersHeader() {
 
       <div className="flex flex-wrap justify-center gap-6 pt-4">
         {[
-          "Verified Seller",
-          "Transparent Pricing",
-          "No Hidden Charges",
-          "Admin Approved",
+          t("verified_seller_badge"),
+          t("transparent_pricing_badge"),
+          t("no_hidden_charges"),
+          t("admin_approved"),
         ].map((item, i) => (
           <div key={i} className="flex items-center gap-3">
             <div className="size-8 rounded-full border-2 border-[#FFA500] flex items-center justify-center">
@@ -261,6 +265,7 @@ function OffersHeader() {
 }
 
 function OffersPageContent() {
+  const { t } = useLanguage();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const { data: offers, isLoading } = useOffersQuery({});
 
@@ -298,8 +303,8 @@ function OffersPageContent() {
             <section className="space-y-8">
               <div className="flex items-center gap-4">
                 <h2 className="text-2xl md:text-3xl font-black text-[#445EB4] tracking-tight">
-                  Today&apos;s <span className="text-[#FFA500]">Offers</span>{" "}
-                  Near You
+                  {t("today")}&apos;s <span className="text-[#FFA500]">{t("offers")}</span>{" "}
+                  {t("todays_offers_near_you")}
                 </h2>
                 <div className="h-[3px] bg-slate-100 grow rounded-full" />
               </div>
@@ -321,7 +326,7 @@ function OffersPageContent() {
                   {filteredOffers.length === 0 && (
                     <div className="col-span-full py-20 text-center bg-white border border-dashed rounded-3xl border-slate-200">
                       <p className="text-slate-400 font-black uppercase tracking-widest">
-                        No offers found today
+                        {t("no_offers_found")}
                       </p>
                     </div>
                   )}
@@ -335,8 +340,7 @@ function OffersPageContent() {
                 <ShieldCheck className="size-7 text-[#FFA500]" />
               </div>
               <p className="text-slate-600 font-bold text-sm">
-                <span className="text-[#FFA500]">Offers on EBC</span> are
-                reviewed by Our team, always compare and decide Confidently
+                {t("offers_reviewed")}
               </p>
             </div>
 
@@ -344,7 +348,7 @@ function OffersPageContent() {
             <section className="space-y-8">
               <div className="flex items-center gap-4">
                 <h2 className="text-2xl md:text-3xl font-black text-[#445EB4] tracking-tight">
-                  Offers <span className="text-[#FFA500]">Zone</span>
+                  {t("offers_zone")}
                 </h2>
                 <div className="h-[3px] bg-slate-100 grow rounded-full" />
               </div>

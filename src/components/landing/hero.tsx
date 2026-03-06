@@ -54,12 +54,11 @@ export function Hero() {
   const Heading = (
     <div className="w-full text-center max-w-6xl mb-4 md:mb-12 mx-auto px-2">
       <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-[#445EB4] leading-tight mb-3 md:mb-4 tracking-tight">
-        Build Your <span className="text-[#FFA500]">Dream Home</span>
-        <br className="md:hidden" /> with Confidence Not Confusion
+        Build Your <span className="text-[#FFA500]">{t("hero_dream_home")}</span>
+        <br className="md:hidden" /> {t("hero_build_with")}
       </h1>
       <p className="text-[13px] sm:text-base md:text-lg text-[#3B5998] md:text-slate-700 font-bold max-w-4xl mx-auto leading-relaxed px-4">
-        Know your real construction cost, compare verified sellers, and decide
-        with expert guidance.
+        {t("hero_subtitle_text")}
       </p>
     </div>
   );
@@ -75,9 +74,9 @@ export function Hero() {
           <div className="h-10 w-10 md:h-11 md:w-11 shrink-0 rounded-full bg-[#FFA500] flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
             <UserRound className="size-5 md:size-6 text-white" />
           </div>
-          <span className="text-[15px] md:text-lg font-extrabold whitespace-nowrap mx-auto md:mx-0 pr-4 md:pr-0">
-            Consult With an Expert (Free)
-          </span>
+            <span className="text-[15px] md:text-lg font-extrabold whitespace-nowrap mx-auto md:mx-0 pr-4 md:pr-0">
+            {t("home_cta_primary")}
+            </span>
         </a>
       </Button>
 
@@ -90,9 +89,9 @@ export function Hero() {
           <div className="h-10 w-10 md:h-11 md:w-11 shrink-0 rounded-full bg-[#FFA500] flex items-center justify-center shadow-lg group-hover:-rotate-12 transition-transform">
             <Scale className="size-5 md:size-6 text-white" />
           </div>
-          <span className="text-[15px] md:text-lg font-extrabold whitespace-nowrap mx-auto md:mx-0 pr-4 md:pr-0">
-            Compare Material Rate (Free)
-          </span>
+            <span className="text-[15px] md:text-lg font-extrabold whitespace-nowrap mx-auto md:mx-0 pr-4 md:pr-0">
+            {t("home_cta_secondary")}
+            </span>
         </a>
       </Button>
     </div>

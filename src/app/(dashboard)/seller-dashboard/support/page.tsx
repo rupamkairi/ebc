@@ -12,6 +12,7 @@ import { NotificationInbox } from "@/components/dashboard/notifications/notifica
 import { useAssignmentsQuery } from "@/queries/activityQueries";
 import { useEntitiesQuery } from "@/queries/entityQueries";
 import { ACTIVITY_TYPE } from "@/constants/enums";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const faqs = [
   {
@@ -61,6 +62,7 @@ const contactChannels = [
 ];
 
 export default function SupportPage() {
+  const { t } = useLanguage();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
@@ -116,7 +118,7 @@ export default function SupportPage() {
             style={{ background: "linear-gradient(145deg, #3D52A0 0%, #2a3a7c 100%)" }}
           >
             <div>
-              <h2 className="text-white text-2xl font-black">Submit a Ticket</h2>
+              <h2 className="text-white text-2xl font-black">{t("submit_ticket")}</h2>
               <div className="mt-2 h-0.5 w-12 rounded-full bg-[#FFA500]" />
             </div>
 
@@ -124,11 +126,11 @@ export default function SupportPage() {
               {/* Issue Category */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-white/60 text-[10px] font-black uppercase tracking-widest">
-                  Issue Category
+                  {t("issue_category")}
                 </label>
                 <input
                   type="text"
-                  placeholder="Write Your Subject Of the Issue"
+                  placeholder={t("write_subject_of_issue")}
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                   className="w-full rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 px-4 py-3 text-sm outline-none focus:border-[#FFA500] focus:ring-2 focus:ring-[#FFA500]/20 transition-all"
@@ -138,10 +140,10 @@ export default function SupportPage() {
               {/* Describe Problem */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-white/60 text-[10px] font-black uppercase tracking-widest">
-                  Describe Your Problem
+                  {t("describe_your_problem")}
                 </label>
                 <textarea
-                  placeholder="Write Your Subject Of the Issue"
+                  placeholder={t("write_subject_of_issue")}
                   rows={5}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -153,7 +155,7 @@ export default function SupportPage() {
                 type="submit"
                 className="w-full bg-[#FFA500] hover:bg-[#e69500] active:scale-95 text-white font-black py-3.5 rounded-xl text-sm tracking-wide transition-all duration-200 shadow-lg shadow-orange-300/20"
               >
-                Submit Your Ticket
+                {t("submit_your_ticket")}
               </button>
             </form>
           </div>
@@ -161,7 +163,7 @@ export default function SupportPage() {
           {/* Common Questions / FAQ */}
           <div className="flex flex-col gap-5">
             <div>
-              <h2 className="text-[#1e2b6b] text-2xl font-black">Common Questions</h2>
+              <h2 className="text-[#1e2b6b] text-2xl font-black">{t("common_questions")}</h2>
               <div className="mt-2 h-0.5 w-12 rounded-full bg-[#FFA500]" />
             </div>
 
@@ -195,12 +197,12 @@ export default function SupportPage() {
 
             {/* Still have questions? */}
             <div className="mt-2 rounded-2xl border border-gray-100 bg-white p-5 text-center shadow-sm">
-              <p className="text-sm font-semibold text-gray-400 mb-3">Still have questions?</p>
+              <p className="text-sm font-semibold text-gray-400 mb-3">{t("still_have_questions")}</p>
               <a
                 href="mailto:support@ebc.com"
                 className="inline-block border-2 border-[#3D52A0] text-[#3D52A0] font-black text-sm px-8 py-2.5 rounded-full hover:bg-[#3D52A0] hover:text-white transition-all duration-200"
               >
-                View Full Knowledge Base
+                {t("view_full_knowledge_base")}
               </a>
             </div>
           </div>
@@ -212,7 +214,7 @@ export default function SupportPage() {
         <div className="sticky top-24 pt-4 lg:pt-0">
           <div className="flex items-center gap-2 mb-4 px-2">
             <Bell className="h-5 w-5 text-[#173072]" />
-            <h2 className="text-xl font-bold text-[#173072] tracking-tight">Notifications</h2>
+            <h2 className="text-xl font-bold text-[#173072] tracking-tight">{t("notifications_title")}</h2>
           </div>
           <NotificationInbox userType="SELLER" respondedEnquiryIds={respondedEnquiryIds} />
         </div>

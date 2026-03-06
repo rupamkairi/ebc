@@ -9,6 +9,7 @@ import { EnquiryCard } from "@/components/dashboard/buyer/enquiry/enquiry-card";
 import { BuyerProfileCard } from "@/components/dashboard/buyer/dashboard-components";
 import { cn } from "@/lib/utils";
 import { Frown } from "lucide-react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const filters = ["All", "Pending", "Approved", "Rejected"];
 
@@ -16,6 +17,7 @@ export default function EnquiriesPage() {
   const [activeFilter, setActiveFilter] = useState("All");
   const { data: session } = useSessionQuery();
   const { data: enquiries, isLoading } = useEnquiriesQuery({});
+  const { t } = useLanguage();
 
   const filteredEnquiries = (enquiries || []).filter((e) => {
     if (activeFilter === "All") return true;
@@ -36,10 +38,10 @@ export default function EnquiriesPage() {
       {/* Header Section */}
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-black text-[#3D52A0] tracking-tight">
-          Enquiries
+          {t("enquiries_title_page")}
         </h1>
         <p className="text-sm text-muted-foreground font-medium">
-          Manage and track your product enquiries
+          {t("manage_track_enquiries_subtitle")}
         </p>
       </div>
 
@@ -67,7 +69,7 @@ export default function EnquiriesPage() {
 
         <Link href="/enquiry/create">
           <Button className="bg-[#3D52A0] hover:bg-[#2A3B7D] text-white px-8 py-6 rounded-xl font-bold flex items-center gap-2 h-12">
-            + Create Enquiry
+            + {t("create_enquiry_btn")}
           </Button>
         </Link>
       </div>
@@ -81,7 +83,7 @@ export default function EnquiriesPage() {
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
               <div className="h-10 w-10 border-4 border-white/20 border-t-white rounded-full animate-spin" />
-              <p className="text-white/60 font-medium">Fetching enquiries...</p>
+              <p className="text-white/60 font-medium">{t("fetching_enquiries")}</p>
             </div>
           ) : filteredEnquiries.length > 0 ? (
             <div className="grid grid-cols-1 gap-4">
@@ -94,7 +96,7 @@ export default function EnquiriesPage() {
               <div className="flex flex-row items-center gap-3 text-white/50 mb-2">
                 <Frown className="size-6 mb-1" />
                 <p className="text-lg font-medium italic">
-                  seems empty here. create Enquiries and it will show down here
+                  {t("no_enquiries_empty_state")}
                 </p>
               </div>
             </div>

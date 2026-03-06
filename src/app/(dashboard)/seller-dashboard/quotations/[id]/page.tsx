@@ -16,8 +16,10 @@ import { useItemListingsQuery } from "@/queries/catalogQueries";
 import { useEntitiesQuery } from "@/queries/entityQueries";
 import { CreateQuotationRequest } from "@/types/activity";
 import { QuotationState } from "@/store/quotationStore";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function ViewQuotationPage() {
+  const { t } = useLanguage();
   const params = useParams();
   const id = params.id as string;
   const router = useRouter();
@@ -79,10 +81,10 @@ export default function ViewQuotationPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
         <p className="text-muted-foreground font-medium text-lg">
-          Quotation or Enquiry not found.
+          {t("quotation_enquiry_not_found")}
         </p>
         <Button variant="outline" asChild>
-          <Link href="/seller-dashboard/quotations">Back to Quotations</Link>
+          <Link href="/seller-dashboard/quotations">{t("back_to_enquiries")}</Link>
         </Button>
       </div>
     );
@@ -112,7 +114,7 @@ export default function ViewQuotationPage() {
         className="flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-primary transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
-        Back to Quotation list
+        {t("back_to_quotation_list")}
       </Link>
       <QuotationForm
         enquiry={enquiry}

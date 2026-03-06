@@ -6,17 +6,19 @@ import { useCreateEnquiryMutation } from "@/queries/activityQueries";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function ReviewSubmitPage() {
   const router = useRouter();
   const { items, buyerDetails, clearEnquiry } = useEnquiryStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { t } = useLanguage();
 
   const createEnquiry = useCreateEnquiryMutation();
 
   const handleSubmit = async () => {
     if (!buyerDetails || items.length === 0) {
-      toast.error("Missing details or items");
+      toast.error(t("missing_details_or_items"));
       return;
     }
 
@@ -64,14 +66,14 @@ export default function ReviewSubmitPage() {
 
       toast.success(
         payloads.length > 1
-          ? `Successfully split into ${payloads.length} enquiries`
-          : "Enquiry submitted successfully",
+          ? t("enquiries_split", { count: payloads.length })
+          : t("enquiry_submitted"),
       );
 
       clearEnquiry();
       router.replace("/enquiry/create/submit-success");
     } catch (error) {
-      toast.error("Failed to submit one or more enquiries");
+      toast.error(t("failed_submit_enquiries"));
       console.error(error);
     } finally {
       setIsSubmitting(false);
@@ -82,10 +84,10 @@ export default function ReviewSubmitPage() {
     <div className="max-w-3xl mx-auto py-10 px-4 sm:px-6 space-y-8 animate-in fade-in duration-700">
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight text-[#3D52A0]">
-          Review Your Enquiry
+          {t("review_enquiry")}
         </h1>
         <p className="text-[#3D52A0]/60 font-medium ml-1">
-          Please verify all details before submitting.
+          {t("verify_details_before_submit")}
         </p>
       </div>
 

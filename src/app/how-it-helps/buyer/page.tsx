@@ -28,20 +28,20 @@ export default function BuyerHowItHelps() {
 
   const faqs = [
     {
-      q: "Is EBC really free for me?",
-      a: "Yes! Search materials, get quotes, find workers, and access basic guidance completely free.",
+      q: t("buyer_faq_1_q"),
+      a: t("buyer_faq_1_a"),
     },
     {
-      q: "How do I know material prices are fair?",
-      a: "We provide direct quotes from multiple verified local sellers so you can compare real market prices.",
+      q: t("buyer_faq_2_q"),
+      a: t("buyer_faq_2_a"),
     },
     {
-      q: "Are workers and contractors reliable?",
-      a: "We verify identity (KYC) and provide ratings/reviews from other homeowners for every professional.",
+      q: t("buyer_faq_3_q"),
+      a: t("buyer_faq_3_a"),
     },
     {
-      q: "Can an engineer help with a small house?",
-      a: "Yes! Right quantity and quality are crucial for any size to prevent future problems.",
+      q: t("buyer_faq_4_q"),
+      a: t("buyer_faq_4_a"),
     },
   ];
 
@@ -80,7 +80,7 @@ export default function BuyerHowItHelps() {
               <div className="p-8 md:p-12 flex-1 flex flex-col justify-center space-y-6">
                 <div className="inline-flex items-center gap-2 rounded-lg bg-emerald-50 text-emerald-600 px-3 py-1 text-xs font-black uppercase tracking-wider w-fit">
                   <Sparkles size={14} />
-                  Homeowner Path
+                  {t("homeowner_path")}
                 </div>
                 <h1 className="text-3xl md:text-5xl font-black text-foreground leading-tight">
                   {t("buyer_hero_title")}
@@ -117,7 +117,7 @@ export default function BuyerHowItHelps() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               <DashboardCard
-                title="Free Quotations."
+                title={t("free_quotations")}
                 iconComponent={
                   <CircleDollarSign className="size-5 mr-3 text-primary" />
                 }
@@ -127,14 +127,13 @@ export default function BuyerHowItHelps() {
                     {t("buyer_free_1")}
                   </p>
                   <p className="text-sm font-medium text-foreground/40">
-                    Multiple local sellers compete to give you the best market
-                    rates.
+                    {t("free_quotations_desc")}
                   </p>
                 </div>
               </DashboardCard>
 
               <DashboardCard
-                title="Verified Professionals."
+                title={t("verified_professionals")}
                 iconComponent={<Users className="size-5 mr-3 text-primary" />}
               >
                 <div className="space-y-4">
@@ -142,14 +141,13 @@ export default function BuyerHowItHelps() {
                     {t("buyer_free_3")}
                   </p>
                   <p className="text-sm font-medium text-foreground/40">
-                    Mistris, Plumbers & Electricians with identity checks and
-                    reviews.
+                    {t("verified_professionals_desc")}
                   </p>
                 </div>
               </DashboardCard>
 
               <DashboardCard
-                title="Expert Guidance."
+                title={t("expert_guidance")}
                 iconComponent={
                   <ShieldCheck className="size-5 mr-3 text-primary" />
                 }
@@ -159,8 +157,7 @@ export default function BuyerHowItHelps() {
                     {t("buyer_free_4")}
                   </p>
                   <p className="text-sm font-medium text-foreground/40">
-                    Standard guidance on construction stages to prevent costly
-                    mistakes.
+                    {t("expert_guidance_desc")}
                   </p>
                 </div>
               </DashboardCard>
@@ -197,16 +194,16 @@ export default function BuyerHowItHelps() {
                 <div className="size-12 rounded-full bg-white/20 flex items-center justify-center">
                   <CheckCircle2 size={24} />
                 </div>
-                <h4 className="text-xl font-black">The EBC Experience</h4>
+                <h4 className="text-xl font-black">{t("ebc_experience")}</h4>
                 <ul className="space-y-3 font-bold opacity-80 italic">
                   <li className="flex items-center gap-2">
-                    Sahi rates, sahi material
+                    {t("ebc_experience_1")}
                   </li>
                   <li className="flex items-center gap-2">
-                    No unwanted delays
+                    {t("ebc_experience_2")}
                   </li>
                   <li className="flex items-center gap-2">
-                    Strength that lasts
+                    {t("ebc_experience_3")}
                   </li>
                 </ul>
               </div>

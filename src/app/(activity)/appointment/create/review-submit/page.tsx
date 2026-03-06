@@ -6,18 +6,20 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { AppointmentReview } from "@/components/dashboard/buyer/appointment/appointment-review";
 import { toast } from "sonner";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function AppointmentReviewSubmitPage() {
   const router = useRouter();
   const { item, timeSlots, buyerDetails, resetAppointment } =
     useAppointmentStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { t } = useLanguage();
 
   const createAppointment = useCreateAppointmentMutation();
 
   const handleSubmit = async () => {
     if (!buyerDetails || !item || timeSlots.length === 0) {
-      toast.error("Missing details or slots");
+      toast.error(t("missing_details_slots"));
       return;
     }
 
@@ -32,7 +34,7 @@ export default function AppointmentReviewSubmitPage() {
         },
       ],
       details: {
-        remarks: "Web Appointment Request",
+        remarks: t("web_appointment_request"),
         address: buyerDetails.address,
         pincodeDirectoryId: buyerDetails.pincodeDirectoryId,
       },
@@ -55,13 +57,13 @@ export default function AppointmentReviewSubmitPage() {
 
     createAppointment.mutate(payload, {
       onSuccess: () => {
-        toast.success("Appointment request submitted");
+        toast.success(t("appointment_request_submitted"));
         setIsSubmitting(false);
         resetAppointment();
         router.replace("/appointment/create/submit-success");
       },
       onError: (error) => {
-        toast.error("Failed to submit appointment");
+        toast.error(t("failed_submit_appointment"));
         console.error(error);
         setIsSubmitting(false);
       },
@@ -72,10 +74,10 @@ export default function AppointmentReviewSubmitPage() {
     <div className="max-w-3xl mx-auto py-10 px-4 sm:px-6 space-y-8 animate-in fade-in duration-700">
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight text-[#3D52A0]">
-          Review Appointment
+          {t("review_appointment")}
         </h1>
         <p className="text-[#3D52A0]/60 font-medium ml-1">
-          Please verify all details before submitting.
+          {t("verify_details_before_submit")}
         </p>
       </div>
 

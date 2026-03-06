@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { useSessionQuery, useSendOtpMutation } from "@/queries/authQueries";
 import { BuyerProfileCard } from "@/components/dashboard/buyer/dashboard-components";
 import { AddToEnquiryModal } from "@/components/browse/add-to-enquiry-modal";
+import { useLanguage } from "@/hooks/useLanguage";
 import { useState } from "react";
 import { Item } from "@/types/catalog";
 import { Product } from "@/queries/browse.queries";
@@ -24,6 +25,7 @@ export default function CreateEnquiryPage() {
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { t } = useLanguage();
 
   const handleItemSelect = (item: Item) => {
     // Adapter to match Product interface expected by Modal
@@ -63,7 +65,7 @@ export default function CreateEnquiryPage() {
   const handleNext = async () => {
     // Validate that items exist
     if (items.length === 0) {
-      toast.error("Please add at least one item to your enquiry.");
+      toast.error(t("please_add_item"));
       return;
     }
 
@@ -75,7 +77,7 @@ export default function CreateEnquiryPage() {
       !buyerDetails.pincodeDirectoryId ||
       !buyerDetails.address
     ) {
-      toast.error("Please fill in all required buyer details including address.");
+      toast.error(t("please_fill_details"));
       return;
     }
 
@@ -87,10 +89,10 @@ export default function CreateEnquiryPage() {
           name: buyerDetails.name,
           type: "BUYER",
         });
-        toast.info("Verification code sent to your phone.");
+        toast.info(t("verification_code_sent"));
         router.push("/enquiry/create/otp-verify");
       } catch (error) {
-        toast.error("Failed to send verification code. Please try again.");
+        toast.error(t("failed_send_code"));
         console.error(error);
       }
       return;
@@ -105,17 +107,17 @@ export default function CreateEnquiryPage() {
       {session?.user && (
         <BuyerProfileCard
           name={session.user.name}
-          role={session.user.role || "Buyer"}
+          role={t("buyer")}
           avatarUrl={session.user.image || undefined}
         />
       )}
 
       <div className="space-y-2">
         <h1 className="text-4xl font-bold tracking-tight text-[#3D52A0]">
-          Create New Enquiry
+          {t("create_new_enquiry")}
         </h1>
         <p className="text-[#3D52A0]/60 font-medium ml-1">
-          Fill in the details below to request a quote.
+          {t("fill_details_below")}
         </p>
       </div>
 
@@ -136,7 +138,7 @@ export default function CreateEnquiryPage() {
             {items.length > 0 && (
               <div className="pt-4 border-t border-[#3D52A0]/10">
                 <h3 className="text-sm font-bold tracking-widest text-[#3D52A0]/40 uppercase mb-4 ml-1">
-                  Items Added to Enquiry ({items.length})
+                  {t("items_added_to_enquiry", { count: items.length })}
                 </h3>
                 <EnquiryLineItems />
               </div>
@@ -148,7 +150,7 @@ export default function CreateEnquiryPage() {
         <div className="lg:col-span-2 space-y-10">
           <section className="space-y-8">
             <h2 className="text-2xl font-bold text-[#3D52A0] tracking-tight">
-              Buyer Details
+              {t("buyer_details")}
             </h2>
             <BuyerDetailsForm
               defaultValues={buyerDetails}
@@ -163,7 +165,7 @@ export default function CreateEnquiryPage() {
               onClick={handleNext}
               className="w-full bg-linear-to-r from-[#0F28A9] to-[#0A1B75] hover:from-[#FFA500] hover:to-[#FF8C00] text-white font-bold tracking-tight py-7 rounded-2xl text-lg shadow-[0_20px_50px_rgba(15,40,169,0.3)] transition-all duration-500 hover:scale-105 active:scale-95 group border-none"
             >
-              Proceed to Verify
+              {t("proceed_to_verify")}
               <ArrowRight className="ml-3 h-5 w-5 transition-transform group-hover:translate-x-2 duration-500" />
             </Button>
           </div>

@@ -30,6 +30,7 @@ import { useAuthStore } from "@/store/authStore";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { USER_ROLE } from "@/constants/enums";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function UserLoginMobileOtpForm({
   className,
@@ -37,6 +38,7 @@ export function UserLoginMobileOtpForm({
   ...props
 }: React.ComponentProps<"div"> & { role?: string; isDarkTheme?: boolean }) {
   const router = useRouter();
+  const { t } = useLanguage();
   const { setToken, setUser } = useAuthStore();
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
@@ -136,11 +138,11 @@ export function UserLoginMobileOtpForm({
             className={cn(
               isDarkTheme && "text-white text-3xl font-medium tracking-wide",
             )}
-          >
-            Login To Your Account
-          </CardTitle>
-          <CardDescription className={cn(isDarkTheme && "text-white/70")}>
-            Don&apos;t have an account?{" "}
+            >
+              {t("login_to_your_account")}
+            </CardTitle>
+            <CardDescription className={cn(isDarkTheme && "text-white/70")}>
+              {t("dont_have_account")}{" "}
             <Link
               href="/auth/register"
               className={cn(
@@ -148,7 +150,7 @@ export function UserLoginMobileOtpForm({
                 isDarkTheme ? "text-[#FFA500]" : "text-primary",
               )}
             >
-              register
+              {t("register")}
             </Link>
           </CardDescription>
         </CardHeader>
@@ -172,7 +174,7 @@ export function UserLoginMobileOtpForm({
                       <Input
                         id="mobile"
                         type="tel"
-                        placeholder="Phone Number"
+                        placeholder={t("phone_number")}
                         value={mobile}
                         onChange={(e) => setMobile(e.target.value)}
                         required
@@ -196,7 +198,7 @@ export function UserLoginMobileOtpForm({
                       {isLoading && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
-                      Send OTP
+                      {t("send_otp")}
                     </Button>
                   </Field>
                 </FieldGroup>
@@ -209,7 +211,7 @@ export function UserLoginMobileOtpForm({
                       htmlFor="otp"
                       className={cn(isDarkTheme && "text-white")}
                     >
-                      Verification code
+                      {t("verification_code")}
                     </FieldLabel>
                     <InputOTP
                       containerClassName="justify-around"
@@ -241,7 +243,7 @@ export function UserLoginMobileOtpForm({
                         isDarkTheme && "text-white/70",
                       )}
                     >
-                      Enter the 6-digit code sent to +91{mobile}.
+                      {t("enter_otp_sent_to", { phone: `+91${mobile}` })}
                     </FieldDescription>
                   </Field>
                   <div className="flex flex-col gap-4 mt-2">
@@ -257,7 +259,7 @@ export function UserLoginMobileOtpForm({
                       {isLoading && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
-                      Login
+                      {t("login")}
                     </Button>
                     <Button
                       type="button"
@@ -270,7 +272,7 @@ export function UserLoginMobileOtpForm({
                           "text-white hover:text-white hover:bg-white/10",
                       )}
                     >
-                      Change Number
+                      {t("change_number")}
                     </Button>
                   </div>
                 </FieldGroup>
@@ -282,9 +284,9 @@ export function UserLoginMobileOtpForm({
 
       {!isDarkTheme && (
         <p className="text-center text-sm text-muted-foreground">
-          Don&apos;t have an account?{" "}
+          {t("dont_have_account")}{" "}
           <Link href="/auth/register" className="text-primary hover:underline">
-            Register
+            {t("register")}
           </Link>
         </p>
       )}

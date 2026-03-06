@@ -26,6 +26,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { useLanguage } from "@/hooks/useLanguage";
 
 // ── Star row helper ──────────────────────────────────────────────────────────
 function StarRow({ rating }: { rating: number }) {
@@ -156,6 +157,7 @@ function ReviewCard({ review, entityId }: { review: Review; entityId: string }) 
 
 // ── Main page ────────────────────────────────────────────────────────────────
 export default function ReviewsPage() {
+  const { t } = useLanguage();
   const user = useAuthStore((s) => s.user);
   const { data: entities, isLoading: loadingEntities } = useEntitiesQuery();
   const entityId = user?.staffAtEntityId || entities?.[0]?.id || "";
@@ -169,7 +171,7 @@ export default function ReviewsPage() {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-4">
         <Loader2 className="h-10 w-10 animate-spin text-[#3D52A0] opacity-40" />
-        <p className="text-sm font-medium text-muted-foreground animate-pulse">Loading reviews…</p>
+        <p className="text-sm font-medium text-muted-foreground animate-pulse">{t("loading")}</p>
       </div>
     );
   }
@@ -184,7 +186,7 @@ export default function ReviewsPage() {
     <div className="flex flex-col gap-8">
       {/* ── Page heading ───────────────────────────────────────────── */}
       <div>
-        <h1 className="text-3xl font-black text-[#1e2b6b] tracking-tight">Ratings And Reviews</h1>
+        <h1 className="text-3xl font-black text-[#1e2b6b] tracking-tight">{t("ratings_and_reviews")}</h1>
         <div className="mt-1.5 h-0.5 w-12 rounded-full bg-[#FFA500]" />
       </div>
 
@@ -193,7 +195,7 @@ export default function ReviewsPage() {
         {(!summary || summary.total === 0) ? (
           <div className="flex flex-col items-center justify-center py-10 gap-3">
             <Star size={40} className="text-gray-200" />
-            <p className="text-gray-400 font-medium text-sm">No ratings yet. Complete some enquiries to earn your first review!</p>
+            <p className="text-gray-400 font-medium text-sm">{t("no_ratings_yet_complete_enquiries")}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
@@ -244,9 +246,9 @@ export default function ReviewsPage() {
       {/* ── Stat Cards ─────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
         {[
-          { icon: Star, label: "Average Rating Score", value: avgRating.toFixed(1) },
-          { icon: MessageSquare, label: "Total Feedbacks", value: totalFeedbacks },
-          { icon: Pin, label: "Pinned to Top", value: `${pinnedCount}/5` },
+          { icon: Star, label: t("average_rating_score"), value: avgRating.toFixed(1) },
+          { icon: MessageSquare, label: t("total_feedbacks"), value: totalFeedbacks },
+          { icon: Pin, label: t("pinned_to_top"), value: `${pinnedCount}/5` },
         ].map(({ icon: Icon, label, value }) => (
           <div
             key={label}
@@ -266,13 +268,13 @@ export default function ReviewsPage() {
 
       {/* ── Reviews Grid ───────────────────────────────────────────── */}
       <div>
-        <h2 className="text-xl md:text-2xl font-black text-[#1e2b6b] mb-1">Reviews</h2>
+        <h2 className="text-xl md:text-2xl font-black text-[#1e2b6b] mb-1">{t("reviews_title")}</h2>
         <div className="mb-4 h-0.5 w-10 rounded-full bg-[#FFA500]" />
 
         {reviews.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 bg-gray-50 rounded-2xl border border-dashed border-gray-200 gap-3">
             <MessageSquare size={40} className="text-gray-200" />
-            <p className="text-gray-400 font-medium text-sm">No reviews received yet.</p>
+            <p className="text-gray-400 font-medium text-sm">{t("no_reviews_received_yet")}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

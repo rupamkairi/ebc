@@ -23,6 +23,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ArrowLeft, Edit } from "lucide-react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export interface OfferListParams {
   itemListingId?: string;
@@ -33,6 +34,7 @@ export interface OfferListParams {
 }
 
 export default function ListingDetailsPage() {
+  const { t } = useLanguage();
   const params = useParams();
   const listingId = params.listingId as string;
   const router = useRouter();
@@ -49,7 +51,7 @@ export default function ListingDetailsPage() {
   }
 
   if (!listing) {
-    return <div>Listing not found</div>;
+    return <div>{t("listing_details")} {t("not_specified")}</div>;
   }
 
   return (
@@ -61,10 +63,10 @@ export default function ListingDetailsPage() {
           </Button>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">
-              Listing Details
+              {t("listing_details")}
             </h1>
             <p className="text-muted-foreground">
-              Manage your listing and create offers.
+              {t("manage_listing_create_offers")}
             </p>
           </div>
         </div>
@@ -73,14 +75,14 @@ export default function ListingDetailsPage() {
           <DialogTrigger asChild>
             <Button>
               <Edit className="mr-2 h-4 w-4" />
-              Edit Listing
+              {t("edit_listing")}
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Edit Listing</DialogTitle>
+              <DialogTitle>{t("edit_listing")}</DialogTitle>
               <DialogDescription>
-                Update listing status, price, and other details.
+                {t("update_listing_status_price")}
               </DialogDescription>
             </DialogHeader>
             {listing && (
@@ -102,23 +104,23 @@ export default function ListingDetailsPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div className="space-y-1">
               <p className="text-xs text-muted-foreground uppercase font-semibold">
-                Listing ID
+                {t("listing_id")}
               </p>
               <p className="text-sm font-medium">{listing.id}</p>
             </div>
             <div className="space-y-1">
               <p className="text-xs text-muted-foreground uppercase font-semibold">
-                Status
+                {t("status")}
               </p>
               <Badge variant={listing.isActive ? "default" : "secondary"}>
-                {listing.isActive ? "Active" : "Inactive"}
+                {listing.isActive ? t("active") : t("inactive")}
               </Badge>
             </div>
             {listing.itemRates?.[0] && (
               <>
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground uppercase font-semibold">
-                    Rate
+                    {t("price")}
                   </p>
                   <p className="text-sm font-medium">
                     {listing.itemRates[0].rate}
@@ -126,7 +128,7 @@ export default function ListingDetailsPage() {
                 </div>
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground uppercase font-semibold">
-                    Unit
+                    {t("category")}
                   </p>
                   <p className="text-sm font-medium">
                     {listing.itemRates[0].unitType}

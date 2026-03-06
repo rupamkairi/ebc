@@ -3,6 +3,7 @@
 import React, { Suspense, useMemo } from "react";
 import Container from "@/components/ui/containers";
 import { CheckCircle2, ChevronRight } from "lucide-react";
+import { useLanguage } from "@/hooks/useLanguage";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useBrowseData, Product } from "@/queries/browse.queries";
@@ -32,22 +33,23 @@ interface SubServiceTabsProps {
 // --- Components ---
 
 function HireHeader() {
+  const { t } = useLanguage();
   return (
     <div className="py-12 md:py-16 text-center space-y-6 bg-slate-50/50">
       <Container size="lg">
         <h1 className="text-3xl md:text-5xl font-black tracking-tight flex flex-col md:block line-shimmer">
-          <span className="text-[#445EB4]">Hire Professional</span>{" "}
-          <span className="text-[#FFA500]">Construction Services</span>
+          <span className="text-[#445EB4]">{t("hire_professional")}</span>{" "}
+          <span className="text-[#FFA500]">{t("construction_services")}</span>
         </h1>
         <p className="text-slate-500 font-medium text-base md:text-lg max-w-2xl mx-auto mt-4">
-          Connect with verified Experts &amp; get your project done right
+          {t("connect_experts")}
         </p>
 
         <div className="flex flex-col items-center gap-2 pt-6">
           {[
-            "Directly engage with qualified professionals.",
-            "Transparent pricing and verified work quality.",
-            "Services which every Home Construction need.",
+            t("hire_benefit_1"),
+            t("hire_benefit_2"),
+            t("hire_benefit_3"),
           ].map((text, i) => (
             <div
               key={i}
@@ -68,6 +70,7 @@ function ServiceCategoryGrid({
   selectedId,
   onSelect,
 }: ServiceCategoryGridProps) {
+  const { t } = useLanguage();
   const categoryStyles: Record<string, { icon: string; bg: string }> = {
     "house construction services": { icon: "🏠", bg: "bg-white" },
     "design & consultancy services": { icon: "📐", bg: "bg-white" },
@@ -81,7 +84,7 @@ function ServiceCategoryGrid({
       <Container size="lg">
         <div className="text-center mb-8 md:mb-12">
           <h2 className="text-lg md:text-2xl font-black text-[#445EB4] uppercase tracking-wider relative inline-block">
-            Service Categories
+            {t("service_categories")}
             <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-1 bg-[#FFA500] rounded-full" />
           </h2>
         </div>
@@ -130,6 +133,7 @@ function SubServiceTabs({
   selectedIds,
   onToggle,
 }: SubServiceTabsProps) {
+  const { t } = useLanguage();
   if (!subCategories || subCategories.length === 0) return null;
 
   return (
@@ -137,7 +141,7 @@ function SubServiceTabs({
       <Container size="lg">
         <div className="text-center mb-6 md:mb-10">
           <h2 className="text-base md:text-xl font-black text-[#445EB4] uppercase tracking-wider">
-            Sub Service Categories
+            {t("sub_service_categories")}
           </h2>
         </div>
         <div className="flex flex-wrap justify-center gap-2 md:gap-3 max-w-4xl mx-auto">
@@ -165,6 +169,7 @@ function SubServiceTabs({
 }
 
 function ServiceCard({ product }: { product: Product }) {
+  const { t } = useLanguage();
   return (
     <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col group h-full">
       <div className="bg-[#4D4D4D] p-3 md:p-4 text-center group-hover:bg-[#445EB4] transition-colors duration-500">
@@ -186,7 +191,7 @@ function ServiceCard({ product }: { product: Product }) {
           className="w-full bg-white border border-slate-200 text-[#FFA500] hover:bg-[#FFA500] hover:text-white font-black rounded-lg h-9 md:h-12 text-[10px] md:text-[12px] uppercase tracking-widest transition-all duration-300 shadow-sm"
           variant="outline"
         >
-          Request Appointment
+          {t("request_appointment")}
         </Button>
       </div>
       <div className="h-1.5 w-0 bg-[#FFA500] group-hover:w-full transition-all duration-700" />
@@ -195,15 +200,15 @@ function ServiceCard({ product }: { product: Product }) {
 }
 
 function CTASection() {
+  const { t } = useLanguage();
   return (
     <div className="py-16 md:py-24 bg-white text-center space-y-8 border-t border-slate-100 px-4">
       <h2 className="text-2xl md:text-5xl font-black tracking-tight">
-        <span className="text-[#445EB4]">Not sure which service</span>{" "}
-        <span className="text-[#FFA500]">you need?</span>
+        <span className="text-[#445EB4]">{t("not_sure_need")}</span>
       </h2>
       <div className="flex justify-center">
         <Button className="bg-[#0A1D56] hover:bg-[#152C74] text-white w-full max-w-sm px-5 py-6 md:py-8 rounded-xl font-black text-sm md:text-base whitespace-nowrap shadow-[0_20px_50px_rgba(10,29,86,0.3)] transition-all hover:scale-105 active:scale-95 group">
-          Talk to an Expert | Get Free Consultation
+          {t("talk_expert_consultation")}
           <ChevronRight className="ml-2 shrink-0 group-hover:translate-x-1 transition-transform" />
         </Button>
       </div>
@@ -214,6 +219,7 @@ function CTASection() {
 // --- Main Page Content ---
 
 function HirePageContent() {
+  const { t } = useLanguage();
   const { params, setParentCategory, toggleSubCategory } = useBrowseParams();
 
   const serviceParams: BrowseParams = useMemo(
@@ -246,7 +252,7 @@ function HirePageContent() {
         <Container size="lg">
           <div className="text-center mb-10 md:mb-16">
             <h2 className="text-xl md:text-3xl font-black text-[#445EB4] uppercase tracking-wider relative inline-block">
-              Available Services
+              {t("available_services")}
               <span className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-16 h-1.5 bg-[#FFA500] rounded-full" />
             </h2>
           </div>
@@ -272,19 +278,17 @@ function HirePageContent() {
             <div className="py-20 md:py-32 text-center rounded-3xl bg-slate-50 border-2 border-dashed border-slate-200">
               <div className="max-w-md mx-auto space-y-4 px-4">
                 <p className="text-slate-400 font-bold text-base md:text-lg uppercase tracking-widest">
-                  No matching services
+                  {t("no_matching_services")}
                 </p>
                 <p className="text-slate-500 text-sm">
-                  We couldn&apos;t find any services matching your current
-                  filters. Try selecting a different category or clearing some
-                  filters.
+                  {t("no_matching_services_desc")}
                 </p>
                 <Button
                   variant="link"
                   onClick={() => setParentCategory(null)}
                   className="text-[#FFA500] font-black"
                 >
-                  Clear Filters
+                  {t("clear_filters")}
                 </Button>
               </div>
             </div>

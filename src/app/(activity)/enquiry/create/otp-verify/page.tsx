@@ -6,13 +6,15 @@ import React from "react";
 import { toast } from "sonner";
 
 import { useEnquiryStore } from "@/store/enquiryStore";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function OTPVerifyPage() {
   const router = useRouter();
   const { buyerDetails } = useEnquiryStore();
+  const { t } = useLanguage();
 
   const handleVerify = () => {
-    toast.success("Verified successfully!");
+    toast.success(t("verified_successfully"));
     router.replace("/enquiry/create/review-submit");
   };
 

@@ -1,8 +1,10 @@
 "use client";
 
 import Container from "@/components/ui/containers";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function FooterSection() {
+  const { t } = useLanguage();
   return (
     <footer className="bg-linear-to-b from-[#3B52B1] to-[#19234B] text-white pt-10 pb-6">
       <Container size="xl">
@@ -11,20 +13,19 @@ export function FooterSection() {
           <div className="lg:col-span-4 space-y-5">
             <div className="space-y-2">
               <h2 className="text-2xl lg:text-[28px] font-bold tracking-tight">
-                Econ Building Centre
+                {t("footer_brand")}
               </h2>
               <p className="text-[13px] font-medium text-white/90 leading-relaxed max-w-sm">
-                India&apos;s structured construction marketplace for smart home
-                building.
+                {t("footer_tagline")}
               </p>
             </div>
 
             <ul className="space-y-2">
               {[
-                "Verified Sellers & Service Providers",
-                "Transparent Pricing & RFQs",
-                "AI-Powered Cost Intelligence",
-                "Engineer-Guided Decisions",
+                t("footer_features_1"),
+                t("footer_features_2"),
+                t("footer_features_3"),
+                t("footer_features_4"),
               ].map((item, i) => (
                 <li
                   key={i}
@@ -60,7 +61,7 @@ export function FooterSection() {
                 </svg>
               </div>
               <span className="text-[11px] md:text-[12px] font-medium">
-                Built on real construction experience since 2004.
+                {t("footer_experience")}
               </span>
             </div>
           </div>
@@ -68,42 +69,42 @@ export function FooterSection() {
           {/* Marketplace Column */}
           <div className="lg:col-span-2 space-y-4 pt-1">
             <h4 className="text-[17px] font-semibold tracking-wide">
-              Marketplace
+              {t("footer_marketplace")}
             </h4>
             <ul className="space-y-2 text-[13px] font-medium text-white/90">
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  AI Cost Calculator (Free)
+                  {t("footer_ai_calculator")}
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  Compare Material Prices
+                  {t("footer_compare_prices")}
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  Request Quotation (RFQ)
+                  {t("footer_request_quote")}
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  Engage with Experts
+                  {t("footer_experts")}
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  Conference Hall
+                  {t("conference_hall")}
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  Find Verified Sellers
+                  {t("footer_find_sellers")}
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  Find Skilled Workers
+                  {t("footer_find_workers")}
                 </a>
               </li>
             </ul>
@@ -111,26 +112,26 @@ export function FooterSection() {
 
           {/* For You Column */}
           <div className="lg:col-span-2 space-y-4 pt-1">
-            <h4 className="text-[17px] font-semibold tracking-wide">For You</h4>
+            <h4 className="text-[17px] font-semibold tracking-wide">{t("footer_for_you")}</h4>
             <ul className="space-y-2 text-[13px] font-medium text-white/90">
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  How EBC Helps Families
+                  {t("footer_how_ebc_helps")}
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  Planning Your Dream Home
+                  {t("footer_planning")}
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  Cost Estimation Guide
+                  {t("footer_cost_guide")}
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  FAQs for Home Builders
+                  {t("footer_faq_builders")}
                 </a>
               </li>
             </ul>
@@ -139,27 +140,27 @@ export function FooterSection() {
           {/* Helpful Links Column */}
           <div className="lg:col-span-2 space-y-4 pt-1">
             <h4 className="text-[17px] font-semibold tracking-wide">
-              Helpful Links
+              {t("footer_helpful_links")}
             </h4>
             <ul className="space-y-2 text-[13px] font-medium text-white/90">
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  Estimate Cost (Free)
+                  {t("footer_estimate_cost")}
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  Talk to an Expert
+                  {t("footer_talk_expert")}
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  Cost Estimation Guide
+                  {t("footer_cost_guide")}
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  Compare Prices
+                  {t("footer_compare_prices")}
                 </a>
               </li>
             </ul>
@@ -168,42 +169,42 @@ export function FooterSection() {
           {/* Support & Company Column */}
           <div className="lg:col-span-2 space-y-4 pt-1">
             <h4 className="text-[17px] font-semibold tracking-wide">
-              Support & Company
+              {t("footer_support_company")}
             </h4>
             <ul className="space-y-2 text-[13px] font-medium text-white/90">
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  About ECON / EBC
+                  {t("footer_about")}
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  How EBC Works
+                  {t("footer_how_works")}
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  Contact Support
+                  {t("footer_contact_support")}
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  Help & FAQs
+                  {t("footer_help_faq")}
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  Privacy Policy
+                  {t("privacy_policy")}
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  Seller Agreement
+                  {t("footer_seller_agreement")}
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  Consumer Safety Policy
+                  {t("footer_consumer_safety")}
                 </a>
               </li>
               <li>
@@ -211,7 +212,7 @@ export function FooterSection() {
                   href="/auth/admin-login"
                   className="hover:text-white transition-colors"
                 >
-                  Admin Login
+                  {t("footer_admin_login")}
                 </a>
               </li>
             </ul>
@@ -236,7 +237,7 @@ export function FooterSection() {
                 </svg>
               </div>
               <span className="text-[10px] md:text-[11px] font-medium tracking-wide">
-                Location xyz , Kolkata
+                {t("footer_location")}
               </span>
             </div>
             <div className="flex items-center gap-2.5">
@@ -269,7 +270,7 @@ export function FooterSection() {
                 </svg>
               </div>
               <span className="text-[10px] md:text-[11px] font-medium tracking-wide">
-                xyz123.buissness@gmail.com
+                {t("footer_email")}
               </span>
             </div>
           </div>
@@ -318,8 +319,7 @@ export function FooterSection() {
         {/* Disclaimer Text */}
         <div className="pb-5 px-2 max-w-4xl mx-auto">
           <p className="text-center text-[11px] md:text-[13px] font-medium text-white/90">
-            ECON Building Centre (EBC) is a technology-enabled marketplace
-            facilitating connections between buyers and sellers.
+            {t("footer_disclaimer")}
           </p>
         </div>
 
@@ -327,11 +327,11 @@ export function FooterSection() {
         <div className="pt-5 border-t border-white/20 px-2">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] md:text-[13px] font-medium text-white/90">
             <div className="space-y-1 text-center md:text-left">
-              <p>© 2026 ECON Building Centre. All rights reserved.</p>
-              <p>Made in India • Serving Tier-2 & Tier-3 India</p>
+              <p>{t("footer_copyright")}</p>
+              <p>{t("footer_serving")}</p>
             </div>
             <div className="text-center md:text-right">
-              <p>Designed By : Pink Shadow Media & Entertainment Pvt. Ltd.</p>
+              <p>{t("footer_designed_by")}</p>
             </div>
           </div>
         </div>

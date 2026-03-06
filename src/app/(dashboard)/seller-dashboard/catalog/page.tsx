@@ -19,8 +19,10 @@ import { ENTITY_TYPE, ITEM_TYPE, ACTIVITY_TYPE } from "@/constants/enums";
 import { NotificationInbox } from "@/components/dashboard/notifications/notification-inbox";
 import { Bell } from "lucide-react";
 import { useAssignmentsQuery } from "@/queries/activityQueries";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function CatalogPage() {
+  const { t } = useLanguage();
   const {
     data: entities,
     isLoading: isLoadingEntities,
@@ -84,7 +86,7 @@ export default function CatalogPage() {
             if (isLoadingEntities) return;
             if (!sellerEntity) {
               toast.error(
-                "Business entity not found. Please complete your store setup.",
+                t("business_entity_not_found"),
               );
               return;
             }
@@ -107,8 +109,8 @@ export default function CatalogPage() {
             <LoadingState />
           ) : isErrorEntities ? (
             <ErrorState
-              title="Failed to load business context."
-              description="Please check your connection or login again."
+              title={t("failed_load_business_context")}
+              description={t("check_connection_login_again")}
             />
           ) : !sellerEntity ? (
             <NoEntityState
@@ -186,7 +188,7 @@ export default function CatalogPage() {
         <div className="sticky top-24 pt-4 lg:pt-0">
           <div className="flex items-center gap-2 mb-4 px-2">
             <Bell className="h-5 w-5 text-[#173072]" />
-            <h2 className="text-xl font-bold text-[#173072] tracking-tight">Notifications</h2>
+            <h2 className="text-xl font-bold text-[#173072] tracking-tight">{t("notifications_title")}</h2>
           </div>
           <NotificationInbox userType="SELLER" respondedEnquiryIds={respondedEnquiryIds} />
         </div>

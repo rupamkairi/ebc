@@ -26,7 +26,7 @@ export default function HowItHelpsPage() {
               className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-primary hover:gap-3 transition-all mb-4"
             >
               <ChevronLeft size={16} />
-              Back to Home
+              {t("back_to_home")}
             </Link>
             <h1 className="text-4xl md:text-6xl font-black text-foreground tracking-tight leading-[1.1]">
               {t("how_ebc_helps_title")}

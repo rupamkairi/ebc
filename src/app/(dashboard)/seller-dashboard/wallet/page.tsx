@@ -16,8 +16,10 @@ import { RechargeModal } from "@/components/dashboard/seller/recharge-modal";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function WalletPage() {
+  const { t } = useLanguage();
   const [isRechargeOpen, setIsRechargeOpen] = useState(false);
   const { data: entities } = useEntitiesQuery();
   const entityId = entities?.[0]?.id;
@@ -63,7 +65,7 @@ export default function WalletPage() {
         </div>
         
         <div className="flex flex-col gap-3 md:gap-4 text-center md:text-left relative z-10">
-          <h2 className="text-white/90 text-sm md:text-xl font-bold tracking-tight uppercase md:normal-case">Available Coin Balance</h2>
+          <h2 className="text-white/90 text-sm md:text-xl font-bold tracking-tight uppercase md:normal-case">{t("available_coin_balance")}</h2>
           <div className="flex items-center justify-center md:justify-start gap-3 md:gap-4">
              <div className="size-10 md:size-16 rounded-full border-4 md:border-[6px] border-[#E65100] bg-[#FFB300] flex items-center justify-center shadow-inner">
                 <div className="size-6 md:size-10 rounded-full border-2 border-[#E65100]/30" />
@@ -79,7 +81,7 @@ export default function WalletPage() {
           className="bg-white hover:bg-white/90 text-[#F57C00] h-12 md:h-16 w-full md:w-auto px-10 rounded-2xl font-black text-base md:text-xl shadow-xl shadow-black/5 flex items-center gap-3 active:scale-95 transition-all relative z-10"
         >
           <Plus size={20} className="md:size-6" strokeWidth={3} />
-          Add Coins
+          {t("add_coins_btn")}
         </Button>
       </div>
 
@@ -87,14 +89,14 @@ export default function WalletPage() {
         {/* Left Column: Transaction History */}
         <div className="lg:col-span-7 bg-white rounded-3xl p-5 md:p-8 border border-slate-100 shadow-xs space-y-6 md:space-y-8">
            <div className="flex items-center gap-3">
-              <h3 className="text-lg md:text-xl font-black text-[#1A237E] uppercase tracking-wider">Transaction History</h3>
+              <h3 className="text-lg md:text-xl font-black text-[#1A237E] uppercase tracking-wider">{t("transaction_history_title")}</h3>
            </div>
 
            <div className="space-y-3">
              {transactions.length === 0 ? (
                <div className="py-20 text-center opacity-30">
                  <History size={48} className="mx-auto mb-4" />
-                 <p className="font-bold uppercase tracking-widest text-sm">No Transactions Found</p>
+                 <p className="font-bold uppercase tracking-widest text-sm">{t("no_transactions_found")}</p>
                </div>
              ) : (
                transactions.map((txn) => {
@@ -147,19 +149,19 @@ export default function WalletPage() {
                    <div className="size-10 md:size-12 rounded-full border-4 border-[#FFA000] bg-[#FFB300] shadow-inner" />
                 </div>
                 <div className="space-y-2">
-                  <h3 className="text-2xl md:text-4xl font-black text-[#FFD54F] italic leading-tight uppercase md:normal-case">Why EBC Coins?</h3>
+                  <h3 className="text-2xl md:text-4xl font-black text-[#FFD54F] italic leading-tight uppercase md:normal-case">{t("why_ebc_coins")}</h3>
                   <p className="text-[10px] md:text-sm text-white/50 font-bold leading-relaxed italic max-w-xs mx-auto md:mx-0">
-                    Our secure coin system ensures faster unlocks and seamless appointment management without needing external payment everytime
+                    {t("secure_coin_system_faster_unlocks")}
                   </p>
                 </div>
               </div>
 
               <div className="space-y-4 md:space-y-6 relative z-10 max-w-sm mx-auto md:mx-0">
                  {[
-                   "Unlock Quotations instantly",
-                   "Priority site visit requests",
-                   "Featured search visibility",
-                   "Exclusive seller deals"
+                   t("unlock_quotations_priority"),
+                   t("priority_site_visit_requests"),
+                   t("featured_search_visibility"),
+                   t("exclusive_seller_deals")
                  ].map((benefit) => (
                    <div key={benefit} className="flex items-center gap-3 md:gap-4">
                       <div className="size-2 md:size-3 rounded-full bg-[#FFA000] shadow-[0_0_10px_rgba(255,160,0,0.5)] shrink-0" />
@@ -169,7 +171,7 @@ export default function WalletPage() {
               </div>
 
               <Button className="w-full h-14 md:h-16 bg-white hover:bg-slate-50 text-[#1A237E] font-black text-base md:text-xl rounded-2xl shadow-2xl relative z-10 transition-transform active:scale-[0.98] uppercase md:normal-case">
-                Learn More
+                {t("learn_more_btn")}
               </Button>
            </div>
         </div>

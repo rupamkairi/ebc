@@ -16,8 +16,10 @@ import { useSessionQuery } from "@/queries/authQueries";
 import { useMemo } from "react";
 import { Loader2 } from "lucide-react";
 import { Enquiry, Appointment } from "@/types/activity";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function CustomersPage() {
+  const { t } = useLanguage();
   const { data: session } = useSessionQuery();
   const { data: entities = [] } = useEntitiesQuery();
   const mainEntity = entities[0];
@@ -109,7 +111,7 @@ export default function CustomersPage() {
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <h1 className="text-2xl md:text-3xl font-bold text-[#1A237E] tracking-tight">
-          My Customers
+          {t("my_customers")}
         </h1>
       </div>
 
@@ -117,7 +119,7 @@ export default function CustomersPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
         {filteredCustomers.length === 0 ? (
           <div className="col-span-full py-24 text-center bg-white rounded-3xl border border-dashed text-slate-400 font-bold">
-            No active customers found.
+            {t("no_active_customers")}
           </div>
         ) : (
           filteredCustomers.map((cus) => (
@@ -144,7 +146,7 @@ export default function CustomersPage() {
                       </Badge>
                     </div>
                     <Button className="w-full mt-2 bg-[#FFA000] hover:bg-[#FF8F00] text-white font-bold h-10 rounded-lg text-sm transition-all shadow-md">
-                      View Profile
+                      {t("view_profile")}
                     </Button>
                   </div>
                 </div>
@@ -166,12 +168,12 @@ export default function CustomersPage() {
                   {/* Total Orders Box */}
                   <div className="md:col-span-4 rounded-xl overflow-hidden border border-white/10">
                     <div className="bg-[#3D52A0] py-1.5 px-3 text-white text-[11px] font-bold">
-                      Total Orders
+                      {t("total_orders")}
                     </div>
                     <div className="bg-white p-3 flex flex-col items-center justify-center gap-2">
                       <div className="flex justify-between w-full text-[9px] font-black uppercase text-[#1A237E]/40">
-                        <span>Orders Delivered</span>
-                        <span>Total Order Value</span>
+                        <span>{t("orders_delivered")}</span>
+                        <span>{t("total_order_value")}</span>
                       </div>
                       <div className="flex justify-between w-full">
                         <span className="text-xl font-black text-[#FFA000]">{cus.orders}</span>
@@ -183,7 +185,7 @@ export default function CustomersPage() {
                   {/* Recent Product Purchases Box */}
                   <div className="md:col-span-8 rounded-xl overflow-hidden border border-white/10">
                     <div className="bg-[#3D52A0] py-1.5 px-4 text-white text-[11px] font-bold">
-                      Recent Product Purchases
+                      {t("recent_product_purchases")}
                     </div>
                     <div className="bg-white p-0">
                       <table className="w-full text-[9px] font-medium">
@@ -231,11 +233,11 @@ export default function CustomersPage() {
             </div>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-[#1A237E]">
-            Your Loyalty Score : <span className="text-[#FFA000]">A+</span>
+            {t("loyalty_score")} : <span className="text-[#FFA000]">A+</span>
           </h2>
         </div>
         <Button className="w-full md:w-auto bg-[#3D52A0] hover:bg-[#1A237E] text-white font-black px-12 h-16 rounded-2xl shadow-xl shadow-[#3D52A0]/20 text-lg transition-all active:scale-95">
-          View Analytics
+          {t("view_analytics")}
         </Button>
       </div>
     </div>

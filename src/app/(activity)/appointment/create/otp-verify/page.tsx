@@ -6,13 +6,15 @@ import React from "react";
 import { toast } from "sonner";
 
 import { useAppointmentStore } from "@/store/appointmentStore";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function AppointmentOTPVerifyPage() {
   const router = useRouter();
   const { buyerDetails } = useAppointmentStore();
+  const { t } = useLanguage();
 
   const handleVerify = () => {
-    toast.success("Verified successfully!");
+    toast.success(t("verified_successfully"));
     router.replace("/appointment/create/review-submit");
   };
 

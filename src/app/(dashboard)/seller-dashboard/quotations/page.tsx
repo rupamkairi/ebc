@@ -19,8 +19,10 @@ import { useEntitiesQuery } from "@/queries/entityQueries";
 import { format } from "date-fns";
 import Link from "next/link";
 import { useMemo } from "react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function QuotationsPage() {
+  const { t } = useLanguage();
   const { data: entities } = useEntitiesQuery();
   const sellerEntityId = entities?.[0]?.id;
 
@@ -61,7 +63,7 @@ export default function QuotationsPage() {
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
         <p className="text-foreground/60 font-bold italic">
-          Loading your deals...
+          {t("loading")}
         </p>
       </div>
     );
@@ -73,10 +75,10 @@ export default function QuotationsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
           <h1 className="text-4xl font-black text-foreground tracking-tight italic">
-            Deal Board
+            {t("deal_board")}
           </h1>
           <p className="text-foreground/60 font-bold italic mt-1">
-            Track your active quotations and conversion status.
+            {t("track_active_quotations")}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -85,7 +87,7 @@ export default function QuotationsPage() {
             className="rounded-2xl h-12 px-5 border-border font-bold bg-white italic"
           >
             <Filter size={18} className="mr-2 text-primary" />
-            Filter Deals
+            {t("filter_deals")}
           </Button>
         </div>
       </div>
@@ -98,7 +100,7 @@ export default function QuotationsPage() {
         />
         <input
           type="text"
-          placeholder="Search by quote ID or customer name..."
+          placeholder={t("search_quote_customer")}
           className="w-full bg-white border border-border rounded-3xl py-4.5 pl-14 pr-4 text-sm font-bold focus:ring-2 focus:ring-primary/20 outline-none transition-all shadow-sm"
         />
       </div>
@@ -112,10 +114,10 @@ export default function QuotationsPage() {
               className="mx-auto text-muted-foreground/30 mb-4"
             />
             <h3 className="text-xl font-bold text-foreground/40 italic">
-              No quotations found
+              {t("no_quotations_found")}
             </h3>
             <p className="text-sm text-foreground/30 italic">
-              When you respond to enquiries, they will appear here.
+              {t("when_respond_enquiries_appear")}
             </p>
           </div>
         ) : (
@@ -174,7 +176,7 @@ export default function QuotationsPage() {
                     <div className="flex flex-col md:flex-row md:items-center gap-10">
                       <div className="text-right">
                         <p className="text-[10px] font-black uppercase tracking-widest text-foreground/30 mb-1">
-                          Quote Value
+                          {t("quote_value")}
                         </p>
                         <div className="flex items-center justify-end font-black text-primary text-3xl tracking-tighter italic">
                           <IndianRupee size={24} className="mr-0.5" />
@@ -182,7 +184,7 @@ export default function QuotationsPage() {
                         </div>
                         <div className="flex items-center justify-end gap-2 text-[11px] font-bold text-foreground/40 mt-1 italic">
                           <Clock size={12} className="text-primary/50" />
-                          Updated {qut.displayDate}
+                          {t("updated")} {qut.displayDate}
                         </div>
                       </div>
 
@@ -193,7 +195,7 @@ export default function QuotationsPage() {
                           className="w-full md:w-auto border-border hover:border-primary hover:text-primary font-black rounded-2xl px-10 h-14 group/btn bg-white italic"
                         >
                           <Link href={`/seller-dashboard/quotations/${qut.id}`}>
-                            Edit / Review
+                            {t("edit_review")}
                             <ChevronRight
                               size={20}
                               className="ml-2 group-hover/btn:translate-x-1 transition-transform"

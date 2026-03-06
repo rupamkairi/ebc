@@ -1,14 +1,16 @@
+"use client";
+
 import { UserLoginMobileOtpForm } from "@/components/layouts/auth/user-login-mobile-otp-form";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
+import { useLanguage } from "@/hooks/useLanguage";
+import { useSearchParams } from "next/navigation";
 
-export default async function AuthLogin({
-  searchParams,
-}: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
-  const { role } = await searchParams;
+export default function AuthLogin() {
+  const searchParams = useSearchParams();
+  const role = searchParams.get("role");
+  const { t } = useLanguage();
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4 md:p-8 bg-[#F5F7FA]">
@@ -43,9 +45,9 @@ export default async function AuthLogin({
 
               <div className="absolute bottom-10 left-10">
                 <Link href="/">
-                  <button className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-black/20 hover:bg-black/40 backdrop-blur-md border border-white/10 text-white font-medium transition-all shadow-lg active:scale-95">
+                  <button type="button" className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-black/20 hover:bg-black/40 backdrop-blur-md border border-white/10 text-white font-medium transition-all shadow-lg active:scale-95">
                     <ArrowLeft className="h-4 w-4" />
-                    Back
+                    {t("back")}
                   </button>
                 </Link>
               </div>
@@ -59,12 +61,12 @@ export default async function AuthLogin({
           <div className="lg:hidden absolute top-6 left-6">
             <Link href="/" className="text-white/80 hover:text-white flex items-center gap-2 transition-colors">
               <ArrowLeft className="h-5 w-5" />
-              <span className="font-medium">Back to Home</span>
+              <span className="font-medium">{t("back_to_home")}</span>
             </Link>
           </div>
 
           <div className="w-full max-w-md mt-6 lg:mt-0">
-            <UserLoginMobileOtpForm role={role as string} isDarkTheme={true} />
+            <UserLoginMobileOtpForm role={role || undefined} isDarkTheme={true} />
           </div>
         </div>
       </div>

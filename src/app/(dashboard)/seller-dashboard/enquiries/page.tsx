@@ -15,8 +15,10 @@ import { cn } from "@/lib/utils";
 import { NotificationInbox } from "@/components/dashboard/notifications/notification-inbox";
 import { Bell } from "lucide-react";
 import { useState } from "react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function EnquiriesPage() {
+  const { t } = useLanguage();
   const { data: entities = [] } = useEntitiesQuery();
   const mainEntity = entities[0];
   const [showResponded, setShowResponded] = useState(false);
@@ -40,7 +42,7 @@ export default function EnquiriesPage() {
       (new Date().getTime() - new Date(date).getTime()) / (1000 * 3600 * 24),
     );
     if (diffInDays < 1)
-      return { label: "New", className: "bg-[#FFA500] text-white" };
+      return { label: t("new"), className: "bg-[#FFA500] text-white" };
     if (diffInDays < 7)
       return { label: `${diffInDays}d ago`, className: "bg-[#1A237E] text-white" };
     return {
@@ -89,17 +91,17 @@ export default function EnquiriesPage() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 px-2">
         <div className="space-y-1">
           <h1 className="text-3xl font-black tracking-tight text-[#3D52A0]">
-            Active Enquiries
+            {t("active_enquiries")}
           </h1>
           <p className="text-[#3D52A0]/60 font-medium text-base ml-1">
-            Manage and respond to enquiries from potential Buyer
+            {t("manage_respond_enquiries_buyer")}
           </p>
         </div>
         <div className="relative w-full md:w-72 group">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#3D52A0]/30 group-focus-within:text-[#3D52A0] transition-colors" />
           <Input
             type="search"
-            placeholder="Search enquiries..."
+            placeholder={t("search_enquiries")}
             className="h-10 pl-9 bg-white border-[#3D52A0]/10 rounded-xl focus:border-[#3D52A0] focus:ring-[#3D52A0]/10 transition-all placeholder:text-[#3D52A0]/20 text-sm"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -112,7 +114,7 @@ export default function EnquiriesPage() {
         {visiblePending.length === 0 ? (
           <div className="flex h-[240px] flex-col items-center justify-center bg-white rounded-[24px] border-2 border-dashed border-[#3D52A0]/10">
             <p className="text-[#3D52A0]/40 font-bold">
-              {searchQuery ? "No matching enquiries." : "All enquiries have been responded to!"}
+              {searchQuery ? t("no_matching_enquiries") : t("all_enquiries_responded")}
             </p>
           </div>
         ) : (
@@ -153,10 +155,10 @@ export default function EnquiriesPage() {
                   {/* Buyer Section */}
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
                     <h3 className="text-lg font-black text-[#3D52A0] leading-none">
-                      {enq.createdBy?.name || "Anonymous Buyer"}
+                      {enq.createdBy?.name || t("anonymous_buyer")}
                     </h3>
                     <p className="text-[9px] font-bold text-[#3D52A0]/30 tracking-widest uppercase truncate sm:max-w-[200px]">
-                      {details?.address || "No Location"}
+                      {details?.address || t("no_location")}
                     </p>
                   </div>
 
@@ -167,7 +169,7 @@ export default function EnquiriesPage() {
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
                     <div className="flex-1 space-y-2">
                       <p className="text-[9px] font-black text-[#3D52A0]/40 uppercase tracking-[0.25em] leading-none">
-                        Requirement
+                        {t("enquiry")}
                       </p>
                       <div className="flex flex-wrap items-end gap-2">
                         <p className="text-base font-bold text-[#3D52A0] leading-none">
@@ -175,7 +177,7 @@ export default function EnquiriesPage() {
                         </p>
                         {enq.enquiryLineItems.length > 1 && (
                           <span className="text-[#3D52A0]/30 font-bold text-[10px] pb-0.5">
-                            (+{enq.enquiryLineItems.length - 1} MORE)
+                            (+{enq.enquiryLineItems.length - 1} {t("more")})
                           </span>
                         )}
                         <span className="text-[#3D52A0]/20 mx-1 hidden sm:inline">•</span>
@@ -183,7 +185,7 @@ export default function EnquiriesPage() {
                           {firstItem?.quantity}{" "}
                           {firstItem?.unitType &&
                             UNIT_TYPE_LABELS[firstItem.unitType as UnitType]}{" "}
-                          Piece requested
+                          {t("piece_requested")}
                         </p>
                       </div>
                     </div>
@@ -196,7 +198,7 @@ export default function EnquiriesPage() {
                         href={`/seller-dashboard/enquiries/${enq.id}`}
                         className="flex items-center justify-center gap-2"
                       >
-                        {enq.status === "PENDING" ? "Respond" : "Details"}
+                        {enq.status === "PENDING" ? t("respond") : t("details")}
                         <ChevronRight size={14} strokeWidth={3} />
                       </Link>
                     </Button>
@@ -219,7 +221,7 @@ export default function EnquiriesPage() {
             <div className="flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-green-600" />
               <span className="text-sm font-black text-green-800 tracking-tight">
-                Responded Enquiries
+                {t("responded_enquiries")}
               </span>
               <span className="px-2 py-0.5 rounded-full bg-green-600 text-white text-[10px] font-black">
                 {respondedAssignments.length}
@@ -260,10 +262,10 @@ export default function EnquiriesPage() {
 
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
                         <h3 className="text-base font-black text-[#3D52A0]/70 leading-none">
-                          {enq.createdBy?.name || "Anonymous Buyer"}
+                          {enq.createdBy?.name || t("anonymous_buyer")}
                         </h3>
                         <p className="text-[9px] font-bold text-[#3D52A0]/30 tracking-widest uppercase truncate sm:max-w-[200px]">
-                          {details?.address || "No Location"}
+                          {details?.address || t("no_location")}
                         </p>
                       </div>
 
@@ -271,7 +273,7 @@ export default function EnquiriesPage() {
 
                       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div className="flex-1">
-                          <p className="text-[9px] font-black text-[#3D52A0]/40 uppercase tracking-[0.25em] mb-1">Requirement</p>
+                          <p className="text-[9px] font-black text-[#3D52A0]/40 uppercase tracking-[0.25em] mb-1">{t("enquiry")}</p>
                           <p className="text-sm font-bold text-[#3D52A0]/60">
                             {firstItem?.item?.name || "Enquiry Items"}
                             {enq.enquiryLineItems.length > 1 && (
@@ -285,7 +287,7 @@ export default function EnquiriesPage() {
                           className="h-9 w-full md:w-auto px-5 rounded-xl font-black text-[11px] tracking-widest uppercase border-[#3D52A0]/20 text-[#3D52A0]/60"
                         >
                           <Link href={`/seller-dashboard/enquiries/${enq.id}`} className="flex items-center justify-center gap-2">
-                            View Details
+                            {t("view_details")}
                             <ChevronRight size={13} strokeWidth={3} />
                           </Link>
                         </Button>
@@ -305,7 +307,7 @@ export default function EnquiriesPage() {
         <div className="sticky top-24 pt-4 lg:pt-0">
           <div className="flex items-center gap-2 mb-4 px-2">
             <Bell className="h-5 w-5 text-[#173072]" />
-            <h2 className="text-xl font-bold text-[#173072] tracking-tight">Notifications</h2>
+            <h2 className="text-xl font-bold text-[#173072] tracking-tight">{t("notifications_title")}</h2>
           </div>
           <NotificationInbox userType="SELLER" respondedEnquiryIds={respondedEnquiryIds} />
         </div>

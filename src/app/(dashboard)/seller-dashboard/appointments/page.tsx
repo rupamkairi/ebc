@@ -27,8 +27,10 @@ import { AppointmentDetailsModal } from "@/components/dashboard/seller/appointme
 import { CoinDeductionModal } from "@/components/dashboard/seller/coin-deduction-modal";
 import { ActivityAssignment, REF_TYPE } from "@/types/activity";
 import { ACTIVITY_TYPE } from "@/constants/enums";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function AppointmentsPage() {
+  const { t } = useLanguage();
   const { data: entities = [] } = useEntitiesQuery();
   const mainEntity = entities[0];
 
@@ -63,7 +65,7 @@ export default function AppointmentsPage() {
       },
       {
         onSuccess: () => {
-          toast.success("Coins deducted and appointment confirmed!");
+          toast.success(t("coins_deducted_appointment_confirmed"));
           setDeductionModalOpen(false);
           setPendingConfirmation(null);
           setSelectedAssignment(null);
@@ -94,7 +96,7 @@ export default function AppointmentsPage() {
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
         <p className="text-foreground/60 font-bold italic">
-          Loading appointments...
+          {t("loading_appointments")}
         </p>
       </div>
     );
@@ -106,10 +108,10 @@ export default function AppointmentsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
           <h1 className="text-4xl font-black text-foreground tracking-tight italic">
-            Site Appointments
+            {t("site_appointments")}
           </h1>
           <p className="text-foreground/60 font-bold italic mt-1">
-            Manage onsite visits and technical consultations.
+            {t("manage_onsite_visits")}
           </p>
         </div>
       </div>
@@ -123,10 +125,10 @@ export default function AppointmentsPage() {
               className="mx-auto text-muted-foreground/30 mb-4"
             />
             <h3 className="text-xl font-bold text-foreground/40 italic">
-              No appointments found
+              {t("no_appointments_found")}
             </h3>
             <p className="text-sm text-foreground/30 italic">
-              New site visit requests will appear here.
+              {t("new_site_visit_requests")}
             </p>
           </div>
         ) : (
@@ -164,7 +166,7 @@ export default function AppointmentsPage() {
                         <div className="space-y-3">
                           <div className="flex items-center gap-3">
                             <span className="text-[10px] font-black uppercase tracking-[0.2em] bg-muted px-3 py-1 rounded-full text-foreground/40">
-                              APT {apt.id.slice(-8).toUpperCase()}
+                              {t("apt_status")} {apt.id.slice(-8).toUpperCase()}
                             </span>
                             <Badge
                               className={`uppercase tracking-tighter font-black text-[10px] rounded-full px-3 py-1 border-none ${
@@ -180,9 +182,9 @@ export default function AppointmentsPage() {
                           </div>
 
                           <h3 className="text-2xl font-black text-foreground italic">
-                            {firstItem?.item?.name || "Consultation"} with{" "}
+                            {firstItem?.item?.name || t("enquiry")} {t("consultation_with")}{" "}
                             <span className="text-primary">
-                              {apt.createdBy?.name || "Buyer"}
+                              {apt.createdBy?.name || t("anonymous_buyer")}
                             </span>
                           </h3>
 
@@ -196,7 +198,7 @@ export default function AppointmentsPage() {
                             <div className="flex items-center gap-3">
                               <MapPin size={16} className="text-primary" />
                               <span className="truncate max-w-[200px]">
-                                {details?.address || "Location Hidden"}
+                                {details?.address || t("location_hidden")}
                               </span>
                             </div>
                           </div>
@@ -207,7 +209,7 @@ export default function AppointmentsPage() {
                         {apt.status === "PENDING" ? (
                           <div className="flex flex-col items-center gap-4 w-full md:w-auto">
                             <div className="flex items-center gap-2 bg-emerald-50 text-emerald-700 font-black text-xs uppercase px-4 py-2 rounded-xl border border-emerald-100 italic">
-                              Confirm for 10 Coins
+                              {t("confirm_for_coins")}
                             </div>
                             <div
                               className="flex items-center gap-3 w-full md:w-auto"
@@ -227,7 +229,7 @@ export default function AppointmentsPage() {
                                 ) : (
                                   <XCircle size={20} className="mr-2" />
                                 )}
-                                Reject
+                                {t("reject")}
                               </Button>
                               <Button
                                 onClick={() =>
@@ -241,7 +243,7 @@ export default function AppointmentsPage() {
                                 ) : (
                                   <CheckCircle2 size={20} className="mr-2" />
                                 )}
-                                Confirm
+                                {t("confirm_btn")}
                               </Button>
                             </div>
                           </div>
@@ -264,7 +266,7 @@ export default function AppointmentsPage() {
                               }}
                               className="w-full md:w-auto border-border hover:border-primary hover:text-primary font-black rounded-2xl px-10 h-14 group/btn bg-white italic"
                             >
-                              View Directions
+                              {t("view_directions")}
                               <ChevronRight
                                 size={20}
                                 className="ml-2 group-hover/btn:translate-x-1 transition-transform"

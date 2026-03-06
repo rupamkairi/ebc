@@ -1,9 +1,14 @@
+"use client";
+
 import { UserRegisterForm } from "@/components/layouts/auth/user-register-form";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function RegisterPage() {
+  const { t } = useLanguage();
+
   return (
     <div className="flex min-h-screen items-center justify-center p-4 md:p-8 bg-[#F5F7FA]">
       <div className="w-full max-w-[1200px] md:h-[800px] flex flex-col lg:flex-row rounded-3xl overflow-hidden bg-[#3D52A0] shadow-2xl relative">
@@ -37,9 +42,9 @@ export default function RegisterPage() {
 
               <div className="absolute bottom-10 left-10">
                 <Link href="/">
-                  <button className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-black/20 hover:bg-black/40 backdrop-blur-md border border-white/10 text-white font-medium transition-all shadow-lg active:scale-95">
+                  <button type="button" className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-black/20 hover:bg-black/40 backdrop-blur-md border border-white/10 text-white font-medium transition-all shadow-lg active:scale-95">
                     <ArrowLeft className="h-4 w-4" />
-                    Back
+                    {t("back")}
                   </button>
                 </Link>
               </div>
@@ -53,7 +58,7 @@ export default function RegisterPage() {
           <div className="lg:hidden absolute top-6 left-6">
             <Link href="/" className="text-white/80 hover:text-white flex items-center gap-2 transition-colors">
               <ArrowLeft className="h-5 w-5" />
-              <span className="font-medium">Back to Home</span>
+              <span className="font-medium">{t("back_to_home")}</span>
             </Link>
           </div>
 

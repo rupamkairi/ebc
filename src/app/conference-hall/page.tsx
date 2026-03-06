@@ -8,8 +8,10 @@ import { ForumSection } from "@/components/shared/forum";
 import { cn } from "@/lib/utils";
 import BuyerDashboardHeader from "@/components/layouts/dashboard/buyer-dashboard-header";
 import LayoutProvider from "@/components/layouts/dashboard/layout-provider";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function ConferenceHallPage() {
+  const { t } = useLanguage();
   return (
     <LayoutProvider>
       <div className="flex min-h-screen flex-col bg-[#F8F9FC] w-full">
@@ -19,11 +21,10 @@ export default function ConferenceHallPage() {
             {/* Header Section */}
             <div className="text-center space-y-4 mb-12">
               <h1 className="text-5xl md:text-6xl font-black tracking-tight text-[#3D52A0]">
-                Conference Hall
+                {t("conference_hall")}
               </h1>
               <p className="text-muted-foreground text-lg md:text-xl font-medium max-w-3xl mx-auto leading-relaxed">
-                Discover Exclusive webinars, training sessions and professional
-                resources engage with the community with our forums
+                {t("conference_hall_desc")}
               </p>
             </div>
 
@@ -40,7 +41,7 @@ export default function ConferenceHallPage() {
                     )}
                   >
                     <GraduationCap className="h-4 w-4 md:h-5 md:w-5" />
-                    Learning Events
+                    {t("learning_events")}
                   </TabsTrigger>
                   <TabsTrigger
                     value="offers"
@@ -51,7 +52,7 @@ export default function ConferenceHallPage() {
                     )}
                   >
                     <Tag className="h-4 w-4 md:h-5 md:w-5" />
-                    Promotions and Offers
+                    {t("promotions_offers")}
                   </TabsTrigger>
                   <TabsTrigger
                     value="lounge"
@@ -62,7 +63,7 @@ export default function ConferenceHallPage() {
                     )}
                   >
                     <Sofa className="h-4 w-4 md:h-5 md:w-5" />
-                    Community Lounge
+                    {t("community_lounge")}
                   </TabsTrigger>
                 </TabsList>
               </div>

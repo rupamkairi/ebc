@@ -7,6 +7,7 @@ import { Sidebar } from "@/components/layouts/browse/sidebar";
 import { useBrowseParams } from "@/hooks/useBrowseParams";
 import { useBrowseData } from "@/queries/browse.queries";
 import { useBrowseStore } from "@/store/browseStore";
+import { useLanguage } from "@/hooks/useLanguage";
 import React, { Suspense, useEffect } from "react";
 
 import { Header } from "@/components/shared/header";
@@ -15,6 +16,7 @@ import { WhatsAppButton } from "@/components/shared/whatsapp-button";
 import { FloatingInquiryButton } from "@/components/layouts/browse/floating-inquiry-button";
 
 function BrowsePageContent() {
+  const { t } = useLanguage();
   const { params } = useBrowseParams();
   const { data, isLoading } = useBrowseData(params);
   const setBrowseData = useBrowseStore((state) => state.setBrowseData);
@@ -65,7 +67,7 @@ export default function BrowsePage() {
     <Suspense
       fallback={
         <div className="h-screen w-full flex items-center justify-center">
-          Loading...
+          {useLanguage().t("loading")}
         </div>
       }
     >

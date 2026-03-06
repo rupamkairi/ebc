@@ -23,8 +23,10 @@ import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function EnquiryDetailsPage() {
+  const { t } = useLanguage();
   const params = useParams();
   const id = params.id as string;
   const [enquiry, setEnquiry] = useState<Enquiry | null>(null);
@@ -56,9 +58,9 @@ export default function EnquiryDetailsPage() {
   if (!enquiry) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-        <p className="text-muted-foreground">Enquiry not found.</p>
+        <p className="text-muted-foreground">{t("enquiry_not_found")}</p>
         <Button asChild variant="outline">
-          <Link href="/seller-dashboard/enquiries">Back to Enquiries</Link>
+          <Link href="/seller-dashboard/enquiries">{t("back_to_enquiries")}</Link>
         </Button>
       </div>
     );
@@ -83,12 +85,12 @@ export default function EnquiryDetailsPage() {
         </Button>
         <div>
           <h1 className="text-2xl font-black text-[#1e2b6b] tracking-tight">
-            Active Enquiries
+            {t("active_enquiries")}
           </h1>
           <p className="text-sm text-[#3D52A0]/60 font-medium">
             {isPending
-              ? "Manage and respond to enquiries from potential Buyer"
-              : "This enquiry has already been responded to."}
+              ? t("manage_respond_enquiries_buyer")
+              : t("already_responded_enquiry")}
           </p>
         </div>
       </div>
@@ -104,7 +106,7 @@ export default function EnquiryDetailsPage() {
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
               <div className="space-y-3">
                 <h2 className="text-xl font-black text-[#1e2b6b]">
-                  Buyer Requirements
+                  {t("buyer_requirements")}
                 </h2>
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="px-3 py-1 rounded-full border-2 border-[#FFA500] text-[#FFA500] text-xs font-black tracking-wide">
@@ -120,7 +122,7 @@ export default function EnquiryDetailsPage() {
                 </div>
               </div>
               <div className="text-left sm:text-right shrink-0">
-                <p className="text-xs text-gray-400 font-semibold">Submitted On</p>
+                <p className="text-xs text-gray-400 font-semibold">{t("submitted_on")}</p>
                 <p className="text-sm font-black text-[#1e2b6b]">
                   {format(new Date(enquiry.createdAt), "MMMM do, yyyy")}
                 </p>
@@ -133,7 +135,7 @@ export default function EnquiryDetailsPage() {
             <div className="space-y-3">
               <h3 className="font-black text-[#1e2b6b] flex items-center gap-2 text-base">
                 <PackageCheck className="h-5 w-5 text-[#FFA500]" />
-                Products Requested
+                {t("products_requested")}
               </h3>
               <div className="space-y-3">
                 {enquiry.enquiryLineItems.map((item, index) => (
@@ -178,39 +180,39 @@ export default function EnquiryDetailsPage() {
 
             {/* Delivery info */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div className="space-y-1.5">
-                <h4 className="text-sm font-black text-[#FFA500] flex items-center gap-2">
-                  <MapPin className="h-4 w-4" />
-                  Delivery Location
-                </h4>
-                <p className="text-sm text-gray-500 font-medium pl-6">
-                  {details?.address || "Not specified"}
-                </p>
-              </div>
-              <div className="space-y-1.5">
-                <h4 className="text-sm font-black text-[#3D52A0] flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  Expected Delivery Date
-                </h4>
-                <p className="text-sm text-gray-500 font-medium pl-6">
-                  {details?.expectedDate
-                    ? `Not Specified / ${format(new Date(details.expectedDate), "dd/MM/yyyy")}`
-                    : "Not specified"}
-                </p>
-              </div>
+                      <div className="space-y-1.5">
+                        <h4 className="text-sm font-black text-[#FFA500] flex items-center gap-2">
+                          <MapPin className="h-4 w-4" />
+                          {t("delivery_location")}
+                        </h4>
+                        <p className="text-sm text-gray-500 font-medium pl-6">
+                          {details?.address || t("not_specified")}
+                        </p>
+                      </div>
+                      <div className="space-y-1.5">
+                        <h4 className="text-sm font-black text-[#3D52A0] flex items-center gap-2">
+                          <Calendar className="h-4 w-4" />
+                          {t("expected_delivery_date")}
+                        </h4>
+                        <p className="text-sm text-gray-500 font-medium pl-6">
+                          {details?.expectedDate
+                            ? `${t("not_specified")} / ${format(new Date(details.expectedDate), "dd/MM/yyyy")}`
+                            : t("not_specified")}
+                        </p>
+                      </div>
             </div>
 
             {/* Additional remarks */}
             <div className="space-y-2">
               <h4 className="text-sm font-black text-[#3D52A0] flex items-center gap-2">
                 <MessageSquare className="h-4 w-4" />
-                Additional Remarks
+                {t("additional_remarks")}
               </h4>
               <div className="rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 min-h-[60px]">
                 {details?.remarks ? (
                   <p className="text-sm text-gray-600">{details.remarks}</p>
                 ) : (
-                  <p className="text-sm text-gray-300 italic">Write Something...</p>
+                  <p className="text-sm text-gray-300 italic">{t("write_something")}</p>
                 )}
               </div>
             </div>
@@ -229,7 +231,7 @@ export default function EnquiryDetailsPage() {
               <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center shrink-0">
                 <User className="h-4 w-4 text-white" />
               </div>
-              Buyer Information
+              {t("buyer_information")}
             </h3>
             <div className="space-y-2.5">
               {/* Avatar + name */}
@@ -241,7 +243,7 @@ export default function EnquiryDetailsPage() {
                 </div>
                 <div>
                   <p className="text-white font-black text-sm leading-none">
-                    {enquiry.createdBy?.name || "Anonymous Buyer"}
+                    {enquiry.createdBy?.name || t("anonymous_buyer")}
                   </p>
                   <p className="text-white/60 text-[10px] font-semibold mt-0.5 uppercase tracking-wide">
                     Buyer Seller
@@ -276,9 +278,9 @@ export default function EnquiryDetailsPage() {
               style={{ background: "linear-gradient(145deg, #3D52A0 0%, #2a3a7c 100%)" }}
             >
               <div>
-                <h3 className="text-white font-black text-lg">Submit Quotation</h3>
+                <h3 className="text-white font-black text-lg">{t("submit_quotation")}</h3>
                 <p className="text-white/60 text-xs font-medium mt-1">
-                  Ready to fulfil this requirement? Send your best price to the buyer
+                  {t("ready_fulfil_requirement_send_price")}
                 </p>
               </div>
               <Button
@@ -290,7 +292,7 @@ export default function EnquiryDetailsPage() {
                   className="flex items-center justify-center gap-2"
                 >
                   <FileText className="h-4 w-4" />
-                  Submit Quotation
+                  {t("submit_quotation")}
                 </Link>
               </Button>
             </div>
@@ -300,15 +302,15 @@ export default function EnquiryDetailsPage() {
                 <PackageCheck className="h-6 w-6 text-green-600 shrink-0" />
                 <div>
                   <h3 className="text-green-800 font-black text-base leading-tight">
-                    Quotation Submitted
+                    {t("quotation_submitted")}
                   </h3>
                   <p className="text-green-700/70 text-xs font-medium mt-0.5">
-                    You have already responded to this enquiry.
+                    {t("already_responded_enquiry")}
                   </p>
                 </div>
               </div>
               <Button asChild variant="outline" className="w-full rounded-xl font-black text-xs">
-                <Link href="/seller-dashboard/enquiries">Back to Enquiries</Link>
+                <Link href="/seller-dashboard/enquiries">{t("back_to_enquiries")}</Link>
               </Button>
             </div>
           )}
@@ -321,8 +323,7 @@ export default function EnquiryDetailsPage() {
             <AlertCircle className="h-4 w-4 text-[#FFA500] shrink-0 mt-0.5" />
             <p className="text-xs text-white/80 leading-relaxed">
               <span className="text-white font-black">Tip : </span>
-              Providing a quick response and accurate break down of costs increases
-              your chances of selection by 60%
+              {t("tip_providing_quick_response")}
             </p>
           </div>
         </div>

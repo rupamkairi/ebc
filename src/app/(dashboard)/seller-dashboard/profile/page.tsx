@@ -16,8 +16,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { useAuthStore } from "@/store/authStore";
 import { useEntitiesQuery } from "@/queries/entityQueries";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function ProfilePage() {
+  const { t } = useLanguage();
   const { user } = useAuthStore();
   const { data: entities } = useEntitiesQuery();
 
@@ -39,7 +41,7 @@ export default function ProfilePage() {
           </div>
           <button className="absolute bottom-6 right-8 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all">
             <Camera size={14} />
-            Edit Cover
+            {t("edit")} Cover
           </button>
         </div>
         <div className="px-8 -mt-16 relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -65,11 +67,11 @@ export default function ProfilePage() {
               <div className="flex flex-wrap items-center gap-4 text-sm font-bold text-foreground/40 italic">
                 <span className="flex items-center gap-2 tracking-tight uppercase">
                   <Store size={14} className="text-primary" />
-                  Digital Storefront Active
+                  {t("digital_storefront_active")}
                 </span>
                 <span className="flex items-center gap-2 tracking-tight uppercase">
                   <ShieldCheck size={14} className="text-emerald-500" />
-                  Verified Seller
+                  {t("verified_seller")}
                 </span>
               </div>
             </div>
@@ -79,10 +81,10 @@ export default function ProfilePage() {
               variant="outline"
               className="h-12 px-6 rounded-2xl border-border font-bold bg-white"
             >
-              Preview Store
+              {t("preview_store")}
             </Button>
             <Button className="h-12 px-8 bg-secondary hover:bg-secondary/90 text-white font-black rounded-2xl shadow-lg shadow-secondary/10">
-              Save Changes
+              {t("save_changes")}
             </Button>
           </div>
         </div>
@@ -94,19 +96,19 @@ export default function ProfilePage() {
             value="basic"
             className="bg-transparent border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent rounded-none px-2 py-4 font-black text-xs uppercase tracking-[0.2em] text-foreground/40 data-[state=active]:text-primary transition-all shadow-none"
           >
-            Basic Info
+            {t("basic_info")}
           </TabsTrigger>
           <TabsTrigger
             value="business"
             className="bg-transparent border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent rounded-none px-2 py-4 font-black text-xs uppercase tracking-[0.2em] text-foreground/40 data-[state=active]:text-primary transition-all shadow-none"
           >
-            Business Details
+            {t("business_details")}
           </TabsTrigger>
           <TabsTrigger
             value="compliance"
             className="bg-transparent border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent rounded-none px-2 py-4 font-black text-xs uppercase tracking-[0.2em] text-foreground/40 data-[state=active]:text-primary transition-all shadow-none"
           >
-            Compliance & KYC
+            {t("compliance_kyc")}
           </TabsTrigger>
         </TabsList>
 
@@ -118,12 +120,12 @@ export default function ProfilePage() {
             <Card className="border-none shadow-sm bg-white">
               <CardContent className="p-8 space-y-6">
                 <h3 className="text-xl font-black text-foreground italic">
-                  Contact Information
+                  {t("contact_information")}
                 </h3>
                 <div className="space-y-4">
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-black uppercase tracking-widest text-foreground/30">
-                      Business Legal Name
+                      {t("business_legal_name")}
                     </label>
                     <input
                       type="text"
@@ -134,7 +136,7 @@ export default function ProfilePage() {
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-black uppercase tracking-widest text-foreground/30">
-                      Email Address
+                      {t("email_address")}
                     </label>
                     <input
                       type="email"
@@ -145,7 +147,7 @@ export default function ProfilePage() {
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-black uppercase tracking-widest text-foreground/30">
-                      Mobile Number
+                      {t("mobile_number")}
                     </label>
                     <input
                       type="tel"
@@ -161,12 +163,12 @@ export default function ProfilePage() {
             <Card className="border-none shadow-sm bg-white">
               <CardContent className="p-8 space-y-6">
                 <h3 className="text-xl font-black text-foreground italic">
-                  Store Links
+                  {t("store_links")}
                 </h3>
                 <div className="space-y-4">
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-black uppercase tracking-widest text-foreground/30">
-                      Website URL
+                      {t("website_url")}
                     </label>
                     <div className="relative">
                       <Globe
@@ -182,17 +184,16 @@ export default function ProfilePage() {
                   </div>
                   <div className="p-6 rounded-3xl bg-secondary/5 border border-secondary/10 space-y-3">
                     <h4 className="font-black text-secondary uppercase tracking-tight text-xs">
-                      Share your storefront
+                      {t("share_your_storefront")}
                     </h4>
                     <p className="text-xs font-medium text-foreground/40 leading-relaxed italic">
-                      Send your digital catalog to buyers on WhatsApp or Social
-                      Media to get direct inquiries.
+                      {t("send_digital_catalog")}
                     </p>
                     <Button
                       variant="ghost"
                       className="text-secondary font-black text-xs hover:bg-secondary/10 p-0 h-auto"
                     >
-                      Copy unique link <ArrowRight size={14} className="ml-1" />
+                      {t("copy_unique_link")} <ArrowRight size={14} className="ml-1" />
                     </Button>
                   </div>
                 </div>

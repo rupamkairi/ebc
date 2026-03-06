@@ -38,6 +38,7 @@ import { Loader2 } from "lucide-react";
 import { USER_ROLE, ITEM_TYPE } from "@/constants/enums";
 
 import { PincodeSearchAutocomplete } from "@/components/autocompletes/pincode-search-autocomplete";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function UserRegisterForm({
   className,
@@ -46,6 +47,7 @@ export function UserRegisterForm({
 }: React.ComponentProps<"div"> & { isDarkTheme?: boolean }) {
   const router = useRouter();
   const { setToken, setUser } = useAuthStore();
+  const { t } = useLanguage();
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
   const [pincodeId, setPincodeId] = useState("");
@@ -153,10 +155,10 @@ export function UserRegisterForm({
               isDarkTheme && "text-white text-3xl font-medium tracking-wide",
             )}
           >
-            Create an Account
+            {t("create_account")}
           </CardTitle>
           <CardDescription className={cn(isDarkTheme && "text-white/70")}>
-            Already have an account?{" "}
+            {t("already_have_account")}{" "}
             <Link
               href="/auth/login"
               className={cn(
@@ -164,7 +166,7 @@ export function UserRegisterForm({
                 isDarkTheme ? "text-[#FFA500]" : "text-primary",
               )}
             >
-              Log In
+              {t("login")}
             </Link>
           </CardDescription>
         </CardHeader>
@@ -176,7 +178,7 @@ export function UserRegisterForm({
                   <Field>
                     <Input
                       id="name"
-                      placeholder="Full Name"
+                      placeholder={t("full_name")}
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       required
@@ -201,7 +203,7 @@ export function UserRegisterForm({
                       <Input
                         id="mobile"
                         type="tel"
-                        placeholder="Phone Number"
+                        placeholder={t("phone_number")}
                         value={mobile}
                         onChange={(e) => setMobile(e.target.value)}
                         required
@@ -216,8 +218,8 @@ export function UserRegisterForm({
                     <PincodeSearchAutocomplete
                       value={pincodeId}
                       onValueChange={setPincodeId}
-                      placeholder="Search your pincode..."
-                      label="Select Pincode"
+                      placeholder={t("search_pincode")}
+                      label={t("select_pincode")}
                       className={cn(
                         isDarkTheme &&
                           "bg-white/10 border-none text-white placeholder:text-white/60 rounded-md h-12 focus-visible:ring-1 focus-visible:ring-white/30 [&>button]:h-12 [&>button]:bg-white/10 [&>button]:border-none [&>button]:text-white",
@@ -233,17 +235,17 @@ export function UserRegisterForm({
                             "h-12 bg-white/10 border-none text-white focus:ring-1 focus:ring-white/30",
                         )}
                       >
-                        <SelectValue placeholder="Select type" />
+                        <SelectValue placeholder={t("select_type")} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value={ITEM_TYPE.PRODUCT}>
-                          Product Seller
+                          {t("product_seller")}
                         </SelectItem>
                         <SelectItem value={ITEM_TYPE.SERVICE}>
-                          Service Provider
+                          {t("service_provider")}
                         </SelectItem>
                         <SelectItem value={USER_ROLE.USER_BUYER_ADMIN}>
-                          Buyer / Customer
+                          {t("buyer_customer")}
                         </SelectItem>
                       </SelectContent>
                     </Select>
@@ -261,7 +263,7 @@ export function UserRegisterForm({
                       {isLoading && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
-                      Create Account
+                      {t("create_account")}
                     </Button>
                   </Field>
                 </FieldGroup>
@@ -274,7 +276,7 @@ export function UserRegisterForm({
                       htmlFor="otp"
                       className={cn(isDarkTheme && "text-white")}
                     >
-                      Verification code
+                      {t("verification_code")}
                     </FieldLabel>
                     <InputOTP
                       containerClassName="justify-around"
@@ -306,7 +308,7 @@ export function UserRegisterForm({
                         isDarkTheme && "text-white/70",
                       )}
                     >
-                      Enter the 6-digit code sent to +91{mobile}.
+                      {t("enter_otp_sent_to", { phone: `+91${mobile}` })}
                     </FieldDescription>
                   </Field>
                   <div className="flex flex-col gap-4 mt-2">
@@ -322,7 +324,7 @@ export function UserRegisterForm({
                       {isLoading && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
-                      Verify & Register
+                      {t("verify_register")}
                     </Button>
                     <Button
                       type="button"
@@ -335,7 +337,7 @@ export function UserRegisterForm({
                           "text-white hover:text-white hover:bg-white/10",
                       )}
                     >
-                      Change Details
+                      {t("change_details")}
                     </Button>
                   </div>
                 </FieldGroup>

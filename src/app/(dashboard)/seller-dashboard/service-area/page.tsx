@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const locations = [
   {
@@ -43,17 +44,18 @@ const locations = [
 ];
 
 export default function ServiceAreaPage() {
+  const { t } = useLanguage();
   return (
     <div className="flex flex-col gap-8">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
-          <h1 className="text-3xl font-black text-foreground tracking-tight">Service Area Management</h1>
-          <p className="text-foreground/60 font-medium">Manage areas where you provide delivery and services.</p>
+          <h1 className="text-3xl font-black text-foreground tracking-tight">{t("service_area_management_title")}</h1>
+          <p className="text-foreground/60 font-medium">{t("manage_areas_provide_delivery")}</p>
         </div>
         <Button className="rounded-2xl h-12 px-6 bg-secondary hover:bg-secondary/90 text-white font-black shadow-lg shadow-secondary/20 flex items-center gap-2 text-sm">
           <Plus size={20} />
-          Add New Area
+          {t("add_new_area")}
         </Button>
       </div>
 
@@ -61,12 +63,12 @@ export default function ServiceAreaPage() {
         {/* Map Placeholder or Visual Area */}
         <div className="lg:col-span-1 space-y-6">
            <Card className="border-none shadow-sm h-64 md:h-80 bg-muted/30 overflow-hidden relative group cursor-pointer">
-              <div className="absolute inset-0 flex items-center justify-center">
-                 <div className="flex flex-col items-center gap-4 text-foreground/20">
-                    <Navigation size={48} className="animate-pulse" />
-                    <span className="font-bold italic uppercase tracking-widest text-xs">Map View Loading...</span>
-                 </div>
-              </div>
+               <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="flex flex-col items-center gap-4 text-foreground/20">
+                     <Navigation size={48} className="animate-pulse" />
+                     <span className="font-bold italic uppercase tracking-widest text-xs">{t("map_view_loading")}</span>
+                  </div>
+               </div>
               {/* Subtle Grid Overlay */}
               <div className="absolute inset-0 opacity-10 pointer-events-none">
                  <div className="grid grid-cols-10 h-full w-full">
@@ -80,9 +82,9 @@ export default function ServiceAreaPage() {
            <div className="bg-amber-50 border border-amber-100 p-6 rounded-3xl space-y-3">
               <div className="flex items-center gap-2 text-amber-700">
                  <AlertTriangle size={20} />
-                 <h4 className="font-black italic text-sm">Action Required</h4>
+                 <h4 className="font-black italic text-sm">{t("action_required")}</h4>
               </div>
-              <p className="text-xs font-medium text-amber-700/60 leading-relaxed italic">Your extension to &quot;Dewas&quot; is pending verification. Please upload address proof of your godown in that area.</p>
+              <p className="text-xs font-medium text-amber-700/60 leading-relaxed italic">{t("extension_pending_verification")}</p>
            </div>
         </div>
 
@@ -134,7 +136,7 @@ export default function ServiceAreaPage() {
           
           <div className="flex justify-center pt-4">
              <Button variant="ghost" className="text-foreground/30 font-black flex items-center gap-2 group italic text-sm">
-                View Distribution Network
+                {t("view_distribution_network")}
                 <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
              </Button>
           </div>

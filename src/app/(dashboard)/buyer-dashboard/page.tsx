@@ -1,5 +1,6 @@
 "use client";
 
+import { useLanguage } from "@/hooks/useLanguage";
 import { AuthGuard } from "@/components/auth/auth-guard";
 import { AICalculator } from "@/components/dashboard/buyer/ai-calculator";
 import {
@@ -33,6 +34,7 @@ import { NotificationInbox } from "@/components/dashboard/notifications/notifica
 import { useSessionQuery } from "@/queries/authQueries";
 
 export default function BuyerDashboardPage() {
+  const { t } = useLanguage();
   const { data: enquiries } = useEnquiriesQuery({});
   const { data: appointments } = useAppointmentsQuery({});
   const { data: quotations } = useQuotationsQuery({});
@@ -96,27 +98,27 @@ export default function BuyerDashboardPage() {
               <div className="flex items-center gap-3 mb-4 md:mb-6">
                 <div className="h-8 w-1.5 bg-[#FFA500] rounded-full" />
                 <h2 className="text-xl md:text-2xl font-black text-[#3D52A0] uppercase tracking-wider">
-                  Project Pulse
+                  {t("project_pulse")}
                 </h2>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <RoomCard
-                  title="Material Depo"
+                  title={t("material_depo")}
                   icon={Armchair}
                   href="/browse?categoryId="
                 />
                 <RoomCard
-                  title="Technical Cabin"
+                  title={t("technical_cabin")}
                   icon={Bed}
                   href="/browse?categoryId="
                 />
                 <RoomCard
-                  title="Fabricator Area"
+                  title={t("fabricator_area")}
                   icon={Bath}
                   href="/browse?categoryId="
                 />
                 <RoomCard
-                  title="Contract Desk"
+                  title={t("contract_desk")}
                   icon={Tv}
                   href="/browse?categoryId="
                 />
@@ -128,77 +130,77 @@ export default function BuyerDashboardPage() {
               <div className="flex items-center gap-3 mb-4 md:mb-6">
                 <div className="h-8 w-1.5 bg-[#FFA500] rounded-full" />
                 <h2 className="text-xl md:text-2xl font-black text-[#3D52A0] uppercase tracking-wider">
-                  Operations Center
+                  {t("operations_center")}
                 </h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <ActivitySectionCard
-                  title="My Enquiries"
+                  title={t("my_enquiries")}
                   icon={FileText}
                   footerLink="/buyer-dashboard/enquiries"
-                  footerText="View All Enquiries"
+                  footerText={t("view_all_enquiries")}
                 >
                   <ActivityStatCard
-                    label="Pending Enquiries"
+                    label={t("pending_enquiries")}
                     value={stats.pendingEnquiries}
                     icon={Clock}
                   />
                   <ActivityStatCard
-                    label="Approved Enquiries"
+                    label={t("approved_enquiries")}
                     value={stats.approvedEnquiries}
                     icon={CheckCircle2}
                   />
                 </ActivitySectionCard>
 
                 <ActivitySectionCard
-                  title="My Appointments"
+                  title={t("my_appointments")}
                   icon={CalendarDays}
                   footerLink="/buyer-dashboard/appointments"
-                  footerText="View All Appointments"
+                  footerText={t("view_all_appointments")}
                 >
                   <ActivityStatCard
-                    label="Upcoming"
+                    label={t("upcoming")}
                     value={stats.upcomingAppointments}
                     icon={Clock}
                   />
                   <ActivityStatCard
-                    label="Completed"
+                    label={t("completed")}
                     value={stats.pastAppointments}
                     icon={CheckCircle2}
                   />
                 </ActivitySectionCard>
 
                 <ActivitySectionCard
-                  title="My Quotations"
+                  title={t("my_quotations")}
                   icon={Quote}
                   footerLink="/buyer-dashboard/quotations"
-                  footerText="View All Quotations"
+                  footerText={t("view_all_quotations")}
                 >
                   <ActivityStatCard
-                    label="Pending"
+                    label={t("pending")}
                     value={stats.pendingQuotations}
                     icon={Clock}
                   />
                   <ActivityStatCard
-                    label="Accepted"
+                    label={t("accepted")}
                     value={stats.acceptedQuotations}
                     icon={FileCheck}
                   />
                 </ActivitySectionCard>
 
                 <ActivitySectionCard
-                  title="My Site Visits"
+                  title={t("my_site_visits")}
                   icon={MapPin}
                   footerLink="/buyer-dashboard/appointments"
-                  footerText="View All Appointments"
+                  footerText={t("view_all_appointments")}
                 >
                   <ActivityStatCard
-                    label="Scheduled"
+                    label={t("scheduled")}
                     value={stats.scheduledVisits}
                     icon={Clock}
                   />
                   <ActivityStatCard
-                    label="Completed"
+                    label={t("completed")}
                     value={stats.completedVisits}
                     icon={CheckCircle2}
                   />
@@ -211,32 +213,32 @@ export default function BuyerDashboardPage() {
               <div className="flex items-center gap-3 mb-4 md:mb-6">
                 <div className="h-8 w-1.5 bg-[#FFA500] rounded-full" />
                 <h2 className="text-xl md:text-2xl font-black text-[#3D52A0] uppercase tracking-wider">
-                  Project Domains
+                  {t("project_domains")}
                 </h2>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <ConferenceHallItem
-                  title="Info & Updates"
+                  title={t("info_updates")}
                   icon={Info}
                   href="/buyer-dashboard/conference-hall"
                 />
                 <ConferenceHallItem
-                  title="Meetings"
+                  title={t("meetings")}
                   icon={Users}
                   href="/buyer-dashboard/conference-hall"
                 />
                 <ConferenceHallItem
-                  title="Forums"
+                  title={t("forums")}
                   icon={MessageSquare}
                   href="/buyer-dashboard/conference-hall"
                 />
                 <ConferenceHallItem
-                  title="Demos"
+                  title={t("demos")}
                   icon={Video}
                   href="/buyer-dashboard/conference-hall"
                 />
                 <ConferenceHallItem
-                  title="Live"
+                  title={t("live")}
                   icon={LifeBuoy}
                   href="/buyer-dashboard/conference-hall"
                 />
@@ -248,7 +250,7 @@ export default function BuyerDashboardPage() {
               <div className="flex items-center gap-3 mb-4 md:mb-6">
                 <div className="h-8 w-1.5 bg-[#FFA500] rounded-full" />
                 <h2 className="text-xl md:text-2xl font-black text-[#3D52A0] uppercase tracking-wider">
-                  Precision Tools
+                  {t("precision_tools")}
                 </h2>
               </div>
               <div className="rounded-2xl md:rounded-3xl bg-white p-4 md:p-8 shadow-sm ring-1 ring-muted/50">
@@ -263,7 +265,7 @@ export default function BuyerDashboardPage() {
               <div className="flex items-center gap-2 mb-4 px-2">
                 <Bell className="h-5 w-5 text-[#3D52A0]" />
                 <h2 className="text-xl font-bold text-[#3D52A0] tracking-tight">
-                  Notifications
+                  {t("notifications")}
                 </h2>
               </div>
               <NotificationInbox userType="BUYER" hideHeader />
