@@ -7,15 +7,18 @@ import {
   useCreateQuotationMutation,
 } from "@/queries/activityQueries";
 import { QuotationForm } from "@/components/dashboard/seller/quotation/quotation-form";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { toast } from "sonner";
 import { CreateQuotationRequest } from "@/types/activity";
 import { CoinDeductionModal } from "@/components/dashboard/seller/coin-deduction-modal";
 import { REF_TYPE } from "@/constants/enums";
+import { PageBackButton } from "@/components/dashboard/seller/activity-shared/page-back-button";
+import { useLanguage } from "@/hooks/useLanguage";
 
 function CreateQuotationContent() {
+  const { t } = useLanguage();
   const searchParams = useSearchParams();
   const enquiryId = searchParams.get("enquiryId");
   const router = useRouter();
@@ -46,7 +49,7 @@ function CreateQuotationContent() {
   if (isEnquiryLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#3D52A0]" />
       </div>
     );
   }
@@ -86,15 +89,11 @@ function CreateQuotationContent() {
 
   return (
     <div className="space-y-6">
-      <Link
+      <PageBackButton
         href={`/seller-dashboard/enquiries/${enquiryId}`}
-        className="inline-flex items-center gap-2 text-sm font-black text-[#3D52A0]/60 hover:text-[#3D52A0] transition-colors"
-      >
-        <span className="h-8 w-8 rounded-xl bg-[#FFA500] hover:bg-[#e69500] flex items-center justify-center shadow-sm transition-colors">
-          <ArrowLeft className="h-4 w-4 text-white" />
-        </span>
-        Back to Enquiry details
-      </Link>
+        variant="link"
+        label={t("back_to_enquiry_details", "Back to Enquiry details")}
+      />
 
       <CoinDeductionModal
         isOpen={showDeductionModal}
@@ -118,7 +117,7 @@ export default function CreateQuotationPage() {
     <Suspense
       fallback={
         <div className="flex items-center justify-center min-h-[400px]">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#3D52A0]" />
         </div>
       }
     >

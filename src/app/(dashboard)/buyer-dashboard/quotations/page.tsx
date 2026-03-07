@@ -10,7 +10,6 @@ import {
   FileText,
   IndianRupee,
   Clock,
-  CheckCircle2,
   ChevronRight,
   Loader2,
   Package,
@@ -20,6 +19,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/hooks/useLanguage";
+import { ReviewSnapshot } from "@/components/shared/reviews";
 
 const filters = ["All", "Pending", "Accepted"];
 
@@ -80,20 +80,25 @@ export default function BuyerQuotationsPage() {
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-20 gap-4">
           <Loader2 className="h-10 w-10 animate-spin text-[#3D52A0]" />
-          <p className="text-muted-foreground font-medium">{t("loading_quotations_msg")}</p>
+          <p className="text-muted-foreground font-medium">
+            {t("loading_quotations_msg")}
+          </p>
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center gap-4 bg-muted/20 border border-dashed rounded-2xl">
           <FileText className="h-10 w-10 text-muted-foreground/30" />
-          <p className="text-muted-foreground font-medium">{t("no_quotations_msg")}</p>
+          <p className="text-muted-foreground font-medium">
+            {t("no_quotations_msg")}
+          </p>
         </div>
       ) : (
         <div className="grid gap-4">
           {filtered.map((q) => {
-            const total = q.quotationLineItems?.reduce(
-              (sum, li) => sum + (li.amount || 0),
-              0,
-            ) ?? 0;
+            const total =
+              q.quotationLineItems?.reduce(
+                (sum, li) => sum + (li.amount || 0),
+                0,
+              ) ?? 0;
             const mainItem =
               q.quotationLineItems?.[0]?.item?.name || t("multiple_items");
             const itemCount = q.quotationLineItems?.length ?? 0;
@@ -132,23 +137,44 @@ export default function BuyerQuotationsPage() {
                                   : "bg-amber-100 text-amber-700",
                               )}
                             >
-                              {isAccepted ? t("accepted_label") : t("pending_label")}
+                              {isAccepted
+                                ? t("accepted_label")
+                                : t("pending_label")}
                             </Badge>
                           </div>
                           <p className="font-black text-sm">
-                            {itemCount > 1 ? `${mainItem} (${t("more_items", { count: itemCount - 1 })})` : mainItem}
+                            {itemCount > 1
+                              ? `${mainItem} (${t("more_items", { count: itemCount - 1 })})`
+                              : mainItem}
                           </p>
                           <p className="text-xs text-muted-foreground flex items-center gap-1">
                             <Clock className="h-3 w-3" />
                             {format(new Date(q.createdAt), "dd MMM yyyy")}
                           </p>
+                          <div className="pt-2">
+                            <ReviewSnapshot
+                              entityId={
+                                q.createdBy?.staffAtEntityId ||
+                                q.createdBy?.createdEntities?.[0]?.id ||
+                                ""
+                              }
+                              entityName={
+                                q.createdBy?.staffAt?.name ||
+                                q.createdBy?.createdEntities?.[0]?.name ||
+                                q.createdBy?.name
+                              }
+                              className="scale-90 origin-left"
+                            />
+                          </div>
                         </div>
                       </div>
 
                       {/* Right: amount + action */}
                       <div className="flex items-center gap-4 md:gap-6">
                         <div className="text-right">
-                          <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{t("total_label")}</p>
+                          <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                            {t("total_label")}
+                          </p>
                           <div className="flex items-center justify-end font-black text-[#3D52A0] text-xl">
                             <IndianRupee className="h-4 w-4" />
                             {total.toLocaleString("en-IN")}
@@ -159,7 +185,9 @@ export default function BuyerQuotationsPage() {
                           variant="outline"
                           className="border-[#3D52A0] text-[#3D52A0] hover:bg-[#3D52A0] hover:text-white font-black rounded-xl h-10 px-5 transition-all group/btn"
                         >
-                          <Link href={`/buyer-dashboard/enquiries/${q.enquiryId}`}>
+                          <Link
+                            href={`/buyer-dashboard/enquiries/${q.enquiryId}`}
+                          >
                             {t("view_label")}
                             <ChevronRight className="ml-1 h-4 w-4 group-hover/btn:translate-x-0.5 transition-transform" />
                           </Link>

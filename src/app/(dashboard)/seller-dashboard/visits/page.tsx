@@ -1,159 +1,283 @@
 "use client";
 
-import React from "react";
-import { Map, MapPin, Loader2, CalendarDays, CheckCircle } from "lucide-react";
+import React, { useState } from "react";
+import {
+  Search,
+  ChevronRight,
+  Loader2,
+  Calendar,
+  MapPin,
+  ChevronDown,
+  CheckCircle2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import { useVisitsQuery } from "@/queries/activityQueries";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/hooks/useLanguage";
+import { getTimeBadge } from "@/lib/activity-utils";
+import Link from "next/link";
+import { Input } from "@/components/ui/input";
 
 export default function VisitsPage() {
   const { t } = useLanguage();
+  const [showCompleted, setShowCompleted] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: visits = [], isLoading } = useVisitsQuery();
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-        <p className="text-foreground/60 font-bold italic">
-          {t("loading_visits", "Loading Visits...")}
-        </p>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-[#3D52A0]" />
       </div>
     );
   }
 
+  // Split into active (pending/accepted) vs completed/cancelled
+  const activeVisits = visits.filter(
+    (v) =>
+      v.status === "PENDING" ||
+      v.status === "ACCEPTED" ||
+      v.status === "SCHEDULED",
+  );
+  const completedVisits = visits.filter(
+    (v) => v.status === "COMPLETED" || v.status === "CANCELLED",
+  );
+
+  // Filter by search
+  const filterBySearch = (list: typeof visits) => {
+    if (!searchQuery.trim()) return list;
+    const q = searchQuery.toLowerCase();
+    return list.filter((v) => {
+      const buyerName = v.createdBy?.name?.toLowerCase() || "";
+      const id = v.id.toLowerCase();
+      // Also search by appointment item name if available
+      const itemName =
+        v.appointment?.appointmentLineItems?.[0]?.item?.name?.toLowerCase() ||
+        "";
+      return buyerName.includes(q) || id.includes(q) || itemName.includes(q);
+    });
+  };
+
+  const filteredActive = filterBySearch(activeVisits);
+  const filteredCompleted = filterBySearch(completedVisits);
+
   return (
-    <div className="flex flex-col gap-8">
-      {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="space-y-1">
-          <h1 className="text-4xl font-black text-foreground tracking-tight italic">
-            {t("your_visits", "Your Visits")}
-          </h1>
-          <p className="text-foreground/60 font-bold italic mt-1">
-            {t(
-              "manage_confirmed_visits",
-              "Manage your confirmed scheduled visits",
-            )}
-          </p>
-        </div>
+    <div className="flex flex-col gap-6 max-w-5xl mx-auto">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-black tracking-tight text-[#3D52A0]">
+          {t("my_site_visits", "Site Visits")}
+        </h1>
+        <p className="text-sm text-[#3D52A0]/60 font-medium mt-1">
+          {t(
+            "manage_confirmed_visits",
+            "Manage your scheduled site visits and consultations",
+          )}
+        </p>
+      </div>
+
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#3D52A0]/40" />
+        <Input
+          className="pl-10 bg-white border-[#3D52A0]/10 rounded-xl h-11 font-medium text-sm focus:border-[#3D52A0]/30 focus:ring-1 focus:ring-[#3D52A0]/10"
+          placeholder={t(
+            "search_visits",
+            "Search visits by ID or buyer name...",
+          )}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
       </div>
 
       {/* Visits List */}
-      <div className="grid gap-6">
-        {visits.length === 0 ? (
-          <div className="bg-muted/20 border-2 border-dashed border-muted rounded-4xl p-20 text-center">
-            <Map size={48} className="mx-auto text-muted-foreground/30 mb-4" />
-            <h3 className="text-xl font-bold text-foreground/40 italic">
-              {t("no_visits_found", "No Visits Found")}
-            </h3>
-            <p className="text-sm text-foreground/30 italic">
-              {t(
-                "confirm_appointments_to_see_visits",
-                "Confirm appointments to schedule visits.",
-              )}
-            </p>
-          </div>
-        ) : (
-          visits.map((visit) => {
+      {filteredActive.length === 0 && filteredCompleted.length === 0 ? (
+        <div className="flex flex-col items-center justify-center min-h-[300px] gap-3 text-center">
+          <MapPin className="h-12 w-12 text-[#3D52A0]/20" />
+          <p className="text-[#3D52A0]/40 font-bold text-sm">
+            {t("no_visits_found", "No Visits Found")}
+          </p>
+          <p className="text-[#3D52A0]/30 text-xs max-w-md">
+            {t(
+              "confirm_appointments_to_see_visits",
+              "Confirm appointments to schedule visits.",
+            )}
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {filteredActive.map((visit) => {
+            const badge = getTimeBadge(visit.createdAt, t);
+            const appointment = visit.appointment;
+            const firstItem = appointment?.appointmentLineItems?.[0];
+            const address = appointment?.appointmentDetails?.[0]?.address;
+
             return (
               <Card
                 key={visit.id}
-                className="border-none shadow-sm hover:shadow-xl transition-all overflow-hidden group bg-white rounded-4xl"
+                className="bg-white border border-[#3D52A0]/10 rounded-[20px] p-5 md:p-7 shadow-none hover:shadow-md hover:border-[#3D52A0]/25 transition-all group"
               >
-                <CardContent className="p-0">
-                  <div className="flex flex-col md:flex-row">
-                    {/* Urgency Stripe */}
-                    <div
-                      className={cn(
-                        "w-full md:w-2 h-2 md:h-auto",
-                        visit.status === "PENDING"
-                          ? "bg-amber-500"
-                          : "bg-emerald-500",
-                      )}
-                    />
-
-                    <div className="flex-1 p-8 flex flex-col md:flex-row md:items-center justify-between gap-8">
-                      <div className="flex gap-6">
-                        <div className="h-20 w-20 rounded-3xl bg-muted/20 flex flex-col items-center justify-center text-foreground/20 shrink-0 group-hover:bg-primary/5 transition-colors">
-                          <Map size={32} />
-                        </div>
-                        <div className="space-y-3">
-                          <div className="flex items-center gap-3">
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em] bg-muted px-3 py-1 rounded-full text-foreground/40">
-                              {t("visit_id", "VISIT ID")}{" "}
-                              {visit.id.slice(-8).toUpperCase()}
-                            </span>
-                            <Badge
-                              className={`uppercase tracking-tighter font-black text-[10px] rounded-full px-3 py-1 border-none ${
-                                visit.status === "PENDING"
-                                  ? "bg-amber-100 text-amber-700"
-                                  : "bg-emerald-100 text-emerald-700"
-                              }`}
-                            >
-                              {visit.status}
-                            </Badge>
-                          </div>
-
-                          <h3 className="text-2xl font-black text-foreground italic">
-                            {t("visit_with", "Visit With")}{" "}
-                            <span className="text-primary">
-                              {visit.createdBy?.name ||
-                                t("anonymous_buyer", "Anonymous Buyer")}
-                            </span>
-                          </h3>
-
-                          <div className="flex flex-wrap items-center gap-x-8 gap-y-2 text-sm font-bold text-foreground/40 italic">
-                            <div className="flex items-center gap-2">
-                              <CalendarDays
-                                size={16}
-                                className="text-primary"
-                              />
-                              {format(new Date(visit.createdAt), "PPP")}
-                            </div>
-                            {/* Assuming address is handled elsewhere or not stored directly on Visit in this mock */}
-                            <div className="flex items-center gap-3">
-                              <MapPin size={16} className="text-primary" />
-                              <span className="truncate max-w-[200px]">
-                                {t(
-                                  "location_derived",
-                                  "Location derived from Appointment",
-                                )}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col items-center gap-4">
-                        <div className="flex flex-col items-center gap-4 w-full md:w-auto">
-                          {visit.status === "COMPLETED" ? (
-                            <div className="flex items-center gap-2 bg-emerald-50 text-emerald-700 font-black text-xs uppercase px-4 py-2 rounded-xl border border-emerald-100 italic">
-                              <CheckCircle size={16} />{" "}
-                              {t("visit_completed", "Completed")}
-                            </div>
-                          ) : (
-                            <Button
-                              className="w-full md:w-auto border-border hover:border-primary hover:text-primary font-black rounded-2xl px-10 h-14 bg-white shadow-sm italic"
-                              variant="outline"
-                            >
-                              {t("manage_visit", "Manage Visit")}
-                            </Button>
-                          )}
-                        </div>
-                      </div>
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                  <div className="flex-1 space-y-3">
+                    {/* Badges row */}
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="px-3 py-1 rounded-full border border-[#3D52A0]/10 text-[#3D52A0] text-[9px] font-black tracking-widest bg-[#3D52A0]/5 uppercase">
+                        ID: {visit.id.slice(0, 8)}
+                      </span>
+                      <span
+                        className={cn(
+                          "px-3 py-1 rounded-full text-[9px] font-black tracking-widest",
+                          badge.className,
+                        )}
+                      >
+                        {badge.label}
+                      </span>
+                      <span className="px-3 py-1 rounded-full bg-[#3D52A0] text-white text-[9px] font-black tracking-widest uppercase">
+                        {visit.status}
+                      </span>
                     </div>
+
+                    {/* Title */}
+                    <h3 className="font-black text-[#FFA500] text-base">
+                      {firstItem?.item?.name || t("site_visit", "Site Visit")}
+                    </h3>
+
+                    {/* Buyer */}
+                    <p className="text-sm text-[#3D52A0]/60 font-medium">
+                      {t("visit_with", "Visit with")}{" "}
+                      <span className="font-bold text-[#1e2b6b]">
+                        {visit.createdBy?.name || t("anonymous_buyer")}
+                      </span>
+                    </p>
+
+                    {/* Date/Time */}
+                    <p className="text-xs text-[#3D52A0]/50 font-medium flex items-center gap-1.5">
+                      <Calendar className="h-3 w-3" />
+                      {format(new Date(visit.createdAt), "MMM do, yyyy")}
+                    </p>
+
+                    {/* Location */}
+                    {address && (
+                      <p className="text-xs text-[#3D52A0]/40 font-medium truncate max-w-md">
+                        📍 {address}
+                      </p>
+                    )}
                   </div>
-                </CardContent>
+
+                  {/* Action */}
+                  <div className="flex items-center shrink-0">
+                    <Button
+                      asChild
+                      className="bg-[#0F28A9] hover:bg-[#1A237E] text-white rounded-xl font-black text-[11px] tracking-widest uppercase px-5 h-10 shadow-sm transition-all group-hover:shadow-md"
+                    >
+                      <Link
+                        href={`/seller-dashboard/visits/${visit.id}`}
+                        className="flex items-center gap-2"
+                      >
+                        {t("view_details", "View Details")}
+                        <ChevronRight className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
               </Card>
             );
-          })
-        )}
-      </div>
+          })}
+        </div>
+      )}
+
+      {/* Completed Visits (collapsible) */}
+      {filteredCompleted.length > 0 && (
+        <div className="space-y-3">
+          <button
+            onClick={() => setShowCompleted(!showCompleted)}
+            className="flex items-center gap-2 text-sm font-black text-[#3D52A0]/60 hover:text-[#3D52A0] transition-colors"
+          >
+            <CheckCircle2 className="h-4 w-4" />
+            {t("completed_visits", "Completed / Cancelled")} (
+            {filteredCompleted.length})
+            <ChevronDown
+              className={cn(
+                "h-4 w-4 transition-transform",
+                showCompleted && "rotate-180",
+              )}
+            />
+          </button>
+
+          {showCompleted && (
+            <div className="space-y-4">
+              {filteredCompleted.map((visit) => {
+                const badge = getTimeBadge(visit.createdAt, t);
+                const appointment = visit.appointment;
+                const firstItem = appointment?.appointmentLineItems?.[0];
+
+                return (
+                  <Card
+                    key={visit.id}
+                    className="bg-white/60 border border-gray-100 rounded-[20px] p-5 md:p-7 shadow-none group"
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                      <div className="flex-1 space-y-3">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="px-3 py-1 rounded-full border border-[#3D52A0]/10 text-[#3D52A0] text-[9px] font-black tracking-widest bg-[#3D52A0]/5 uppercase">
+                            ID: {visit.id.slice(0, 8)}
+                          </span>
+                          <span
+                            className={cn(
+                              "px-3 py-1 rounded-full text-[9px] font-black tracking-widest",
+                              badge.className,
+                            )}
+                          >
+                            {badge.label}
+                          </span>
+                          <span
+                            className={cn(
+                              "px-3 py-1 rounded-full text-[9px] font-black tracking-widest uppercase",
+                              visit.status === "COMPLETED"
+                                ? "bg-green-600 text-white"
+                                : "bg-gray-400 text-white",
+                            )}
+                          >
+                            {visit.status}
+                          </span>
+                        </div>
+                        <h3 className="font-black text-[#FFA500]/70 text-base">
+                          {firstItem?.item?.name || t("site_visit")}
+                        </h3>
+                        <p className="text-sm text-[#3D52A0]/40 font-medium">
+                          {t("visit_with")}{" "}
+                          <span className="font-bold text-[#1e2b6b]/60">
+                            {visit.createdBy?.name || t("anonymous_buyer")}
+                          </span>
+                        </p>
+                      </div>
+
+                      <div className="flex items-center shrink-0">
+                        <Button
+                          asChild
+                          variant="outline"
+                          className="rounded-xl font-black text-[11px] tracking-widest uppercase px-5 h-10"
+                        >
+                          <Link
+                            href={`/seller-dashboard/visits/${visit.id}`}
+                            className="flex items-center gap-2"
+                          >
+                            {t("view_details")}
+                            <ChevronRight className="h-4 w-4" />
+                          </Link>
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

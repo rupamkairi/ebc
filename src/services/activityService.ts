@@ -57,7 +57,7 @@ export const activityService = {
       `${API_ENDPOINTS.ACTIVITY.APPOINTMENT.GET}/${id}`,
       {
         method: "GET",
-      }
+      },
     );
   },
 
@@ -68,9 +68,12 @@ export const activityService = {
   },
 
   async rejectAppointment(id: string) {
-    return fetchClient(`${API_ENDPOINTS.ACTIVITY.APPOINTMENT.GET}/reject/${id}`, {
-      method: "POST",
-    });
+    return fetchClient(
+      `${API_ENDPOINTS.ACTIVITY.APPOINTMENT.GET}/reject/${id}`,
+      {
+        method: "POST",
+      },
+    );
   },
 
   async getAppointments(params: AppointmentListParams = {}) {
@@ -81,15 +84,21 @@ export const activityService = {
   },
 
   async completeEnquiry(id: string) {
-    return fetchClient(`${API_ENDPOINTS.ACTIVITY.ENQUIRY.COMPLETE}/${id}/complete`, {
-      method: "POST",
-    });
+    return fetchClient(
+      `${API_ENDPOINTS.ACTIVITY.ENQUIRY.COMPLETE}/${id}/complete`,
+      {
+        method: "POST",
+      },
+    );
   },
 
   async completeAppointment(id: string) {
-    return fetchClient(`${API_ENDPOINTS.ACTIVITY.APPOINTMENT.COMPLETE}/${id}/complete`, {
-      method: "POST",
-    });
+    return fetchClient(
+      `${API_ENDPOINTS.ACTIVITY.APPOINTMENT.COMPLETE}/${id}/complete`,
+      {
+        method: "POST",
+      },
+    );
   },
 
   async getAssignments(params: AssignmentListParams = {}) {
@@ -98,7 +107,7 @@ export const activityService = {
       {
         method: "POST",
         body: params as Record<string, string | number | boolean>,
-      }
+      },
     );
   },
 
@@ -115,7 +124,7 @@ export const activityService = {
       `${API_ENDPOINTS.ACTIVITY.QUOTATION.GET}/${id}`,
       {
         method: "GET",
-      }
+      },
     );
   },
 
@@ -141,7 +150,7 @@ export const activityService = {
       {
         method: "PATCH",
         body: data,
-      }
+      },
     );
   },
 
@@ -158,10 +167,22 @@ export const activityService = {
     });
   },
 
+  async getVisit(id: string) {
+    return fetchClient<Visit>(`${API_ENDPOINTS.ACTIVITY.VISIT.GET}/${id}`, {
+      method: "GET",
+    });
+  },
+
   async getVisits(params: VisitListParams = {}) {
     return fetchClient<Visit[]>(API_ENDPOINTS.ACTIVITY.VISIT.LIST, {
       method: "POST",
       body: params as Record<string, string | number | boolean>,
+    });
+  },
+
+  async completeVisit(id: string) {
+    return fetchClient(`${API_ENDPOINTS.ACTIVITY.VISIT.GET}/${id}/complete`, {
+      method: "POST",
     });
   },
 

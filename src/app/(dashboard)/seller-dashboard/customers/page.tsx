@@ -1,21 +1,20 @@
 "use client";
 
-import { 
-  User,
-  Phone,
-  MapPin,
-  Star,
-} from "lucide-react";
+import { User, Phone, MapPin, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 import { useEntitiesQuery } from "@/queries/entityQueries";
-import { useAssignmentsQuery, useQuotationsQuery, useVisitsQuery } from "@/queries/activityQueries";
+import {
+  useAssignmentsQuery,
+  useQuotationsQuery,
+  useVisitsQuery,
+} from "@/queries/activityQueries";
 import { useSessionQuery } from "@/queries/authQueries";
 import { useMemo, useState } from "react";
 import { Loader2 } from "lucide-react";
-import { Enquiry, Appointment, Visit } from "@/types/activity";
+import { Enquiry, Appointment } from "@/types/activity";
 import { useLanguage } from "@/hooks/useLanguage";
 
 export default function CustomersPage() {
@@ -23,19 +22,22 @@ export default function CustomersPage() {
   const { data: session } = useSessionQuery();
   const { data: entities = [] } = useEntitiesQuery();
   const mainEntity = entities[0];
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery] = useState("");
 
-  const { data: assignments = [], isLoading: isAssignmentsLoading } = useAssignmentsQuery({
-    toEntityId: mainEntity?.id,
-  });
+  const { data: assignments = [], isLoading: isAssignmentsLoading } =
+    useAssignmentsQuery({
+      toEntityId: mainEntity?.id,
+    });
 
-  const { data: quotations = [], isLoading: isQuotationsLoading } = useQuotationsQuery({
-    createdById: session?.user?.id,
-  });
+  const { data: quotations = [], isLoading: isQuotationsLoading } =
+    useQuotationsQuery({
+      createdById: session?.user?.id,
+    });
 
-  const { data: visits = [], isLoading: isVisitsLoading } = useVisitsQuery({});
+  const { isLoading: isVisitsLoading } = useVisitsQuery({});
 
-  const isLoading = isAssignmentsLoading || isQuotationsLoading || isVisitsLoading;
+  const isLoading =
+    isAssignmentsLoading || isQuotationsLoading || isVisitsLoading;
 
   const processedCustomers = useMemo(() => {
     if (!assignments.length) return [];
@@ -45,15 +47,22 @@ export default function CustomersPage() {
     assignments.forEach((assignment) => {
       const activity = assignment.enquiry || assignment.appointment;
       const buyer = activity?.createdBy;
-      
+
       if (!buyer) return;
 
       if (!customerMap.has(buyer.id)) {
+        const address =
+          "enquiryDetails" in activity
+            ? activity.enquiryDetails?.[0]?.address
+            : "appointmentDetails" in activity
+              ? activity.appointmentDetails?.[0]?.address
+              : "Location N/A";
+
         customerMap.set(buyer.id, {
           id: buyer.id,
           name: buyer.name,
           phone: buyer.phone || "N/A",
-          location: activity?.enquiryDetails?.[0]?.address || activity?.appointmentDetails?.[0]?.address || "Location N/A",
+          location: address || "Location N/A",
           lastEnquiry: "",
           lastActivityDate: activity?.createdAt,
           orders: 0,
@@ -64,13 +73,19 @@ export default function CustomersPage() {
 
       const cus = customerMap.get(buyer.id);
       cus.activities.push(activity);
-      
+
       // Update last activity if newer
       if (new Date(activity.createdAt) > new Date(cus.lastActivityDate)) {
         cus.lastActivityDate = activity.createdAt;
-        const lineItems = activity.enquiryLineItems || activity.appointmentLineItems || [];
-        if (lineItems.length > 0) {
-          const firstItem = lineItems[0].item?.name || "Item";
+        const lineItems =
+          "enquiryLineItems" in activity
+            ? activity.enquiryLineItems
+            : "appointmentLineItems" in activity
+              ? activity.appointmentLineItems
+              : [];
+
+        if (lineItems && lineItems.length > 0) {
+          const firstItem = (lineItems[0] as any).item?.name || "Item";
           cus.lastEnquiry = `${firstItem}${lineItems.length > 1 ? ` (+${lineItems.length - 1} more)` : ""}`;
         }
       }
@@ -83,23 +98,33 @@ export default function CustomersPage() {
         const cus = customerMap.get(buyerId);
         if (q.status === "ACCEPTED") {
           cus.orders += 1;
-          const totalAmount = q.quotationLineItems?.reduce((sum, item) => sum + (item.amount || 0), 0) || 0;
+          const totalAmount =
+            q.quotationLineItems?.reduce(
+              (sum, item) => sum + (item.amount || 0),
+              0,
+            ) || 0;
           cus.totalValue += totalAmount;
         }
       }
     });
 
-    return Array.from(customerMap.values()).map(cus => ({
+    return Array.from(customerMap.values()).map((cus) => ({
       ...cus,
-      status: cus.orders === 0 ? "Lead" : cus.orders > 2 ? "Repeat Buyer" : "Active Buyer"
+      status:
+        cus.orders === 0
+          ? "Lead"
+          : cus.orders > 2
+            ? "Repeat Buyer"
+            : "Active Buyer",
     }));
   }, [assignments, quotations]);
 
   const filteredCustomers = useMemo(() => {
-    return processedCustomers.filter(cus => 
-      cus.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      cus.phone.includes(searchQuery) ||
-      cus.location.toLowerCase().includes(searchQuery.toLowerCase())
+    return processedCustomers.filter(
+      (cus) =>
+        cus.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        cus.phone.includes(searchQuery) ||
+        cus.location.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [processedCustomers, searchQuery]);
 
@@ -127,7 +152,10 @@ export default function CustomersPage() {
           </div>
         ) : (
           filteredCustomers.map((cus) => (
-            <Card key={cus.id} className="bg-[#001D8D] border-none shadow-xl rounded-[24px] overflow-hidden">
+            <Card
+              key={cus.id}
+              className="bg-[#001D8D] border-none shadow-xl rounded-[24px] overflow-hidden"
+            >
               <CardContent className="p-6 space-y-5">
                 {/* Header Section */}
                 <div className="flex items-start gap-5">
@@ -139,10 +167,13 @@ export default function CustomersPage() {
                       {cus.name}
                     </h3>
                     <div className="flex flex-wrap gap-2">
-                      <Badge className={`uppercase text-[10px] font-bold rounded px-3 py-0.5 ${
-                        cus.status === 'Lead' ? 'bg-[#FFEB3B] text-black' :
-                        'bg-[#FFA000] text-white'
-                      }`}>
+                      <Badge
+                        className={`uppercase text-[10px] font-bold rounded px-3 py-0.5 ${
+                          cus.status === "Lead"
+                            ? "bg-[#FFEB3B] text-black"
+                            : "bg-[#FFA000] text-white"
+                        }`}
+                      >
                         {cus.status}
                       </Badge>
                       <Badge className="bg-[#3D52A0]/50 text-white/80 uppercase text-[10px] font-bold rounded px-3 py-0.5 border-none">
@@ -180,8 +211,12 @@ export default function CustomersPage() {
                         <span>{t("total_order_value")}</span>
                       </div>
                       <div className="flex justify-between w-full">
-                        <span className="text-xl font-black text-[#FFA000]">{cus.orders}</span>
-                        <span className="text-xl font-black text-[#FFA000]">₹{cus.totalValue.toLocaleString()}</span>
+                        <span className="text-xl font-black text-[#FFA000]">
+                          {cus.orders}
+                        </span>
+                        <span className="text-xl font-black text-[#FFA000]">
+                          ₹{cus.totalValue.toLocaleString()}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -196,26 +231,45 @@ export default function CustomersPage() {
                         <thead className="bg-[#F0F4FF] text-[#1A237E]/50 border-b border-slate-100">
                           <tr>
                             <th className="py-1.5 px-3 text-left">ID Unit</th>
-                            <th className="py-1.5 px-3 text-left">Product Name</th>
+                            <th className="py-1.5 px-3 text-left">
+                              Product Name
+                            </th>
                             <th className="py-1.5 px-3 text-left">Qty</th>
                             <th className="py-1.5 px-3 text-left">Date</th>
                             <th className="py-1.5 px-3 text-left">Status</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
-                          {cus.activities.slice(0, 2).map((act: (Enquiry | Appointment), idx: number) => {
-                            const items = (act as Enquiry).enquiryLineItems || (act as Appointment).appointmentLineItems || [];
-                            const item = items[0];
-                            return (
-                              <tr key={idx} className="text-[#1A237E]/80">
-                                <td className="py-2 px-3">U-#{idx + 1}</td>
-                                <td className="py-2 px-3 font-bold truncate max-w-[80px]">{item?.item?.name || "Service"}</td>
-                                <td className="py-2 px-3">{item?.quantity || "1"}</td>
-                                <td className="py-2 px-3">{new Date(act.createdAt).toLocaleDateString()}</td>
-                                <td className="py-2 px-3 text-emerald-600 font-bold uppercase text-[8px]">Regular</td>
-                              </tr>
-                            );
-                          })}
+                          {cus.activities
+                            .slice(0, 2)
+                            .map((act: Enquiry | Appointment, idx: number) => {
+                              const items =
+                                "enquiryLineItems" in act
+                                  ? act.enquiryLineItems
+                                  : "appointmentLineItems" in act
+                                    ? act.appointmentLineItems
+                                    : [];
+                              const item = items?.[0] as any;
+                              return (
+                                <tr key={idx} className="text-[#1A237E]/80">
+                                  <td className="py-2 px-3">U-#{idx + 1}</td>
+                                  <td className="py-2 px-3 font-bold truncate max-w-[80px]">
+                                    {item?.item?.name || "Service"}
+                                  </td>
+                                  <td className="py-2 px-3">
+                                    {item?.quantity || "1"}
+                                  </td>
+                                  <td className="py-2 px-3">
+                                    {new Date(
+                                      act.createdAt,
+                                    ).toLocaleDateString()}
+                                  </td>
+                                  <td className="py-2 px-3 text-emerald-600 font-bold uppercase text-[8px]">
+                                    Regular
+                                  </td>
+                                </tr>
+                              );
+                            })}
                         </tbody>
                       </table>
                     </div>

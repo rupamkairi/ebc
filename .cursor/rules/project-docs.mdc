@@ -1,0 +1,78 @@
+---
+description: Keep EBC documentation (AGENTS.md and architecture docs) aligned with code changes
+alwaysApply: true
+---
+
+## EBC Documentation & Agent Workflow Rule
+
+This rule tells AI agents how to work with the EBC project’s documentation and architecture.
+
+### 1. Read these before large changes
+
+For any non-trivial task (new feature, refactor, or flow change), first skim:
+
+- `AGENTS.md` – high-level guide to the project, directories, and workflows.
+- `docs/architecture/codemap.md` – overview of modules and where things live.
+- `docs/architecture/app-flows.md` – key user and system flows.
+- `docs/architecture/tech-stack.md` – tech stack and conventions.
+- `docs/apis/api-endpoints.md` – backend API reference.
+- `src/lib/api-endpoints.ts` – frontend API constants.
+
+Only read deeply where relevant to the current task, but always ensure you understand the impacted domains.
+
+### 2. Keep docs in sync with code
+
+Whenever you make changes, ensure the docs remain accurate:
+
+- **Routes / pages / layouts (`src/app/**`)**
+  - If you add or remove a major route group, dashboard section, or public feature page:
+    - Update `docs/architecture/codemap.md` to reflect new or removed modules or paths.
+  - If you change user journeys (steps, entry/exit points, or who can perform an action):
+    - Update `docs/architecture/app-flows.md` so the flow description matches behavior.
+
+- **Services / APIs (`src/services/**`, `src/lib/api-endpoints.ts`)**
+  - If you change API paths or request/response shapes:
+    - Update `src/lib/api-endpoints.ts` and relevant types in `src/types/**`.
+    - Update `docs/apis/api-endpoints.md` to match the backend contract.
+  - If you add a significant new capability (e.g. new activity type, new wallet operation, new conference hall action):
+    - Add or extend sections in `docs/architecture/codemap.md` and `docs/architecture/app-flows.md`.
+
+- **Stores (`src/store/**`)**
+  - When adding or changing responsibilities of a store:
+    - Update `docs/architecture/codemap.md` (state management sections).
+    - Update `docs/architecture/app-flows.md` if it alters how flows manage in-progress state.
+
+### 3. Choose the right place for new code
+
+Follow these placement rules:
+
+- **New domain or feature**:
+  - Create or extend:
+    - Types in `src/types/<domain>.ts`.
+    - Services in `src/services/<domain>Service.ts`.
+    - Zustand store in `src/store/<domain>Store.ts` (if cross-route state is needed).
+    - Routes in `src/app/(dashboard|activity|public)/<area>/**` as appropriate.
+  - Document the new module under feature sections in `docs/architecture/codemap.md` and, if user-facing, in `docs/architecture/app-flows.md`.
+
+- **New UI components**:
+  - Prefer `src/components/ui/**` for reusable primitives based on Radix + Tailwind.
+  - Prefer feature directories under `src/components/dashboard/**`, `src/components/admin/**`, `src/components/landing/**`, or `src/components/shared/**` for domain-specific UIs.
+
+### 4. Documentation style
+
+- Keep docs **high-level and conceptual**:
+  - Focus on domains, responsibilities, and how modules connect.
+  - Avoid copying large code blocks into docs.
+- Be **incremental**:
+  - When adding a feature, add a small, precise paragraph to the relevant section rather than rewriting entire docs.
+- Prefer **consistent terminology**:
+  - Reuse names used in `src/types/**`, `API_ENDPOINTS`, and existing docs (e.g. “Activity”, “Conference Hall”, “Wallet”, “Pricing”, “Notification Channel”).
+
+### 5. Sanity and validation
+
+After completing changes:
+
+- Re-read the sections you updated in the docs to ensure they are coherent and free of contradictions.
+- Run `npm run lint` when possible to catch obvious issues in new code.
+- If a change significantly alters architecture or flows, mention this explicitly in your summary to the user and point them to the updated doc sections.
+

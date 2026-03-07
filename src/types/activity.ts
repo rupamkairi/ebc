@@ -183,7 +183,14 @@ export interface Visit {
   createdAt: string;
   updatedAt: string;
   createdById: string;
+  isActive?: boolean;
+  visitSlot?: {
+    id: string;
+    fromDateTime: string;
+    toDateTime: string;
+  };
   createdBy?: ActivityUser;
+  appointment?: Appointment;
 }
 
 export interface VisitListParams {

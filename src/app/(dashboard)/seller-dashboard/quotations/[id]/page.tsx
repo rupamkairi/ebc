@@ -7,7 +7,7 @@ import {
   useEnquiryQuery,
 } from "@/queries/activityQueries";
 import { QuotationForm } from "@/components/dashboard/seller/quotation/quotation-form";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -17,6 +17,7 @@ import { useEntitiesQuery } from "@/queries/entityQueries";
 import { CreateQuotationRequest } from "@/types/activity";
 import { QuotationState } from "@/store/quotationStore";
 import { useLanguage } from "@/hooks/useLanguage";
+import { PageBackButton } from "@/components/dashboard/seller/activity-shared/page-back-button";
 
 export default function ViewQuotationPage() {
   const { t } = useLanguage();
@@ -27,7 +28,7 @@ export default function ViewQuotationPage() {
   const { data: quotation, isLoading: isQuotationLoading } =
     useQuotationQuery(id);
   const { data: enquiry, isLoading: isEnquiryLoading } = useEnquiryQuery(
-    quotation?.enquiryId || ""
+    quotation?.enquiryId || "",
   );
   const { data: entities } = useEntitiesQuery();
   const sellerEntityId = entities?.[0]?.id;
@@ -48,7 +49,7 @@ export default function ViewQuotationPage() {
           // Match the item to a listing for the form
           const matchedListing = listings.find((l) => l.itemId === item.itemId);
           const enquiryItem = enquiry.enquiryLineItems.find(
-            (eli) => eli.itemId === item.itemId
+            (eli) => eli.itemId === item.itemId,
           );
 
           return {
@@ -72,7 +73,7 @@ export default function ViewQuotationPage() {
   if (isQuotationLoading || (quotation && (isEnquiryLoading || !listings))) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#3D52A0]" />
       </div>
     );
   }
@@ -84,7 +85,9 @@ export default function ViewQuotationPage() {
           {t("quotation_enquiry_not_found")}
         </p>
         <Button variant="outline" asChild>
-          <Link href="/seller-dashboard/quotations">{t("back_to_enquiries")}</Link>
+          <Link href="/seller-dashboard/quotations">
+            {t("back_to_enquiries")}
+          </Link>
         </Button>
       </div>
     );
@@ -103,19 +106,17 @@ export default function ViewQuotationPage() {
         onError: (error: Error) => {
           toast.error(error.message || "Failed to update quotation.");
         },
-      }
+      },
     );
   };
 
   return (
     <div className="space-y-6">
-      <Link
+      <PageBackButton
         href="/seller-dashboard/quotations"
-        className="flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-primary transition-colors"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        {t("back_to_quotation_list")}
-      </Link>
+        variant="link"
+        label={t("back_to_quotation_list")}
+      />
       <QuotationForm
         enquiry={enquiry}
         quotation={quotation}

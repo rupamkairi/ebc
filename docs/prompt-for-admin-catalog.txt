@@ -1,4 +1,0 @@
-Based on the Catalog from the documents I want you to Generate me Admin Side workflows (Create, List, Update) for Category, SubCategory, Brand, Specifications, Item. Properly setup forms & pages as you need in this next app under.
-I Strongly suggest to take a look at the Admin Manager Implementations to get a Good Idea of what tools & what patterns are used.
-Please follow a similar strategy & techniques. For this feature I want you to create separate queries & store for each resource types.
-For Reference & Reusability please use - Keep the End-to-End TypeSafety.

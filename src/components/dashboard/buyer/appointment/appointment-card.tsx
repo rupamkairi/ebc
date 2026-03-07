@@ -5,7 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Appointment } from "@/types/activity";
 import { format } from "date-fns";
-import { CalendarDays, MapPin, ArrowRight, Clock } from "lucide-react";
+import {
+  CalendarDays,
+  MapPin,
+  ArrowRight,
+  Clock,
+  FileText,
+} from "lucide-react";
+import { useLanguage } from "@/hooks/useLanguage";
 import Link from "next/link";
 
 interface AppointmentCardProps {
@@ -13,6 +20,7 @@ interface AppointmentCardProps {
 }
 
 export function AppointmentCard({ appointment }: AppointmentCardProps) {
+  const { t } = useLanguage();
   const firstItem = appointment.appointmentLineItems?.[0];
   const details = appointment.appointmentDetails?.[0];
   const slots = appointment.appointmentSlots || [];
@@ -20,13 +28,13 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
   const getStatusColor = (status: string) => {
     switch (status.toUpperCase()) {
       case "UPCOMING":
-        return "bg-blue-100 text-blue-700 hover:bg-blue-100";
+        return "bg-blue-100 text-blue-700 hover:bg-blue-100 border-blue-200";
       case "COMPLETED":
-        return "bg-green-100 text-green-700 hover:bg-green-100";
+        return "bg-green-100 text-green-700 hover:bg-green-100 border-green-200";
       case "CANCELLED":
-        return "bg-red-100 text-red-700 hover:bg-red-100";
+        return "bg-red-100 text-red-700 hover:bg-red-100 border-red-200";
       default:
-        return "bg-yellow-100 text-yellow-700 hover:bg-yellow-100";
+        return "bg-amber-100 text-amber-700 hover:bg-amber-100 border-amber-200";
     }
   };
 
@@ -47,32 +55,33 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
   };
 
   return (
-    <Card className="hover:shadow-lg transition-all duration-300 border-[#3D52A0]/10 overflow-hidden group">
-      <CardHeader className="pb-4 border-b bg-slate-50/50">
+    <Card className="hover:shadow-xl transition-all duration-300 border-[#3D52A0]/10 overflow-hidden group rounded-2xl bg-white">
+      <CardHeader className="pb-4 border-b bg-slate-50/30">
         <div className="flex justify-between items-start">
           <div className="flex flex-col gap-1">
-            <span className="text-xs font-semibold text-[#3D52A0]/40">
-              Appointment ID
+            <span className="text-[10px] font-black uppercase text-[#3D52A0]/40 tracking-wider">
+              {t("appointment_id")}
             </span>
-            <CardTitle className="text-sm font-bold text-[#3D52A0] flex items-center gap-2">
-              <CalendarDays className="h-4 w-4" />
+            <CardTitle className="text-sm font-black text-[#3D52A0] flex items-center gap-2">
+              <CalendarDays className="h-4 w-4 text-[#FFA500]" />
               <span className="truncate max-w-[200px] sm:max-w-md">
                 {firstItem?.item?.name || "Appointment Item"}
               </span>
             </CardTitle>
-            <div className="flex items-center gap-2 text-[10px] font-bold text-[#3D52A0]/60 mt-1">
-              <span className="font-mono">
+            <div className="flex items-center gap-2 text-[10px] font-black text-[#3D52A0]/60 mt-1 uppercase">
+              <span className="bg-slate-100 px-1.5 py-0.5 rounded">
                 #{appointment.id.slice(0, 8).toUpperCase()}
               </span>
-              <span>•</span>
-              <span>
+              <span className="text-[#3D52A0]/20">•</span>
+              <span className="flex items-center gap-1">
+                <Clock className="h-3 w-3" />
                 {format(new Date(appointment.createdAt), "dd MMM yyyy")}
               </span>
             </div>
           </div>
           <Badge
             variant="outline"
-            className={`${getStatusColor(appointment.status || "PENDING")} font-semibold text-xs px-3 py-1 rounded-full border shadow-sm`}
+            className={`${getStatusColor(appointment.status || "PENDING")} font-bold text-[10px] uppercase px-3 py-1 rounded-full border shadow-xs`}
           >
             {appointment.status
               ? appointment.status.charAt(0).toUpperCase() +
@@ -81,27 +90,30 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
           </Badge>
         </div>
       </CardHeader>
-      <CardContent className="pt-6 pb-6">
+      <CardContent className="pt-6 pb-6 space-y-6">
         <div className="flex flex-col md:flex-row justify-between gap-8">
           <div className="space-y-6 flex-1">
             <div>
-              <span className="text-xs font-semibold text-[#3D52A0]/60 block mb-3">
-                Preferred Time Slots
+              <span className="text-[10px] font-black uppercase text-[#3D52A0]/60 mb-4 tracking-widest flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                {t("preferred_time_slots")}
               </span>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-3">
                 {slots.map((slot, index) => {
                   const parsed = parseSlot(slot.remarks || "");
                   return (
                     <div
                       key={slot.id || index}
-                      className="flex items-center gap-2 px-3 py-2 bg-[#3D52A0]/5 rounded-xl border border-[#3D52A0]/10 hover:border-[#3D52A0]/20 transition-colors"
+                      className="flex items-center gap-3 px-4 py-3 bg-slate-50 rounded-2xl border border-slate-100 hover:border-[#3D52A0]/20 transition-all duration-300"
                     >
-                      <Clock className="h-3.5 w-3.5 text-[#3D52A0]" />
+                      <div className="h-9 w-9 rounded-xl bg-white flex items-center justify-center shadow-sm border border-slate-50">
+                        <CalendarDays className="h-4 w-4 text-[#3D52A0]" />
+                      </div>
                       <div className="text-xs">
-                        <p className="font-bold text-[#3D52A0]">
+                        <p className="font-black text-[#3D52A0]">
                           {parsed.date}
                         </p>
-                        <p className="text-[#3D52A0]/60 font-medium">
+                        <p className="text-[#3D52A0]/60 font-bold uppercase text-[9px] mt-0.5 tracking-wider">
                           {parsed.time}
                         </p>
                       </div>
@@ -109,19 +121,20 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
                   );
                 })}
                 {slots.length === 0 && (
-                  <p className="text-sm font-medium text-[#3D52A0]/40">
-                    No time slots specified
+                  <p className="text-xs font-bold text-[#3D52A0]/40">
+                    {t("no_slots_specified")}
                   </p>
                 )}
               </div>
             </div>
 
             {details?.remarks && (
-              <div className="pt-4 border-t border-[#3D52A0]/10">
-                <span className="text-xs font-semibold text-[#3D52A0]/60 block mb-2">
-                  Additional Details
+              <div className="pt-5 border-t border-slate-100">
+                <span className="text-[10px] font-black uppercase text-[#3D52A0]/60 mb-3 tracking-widest flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  {t("additional_details")}
                 </span>
-                <div className="flex items-start gap-2 text-xs font-medium text-[#3D52A0]/70 bg-[#3D52A0]/5 p-3 rounded-xl border border-[#3D52A0]/10">
+                <div className="flex items-start gap-3 text-xs font-bold text-[#3D52A0]/80 bg-slate-50 p-4 rounded-2xl border border-slate-100">
                   <MapPin className="h-4 w-4 shrink-0 text-[#3D52A0]/40 mt-0.5" />
                   <p className="leading-relaxed">{details.remarks}</p>
                 </div>
@@ -134,14 +147,11 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
               variant="outline"
               size="sm"
               asChild
-              className="bg-white border-[#3D52A0]/20 text-[#3D52A0] font-semibold text-sm px-6 h-10 rounded-xl hover:bg-[#3D52A0] hover:text-white transition-all shadow-sm"
+              className="bg-white border-[#3D52A0]/20 text-[#3D52A0] font-black text-xs px-8 h-12 rounded-xl hover:bg-[#3D52A0] hover:text-white transition-all shadow-sm flex items-center gap-2 uppercase tracking-widest group"
             >
-              <Link
-                href={`/buyer-dashboard/appointments/${appointment.id}`}
-                className="flex items-center gap-2"
-              >
-                View Details
-                <ArrowRight className="h-4 w-4" />
+              <Link href={`/buyer-dashboard/appointments/${appointment.id}`}>
+                {t("view_details")}
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </Button>
           </div>
