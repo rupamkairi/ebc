@@ -133,34 +133,34 @@ export default function SellerDashboardPage() {
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {/* Product / Service Catalogue — dynamic based on seller type */}
-              <Card className="bg-gradient-to-r from-[#173072] to-[#2547a4] text-white p-6 rounded-2xl shadow-sm flex flex-col justify-between col-span-1 md:col-span-2 border-0 overflow-hidden">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
-                  <div className="bg-white/10 p-2 rounded-lg">
+              <Card className="bg-gradient-to-r from-[#173072] to-[#2547a4] text-white p-5 rounded-2xl shadow-sm flex flex-col justify-between col-span-1 border-0 overflow-hidden">
+                <div className="flex flex-col items-center gap-3 mb-4 text-center">
+                  <div className="bg-white/10 p-2 rounded-lg w-fit">
                     {isService ? (
-                      <Briefcase className="h-6 w-6" />
+                      <Briefcase className="h-6 w-6 text-[#EF8A17]" />
                     ) : (
-                      <Package className="h-6 w-6" />
+                      <Package className="h-6 w-6 text-[#EF8A17]" />
                     )}
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold tracking-tight">
+                    <h3 className="text-lg font-bold tracking-tight">
                       {isService ? t("service_catalog") : t("product_catalog")}
                     </h3>
-                    <p className="text-sm font-normal text-blue-100">
+                    <p className="text-xs font-normal text-blue-100">
                       {isService ? t("manage_services") : t("manage_products")}
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-col sm:flex-row flex-wrap gap-3">
+                <div className="flex flex-col items-center gap-3 w-full">
                   <Link
                     href="/seller-dashboard/catalog?create=true"
-                    className="w-full sm:w-auto"
+                    className="w-full"
                   >
                     <Button
                       variant="secondary"
-                      className="w-full sm:w-auto bg-white text-[#173072] hover:bg-gray-100 border-0 rounded-lg px-4 h-10 text-sm font-semibold"
+                      className="w-full bg-white text-[#173072] hover:bg-gray-100 border-0 rounded-lg px-4 h-10 text-sm font-semibold justify-center"
                     >
                       <Plus className="mr-2 h-4 w-4" />
                       {isService
@@ -170,11 +170,11 @@ export default function SellerDashboardPage() {
                   </Link>
                   <Link
                     href="/seller-dashboard/catalog"
-                    className="w-full sm:w-auto"
+                    className="w-full"
                   >
                     <Button
                       variant="outline"
-                      className="w-full sm:w-auto bg-white text-[#173072] hover:bg-gray-100 border-0 rounded-lg px-4 h-10 text-sm font-semibold"
+                      className="w-full bg-white/10 text-white hover:bg-white/20 border-0 rounded-lg px-4 h-10 text-sm font-semibold justify-center"
                     >
                       <Edit2 className="mr-2 h-4 w-4" />
                       {isService
@@ -319,16 +319,16 @@ export default function SellerDashboardPage() {
               {/* Active Leads & Customers Combined */}
               <Card className="bg-[#173072] text-white p-5 rounded-2xl shadow-sm flex flex-col justify-between h-full border-0 relative overflow-hidden">
                 <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-500 rounded-full blur-3xl opacity-20 pointer-events-none"></div>
-                <div className="flex items-center justify-between mb-4 z-10">
+                <div className="flex flex-col items-center mb-4 z-10">
                   <div className="flex items-center gap-2">
                     <div className="bg-white/10 p-2 rounded-lg">
                       <Bell className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                     </div>
-                    <span className="font-semibold text-base sm:text-lg tracking-tight">
+                    <span className="font-semibold text-lg sm:text-2xl tracking-tight leading-snug text-center px-2">
                       {t("active_leads")} & {t("customers")}
                     </span>
                   </div>
-                  <span className="text-4xl sm:text-5xl font-bold text-[#EF8A17] drop-shadow-md">
+                  <span className="text-4xl sm:text-5xl font-bold text-[#EF8A17] drop-shadow-md mt-2">
                     {isService
                       ? appointmentAssignments.length
                       : pendingEnquiryCount}
@@ -357,89 +357,66 @@ export default function SellerDashboardPage() {
             </div>
           </section>
 
-          {/* 2. Finance */}
-          <section>
-            <div className="flex items-center gap-2 mb-4 text-[#1E3A8A]">
-              <Users className="h-5 w-5" />
-              <h2 className="text-xl font-bold tracking-tight">
-                {t("finance")}
-              </h2>
-            </div>
-            <Card className="bg-[#EF8A17] text-white p-6 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center justify-between border-0 gap-6">
-              <div className="flex items-center gap-5">
-                <div className="bg-white/20 p-4 rounded-xl backdrop-blur-md shadow-inner">
-                  <Wallet className="h-8 w-8 text-white" />
-                </div>
-                <div className="flex flex-col items-start sm:items-baseline">
-                  <span className="text-sm font-medium text-white/90 tracking-wide uppercase">
-                    {t("coin_balance")}
-                  </span>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-3xl sm:text-4xl font-bold tracking-tight">
-                      {isWalletLoading
-                        ? "..."
-                        : (wallet?.balance ?? 0).toLocaleString()}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* 2. Finance */}
+            <section className="h-full">
+              <div className="flex items-center gap-2 mb-4 text-[#1E3A8A]">
+                <Wallet className="h-5 w-5" />
+                <h2 className="text-xl font-bold tracking-tight">
+                  {t("finance")}
+                </h2>
+              </div>
+              <Card className="bg-[#EF8A17] text-white p-6 rounded-2xl shadow-sm flex flex-col justify-between border-0 gap-6 h-[calc(100%-2.5rem)]">
+                <div className="flex items-center gap-4">
+                  <div className="bg-white/20 p-3 rounded-xl backdrop-blur-md shadow-inner">
+                    <Wallet className="h-6 w-6 text-white" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xs font-medium text-white/90 tracking-wide uppercase">
+                      {t("coin_balance")}
                     </span>
-                    <span className="text-base sm:text-lg font-medium text-white/90">
-                      {t("coins")}
-                    </span>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-3xl font-bold tracking-tight">
+                        {isWalletLoading
+                          ? "..."
+                          : (wallet?.balance ?? 0).toLocaleString()}
+                      </span>
+                      <span className="text-sm font-medium text-white/90">
+                        {t("coins")}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                <Link
-                  href="/seller-dashboard/wallet"
-                  className="w-full sm:w-auto"
-                >
-                  <Button
-                    variant="secondary"
-                    className="w-full bg-white text-[#EF8A17] hover:bg-gray-50 border-0 rounded-lg px-6 h-11 font-bold shadow-sm"
-                  >
-                    {t("add_coins")}
-                  </Button>
-                </Link>
-                <Link
-                  href="/seller-dashboard/wallet"
-                  className="w-full sm:w-auto"
-                >
-                  <Button
-                    variant="outline"
-                    className="w-full bg-transparent text-white border-white hover:bg-white/10 rounded-lg px-5 h-11 font-medium flex items-center"
-                  >
-                    {t("transaction_history")}
-                  </Button>
-                </Link>
-              </div>
-            </Card>
-          </section>
-
-          {/* 3. Operations */}
-          <section>
-            <div className="flex items-center gap-2 mb-4 text-[#1E3A8A]">
-              <Settings className="h-5 w-5" />
-              <h2 className="text-xl font-bold tracking-tight">
-                {t("operations")}
-              </h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* 
-              <Card className="bg-white p-6 rounded-2xl shadow-sm flex flex-col justify-between h-full border border-gray-100 hover:border-orange-200 transition-colors">
-                <div className="mb-6">
-                  <div className="flex items-center gap-3 text-[#173072] mb-3">
-                    <div className="bg-blue-50 p-2 rounded-lg"><MapPin className="h-6 w-6" /></div>
-                    <h3 className="font-bold text-lg">{t("service_area_management")}</h3>
-                  </div>
-                  <p className="text-sm text-gray-500 font-medium leading-relaxed">{t("service_area_desc")}</p>
+                <div className="flex flex-col gap-3 w-full">
+                  <Link href="/seller-dashboard/wallet" className="w-full">
+                    <Button
+                      variant="secondary"
+                      className="w-full bg-white text-[#EF8A17] hover:bg-gray-50 border-0 rounded-lg h-11 font-bold shadow-sm"
+                    >
+                      {t("add_coins")}
+                    </Button>
+                  </Link>
+                  <Link href="/seller-dashboard/wallet" className="w-full">
+                    <Button
+                      variant="outline"
+                      className="w-full bg-transparent text-white border-white hover:bg-white/10 rounded-lg h-11 font-medium"
+                    >
+                      {t("transaction_history")}
+                    </Button>
+                  </Link>
                 </div>
-                <Link href="/seller-dashboard/service-area">
-                  <Button className="w-full sm:w-auto bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-lg px-6 h-11 font-medium shadow-sm active:scale-95 transition-all">
-                    {t("manage_coverage_pincode")}
-                  </Button>
-                </Link>
               </Card>
-              */}
+            </section>
 
-              <Card className="bg-white p-6 rounded-2xl shadow-sm flex flex-col justify-between h-full border border-gray-100 hover:border-orange-200 transition-colors">
+            {/* 3. Operations */}
+            <section className="h-full">
+              <div className="flex items-center gap-2 mb-4 text-[#1E3A8A]">
+                <Settings className="h-5 w-5" />
+                <h2 className="text-xl font-bold tracking-tight">
+                  {t("operations")}
+                </h2>
+              </div>
+              <Card className="bg-white p-6 rounded-2xl shadow-sm flex flex-col justify-between border border-gray-100 hover:border-orange-200 transition-colors h-[calc(100%-2.5rem)]">
                 <div className="mb-6">
                   <div className="flex items-center gap-3 text-[#173072] mb-3">
                     <div className="bg-blue-50 p-2 rounded-lg">
@@ -451,14 +428,14 @@ export default function SellerDashboardPage() {
                     {t("store_setting_desc")}
                   </p>
                 </div>
-                <Link href="/seller-dashboard/settings">
-                  <Button className="w-full sm:w-auto bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-lg px-6 h-11 font-medium shadow-sm active:scale-95 transition-all">
+                <Link href="/seller-dashboard/settings" className="w-full">
+                  <Button className="w-full bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-lg h-11 font-medium shadow-sm active:scale-95 transition-all">
                     {t("manage_store_settings")}
                   </Button>
                 </Link>
               </Card>
-            </div>
-          </section>
+            </section>
+          </div>
 
           {/* 4. Relations */}
           <section>
@@ -643,7 +620,7 @@ export default function SellerDashboardPage() {
         </div>
 
         {/* Sidebar Column (Notifications) */}
-        <div className="hidden lg:block space-y-8 h-full">
+        <div className="flex flex-col space-y-8 h-full">
           <div className="sticky top-24 pt-4 lg:pt-0">
             <div className="flex items-center gap-2 mb-4">
               <Bell className="h-5 w-5 text-[#173072]" />
