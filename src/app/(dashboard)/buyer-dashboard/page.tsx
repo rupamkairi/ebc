@@ -268,7 +268,7 @@ export default function BuyerDashboardPage() {
                   {t("notifications")}
                 </h2>
               </div>
-              <NotificationInbox userType="BUYER" hideHeader />
+              <NotificationInbox userType="BUYER" />
             </div>
           </div>
         </div>

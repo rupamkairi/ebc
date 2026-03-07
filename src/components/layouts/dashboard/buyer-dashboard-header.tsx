@@ -17,11 +17,16 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { UnifiedHeader } from "../../shared/unified-header";
-import { useState } from "react";
+import * as React from "react";
 import Link from "next/link";
 
 export default function BuyerDashboardHeader() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const centerContent = (
     <nav className="hidden lg:flex items-center gap-6">
@@ -114,6 +119,17 @@ export default function BuyerDashboardHeader() {
       </Sheet>
     </div>
   );
+
+  if (!mounted) {
+    return (
+      <UnifiedHeader
+        variant="buyer"
+        centerContent={<div className="hidden lg:flex w-full" />}
+        rightContent={<div className="h-10 w-40 bg-slate-100 animate-pulse rounded-full" />}
+      />
+    );
+  }
+
 
   return (
     <UnifiedHeader

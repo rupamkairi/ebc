@@ -63,6 +63,8 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
   const createEventMutation = useCreateEventMutation();
   const updateEventMutation = useUpdateEventMutation();
   const publishEventMutation = usePublishEventMutation();
+  const isApproved =
+    initialData?.verificationStatus === VERIFICATION_STATUS.APPROVED;
 
   const { data: pricingData, isLoading: isLoadingPricing } =
     useLeadPricing("EVENT");
@@ -74,7 +76,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
         name: initialData?.name || "",
         description: initialData?.description || "",
         type: (initialData?.type || "RECORDED") as "LIVE" | "RECORDED",
-        isPublic: initialData?.isPublic ?? false,
+        isPublic: initialData?.isPublic ?? true,
         isPhysical: initialData?.isPhysical ?? false,
         isRemote: initialData?.isRemote ?? false,
         startDate: initialData?.startDate || "",
@@ -91,8 +93,8 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
             const isApproved =
               initialData.verificationStatus === VERIFICATION_STATUS.APPROVED;
 
-            // If transitioning to public for the first time after approval, use publish mutation (charges coins)
-            if (isApproved && !initialData.isPublic && value.isPublic) {
+            // If approved but not yet officially published (paid), and user wants it public, use publish mutation
+            if (isApproved && !initialData.publishedAt && value.isPublic) {
               await publishEventMutation.mutateAsync(initialData.id);
               toast.success("Event published successfully!");
             } else {
@@ -122,11 +124,8 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
               })),
               entityId,
             });
-            const isLive = value.type === "LIVE";
             toast.success(
-              isLive
-                ? "Event created and sent for admin approval!"
-                : "Event created successfully! Coins deducted from wallet.",
+              "Event created and sent for admin approval!",
             );
           }
           router.push("/seller-dashboard/conference-hall/events");
@@ -236,6 +235,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                             value={field.state.value}
                             onBlur={field.handleBlur}
                             onChange={(e) => field.handleChange(e.target.value)}
+                            disabled={isApproved}
                             placeholder="e.g. Modern Architecture Webinar"
                           />
                         </div>
@@ -251,6 +251,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                             value={field.state.value}
                             onBlur={field.handleBlur}
                             onChange={(e) => field.handleChange(e.target.value)}
+                            disabled={isApproved}
                             placeholder="What is this event about?"
                             className="min-h-[120px]"
                           />
@@ -268,6 +269,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                               onValueChange={(val: "LIVE" | "RECORDED") =>
                                 field.handleChange(val)
                               }
+                              disabled={isApproved}
                             >
                               <SelectTrigger>
                                 <SelectValue placeholder="Select type" />
@@ -297,11 +299,6 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                             <Switch
                               checked={field.state.value}
                               onCheckedChange={field.handleChange}
-                              disabled={
-                                isLive &&
-                                initialData?.verificationStatus !==
-                                  VERIFICATION_STATUS.APPROVED
-                              }
                             />
                           </div>
                         )}
@@ -334,6 +331,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                                 onChange={(e) =>
                                   field.handleChange(e.target.value)
                                 }
+                                disabled={isApproved}
                               />
                             </div>
                           )}
@@ -348,6 +346,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                                 onChange={(e) =>
                                   field.handleChange(e.target.value)
                                 }
+                                disabled={isApproved}
                               />
                             </div>
                           )}
@@ -370,10 +369,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                               <Switch
                                 checked={field.state.value}
                                 onCheckedChange={field.handleChange}
-                                disabled={
-                                  initialData?.verificationStatus ===
-                                  VERIFICATION_STATUS.APPROVED
-                                }
+                                disabled={isApproved}
                               />
                             </div>
                           )}
@@ -394,10 +390,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                               <Switch
                                 checked={field.state.value}
                                 onCheckedChange={field.handleChange}
-                                disabled={
-                                  initialData?.verificationStatus ===
-                                  VERIFICATION_STATUS.APPROVED
-                                }
+                                disabled={isApproved}
                               />
                             </div>
                           )}
@@ -417,6 +410,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                                     onChange={(e) =>
                                       field.handleChange(e.target.value)
                                     }
+                                    disabled={isApproved}
                                     placeholder="e.g. Ground Floor, EBC Center"
                                   />
                                 </div>
@@ -430,6 +424,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                                     value={field.state.value}
                                     onValueChange={field.handleChange}
                                     placeholder="Search location..."
+                                    disabled={isApproved}
                                   />
                                 </div>
                               )}
@@ -453,24 +448,17 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                                   onChange={(e) =>
                                     field.handleChange(e.target.value)
                                   }
+                                  disabled={isApproved}
                                   placeholder="https://meet.google.com/..."
                                 />
                                 <p className="text-[10px] text-muted-foreground italic">
                                   {field.state.value
                                     ? "You have provided a custom link. Buyers will see this upon joining."
-                                    : "Leave blank to automatically generate a Google Meet link (requires Start/End time)."}
+                                    : "Provide the meeting link for remote attendees."}
                                 </p>
                               </div>
                             )}
                           </form.Field>
-                          {!form.getFieldValue("meetingUrl") && (
-                            <div className="p-3 border border-blue-100 bg-blue-50 rounded-md text-xs text-blue-700">
-                              Choosing &quot;Remote&quot; without a custom link
-                              will automatically sync this event with Google
-                              Calendar and generate a Meeting Link once
-                              published.
-                            </div>
-                          )}
                         </div>
                       )}
                     </CardContent>
@@ -494,6 +482,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                       onUpdate={(regions) =>
                         form.setFieldValue("targetRegions", regions)
                       }
+                      disabled={isApproved}
                     />
                   </CardContent>
                 </Card>
@@ -517,6 +506,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                             <FileUploader
                               type="media"
                               entityId={entityId}
+                              disabled={isApproved}
                               onUploadSuccess={(files) => {
                                 const newIds = files.map((f) => ({
                                   mediaId: f.id,
@@ -533,6 +523,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                             <FileUploader
                               type="document"
                               entityId={entityId}
+                              disabled={isApproved}
                               onUploadSuccess={(files) => {
                                 const newIds = files.map((f) => ({
                                   documentId: f.id,
@@ -561,20 +552,22 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                                     )}
                                     <span>Asset {idx + 1}</span>
                                   </div>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-6 w-6"
-                                    onClick={() => {
-                                      field.handleChange(
-                                        field.state.value.filter(
-                                          (_, i) => i !== idx,
-                                        ),
-                                      );
-                                    }}
-                                  >
-                                    <X className="h-3 w-3" />
-                                  </Button>
+                                  {!isApproved && (
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-6 w-6"
+                                      onClick={() => {
+                                        field.handleChange(
+                                          field.state.value.filter(
+                                            (_, i) => i !== idx,
+                                          ),
+                                        );
+                                      }}
+                                    >
+                                      <X className="h-3 w-3" />
+                                    </Button>
+                                  )}
                                 </div>
                               ))}
                             </div>
@@ -582,64 +575,67 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                         </div>
                       )}
                     </form.Field>
-                  </CardContent>
-                </Card>
+                </CardContent>
+              </Card>
 
-                <Card className="bg-muted/30">
-                  <CardContent className="pt-6">
-                    <div className="space-y-4">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">
-                          Publishing Fee
-                        </span>
-                        <span className="font-semibold text-primary">
-                          {isLoadingPricing ? (
-                            <Loader2 className="h-4 w-4 animate-spin inline-block" />
-                          ) : (
-                            publishingFee
-                          )}{" "}
-                          Coins
-                        </span>
-                      </div>
-                      <div className="p-3 bg-yellow-50 border border-yellow-200 rounded text-[10px] text-yellow-800">
-                        By publishing, you agree that{" "}
-                        {isLoadingPricing ? "the applicable" : publishingFee}{" "}
-                        coins will be deducted from your entity wallet.
-                      </div>
-                      <form.Subscribe
-                        selector={(state) => [
-                          state.canSubmit,
-                          state.isSubmitting,
-                        ]}
-                      >
-                        {([canSubmit, isSubmitting]) => (
-                          <Button
-                            type="submit"
-                            className="w-full gap-2"
-                            disabled={!canSubmit || isSubmitting}
-                            size="lg"
-                          >
-                            {isSubmitting ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              <Save className="h-4 w-4" />
-                            )}
-                            {initialData
-                              ? "Update Event"
-                              : isLive
-                                ? "Save & Request Approval"
-                                : "Publish Event"}
-                          </Button>
-                        )}
-                      </form.Subscribe>
+              <Card className="bg-muted/30">
+                <CardContent className="pt-6">
+                  <div className="space-y-4">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">
+                        Publishing Fee
+                      </span>
+                      <span className="font-semibold text-primary">
+                        {isLoadingPricing ? (
+                          <Loader2 className="h-4 w-4 animate-spin inline-block" />
+                        ) : (
+                          publishingFee
+                        )}{" "}
+                        Coins
+                      </span>
                     </div>
-                  </CardContent>
-                </Card>
-              </div>
+                    <div className="p-3 bg-yellow-50 border border-yellow-200 rounded text-[10px] text-yellow-800">
+                      By publishing, you agree that{" "}
+                      {isLoadingPricing ? "the applicable" : publishingFee}{" "}
+                      coins will be deducted from your entity wallet.
+                    </div>
+                    <form.Subscribe
+                      selector={(state) => [
+                        state.canSubmit,
+                        state.isSubmitting,
+                        state.values.isPublic,
+                      ]}
+                    >
+                      {([canSubmit, isSubmitting, isPublic]) => (
+                        <Button
+                          type="submit"
+                          className="w-full gap-2"
+                          disabled={(!canSubmit || isSubmitting) || (isApproved && !initialData?.isPublic && !form.getFieldValue('isPublic'))}
+                          size="lg"
+                        >
+                          {isSubmitting ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Save className="h-4 w-4" />
+                          )}
+                          {initialData
+                            ? isApproved &&
+                              !initialData.publishedAt &&
+                              isPublic
+                              ? "Publish Event"
+                              : "Update Event"
+                            : "Save & Request Approval"}
+                        </Button>
+                      )}
+                    </form.Subscribe>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          );
-        }}
-      </form.Subscribe>
-    </form>
-  );
+          </div>
+        );
+      }}
+    </form.Subscribe>
+  </form>
+);
 }

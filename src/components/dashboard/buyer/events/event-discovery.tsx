@@ -21,35 +21,50 @@ import {
   Video,
   Search,
   Users,
-  Sparkles,
   Unlock,
   Loader2,
+  Sparkles,
+  Building2,
+  ExternalLink,
+  Clock,
+  ArrowUpRight,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { ConferenceHallEvent } from "@/types/conference-hall";
 import { format } from "date-fns";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 import Image from "next/image";
 
 interface EventDiscoveryProps {
   pincodeId: string;
+  isPublic?: boolean;
 }
 
-export function EventDiscovery({ pincodeId }: EventDiscoveryProps) {
+export function EventDiscovery({ pincodeId, isPublic = true }: EventDiscoveryProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [timeframe, setTimeframe] = useState<"FUTURE" | "PAST" | "ALL">(
-    "FUTURE",
+    "ALL",
   );
+  const [selectedEvent, setSelectedEvent] = useState<ConferenceHallEvent | null>(null);
 
   const { data: entities } = useEntitiesQuery();
   const entity = entities?.[0]; // Context entity if available
 
   const { data: events, isLoading } = useEventsQuery({
-    isPublic: true,
     search: searchTerm,
-    timeframe: timeframe,
+    timeframe: timeframe === "PAST" ? "ALL" : timeframe,
+    type: timeframe === "PAST" ? "RECORDED" : undefined,
     targeting: { pincodeId },
   });
 
@@ -201,14 +216,10 @@ export function EventDiscovery({ pincodeId }: EventDiscoveryProps) {
                   <Button
                     variant="default"
                     className="w-full h-11 gap-2 rounded-xl bg-green-600 hover:bg-green-700 shadow-lg shadow-green-200"
-                    asChild
+                    onClick={() => setSelectedEvent(event)}
                   >
-                    <a
-                      href={`/buyer-dashboard/conference-hall/events/${event.id}`}
-                    >
-                      <Unlock className="h-4 w-4" />
-                      Access Event Area
-                    </a>
+                    <Unlock className="h-4 w-4" />
+                    Access Event Area
                   </Button>
                 ) : (
                   <Button
@@ -237,6 +248,157 @@ export function EventDiscovery({ pincodeId }: EventDiscoveryProps) {
           ))}
         </div>
       )}
+
+      {/* Event Details Modal */}
+      <Dialog open={!!selectedEvent} onOpenChange={(open) => !open && setSelectedEvent(null)}>
+        <DialogContent className="max-w-2xl p-0 overflow-hidden border-none rounded-3xl shadow-2xl">
+          {selectedEvent && (
+            <div className="flex flex-col">
+              {/* Header Banner */}
+              <div className={cn(
+                "p-8 text-white relative overflow-hidden",
+                selectedEvent.type === "LIVE" ? "bg-red-600" : "bg-[#3D52A0]"
+              )}>
+                <div className="absolute top-0 right-0 p-8 opacity-10">
+                  <Sparkles className="h-32 w-32" />
+                </div>
+                
+                <div className="flex flex-wrap gap-2 mb-4">
+                  <Badge className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-md px-3 py-1 text-xs font-bold">
+                    {selectedEvent.type}
+                  </Badge>
+                  {selectedEvent.isRemote && (
+                    <Badge className="bg-blue-400/30 text-white border-white/30 backdrop-blur-md px-3 py-1 text-xs font-bold">
+                      Online
+                    </Badge>
+                  )}
+                  {selectedEvent.isPhysical && (
+                    <Badge className="bg-green-400/30 text-white border-white/30 backdrop-blur-md px-3 py-1 text-xs font-bold">
+                      Physical
+                    </Badge>
+                  )}
+                </div>
+
+                <DialogHeader className="text-left space-y-2 relative z-10">
+                  <DialogTitle className="text-3xl md:text-4xl font-black tracking-tight leading-tight">
+                    {selectedEvent.name}
+                  </DialogTitle>
+                </DialogHeader>
+              </div>
+
+              {/* Modal Body */}
+              <div className="p-8 space-y-8 bg-linear-to-b from-white to-slate-50">
+                {/* Description Section */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 text-[#3D52A0]">
+                    <div className="h-px flex-1 bg-slate-200" />
+                    <span className="text-[10px] font-black uppercase tracking-widest bg-slate-100 px-3 py-1 rounded-full">
+                      About this event
+                    </span>
+                    <div className="h-px flex-1 bg-slate-200" />
+                  </div>
+                  <DialogDescription className="text-base text-slate-600 leading-relaxed font-medium">
+                    {selectedEvent.description || "No description provided for this event."}
+                  </DialogDescription>
+                </div>
+
+                {/* Info Cards Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Time Card */}
+                  <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex items-start gap-4 hover:border-primary/30 transition-colors group">
+                    <div className="h-12 w-12 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-600 group-hover:bg-orange-100 transition-colors">
+                      <Clock className="h-6 w-6" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Date & Time</p>
+                      <p className="text-sm font-bold text-slate-700">
+                        {selectedEvent.startDate 
+                          ? format(new Date(selectedEvent.startDate), "PPP p")
+                          : "TBD"}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Location Card */}
+                  <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex items-start gap-4 hover:border-primary/30 transition-colors group">
+                    <div className="h-12 w-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
+                      <MapPin className="h-6 w-6" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        {selectedEvent.isRemote ? "Meeting Link" : "Venue Location"}
+                      </p>
+                      <p className="text-sm font-bold text-slate-700 line-clamp-2 break-all">
+                        {selectedEvent.isRemote 
+                          ? (selectedEvent.meetingUrl || (selectedEvent.location || "Join via URL"))
+                          : (selectedEvent.location || "Venue TBD")}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Attachments Section if any */}
+                {selectedEvent.attachments && selectedEvent.attachments.length > 0 && (
+                  <div className="space-y-3">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Resources & Materials</p>
+                    <div className="grid grid-cols-1 gap-2">
+                      {selectedEvent.attachments.map((att) => (
+                        <a 
+                          key={att.id}
+                          href={att.media?.url || att.document?.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100 hover:bg-white hover:border-primary/30 transition-all group"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="h-8 w-8 rounded-lg bg-white flex items-center justify-center shadow-sm">
+                              <Video className="h-4 w-4 text-slate-400 group-hover:text-primary transition-colors" />
+                            </div>
+                            <span className="text-sm font-bold text-slate-600">{att.media?.name || att.document?.name || "Attachment"}</span>
+                          </div>
+                          <ArrowUpRight className="h-4 w-4 text-slate-300 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Footer Section */}
+                <div className="pt-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400">
+                      <Building2 className="h-5 w-5" />
+                    </div>
+                    <div className="space-y-0.5 text-center md:text-left">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Hosted by</p>
+                      <p className="text-sm font-black text-[#173072] uppercase">{selectedEvent.entity?.name}</p>
+                    </div>
+                  </div>
+                  
+                  {selectedEvent.isRemote && selectedEvent.meetingUrl ? (
+                    <Button
+                      className="rounded-2xl h-12 px-8 bg-red-600 hover:bg-red-700 text-white font-black gap-2 shadow-lg shadow-red-100 w-full md:w-auto"
+                      asChild
+                    >
+                      <a href={selectedEvent.meetingUrl} target="_blank" rel="noopener noreferrer">
+                        Join Meeting Now
+                        <ExternalLink size={18} />
+                      </a>
+                    </Button>
+                  ) : (
+                    <Button
+                      className="rounded-2xl h-12 px-8 bg-[#FFA500] hover:bg-[#E69500] text-white font-black gap-2 shadow-lg shadow-amber-200 w-full md:w-auto"
+                      onClick={() => setSelectedEvent(null)}
+                    >
+                      Ok
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

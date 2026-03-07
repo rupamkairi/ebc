@@ -5,7 +5,6 @@ import {
   useMarkNotificationReadMutation,
 } from "@/queries/notificationQueries";
 import { Notification } from "@/types/notification";
-import { USER_ROLE, NOTIFICATION_TYPE } from "@/constants/enums";
 import { formatDistanceToNow } from "date-fns";
 import {
   Bell,
@@ -15,17 +14,17 @@ import {
   MessageSquare,
   Briefcase,
   CheckCircle2,
+  GraduationCap,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface NotificationInboxProps {
   userType: "ADMIN" | "SELLER" | "BUYER";
   className?: string;
   limit?: number;
-  hideHeader?: boolean;
   /** Set of enquiry IDs that have already been responded to — used to update the badge label */
   respondedEnquiryIds?: Set<string>;
 }
@@ -34,7 +33,6 @@ export function NotificationInbox({
   userType,
   className,
   limit,
-  hideHeader = false,
   respondedEnquiryIds,
 }: NotificationInboxProps) {
   const { data: notifications = [], isLoading } = useNotificationsQuery();
@@ -78,6 +76,12 @@ export function NotificationInbox({
         const id = (metadata?.appointmentId as string) || activityId;
         return id ? `/buyer-dashboard/appointments/${id}` : null;
       }
+      if (type.includes("OFFER")) {
+        return "/conference-hall?tab=offers";
+      }
+      if (type.includes("EVENT")) {
+        return "/conference-hall?tab=events";
+      }
     }
 
     if (role === "ADMIN") {
@@ -96,6 +100,7 @@ export function NotificationInbox({
     if (type.includes("APPOINTMENT")) return Calendar;
     if (type.includes("QUOTATION")) return MessageSquare;
     if (type.includes("ENTITY")) return Briefcase;
+    if (type.includes("EVENT")) return GraduationCap;
     return Bell;
   };
 

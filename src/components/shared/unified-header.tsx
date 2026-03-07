@@ -50,6 +50,11 @@ export function UnifiedHeader({
 
   const displayName = mainEntity?.name || user?.name || "Member";
   const { logout } = useAuthStore();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -85,7 +90,7 @@ export function UnifiedHeader({
       <Container size="xl">
         <div className="flex h-24 items-center justify-between">
           <div className="flex shrink-0 items-center">
-            {leftMobileMenu}
+            {mounted && leftMobileMenu}
             <Link href="/" className="flex items-center">
               <div className="relative h-16 w-44">
                 <Image
@@ -107,7 +112,7 @@ export function UnifiedHeader({
             <div className="hidden lg:flex items-center gap-3">
               {rightContent}
 
-              {!user && variant === "public" && (
+              {mounted && !user && variant === "public" && (
                 <>
                   <span className="text-sm font-medium text-slate-600 mr-1">
                     Join As
@@ -126,7 +131,7 @@ export function UnifiedHeader({
               )}
             </div>
 
-            {user && !isAdmin && (
+            {mounted && user && !isAdmin && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Avatar className="h-10 w-10 border-2 border-[#FFA500] hover:opacity-80 transition-opacity cursor-pointer">
@@ -184,7 +189,7 @@ export function UnifiedHeader({
               </DropdownMenu>
             )}
 
-            {mobileMenu}
+            {mounted && mobileMenu}
           </div>
         </div>
       </Container>

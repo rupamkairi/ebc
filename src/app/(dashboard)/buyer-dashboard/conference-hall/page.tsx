@@ -7,9 +7,42 @@ import { GraduationCap, Tag, Sofa } from "lucide-react";
 import { ForumSection } from "@/components/shared/forum";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useSessionQuery } from "@/queries/authQueries";
 
-export default function BuyerConferenceHallPage() {
+function BuyerConferenceHallContent() {
   const { t } = useLanguage();
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
+  const [activeTab, setActiveTab] = useState(() => {
+    return tabParam === "offers" || tabParam === "lounge" || tabParam === "events"
+      ? tabParam
+      : "events";
+  });
+
+  const { data: session } = useSessionQuery();
+  const pincodeId = session?.user?.pincodeId;
+
+  // Sync tab from URL if it changes after mount
+  useEffect(() => {
+    if (
+      tabParam &&
+      tabParam !== activeTab &&
+      (tabParam === "offers" || tabParam === "lounge" || tabParam === "events")
+    ) {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam, activeTab]);
+
+  if (!pincodeId) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="flex-1 max-w-7xl mx-auto w-full py-6 md:py-12 px-4">
       {/* Header Section */}
@@ -22,7 +55,7 @@ export default function BuyerConferenceHallPage() {
         </p>
       </div>
 
-      <Tabs defaultValue="events" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         {/* Custom Styled Tabs */}
         <div className="bg-[#D1D5DB] rounded-t-2xl p-0 overflow-x-auto overflow-y-hidden no-scrollbar border-x border-t border-muted/50">
           <TabsList className="bg-transparent h-16 min-w-max md:w-full justify-start rounded-none p-0 flex">
@@ -66,25 +99,36 @@ export default function BuyerConferenceHallPage() {
         <div className="bg-white border-2 border-[#3D52A0] rounded-b-2xl min-h-[500px] shadow-xl overflow-hidden">
           <TabsContent value="events" className="m-0 focus-visible:outline-none">
             <div className="p-4 md:p-12">
-              <EventDiscovery />
+              <EventDiscovery pincodeId={pincodeId} isPublic={undefined} />
             </div>
           </TabsContent>
 
           <TabsContent value="offers" className="m-0 focus-visible:outline-none">
             <div className="p-4 md:p-12">
-              <OfferDiscovery />
+              <OfferDiscovery pincodeId={pincodeId} isPublic={undefined} />
             </div>
           </TabsContent>
 
           <TabsContent value="lounge" className="m-0 focus-visible:outline-none">
             <div className="p-4 md:p-12">
               <div className="max-w-4xl mx-auto">
-                <ForumSection slug="conference-hall-general" />
+                <ForumSection
+                  slug="conference-hall-general"
+                  pincodeId={pincodeId}
+                />
               </div>
             </div>
           </TabsContent>
         </div>
       </Tabs>
     </div>
+  );
+}
+
+export default function BuyerConferenceHallPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#F8F9FC]" />}>
+      <BuyerConferenceHallContent />
+    </Suspense>
   );
 }

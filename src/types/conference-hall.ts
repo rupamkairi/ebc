@@ -24,6 +24,7 @@ export interface ConferenceHallEvent {
   endDate: string | null;
   location: string | null;
   meetingUrl: string | null;
+  publishedAt: string | null;
   createdAt: string;
   updatedAt: string;
   entityId: string;

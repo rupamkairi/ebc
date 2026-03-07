@@ -14,13 +14,34 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect } from "react";
 
-export default function ConferenceHallPage() {
+function ConferenceHallContent() {
   const { t } = useLanguage();
 
   // Lifted Pincode State
   const [manualPincode, setManualPincode] = useState("");
   const [appliedPincode, setAppliedPincode] = useState("");
+
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
+  const [activeTab, setActiveTab] = useState(() => {
+    return tabParam === "offers" || tabParam === "lounge" || tabParam === "events"
+      ? tabParam
+      : "events";
+  });
+
+  // Sync tab from URL if it changes after mount
+  useEffect(() => {
+    if (
+      tabParam &&
+      tabParam !== activeTab &&
+      (tabParam === "offers" || tabParam === "lounge" || tabParam === "events")
+    ) {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam, activeTab]);
 
   const { data: session, isLoading: sessionLoading } = useSessionQuery();
   const hasSession = !!session?.user;
@@ -100,7 +121,11 @@ export default function ConferenceHallPage() {
                     <MapPin className="h-4 w-4" />
                     <span>
                       Viewing contents for Pincode:{" "}
-                      <strong>{effectivePincode || "Your Location"}</strong>
+                      <strong>
+                        {session?.user?.pincode?.pincode ||
+                          appliedPincode ||
+                          "Your Location"}
+                      </strong>
                     </span>
                   </div>
                   {!hasSession && (
@@ -122,7 +147,11 @@ export default function ConferenceHallPage() {
 
             {/* Conditionally Render Content Based on Pincode */}
             {effectivePincode ? (
-              <Tabs defaultValue="events" className="w-full">
+              <Tabs
+                value={activeTab}
+                onValueChange={setActiveTab}
+                className="w-full"
+              >
                 {/* Custom Styled Tabs Table-like Header */}
                 <div className="bg-[#D1D5DB] rounded-t-2xl p-0 overflow-x-auto overflow-y-hidden no-scrollbar border-x border-t border-muted/50">
                   <TabsList className="bg-transparent h-16 min-w-max md:w-full justify-start rounded-none p-0 flex">
@@ -202,5 +231,13 @@ export default function ConferenceHallPage() {
         </main>
       </div>
     </LayoutProvider>
+  );
+}
+
+export default function ConferenceHallPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#F8F9FC]" />}>
+      <ConferenceHallContent />
+    </Suspense>
   );
 }

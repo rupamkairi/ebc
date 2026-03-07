@@ -52,6 +52,7 @@ interface FileUploaderProps {
   crop?: boolean;
   type?: "media" | "document";
   entityId?: string;
+  disabled?: boolean;
   children?: React.ReactNode;
 }
 
@@ -65,6 +66,7 @@ export function FileUploader({
   crop = variant === "single",
   type = "media",
   entityId,
+  disabled = false,
   children,
 }: FileUploaderProps) {
   const isSingle = variant === "single";
@@ -286,7 +288,12 @@ export function FileUploader({
         ) : (
           showTrigger && (
             <DialogTrigger asChild>
-              <Button variant={buttonVariant} size="sm" className="gap-2">
+              <Button
+                variant={buttonVariant}
+                size="sm"
+                className="gap-2"
+                disabled={disabled}
+              >
                 <UploadCloud className="size-4" />
                 <span className="hidden sm:inline">{defaultLabel}</span>
               </Button>
