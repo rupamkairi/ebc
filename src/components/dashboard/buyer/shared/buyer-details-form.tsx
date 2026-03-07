@@ -23,7 +23,7 @@ import { usePrefetchBuyerDetails } from "@/hooks/usePrefetchBuyerDetails";
 const buyerDetailsSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
-  phoneNumber: z.string().min(10, { message: "Phone number must be valid." }),
+  phoneNumber: z.string().length(10, { message: "Phone number must be exactly 10 digits." }),
   address: z
     .string()
     .min(5, { message: "Address must be at least 5 characters." }),
@@ -190,18 +190,29 @@ export function BuyerDetailsForm({
                     <FormControl>
                       <div className="relative">
                         <Phone className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-[#3D52A0]/30" />
-                        <Input
-                          placeholder="Enter Phone Number"
-                          {...field}
-                          className={cn(
-                            inputClass,
-                            "pl-10",
-                            hasSession && "opacity-70 cursor-not-allowed",
-                          )}
-                          disabled={hasSession}
-                        />
+                        <div className="flex w-full">
+                          <span className="flex items-center px-3 rounded-l-xl text-sm font-medium bg-[#3D52A0]/10 border border-r-0 border-[#3D52A0]/20 text-[#3D52A0] shrink-0">
+                            +91
+                          </span>
+                          <Input
+                            type="tel"
+                            placeholder="Enter 10-digit mobile number"
+                            {...field}
+                            value={field.value.replace(/\D/g, "").slice(0, 10)}
+                            onChange={(e) => field.onChange(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                            className={cn(
+                              inputClass,
+                              "pl-3 rounded-l-none",
+                              hasSession && "opacity-70 cursor-not-allowed",
+                            )}
+                            disabled={hasSession}
+                          />
+                        </div>
                       </div>
                     </FormControl>
+                    <p className="text-xs text-[#3D52A0]/60">
+                      Enter 10-digit mobile number (digits only, no spaces or special characters)
+                    </p>
                     <FormMessage />
                   </FormItem>
                 )}

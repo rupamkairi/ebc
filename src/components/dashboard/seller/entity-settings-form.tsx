@@ -53,7 +53,11 @@ export function EntitySettingsForm() {
       try {
         await updateEntityMutation.mutateAsync({
           id: entity.id,
-          data: value as UpdateEntityRequest,
+          data: {
+            ...value,
+            primaryContactNumber: value.primaryContactNumber ? `+91${value.primaryContactNumber}` : "",
+            secondaryContactNumber: value.secondaryContactNumber ? `+91${value.secondaryContactNumber}` : "",
+          } as UpdateEntityRequest,
         });
         toast.success("Business profile updated successfully!");
       } catch {
@@ -68,8 +72,8 @@ export function EntitySettingsForm() {
         name: entity.name || "",
         legalName: entity.legalName || "",
         description: entity.description || "",
-        primaryContactNumber: entity.primaryContactNumber || "",
-        secondaryContactNumber: entity.secondaryContactNumber || "",
+        primaryContactNumber: (entity.primaryContactNumber || "").replace(/^\+91/, ""),
+        secondaryContactNumber: (entity.secondaryContactNumber || "").replace(/^\+91/, ""),
         contactEmail: entity.contactEmail || "",
         supportEmail: entity.supportEmail || "",
         addressLine1: entity.addressLine1 || "",
@@ -206,14 +210,23 @@ export function EntitySettingsForm() {
                 {(field) => (
                   <div className="space-y-2">
                     <Label htmlFor={field.name} className="text-[#173072] text-xs font-bold uppercase tracking-wide">Phone Number</Label>
-                    <Input
-                      id={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="1234567890"
-                      className="border-[#173072]/30 focus-visible:ring-[#173072] h-12 bg-white"
-                    />
+                    <div className="flex gap-0 w-full">
+                      <span className="flex items-center px-4 rounded-l-md text-sm font-medium border border-r-0 border-[#173072]/30 bg-muted text-muted-foreground shrink-0">
+                        +91
+                      </span>
+                      <Input
+                        id={field.name}
+                        type="tel"
+                        value={field.state.value.replace(/\D/g, "").slice(0, 10)}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                        placeholder="Enter 10-digit mobile number"
+                        className="border-[#173072]/30 focus-visible:ring-[#173072] h-12 bg-white rounded-l-none"
+                      />
+                    </div>
+                    <p className="text-xs text-[#173072]/60">
+                      Enter 10-digit mobile number (digits only)
+                    </p>
                   </div>
                 )}
               </form.Field>
@@ -222,14 +235,23 @@ export function EntitySettingsForm() {
                 {(field) => (
                   <div className="space-y-2">
                     <Label htmlFor={field.name} className="text-[#173072] text-xs font-bold uppercase tracking-wide">Secondary Phone Number</Label>
-                    <Input
-                      id={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="1234567890"
-                      className="border-[#173072]/30 focus-visible:ring-[#173072] h-12 bg-white"
-                    />
+                    <div className="flex gap-0 w-full">
+                      <span className="flex items-center px-4 rounded-l-md text-sm font-medium border border-r-0 border-[#173072]/30 bg-muted text-muted-foreground shrink-0">
+                        +91
+                      </span>
+                      <Input
+                        id={field.name}
+                        type="tel"
+                        value={field.state.value.replace(/\D/g, "").slice(0, 10)}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                        placeholder="Enter 10-digit mobile number"
+                        className="border-[#173072]/30 focus-visible:ring-[#173072] h-12 bg-white rounded-l-none"
+                      />
+                    </div>
+                    <p className="text-xs text-[#173072]/60">
+                      Enter 10-digit mobile number (digits only)
+                    </p>
                   </div>
                 )}
               </form.Field>

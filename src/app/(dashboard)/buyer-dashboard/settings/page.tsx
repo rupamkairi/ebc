@@ -12,26 +12,25 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, Trash2 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import { useUpdateProfileMutation } from "@/queries/authQueries";
 import { toast } from "sonner";
 import { NotificationChannelList } from "@/components/dashboard/notifications/notification-channel-list";
 import { PincodeSearchAutocomplete } from "@/components/autocompletes/pincode-search-autocomplete";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 
 export default function SettingsPage() {
   const { user } = useAuthStore();
   const updateProfile = useUpdateProfileMutation();
   const [pincodeId, setPincodeId] = useState(user?.pincodeId || "");
+  const [phone, setPhone] = useState(user?.phone?.replace(/^\+91/, "") || "");
   const { t } = useLanguage();
 
-  useEffect(() => {
-    if (user?.pincodeId) {
-      setPincodeId(user.pincodeId);
-    }
-  }, [user?.pincodeId]);
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, "").slice(0, 10);
+    setPhone(value);
+  };
 
   const handleUpdateProfile = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -39,7 +38,7 @@ export default function SettingsPage() {
     const data = {
       name: (formData.get("name") as string).trim(),
       email: (formData.get("email") as string) || undefined,
-      phone: (formData.get("phone") as string) || undefined,
+      phone: phone ? `+91${phone}` : undefined,
       pincodeId: pincodeId || undefined,
     };
 
@@ -91,13 +90,23 @@ export default function SettingsPage() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="phone">{t("phone_field")}</Label>
-                    <Input
-                      id="phone"
-                      name="phone"
-                      type="tel"
-                      placeholder={t("enter_phone_placeholder")}
-                      defaultValue={user?.phone || ""}
-                    />
+                    <div className="flex gap-0 w-full">
+                      <span className="flex items-center px-4 rounded-l-md text-sm font-medium border bg-muted text-muted-foreground">
+                        +91
+                      </span>
+                      <Input
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        placeholder="Enter 10-digit mobile number"
+                        value={phone}
+                        onChange={handlePhoneChange}
+                        className="rounded-l-none"
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Enter 10-digit mobile number (digits only, no spaces or special characters)
+                    </p>
                   </div>
                   <div className="space-y-2 md:col-span-1">
                     <Label>{t("pincode_field")}</Label>

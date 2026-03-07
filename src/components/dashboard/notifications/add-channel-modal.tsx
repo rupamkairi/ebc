@@ -133,7 +133,7 @@ export function AddChannelModal({
   };
 
   const validatePhone = (phone: string) => {
-    const re = /^\+?[1-9]\d{1,14}$/;
+    const re = /^(\+91)?[0-9]{10}$/;
     return re.test(phone);
   };
 
@@ -266,14 +266,25 @@ export function AddChannelModal({
                             onChange={(e) => field.handleChange(e.target.value)}
                           />
                         ) : (
-                          <Input
-                            id="phone-destination"
-                            type="tel"
-                            placeholder="+91..."
-                            value={field.state.value}
-                            onBlur={field.handleBlur}
-                            onChange={(e) => field.handleChange(e.target.value)}
-                          />
+                          <div className="space-y-1">
+                            <div className="flex gap-0 w-full">
+                              <span className="flex items-center px-4 rounded-l-md text-sm font-medium border bg-muted text-muted-foreground shrink-0">
+                                +91
+                              </span>
+                              <Input
+                                id="phone-destination"
+                                type="tel"
+                                placeholder="Enter 10-digit mobile number"
+                                value={field.state.value.replace(/\D/g, "").slice(0, 10)}
+                                onBlur={field.handleBlur}
+                                onChange={(e) => field.handleChange(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                                className="rounded-l-none"
+                              />
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              Enter 10-digit mobile number (digits only, no spaces or special characters)
+                            </p>
+                          </div>
                         )}
 
                         {field.state.meta.errors && (

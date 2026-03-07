@@ -56,7 +56,7 @@ export function OnboardingForm() {
       legalName: "",
       description: "",
       primaryContactNumber:
-        (user as { phoneNumber?: string })?.phoneNumber || "",
+        ((user as { phoneNumber?: string })?.phoneNumber || "").replace(/^\+91/, ""),
       secondaryContactNumber: "",
       contactEmail: user?.email || "",
       supportEmail: "",
@@ -73,7 +73,11 @@ export function OnboardingForm() {
     },
     onSubmit: async ({ value }) => {
       try {
-        await createEntityMutation.mutateAsync(value);
+        await createEntityMutation.mutateAsync({
+          ...value,
+          primaryContactNumber: value.primaryContactNumber ? `+91${value.primaryContactNumber}` : "",
+          secondaryContactNumber: value.secondaryContactNumber ? `+91${value.secondaryContactNumber}` : "",
+        });
         toast.success("Business profile created successfully!");
         router.push("/seller-dashboard");
       } catch (error) {
@@ -230,10 +234,21 @@ export function OnboardingForm() {
                   {(field) => (
                     <Field>
                       <FieldLabel>{t("primary_phone")}</FieldLabel>
-                      <Input
-                        value={field.state.value}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                      />
+                      <div className="flex gap-0 w-full">
+                        <span className="flex items-center px-4 rounded-l-md text-sm font-medium border bg-muted text-muted-foreground shrink-0">
+                          +91
+                        </span>
+                        <Input
+                          type="tel"
+                          placeholder="Enter 10-digit mobile number"
+                          value={field.state.value.replace(/\D/g, "").slice(0, 10)}
+                          onChange={(e) => field.handleChange(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                          className="rounded-l-none"
+                        />
+                      </div>
+                      <FieldDescription>
+                        Enter 10-digit mobile number (digits only)
+                      </FieldDescription>
                     </Field>
                   )}
                 </form.Field>
@@ -241,10 +256,21 @@ export function OnboardingForm() {
                   {(field) => (
                     <Field>
                       <FieldLabel>{t("secondary_phone")}</FieldLabel>
-                      <Input
-                        value={field.state.value}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                      />
+                      <div className="flex gap-0 w-full">
+                        <span className="flex items-center px-4 rounded-l-md text-sm font-medium border bg-muted text-muted-foreground shrink-0">
+                          +91
+                        </span>
+                        <Input
+                          type="tel"
+                          placeholder="Enter 10-digit mobile number"
+                          value={field.state.value.replace(/\D/g, "").slice(0, 10)}
+                          onChange={(e) => field.handleChange(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                          className="rounded-l-none"
+                        />
+                      </div>
+                      <FieldDescription>
+                        Enter 10-digit mobile number (digits only)
+                      </FieldDescription>
                     </Field>
                   )}
                 </form.Field>
