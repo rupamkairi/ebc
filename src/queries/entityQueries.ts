@@ -1,6 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuthStore } from "@/store/authStore";
 import { entityService } from "@/services/entityService";
-import { CreateEntityRequest, UpdateEntityRequest, VerifyEntityRequest } from "@/types/entity";
+import {
+  CreateEntityRequest,
+  UpdateEntityRequest,
+  VerifyEntityRequest,
+} from "@/types/entity";
 
 export const entityKeys = {
   all: ["entities"] as const,
@@ -9,9 +14,11 @@ export const entityKeys = {
 };
 
 export function useEntitiesQuery() {
+  const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: entityKeys.lists(),
     queryFn: () => entityService.getAll(),
+    enabled: !!token,
   });
 }
 

@@ -22,7 +22,9 @@ export const useAuthStore = create<AuthState>()(
       logout: () => {
         set({ token: null, user: null });
         if (typeof window !== "undefined") {
-          window.location.href = "/";
+          if (window.location.pathname !== "/") {
+            window.location.href = "/";
+          }
         }
       },
     }),
