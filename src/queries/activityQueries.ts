@@ -32,6 +32,9 @@ export const activityKeys = {
   quotations: (params: QuotationListParams) =>
     [...activityKeys.all, "quotations", params] as const,
   quotation: (id: string) => [...activityKeys.all, "quotation", id] as const,
+  visits: (params: VisitListParams) =>
+    [...activityKeys.all, "visits", params] as const,
+  visit: (id: string) => [...activityKeys.all, "visit", id] as const,
 };
 
 // Enquiry Hooks
@@ -227,10 +230,18 @@ export function useAcceptQuotationMutation() {
 export function useVisitsQuery(params: VisitListParams = {}) {
   const token = useAuthStore((state) => state.token);
   return useQuery({
-    queryKey: [...activityKeys.all, "visits", params],
+    queryKey: activityKeys.visits(params),
     queryFn: () => activityService.getVisits(params),
     placeholderData: keepPreviousData,
     enabled: !!token,
+  });
+}
+
+export function useVisitQuery(id: string) {
+  return useQuery({
+    queryKey: activityKeys.visit(id),
+    queryFn: () => activityService.getVisit(id),
+    enabled: !!id,
   });
 }
 
@@ -241,6 +252,16 @@ export function useAcceptVisitMutation() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: activityKeys.all });
       queryClient.invalidateQueries({ queryKey: walletKeys.all });
+    },
+  });
+}
+
+export function useCompleteVisitMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => activityService.completeVisit(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: activityKeys.all });
     },
   });
 }

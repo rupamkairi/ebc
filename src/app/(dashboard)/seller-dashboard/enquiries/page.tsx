@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
 import { ACTIVITY_TYPE } from "@/constants/enums";
 import { cn } from "@/lib/utils";
+import { getTimeBadge } from "@/lib/activity-utils";
 import { NotificationInbox } from "@/components/dashboard/notifications/notification-inbox";
 import { Bell } from "lucide-react";
 import { useState } from "react";
@@ -40,23 +41,6 @@ export default function EnquiriesPage() {
       </div>
     );
   }
-
-  const getTimeBadge = (date: string) => {
-    const diffInDays = Math.floor(
-      (new Date().getTime() - new Date(date).getTime()) / (1000 * 3600 * 24),
-    );
-    if (diffInDays < 1)
-      return { label: t("new"), className: "bg-[#FFA500] text-white" };
-    if (diffInDays < 7)
-      return {
-        label: `${diffInDays}d ago`,
-        className: "bg-[#1A237E] text-white",
-      };
-    return {
-      label: `${Math.floor(diffInDays / 7)}w ago`,
-      className: "bg-[#BDBDBD] text-white",
-    };
-  };
 
   // Split into pending (active) vs responded
   const pendingAssignments = assignments.filter(
@@ -133,7 +117,7 @@ export default function EnquiriesPage() {
 
               const firstItem = enq.enquiryLineItems?.[0];
               const details = enq.enquiryDetails?.[0];
-              const badge = getTimeBadge(enq.createdAt);
+              const badge = getTimeBadge(enq.createdAt, t);
 
               return (
                 <Card

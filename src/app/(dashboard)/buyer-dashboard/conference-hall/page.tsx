@@ -3,23 +3,49 @@
 import { EventDiscovery } from "@/components/dashboard/buyer/events/event-discovery";
 import { OfferDiscovery } from "@/components/dashboard/buyer/offers/offer-discovery";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GraduationCap, Tag, Sofa } from "lucide-react";
+import { GraduationCap, Tag, Sofa, MapPin } from "lucide-react";
 import { ForumSection } from "@/components/shared/forum";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useAuthStore } from "@/store/authStore";
+import { useState } from "react";
+import { PincodeSearchAutocomplete } from "@/components/autocompletes/pincode-search-autocomplete";
+import { Label } from "@/components/ui/label";
 
 export default function BuyerConferenceHallPage() {
   const { t } = useLanguage();
+  const { user } = useAuthStore();
+  const [pincodeId, setPincodeId] = useState(user?.pincodeId || "");
+
   return (
     <div className="flex-1 max-w-7xl mx-auto w-full py-6 md:py-12 px-4">
       {/* Header Section */}
-      <div className="text-center space-y-4 mb-12">
-        <h1 className="text-5xl md:text-6xl font-black tracking-tight text-[#3D52A0]">
-          {t("conference_hall_title")}
-        </h1>
-        <p className="text-muted-foreground text-lg md:text-xl font-medium max-w-3xl mx-auto leading-relaxed">
-          {t("conference_hall_desc_new")}
-        </p>
+      <div className="flex flex-col md:flex-row justify-between items-start gap-8 mb-12">
+        <div className="space-y-4 max-w-3xl">
+          <h1 className="text-5xl md:text-6xl font-black tracking-tight text-[#3D52A0]">
+            {t("conference_hall_title")}
+          </h1>
+          <p className="text-muted-foreground text-lg md:text-xl font-medium leading-relaxed">
+            {t("conference_hall_desc_new")}
+          </p>
+        </div>
+
+        {/* Pincode Filter */}
+        <div className="w-full md:w-80 bg-white p-6 rounded-2xl border-2 border-[#3D52A0]/20 shadow-sm space-y-3">
+          <Label className="text-sm font-bold text-[#3D52A0] flex items-center gap-2">
+            <MapPin className="h-4 w-4" />
+            Filter by Location
+          </Label>
+          <PincodeSearchAutocomplete
+            value={pincodeId}
+            onValueChange={setPincodeId}
+            initialRecord={(user?.pincode?.pincode || "") as string}
+            placeholder="Search pincode..."
+          />
+          <p className="text-[10px] text-muted-foreground italic">
+            Showing results for your selected area
+          </p>
+        </div>
       </div>
 
       <Tabs defaultValue="events" className="w-full">
@@ -64,19 +90,27 @@ export default function BuyerConferenceHallPage() {
 
         {/* Content Container */}
         <div className="bg-white border-2 border-[#3D52A0] rounded-b-2xl min-h-[500px] shadow-xl overflow-hidden">
-          <TabsContent value="events" className="m-0 focus-visible:outline-none">
+          <TabsContent
+            value="events"
+            className="m-0 focus-visible:outline-none"
+          >
             <div className="p-4 md:p-12">
-              <EventDiscovery />
+              <EventDiscovery pincodeId={pincodeId} />
             </div>
           </TabsContent>
-
-          <TabsContent value="offers" className="m-0 focus-visible:outline-none">
+          21:
+          <TabsContent
+            value="offers"
+            className="m-0 focus-visible:outline-none"
+          >
             <div className="p-4 md:p-12">
-              <OfferDiscovery />
+              <OfferDiscovery pincodeId={pincodeId} />
             </div>
           </TabsContent>
-
-          <TabsContent value="lounge" className="m-0 focus-visible:outline-none">
+          <TabsContent
+            value="lounge"
+            className="m-0 focus-visible:outline-none"
+          >
             <div className="p-4 md:p-12">
               <div className="max-w-4xl mx-auto">
                 <ForumSection slug="conference-hall-general" />
