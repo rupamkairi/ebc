@@ -174,7 +174,7 @@ export default function SellerDashboardPage() {
                   >
                     <Button
                       variant="outline"
-                      className="w-full sm:w-auto text-white border-white hover:bg-white/20 rounded-lg px-4 h-10 text-sm font-semibold"
+                      className="w-full sm:w-auto bg-white text-[#173072] hover:bg-gray-100 border-0 rounded-lg px-4 h-10 text-sm font-semibold"
                     >
                       <Edit2 className="mr-2 h-4 w-4" />
                       {isService
@@ -182,7 +182,7 @@ export default function SellerDashboardPage() {
                         : t("edit_product_listing")}
                     </Button>
                   </Link>
-                  <Link
+                  {/* <Link
                     href="/seller-dashboard/catalog"
                     className="w-full sm:w-auto"
                   >
@@ -192,7 +192,7 @@ export default function SellerDashboardPage() {
                         ? t("view_service_listing")
                         : t("view_product_listing")}
                     </Button>
-                  </Link>
+                  </Link> */}
                 </div>
               </Card>
 

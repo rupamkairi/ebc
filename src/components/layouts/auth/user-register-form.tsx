@@ -57,14 +57,19 @@ export function UserRegisterForm({
   const [isNewUser, setIsNewUser] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const handleMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, "").slice(0, 10);
+    setMobile(value);
+  };
+
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || name.length < 2) {
       toast.error("Please enter a valid name");
       return;
     }
-    if (!mobile || mobile.length < 10) {
-      toast.error("Please enter a valid mobile number");
+    if (!mobile || mobile.length !== 10) {
+      toast.error("Please enter a valid 10-digit mobile number");
       return;
     }
     if (!pincodeId) {
@@ -74,7 +79,7 @@ export function UserRegisterForm({
 
     setIsLoading(true);
     try {
-      const phone = mobile.startsWith("+") ? mobile : `+91${mobile}`;
+      const phone = `+91${mobile}`;
       const response = await authService.sendOtp({
         phone,
         name,
@@ -111,7 +116,7 @@ export function UserRegisterForm({
 
     setIsLoading(true);
     try {
-      const phone = mobile.startsWith("+") ? mobile : `+91${mobile}`;
+      const phone = `+91${mobile}`;
       const { token } = await authService.verifyOtp({ phone, otp });
       setToken(token);
 
@@ -203,9 +208,9 @@ export function UserRegisterForm({
                       <Input
                         id="mobile"
                         type="tel"
-                        placeholder={t("phone_number")}
+                        placeholder="Enter 10-digit mobile number"
                         value={mobile}
-                        onChange={(e) => setMobile(e.target.value)}
+                        onChange={handleMobileChange}
                         required
                         className={cn(
                           isDarkTheme &&
@@ -213,6 +218,14 @@ export function UserRegisterForm({
                         )}
                       />
                     </div>
+                    <FieldDescription
+                      className={cn(
+                        "text-xs mt-1",
+                        isDarkTheme && "text-white/60",
+                      )}
+                    >
+                      Enter 10-digit mobile number (digits only, no spaces or special characters)
+                    </FieldDescription>
                   </Field>
                   <Field>
                     <PincodeSearchAutocomplete

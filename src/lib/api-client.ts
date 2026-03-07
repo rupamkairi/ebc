@@ -26,7 +26,7 @@ export class ApiError extends Error {
 
 async function fetchClient<T>(
   endpoint: string,
-  options: RequestOptions = {}
+  options: RequestOptions = {},
 ): Promise<T> {
   const {
     body,
@@ -55,7 +55,7 @@ async function fetchClient<T>(
       .filter(([, value]) => value !== undefined)
       .map(
         ([key, value]) =>
-          `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`
+          `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`,
       )
       .join("&");
     if (queryString) {
@@ -77,7 +77,7 @@ async function fetchClient<T>(
     const response = await fetch(url, config);
 
     if (!response.ok) {
-      if (response.status === 401) {
+      if (response.status === 401 && headers["Authorization"]) {
         useAuthStore.getState().logout();
       }
       // Try to parse error message from server

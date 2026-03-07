@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuthStore } from "@/store/authStore";
 import { walletService } from "@/services/walletService";
 import { WalletAdjustmentRequest } from "@/types/wallet";
 
@@ -11,24 +12,29 @@ export const walletKeys = {
 };
 
 export const useWalletDetails = (entityId: string | undefined) => {
+  const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: walletKeys.details(entityId || ""),
     queryFn: () => walletService.getWalletDetails(entityId!),
-    enabled: !!entityId,
+    enabled: !!entityId && !!token,
   });
 };
 
 export const useWalletPackages = () => {
+  const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: walletKeys.packages(),
     queryFn: () => walletService.getPackages(),
+    enabled: !!token,
   });
 };
 
 export const useWalletsQuery = () => {
+  const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: walletKeys.list(),
     queryFn: () => walletService.listWallets(),
+    enabled: !!token,
   });
 };
 

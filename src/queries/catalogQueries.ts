@@ -29,6 +29,7 @@ import {
   UpdateOfferRequest,
   OfferListParams,
 } from "@/types/conference-hall";
+import { useAuthStore } from "@/store/authStore";
 import {
   keepPreviousData,
   useMutation,
@@ -56,10 +57,12 @@ export const catalogKeys = {
 
 // Categories
 export function useCategoriesQuery(params: CategoryListParams = {}) {
+  const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: catalogKeys.categories(params),
     queryFn: () => catalogService.getCategories(params),
     placeholderData: keepPreviousData,
+    enabled: !!token || (params as any).enabled !== false, // Allow public browsing if enabled is not explicitly false
   });
 }
 
@@ -97,10 +100,12 @@ export function useDeleteCategoryMutation() {
 
 // Brands
 export function useBrandsQuery(params: BrandListParams = {}) {
+  const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: catalogKeys.brands(params),
     queryFn: () => catalogService.getBrands(params),
     placeholderData: keepPreviousData,
+    enabled: !!token || (params as any).enabled !== false,
   });
 }
 
@@ -136,10 +141,12 @@ export function useDeleteBrandMutation() {
 
 // Specifications
 export function useSpecificationsQuery(params: SpecificationListParams = {}) {
+  const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: catalogKeys.specifications(params),
     queryFn: () => catalogService.getSpecifications(params),
     placeholderData: keepPreviousData,
+    enabled: !!token,
   });
 }
 
@@ -177,18 +184,21 @@ export function useDeleteSpecificationMutation() {
 
 // Items
 export function useItemsQuery(params: ItemListParams = {}) {
+  const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: catalogKeys.items(params),
     queryFn: () => catalogService.getItems(params),
     placeholderData: keepPreviousData,
+    enabled: !!token,
   });
 }
 
 export function useItemQuery(id: string) {
+  const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: [...catalogKeys.all, "item", id],
     queryFn: () => catalogService.getItem(id),
-    enabled: !!id,
+    enabled: !!id && !!token,
   });
 }
 
@@ -224,18 +234,21 @@ export function useDeleteItemMutation() {
 
 // Item Listings
 export function useItemListingsQuery(params: ItemListingListParams = {}) {
+  const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: catalogKeys.itemListings(params),
     queryFn: () => catalogService.getItemListings(params),
     placeholderData: keepPreviousData,
+    enabled: !!token,
   });
 }
 
 export function useItemListingQuery(id: string) {
+  const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: [...catalogKeys.all, "listing", id],
     queryFn: () => catalogService.getItemListing(id),
-    enabled: !!id,
+    enabled: !!id && !!token,
   });
 }
 
@@ -268,10 +281,12 @@ export function useUpdateItemListingMutation() {
 
 // Item Rates
 export function useItemRatesQuery(params: ItemRateListParams) {
+  const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: catalogKeys.itemRates(params),
     queryFn: () => catalogService.getItemRates(params),
     placeholderData: keepPreviousData,
+    enabled: !!token,
   });
 }
 
@@ -299,10 +314,12 @@ export function useUpdateItemRateMutation() {
 
 // Item Regions
 export function useItemRegionsQuery(params: ItemRegionListParams) {
+  const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: catalogKeys.itemRegions(params),
     queryFn: () => catalogService.getItemRegions(params),
     placeholderData: keepPreviousData,
+    enabled: !!token,
   });
 }
 
@@ -334,10 +351,12 @@ export function useUpdateItemRegionMutation() {
 
 // Offers
 export function useOffersQuery(params: OfferListParams = {}) {
+  const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: [...catalogKeys.all, "offers", params],
     queryFn: () => conferenceHallService.getOffers(params),
     placeholderData: keepPreviousData,
+    enabled: !!token,
   });
 }
 

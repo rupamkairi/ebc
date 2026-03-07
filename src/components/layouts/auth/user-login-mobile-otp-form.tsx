@@ -65,16 +65,21 @@ export function UserLoginMobileOtpForm({
 
   // Auto-login removed to prevent redirection traps during session issues.
 
+  const handleMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, "").slice(0, 10);
+    setMobile(value);
+  };
+
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!mobile || mobile.length < 10) {
-      toast.error("Please enter a valid mobile number");
+    if (!mobile || mobile.length !== 10) {
+      toast.error("Please enter a valid 10-digit mobile number");
       return;
     }
 
     setIsLoading(true);
     try {
-      const phone = mobile.startsWith("+") ? mobile : `+91${mobile}`;
+      const phone = `+91${mobile}`;
       await authService.sendOtp({ phone });
       toast.success("OTP sent successfully");
       setStep("otp");
@@ -96,7 +101,7 @@ export function UserLoginMobileOtpForm({
 
     setIsLoading(true);
     try {
-      const phone = mobile.startsWith("+") ? mobile : `+91${mobile}`;
+      const phone = `+91${mobile}`;
       const { token } = await authService.verifyOtp({ phone, otp });
       setToken(token);
 
@@ -174,9 +179,9 @@ export function UserLoginMobileOtpForm({
                       <Input
                         id="mobile"
                         type="tel"
-                        placeholder={t("phone_number")}
+                        placeholder="Enter 10-digit mobile number"
                         value={mobile}
-                        onChange={(e) => setMobile(e.target.value)}
+                        onChange={handleMobileChange}
                         required
                         className={cn(
                           isDarkTheme &&
@@ -184,6 +189,14 @@ export function UserLoginMobileOtpForm({
                         )}
                       />
                     </div>
+                    <FieldDescription
+                      className={cn(
+                        "text-xs mt-1",
+                        isDarkTheme && "text-white/60",
+                      )}
+                    >
+                      Enter 10-digit mobile number (digits only, no spaces or special characters)
+                    </FieldDescription>
                   </Field>
                   <Field className="pt-2">
                     <Button

@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuthStore } from "@/store/authStore";
 import { notificationService } from "@/services/notificationService";
 import { AddChannelRequest, UpdateChannelRequest } from "@/types/notification";
 import { toast } from "sonner";
@@ -13,9 +14,11 @@ export const useNotificationsQuery = (params?: {
   type?: string;
   activityId?: string;
 }) => {
+  const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: notificationKeys.list(params),
     queryFn: () => notificationService.getNotifications(params),
+    enabled: !!token,
   });
 };
 
@@ -40,9 +43,11 @@ export const useMarkAllNotificationsReadMutation = () => {
 };
 
 export const useNotificationChannelsQuery = () => {
+  const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: notificationKeys.channels(),
     queryFn: () => notificationService.getChannels(),
+    enabled: !!token,
   });
 };
 

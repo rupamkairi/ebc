@@ -20,9 +20,13 @@ export const useAuthStore = create<AuthState>()(
       setToken: (token) => set({ token }),
       setUser: (user) => set({ user }),
       logout: () => {
+        const { token } = useAuthStore.getState();
+        if (!token) return;
+
         set({ token: null, user: null });
         if (typeof window !== "undefined") {
-          if (window.location.pathname !== "/") {
+          const pathname = window.location.pathname;
+          if (pathname !== "/" && pathname !== "") {
             window.location.href = "/";
           }
         }

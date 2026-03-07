@@ -10,6 +10,7 @@ import {
   CreateQuotationRequest,
   VisitListParams,
 } from "@/types/activity";
+import { useAuthStore } from "@/store/authStore";
 import {
   keepPreviousData,
   useMutation,
@@ -35,10 +36,12 @@ export const activityKeys = {
 
 // Enquiry Hooks
 export function useEnquiriesQuery(params: EnquiryListParams = {}) {
+  const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: activityKeys.enquiries(params),
     queryFn: () => activityService.getEnquiries(params),
     placeholderData: keepPreviousData,
+    enabled: !!token,
   });
 }
 
@@ -73,10 +76,12 @@ export function useDeleteEnquiryMutation() {
 
 // Appointment Hooks
 export function useAppointmentsQuery(params: AppointmentListParams = {}) {
+  const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: activityKeys.appointments(params),
     queryFn: () => activityService.getAppointments(params),
     placeholderData: keepPreviousData,
+    enabled: !!token,
   });
 }
 
@@ -141,19 +146,23 @@ export function useRejectAppointmentMutation() {
 
 // Assignment Hooks
 export function useAssignmentsQuery(params: AssignmentListParams = {}) {
+  const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: activityKeys.assignments(params),
     queryFn: () => activityService.getAssignments(params),
     placeholderData: keepPreviousData,
+    enabled: !!token,
   });
 }
 
 // Quotation Hooks
 export function useQuotationsQuery(params: QuotationListParams = {}) {
+  const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: activityKeys.quotations(params),
     queryFn: () => activityService.getQuotations(params),
     placeholderData: keepPreviousData,
+    enabled: !!token,
   });
 }
 
@@ -216,10 +225,12 @@ export function useAcceptQuotationMutation() {
 
 // Visit Hooks
 export function useVisitsQuery(params: VisitListParams = {}) {
+  const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: [...activityKeys.all, "visits", params],
     queryFn: () => activityService.getVisits(params),
     placeholderData: keepPreviousData,
+    enabled: !!token,
   });
 }
 
