@@ -17,15 +17,6 @@ import { useAuthStore } from "@/store/authStore";
 import { firstAndLastNameInitials } from "@/lib/utils";
 import { useRefreshSession } from "@/queries/authQueries";
 
-// This is sample data.
-// const data = {
-//   user: {
-//     name: "shadcn",
-//     email: "m@example.com",
-//     avatar: "/avatars/shadcn.jpg",
-//   },
-// };
-
 export function AdminDashboardUser() {
   const { user, logout } = useAuthStore();
   const refreshSession = useRefreshSession();
