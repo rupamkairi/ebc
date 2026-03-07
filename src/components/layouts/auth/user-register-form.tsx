@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -46,12 +46,24 @@ export function UserRegisterForm({
   ...props
 }: React.ComponentProps<"div"> & { isDarkTheme?: boolean }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const requestedType = searchParams.get("type");
   const { setToken, setUser } = useAuthStore();
   const { t } = useLanguage();
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
   const [pincodeId, setPincodeId] = useState("");
-  const [type, setType] = useState<string>(USER_ROLE.USER_BUYER_ADMIN);
+  
+  // Initialize type from search params if provided, otherwise default to buyer
+  const initialType = requestedType?.toUpperCase() === "SELLER" 
+    ? ITEM_TYPE.PRODUCT 
+    : requestedType?.toUpperCase() === "SERVICE"
+    ? ITEM_TYPE.SERVICE
+    : requestedType?.toUpperCase() === "BUYER"
+    ? USER_ROLE.USER_BUYER_ADMIN
+    : USER_ROLE.USER_BUYER_ADMIN;
+
+  const [type, setType] = useState<string>(initialType);
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"info" | "otp">("info");
   const [isNewUser, setIsNewUser] = useState<boolean | null>(null);

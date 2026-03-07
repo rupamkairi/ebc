@@ -45,6 +45,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 interface EventDiscoveryProps {
@@ -56,6 +57,7 @@ export function EventDiscovery({
   pincodeId,
   isPublic = true,
 }: EventDiscoveryProps) {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [timeframe, setTimeframe] = useState<"FUTURE" | "PAST" | "ALL">("ALL");
   const [selectedEvent, setSelectedEvent] =
@@ -97,6 +99,12 @@ export function EventDiscovery({
     }) || [];
 
   const handleJoin = async (id: string) => {
+    if (!session) {
+      toast.info("Please sign up to register for events");
+      router.push("/auth/register?type=buyer");
+      return;
+    }
+
     try {
       await joinEvent.mutateAsync({ id, entityId: entity?.id });
       toast.success("Successfully joined the event!");

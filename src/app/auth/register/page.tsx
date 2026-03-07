@@ -1,8 +1,9 @@
 "use client";
 
+import { Suspense } from "react";
 import { UserRegisterForm } from "@/components/layouts/auth/user-register-form";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useLanguage } from "@/hooks/useLanguage";
 
@@ -63,7 +64,9 @@ export default function RegisterPage() {
           </div>
 
           <div className="w-full max-w-md mt-6 lg:mt-0">
-            <UserRegisterForm isDarkTheme={true} />
+            <Suspense fallback={<div className="flex justify-center"><Loader2 className="h-8 w-8 animate-spin text-white" /></div>}>
+              <UserRegisterForm isDarkTheme={true} />
+            </Suspense>
           </div>
         </div>
       </div>
