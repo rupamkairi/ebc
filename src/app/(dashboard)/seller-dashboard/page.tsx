@@ -133,7 +133,7 @@ export default function SellerDashboardPage() {
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-4">
               {/* Product / Service Catalogue — dynamic based on seller type */}
               <Card className="bg-gradient-to-r from-[#173072] to-[#2547a4] text-white p-5 rounded-2xl shadow-sm flex flex-col justify-between col-span-1 border-0 overflow-hidden">
                 <div className="flex flex-col items-center gap-3 mb-4 text-center">
@@ -168,10 +168,7 @@ export default function SellerDashboardPage() {
                         : t("new_product_listing")}
                     </Button>
                   </Link>
-                  <Link
-                    href="/seller-dashboard/catalog"
-                    className="w-full"
-                  >
+                  <Link href="/seller-dashboard/catalog" className="w-full">
                     <Button
                       variant="outline"
                       className="w-full bg-white/10 text-white hover:bg-white/20 border-0 rounded-lg px-4 h-10 text-sm font-semibold justify-center"

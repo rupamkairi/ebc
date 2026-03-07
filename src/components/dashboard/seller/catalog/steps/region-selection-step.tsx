@@ -171,7 +171,7 @@ export function RegionSelectionStep({
                 </Button>
               )}
             </div>
-            <div className="h-[400px] overflow-y-auto">
+            <div className="h-full overflow-y-auto">
               {selectedRegions.length > 0 ? (
                 <div className="divide-y">
                   {selectedRegions.map((r) => (
