@@ -57,40 +57,42 @@ export function OfferPublishDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Publish Offer?</AlertDialogTitle>
-          <AlertDialogDescription className="space-y-4 pt-2">
-            <div className="flex items-center gap-2 p-3 bg-muted rounded-lg border">
-              <Wallet className="h-4 w-4 text-muted-foreground" />
-              <div className="flex-1 text-sm font-medium">
-                Wallet Balance:{" "}
-                {isLoadingWallet ? (
-                  <Skeleton className="h-4 w-12 inline-block align-middle" />
-                ) : (
-                  <span
-                    className={cn(
-                      balance < 0 ? "text-destructive" : "text-foreground",
-                    )}
-                  >
-                    {balance.toLocaleString()} Coins
-                  </span>
-                )}
+          <AlertDialogDescription asChild>
+            <div className="space-y-4 pt-2">
+              <div className="flex items-center gap-2 p-3 bg-muted rounded-lg border">
+                <Wallet className="h-4 w-4 text-muted-foreground" />
+                <div className="flex-1 text-sm font-medium">
+                  Wallet Balance:{" "}
+                  {isLoadingWallet ? (
+                    <Skeleton className="h-4 w-12 inline-block align-middle" />
+                  ) : (
+                    <span
+                      className={cn(
+                        balance < 0 ? "text-destructive" : "text-foreground",
+                      )}
+                    >
+                      {balance.toLocaleString()} Coins
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
 
-            <div className="flex gap-2 text-amber-600 dark:text-amber-500 text-sm bg-amber-50 dark:bg-amber-950/20 p-3 rounded-lg border border-amber-200 dark:border-amber-900">
-              <AlertCircle className="h-5 w-5 shrink-0" />
-              <div>
-                <p className="font-semibold px-0">Finalize Details</p>
-                <p className="opacity-90">
-                  Once published, <strong>Targets (Relations)</strong> and{" "}
-                  <strong>Regions</strong> cannot be changed. This action will
-                  deduct coins from your wallet.
-                </p>
+              <div className="flex gap-2 text-amber-600 dark:text-amber-500 text-sm bg-amber-50 dark:bg-amber-950/20 p-3 rounded-lg border border-amber-200 dark:border-amber-900">
+                <AlertCircle className="h-5 w-5 shrink-0" />
+                <div>
+                  <p className="font-semibold px-0">Finalize Details</p>
+                  <p className="opacity-90">
+                    Once published, <strong>Targets (Relations)</strong> and{" "}
+                    <strong>Regions</strong> cannot be changed. This action will
+                    deduct coins from your wallet.
+                  </p>
+                </div>
               </div>
-            </div>
 
-            <p className="text-sm text-muted-foreground">
-              Are you sure you want to make this offer live?
-            </p>
+              <p className="text-sm text-muted-foreground">
+                Are you sure you want to make this offer live?
+              </p>
+            </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
