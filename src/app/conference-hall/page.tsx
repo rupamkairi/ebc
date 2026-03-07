@@ -198,7 +198,7 @@ function ConferenceHallContent() {
                     className="m-0 focus-visible:outline-none"
                   >
                     <div className="p-4 md:p-12">
-                      <EventDiscovery pincodeId={effectivePincode} />
+                      <EventDiscovery pincodeId={effectivePincode} isPublic={true} />
                     </div>
                   </TabsContent>
 
@@ -207,7 +207,7 @@ function ConferenceHallContent() {
                     className="m-0 focus-visible:outline-none"
                   >
                     <div className="p-4 md:p-12">
-                      <OfferDiscovery pincodeId={effectivePincode} />
+                      <OfferDiscovery pincodeId={effectivePincode} isPublic={true} />
                     </div>
                   </TabsContent>
 

@@ -5,6 +5,7 @@ import {
   useJoinEventMutation,
 } from "@/queries/conferenceHallQueries";
 import { useEntitiesQuery } from "@/queries/entityQueries";
+import { useSessionQuery } from "@/queries/authQueries";
 import {
   Card,
   CardContent,
@@ -51,24 +52,49 @@ interface EventDiscoveryProps {
   isPublic?: boolean;
 }
 
-export function EventDiscovery({ pincodeId, isPublic = true }: EventDiscoveryProps) {
+export function EventDiscovery({
+  pincodeId,
+  isPublic = true,
+}: EventDiscoveryProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [timeframe, setTimeframe] = useState<"FUTURE" | "PAST" | "ALL">(
-    "ALL",
-  );
-  const [selectedEvent, setSelectedEvent] = useState<ConferenceHallEvent | null>(null);
+  const [timeframe, setTimeframe] = useState<"FUTURE" | "PAST" | "ALL">("ALL");
+  const [selectedEvent, setSelectedEvent] =
+    useState<ConferenceHallEvent | null>(null);
 
+  const { data: session } = useSessionQuery();
   const { data: entities } = useEntitiesQuery();
   const entity = entities?.[0]; // Context entity if available
 
+  // Fetch all public active events for this pincode
   const { data: events, isLoading } = useEventsQuery({
     search: searchTerm,
-    timeframe: timeframe === "PAST" ? "ALL" : timeframe,
-    type: timeframe === "PAST" ? "RECORDED" : undefined,
+    isPublic: true,
+    isActive: true,
     targeting: { pincodeId },
   });
 
   const joinEvent = useJoinEventMutation();
+
+  // Filter events based on timeframe and publication status on frontend for better reliability
+  const filteredEvents =
+    events?.filter((event) => {
+      // Must be active and (public OR have a publication date)
+      if (!event.isActive) return false;
+      if (!event.isPublic && !event.publishedAt) return false;
+
+      // Timeframe filtering
+      if (timeframe === "FUTURE") {
+        return (
+          event.type === "LIVE" &&
+          event.startDate &&
+          new Date(event.startDate) > new Date()
+        );
+      }
+      if (timeframe === "PAST") {
+        return event.type === "RECORDED";
+      }
+      return true;
+    }) || [];
 
   const handleJoin = async (id: string) => {
     try {
@@ -131,7 +157,7 @@ export function EventDiscovery({ pincodeId, isPublic = true }: EventDiscoveryPro
         </Tabs>
       </div>
 
-      {!events || events.length === 0 ? (
+      {!filteredEvents || filteredEvents.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-10 md:py-20 animate-in fade-in duration-700 px-4">
           <div className="relative w-full max-w-[280px] sm:max-w-sm md:max-w-lg aspect-video mb-6 md:mb-8">
             <Image
@@ -148,7 +174,7 @@ export function EventDiscovery({ pincodeId, isPublic = true }: EventDiscoveryPro
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {events.map((event) => (
+          {filteredEvents.map((event) => (
             <Card
               key={event.id}
               className="flex flex-col group hover:shadow-2xl transition-all duration-500 border-none bg-linear-to-b from-card to-muted/30 overflow-hidden relative"
@@ -250,19 +276,24 @@ export function EventDiscovery({ pincodeId, isPublic = true }: EventDiscoveryPro
       )}
 
       {/* Event Details Modal */}
-      <Dialog open={!!selectedEvent} onOpenChange={(open) => !open && setSelectedEvent(null)}>
+      <Dialog
+        open={!!selectedEvent}
+        onOpenChange={(open) => !open && setSelectedEvent(null)}
+      >
         <DialogContent className="max-w-2xl p-0 overflow-hidden border-none rounded-3xl shadow-2xl">
           {selectedEvent && (
             <div className="flex flex-col">
               {/* Header Banner */}
-              <div className={cn(
-                "p-8 text-white relative overflow-hidden",
-                selectedEvent.type === "LIVE" ? "bg-red-600" : "bg-[#3D52A0]"
-              )}>
+              <div
+                className={cn(
+                  "p-8 text-white relative overflow-hidden",
+                  selectedEvent.type === "LIVE" ? "bg-red-600" : "bg-[#3D52A0]",
+                )}
+              >
                 <div className="absolute top-0 right-0 p-8 opacity-10">
                   <Sparkles className="h-32 w-32" />
                 </div>
-                
+
                 <div className="flex flex-wrap gap-2 mb-4">
                   <Badge className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-md px-3 py-1 text-xs font-bold">
                     {selectedEvent.type}
@@ -298,7 +329,8 @@ export function EventDiscovery({ pincodeId, isPublic = true }: EventDiscoveryPro
                     <div className="h-px flex-1 bg-slate-200" />
                   </div>
                   <DialogDescription className="text-base text-slate-600 leading-relaxed font-medium">
-                    {selectedEvent.description || "No description provided for this event."}
+                    {selectedEvent.description ||
+                      "No description provided for this event."}
                   </DialogDescription>
                 </div>
 
@@ -310,9 +342,11 @@ export function EventDiscovery({ pincodeId, isPublic = true }: EventDiscoveryPro
                       <Clock className="h-6 w-6" />
                     </div>
                     <div className="space-y-1">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Date & Time</p>
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Date & Time
+                      </p>
                       <p className="text-sm font-bold text-slate-700">
-                        {selectedEvent.startDate 
+                        {selectedEvent.startDate
                           ? format(new Date(selectedEvent.startDate), "PPP p")
                           : "TBD"}
                       </p>
@@ -326,42 +360,53 @@ export function EventDiscovery({ pincodeId, isPublic = true }: EventDiscoveryPro
                     </div>
                     <div className="space-y-1">
                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                        {selectedEvent.isRemote ? "Meeting Link" : "Venue Location"}
+                        {selectedEvent.isRemote
+                          ? "Meeting Link"
+                          : "Venue Location"}
                       </p>
                       <p className="text-sm font-bold text-slate-700 line-clamp-2 break-all">
-                        {selectedEvent.isRemote 
-                          ? (selectedEvent.meetingUrl || (selectedEvent.location || "Join via URL"))
-                          : (selectedEvent.location || "Venue TBD")}
+                        {selectedEvent.isRemote
+                          ? selectedEvent.meetingUrl ||
+                            selectedEvent.location ||
+                            "Join via URL"
+                          : selectedEvent.location || "Venue TBD"}
                       </p>
                     </div>
                   </div>
                 </div>
 
                 {/* Attachments Section if any */}
-                {selectedEvent.attachments && selectedEvent.attachments.length > 0 && (
-                  <div className="space-y-3">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Resources & Materials</p>
-                    <div className="grid grid-cols-1 gap-2">
-                      {selectedEvent.attachments.map((att) => (
-                        <a 
-                          key={att.id}
-                          href={att.media?.url || att.document?.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100 hover:bg-white hover:border-primary/30 transition-all group"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="h-8 w-8 rounded-lg bg-white flex items-center justify-center shadow-sm">
-                              <Video className="h-4 w-4 text-slate-400 group-hover:text-primary transition-colors" />
+                {selectedEvent.attachments &&
+                  selectedEvent.attachments.length > 0 && (
+                    <div className="space-y-3">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Resources & Materials
+                      </p>
+                      <div className="grid grid-cols-1 gap-2">
+                        {selectedEvent.attachments.map((att) => (
+                          <a
+                            key={att.id}
+                            href={att.media?.url || att.document?.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100 hover:bg-white hover:border-primary/30 transition-all group"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="h-8 w-8 rounded-lg bg-white flex items-center justify-center shadow-sm">
+                                <Video className="h-4 w-4 text-slate-400 group-hover:text-primary transition-colors" />
+                              </div>
+                              <span className="text-sm font-bold text-slate-600">
+                                {att.media?.name ||
+                                  att.document?.name ||
+                                  "Attachment"}
+                              </span>
                             </div>
-                            <span className="text-sm font-bold text-slate-600">{att.media?.name || att.document?.name || "Attachment"}</span>
-                          </div>
-                          <ArrowUpRight className="h-4 w-4 text-slate-300 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-                        </a>
-                      ))}
+                            <ArrowUpRight className="h-4 w-4 text-slate-300 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                          </a>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {/* Footer Section */}
                 <div className="pt-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6">
@@ -370,17 +415,25 @@ export function EventDiscovery({ pincodeId, isPublic = true }: EventDiscoveryPro
                       <Building2 className="h-5 w-5" />
                     </div>
                     <div className="space-y-0.5 text-center md:text-left">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Hosted by</p>
-                      <p className="text-sm font-black text-[#173072] uppercase">{selectedEvent.entity?.name}</p>
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Hosted by
+                      </p>
+                      <p className="text-sm font-black text-[#173072] uppercase">
+                        {selectedEvent.entity?.name}
+                      </p>
                     </div>
                   </div>
-                  
+
                   {selectedEvent.isRemote && selectedEvent.meetingUrl ? (
                     <Button
                       className="rounded-2xl h-12 px-8 bg-red-600 hover:bg-red-700 text-white font-black gap-2 shadow-lg shadow-red-100 w-full md:w-auto"
                       asChild
                     >
-                      <a href={selectedEvent.meetingUrl} target="_blank" rel="noopener noreferrer">
+                      <a
+                        href={selectedEvent.meetingUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         Join Meeting Now
                         <ExternalLink size={18} />
                       </a>
