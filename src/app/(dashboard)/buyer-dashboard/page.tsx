@@ -29,7 +29,13 @@ import {
   useVisitsQuery,
 } from "@/queries/activityQueries";
 import { useMemo } from "react";
-import { RoomCard, ActivitySectionCard, ActivityStatCard, ConferenceHallItem, BuyerProfileCard } from "@/components/dashboard/buyer/dashboard-components";
+import {
+  RoomCard,
+  ActivitySectionCard,
+  ActivityStatCard,
+  ConferenceHallItem,
+  BuyerProfileCard,
+} from "@/components/dashboard/buyer/dashboard-components";
 import { NotificationInbox } from "@/components/dashboard/notifications/notification-inbox";
 import { useSessionQuery } from "@/queries/authQueries";
 
@@ -191,8 +197,8 @@ export default function BuyerDashboardPage() {
                 <ActivitySectionCard
                   title={t("my_site_visits")}
                   icon={MapPin}
-                  footerLink="/buyer-dashboard/appointments"
-                  footerText={t("view_all_appointments")}
+                  footerLink="/buyer-dashboard/visits"
+                  footerText={t("view_all_visits")}
                 >
                   <ActivityStatCard
                     label={t("scheduled")}

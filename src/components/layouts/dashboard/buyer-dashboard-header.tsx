@@ -40,7 +40,7 @@ export default function BuyerDashboardHeader() {
         href="/buyer-dashboard/enquiries"
         className="text-sm font-medium text-slate-500 transition-colors hover:text-[#445EB4] flex items-center gap-2"
       >
-        My Enquiries
+        Enquiries
       </Link>
       <Link
         href="/buyer-dashboard/appointments"
@@ -72,9 +72,14 @@ export default function BuyerDashboardHeader() {
             <Menu className="size-6 text-[#3D52A0]" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="w-[300px] sm:w-[350px] p-0 flex flex-col">
+        <SheetContent
+          side="left"
+          className="w-[300px] sm:w-[350px] p-0 flex flex-col"
+        >
           <SheetHeader className="p-6 border-b text-left">
-            <SheetTitle className="text-xl font-bold text-[#173072]">Buyer Hub</SheetTitle>
+            <SheetTitle className="text-xl font-bold text-[#173072]">
+              Buyer Hub
+            </SheetTitle>
           </SheetHeader>
           <div className="flex-col flex px-4 mt-6 gap-2">
             <Link
@@ -125,11 +130,12 @@ export default function BuyerDashboardHeader() {
       <UnifiedHeader
         variant="buyer"
         centerContent={<div className="hidden lg:flex w-full" />}
-        rightContent={<div className="h-10 w-40 bg-slate-100 animate-pulse rounded-full" />}
+        rightContent={
+          <div className="h-10 w-40 bg-slate-100 animate-pulse rounded-full" />
+        }
       />
     );
   }
-
 
   return (
     <UnifiedHeader
