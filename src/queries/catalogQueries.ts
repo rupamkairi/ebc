@@ -322,6 +322,16 @@ export function useUpdateItemRateMutation() {
   });
 }
 
+export function useDeleteItemRateMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => catalogService.deleteItemRate(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: catalogKeys.all });
+    },
+  });
+}
+
 // Item Regions
 export function useItemRegionsQuery(params: ItemRegionListParams) {
   const token = useAuthStore((state) => state.token);
@@ -343,6 +353,7 @@ export function useCreateItemRegionMutation() {
     },
   });
 }
+
 export function useUpdateItemRegionMutation() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -353,6 +364,16 @@ export function useUpdateItemRegionMutation() {
       id: string;
       data: Partial<CreateItemRegionRequest>;
     }) => catalogService.updateItemRegion(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: catalogKeys.all });
+    },
+  });
+}
+
+export function useDeleteItemRegionMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => catalogService.deleteItemRegion(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: catalogKeys.all });
     },
