@@ -14,6 +14,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { useDeleteItemListingMutation } from "@/queries/catalogQueries";
+import { toast } from "sonner";
 
 interface ListingCardProps {
   listing: ItemListing;
@@ -23,6 +25,20 @@ interface ListingCardProps {
 
 export function ListingCard({ listing, type, view = "list" }: ListingCardProps) {
   const isProduct = type === "PRODUCT";
+  const deleteMutation = useDeleteItemListingMutation();
+
+  const handleDelete = () => {
+    if (confirm("Are you sure you want to delete this listing?")) {
+      deleteMutation.mutate(listing.id, {
+        onSuccess: () => {
+          toast.success("Listing deleted successfully");
+        },
+        onError: () => {
+          toast.error("Failed to delete listing");
+        },
+      });
+    }
+  };
 
   if (view === "grid") {
     return (
@@ -106,8 +122,12 @@ export function ListingCard({ listing, type, view = "list" }: ListingCardProps) 
                   align="end"
                   className="rounded-xl border-[#3D52A0]/10 shadow-xl"
                 >
-                  <DropdownMenuItem className="text-red-600 font-bold cursor-pointer text-[10px] uppercase tracking-widest py-2.5">
-                    Delete Listing
+                  <DropdownMenuItem
+                    className="text-red-600 font-bold cursor-pointer text-[10px] uppercase tracking-widest py-2.5"
+                    onClick={handleDelete}
+                    disabled={deleteMutation.isPending}
+                  >
+                    {deleteMutation.isPending ? "Deleting..." : "Delete Listing"}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -192,8 +212,12 @@ export function ListingCard({ listing, type, view = "list" }: ListingCardProps) 
                       View Details
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="text-red-600 font-bold cursor-pointer">
-                    Delete
+                  <DropdownMenuItem
+                    className="text-red-600 font-bold cursor-pointer"
+                    onClick={handleDelete}
+                    disabled={deleteMutation.isPending}
+                  >
+                    {deleteMutation.isPending ? "Deleting..." : "Delete"}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

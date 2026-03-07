@@ -279,6 +279,16 @@ export function useUpdateItemListingMutation() {
   });
 }
 
+export function useDeleteItemListingMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => catalogService.deleteItemListing(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: catalogKeys.all });
+    },
+  });
+}
+
 // Item Rates
 export function useItemRatesQuery(params: ItemRateListParams) {
   const token = useAuthStore((state) => state.token);
