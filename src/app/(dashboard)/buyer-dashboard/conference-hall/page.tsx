@@ -12,12 +12,15 @@ import { Suspense, useEffect, useState } from "react";
 import { useAuthStore } from "@/store/authStore";
 import { PincodeSearchAutocomplete } from "@/components/autocompletes/pincode-search-autocomplete";
 import { Label } from "@/components/ui/label";
+import { useSessionQuery } from "@/queries/authQueries";
+import { BuyerProfileCard } from "@/components/dashboard/buyer/dashboard-components";
 
 function BuyerConferenceHallContent() {
   const { t } = useLanguage();
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
   const { user } = useAuthStore();
+  const { data: session } = useSessionQuery();
 
   const [activeTab, setActiveTab] = useState(() => {
     return tabParam === "offers" ||
@@ -56,9 +59,18 @@ function BuyerConferenceHallContent() {
   }
 
   return (
-    <div className="flex-1 max-w-7xl mx-auto w-full py-6 md:py-12 px-4">
+    <div className="flex-1 flex flex-col gap-10 w-full max-w-7xl mx-auto">
+      {/* Profile Section */}
+      {session?.user && (
+        <BuyerProfileCard
+          name={session.user.name || "Buyer"}
+          role={session.user.role || "Buyer"}
+          avatarUrl={session.user.image || undefined}
+        />
+      )}
+
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row justify-between items-start gap-8 mb-12">
+      <div className="flex flex-col md:flex-row justify-between items-start gap-8">
         <div className="space-y-4 max-w-3xl">
           <h1 className="text-5xl md:text-6xl font-black tracking-tight text-primary">
             {t("conference_hall_title")}
@@ -94,7 +106,7 @@ function BuyerConferenceHallContent() {
               value="events"
               className={cn(
                 "flex-1 h-full gap-2 md:gap-3 font-bold text-sm md:text-base border-r border-[#9CA3AF] last:border-r-0 whitespace-nowrap px-6 md:px-0",
-                "data-[state=active]:bg-primary! data-[state=active]:text-white! data-[state=active]:md:rounded-tl-2xl",
+                "data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:md:rounded-tl-2xl",
                 "text-muted-foreground",
               )}
             >
@@ -105,7 +117,7 @@ function BuyerConferenceHallContent() {
               value="offers"
               className={cn(
                 "flex-1 h-full gap-2 md:gap-3 font-bold text-sm md:text-base transition-all rounded-none border-r border-[#9CA3AF] last:border-r-0 whitespace-nowrap px-6 md:px-0",
-                "data-[state=active]:bg-primary! data-[state=active]:text-white!",
+                "data-[state=active]:bg-primary data-[state=active]:text-white",
                 "text-muted-foreground",
               )}
             >
@@ -116,7 +128,7 @@ function BuyerConferenceHallContent() {
               value="lounge"
               className={cn(
                 "flex-1 h-full gap-2 md:gap-3 font-bold text-sm md:text-base transition-all rounded-none border-r border-[#9CA3AF] last:border-r-0 whitespace-nowrap px-6 md:px-0",
-                "data-[state=active]:bg-primary! data-[state=active]:text-white! data-[state=active]:md:rounded-tr-2xl",
+                "data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:md:rounded-tr-2xl",
                 "text-muted-foreground",
               )}
             >

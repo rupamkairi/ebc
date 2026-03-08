@@ -38,7 +38,7 @@ export default function BuyerVisitsPage() {
   });
 
   return (
-    <div className="flex flex-col gap-8 w-full max-w-7xl mx-auto">
+    <div className="flex flex-col gap-10 w-full max-w-7xl mx-auto">
       {/* Profile Card */}
       {session?.user && (
         <BuyerProfileCard

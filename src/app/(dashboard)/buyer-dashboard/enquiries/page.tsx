@@ -25,7 +25,7 @@ export default function EnquiriesPage() {
   });
 
   return (
-    <div className="flex flex-col gap-12 w-full max-w-7xl mx-auto py-8">
+    <div className="flex flex-col gap-10 w-full max-w-7xl mx-auto">
       {/* Profile Section */}
       {session?.user && (
         <BuyerProfileCard

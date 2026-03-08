@@ -20,7 +20,6 @@ import {
   Quote,
   MapPin,
   FileCheck,
-  Bell,
 } from "lucide-react";
 import {
   useEnquiriesQuery,
@@ -36,7 +35,6 @@ import {
   ConferenceHallItem,
   BuyerProfileCard,
 } from "@/components/dashboard/buyer/dashboard-components";
-import { NotificationInbox } from "@/components/dashboard/notifications/notification-inbox";
 import { useSessionQuery } from "@/queries/authQueries";
 
 export default function BuyerDashboardPage() {
@@ -86,7 +84,7 @@ export default function BuyerDashboardPage() {
 
   return (
     <AuthGuard allowedRoles={["USER_BUYER_ADMIN"]}>
-      <div className="max-w-[1600px] mx-auto p-4 md:p-8 flex flex-col gap-8">
+      <div className="flex flex-col gap-10 w-full max-w-7xl mx-auto">
         {/* Profile Card */}
         {session?.user && (
           <BuyerProfileCard
@@ -96,9 +94,7 @@ export default function BuyerDashboardPage() {
           />
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Main Content - Left Side */}
-          <div className="lg:col-span-3 flex flex-col gap-10">
+        <div className="flex flex-col gap-10">
             {/* Project Pulse - Rooms */}
             <section>
               <div className="flex items-center gap-3 mb-4 md:mb-6">
@@ -263,20 +259,6 @@ export default function BuyerDashboardPage() {
                 <AICalculator />
               </div>
             </section>
-          </div>
-
-          {/* Sidebar Column (Notifications) — hidden on mobile, bell in profile card handles it */}
-          <div className="hidden lg:block space-y-8 h-full">
-            <div className="sticky top-24">
-              <div className="flex items-center gap-2 mb-4 px-2">
-                <Bell className="h-5 w-5 text-primary" />
-                <h2 className="text-xl font-bold text-primary tracking-tight">
-                  {t("notifications")}
-                </h2>
-              </div>
-              <NotificationInbox userType="BUYER" />
-            </div>
-          </div>
         </div>
       </div>
     </AuthGuard>

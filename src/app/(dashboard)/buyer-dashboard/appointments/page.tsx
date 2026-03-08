@@ -10,6 +10,8 @@ import { cn } from "@/lib/utils";
 
 import { AppointmentCard } from "@/components/dashboard/buyer/appointment/appointment-card";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useSessionQuery } from "@/queries/authQueries";
+import { BuyerProfileCard } from "@/components/dashboard/buyer/dashboard-components";
 
 const filters = ["All", "Upcoming", "Completed", "Cancelled"];
 
@@ -17,6 +19,7 @@ export default function AppointmentsPage() {
   const [activeFilter, setActiveFilter] = useState("All");
   const [search, setSearch] = useState("");
   const { t } = useLanguage();
+  const { data: session } = useSessionQuery();
 
   const { data: appointments, isLoading } = useAppointmentsQuery({
     search: search,
@@ -28,7 +31,16 @@ export default function AppointmentsPage() {
   });
 
   return (
-    <div className="flex flex-col gap-12 w-full max-w-7xl mx-auto py-8 px-4 sm:px-0">
+    <div className="flex flex-col gap-10 w-full max-w-7xl mx-auto">
+      {/* Profile Section */}
+      {session?.user && (
+        <BuyerProfileCard
+          name={session.user.name || "Buyer"}
+          role={session.user.role || "Buyer"}
+          avatarUrl={session.user.image || undefined}
+        />
+      )}
+
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
         <div className="flex flex-col gap-2">
           <h1 className="text-4xl md:text-5xl font-black text-primary tracking-tight">
