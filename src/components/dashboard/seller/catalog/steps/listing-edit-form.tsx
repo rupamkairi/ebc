@@ -49,23 +49,24 @@ import { PincodeRecord } from "@/types/region";
 import { usePincodeRecordsQuery } from "@/queries/regionQueries";
 import { Badge } from "@/components/ui/badge";
 import { RegionSelectionStep } from "./region-selection-step";
+import { ITEM_TYPE } from "@/constants/enums";
 
 const listingEditSchema = z.object({
   isActive: z.boolean(),
-  unitType: z.enum(UNIT_TYPES),
-  minQuantity: z.number().min(1),
-  rate: z.number().min(0),
-  isNegotiable: z.boolean(),
+  unitType: z.enum(UNIT_TYPES).optional(),
+  minQuantity: z.number().min(1).optional(),
+  rate: z.number().min(0).optional(),
+  isNegotiable: z.boolean().optional(),
   mediaIds: z.array(z.string()),
   documentIds: z.array(z.string()),
 });
 
 interface ListingEditFormValues {
   isActive: boolean;
-  unitType: (typeof UNIT_TYPES)[number];
-  minQuantity: number;
-  rate: number;
-  isNegotiable: boolean;
+  unitType?: (typeof UNIT_TYPES)[number];
+  minQuantity?: number;
+  rate?: number;
+  isNegotiable?: boolean;
   mediaIds: string[];
   documentIds: string[];
 }
@@ -79,6 +80,8 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
   const updateListingMutation = useUpdateItemListingMutation();
   const updateRateMutation = useUpdateItemRateMutation();
   const updateRegionMutation = useUpdateItemRegionMutation();
+
+  const isService = listing.item?.type === ITEM_TYPE.SERVICE;
 
   const [activeTab, setActiveTab] = useState("general");
 
@@ -171,16 +174,16 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
         },
       });
 
-      // 2. Update Rate Info
+      // 2. Update Rate Info (only for products, not services)
       const rateId = listing.itemRates?.[0]?.id;
-      if (rateId) {
+      if (!isService && rateId && values.unitType !== undefined) {
         await updateRateMutation.mutateAsync({
           id: rateId,
           data: {
             unitType: values.unitType as UnitType,
-            minQuantity: values.minQuantity,
-            rate: values.rate,
-            isNegotiable: values.isNegotiable,
+            minQuantity: values.minQuantity || 1,
+            rate: values.rate || 0,
+            isNegotiable: values.isNegotiable || false,
           },
         });
       }
@@ -273,104 +276,106 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
                 )}
               />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField
-                  control={form.control}
-                  name="unitType"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-bold">Unit Type</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
+              {!isService && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="unitType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="font-bold">Unit Type</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select unit" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {UNIT_TYPES.map((unit) => (
+                              <SelectItem key={unit} value={unit}>
+                                {UNIT_TYPE_LABELS[unit]}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="minQuantity"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="font-bold">Min Quantity</FormLabel>
                         <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select unit" />
-                          </SelectTrigger>
+                          <Input
+                            type="number"
+                            {...field}
+                            onChange={(e) =>
+                              field.onChange(Number(e.target.value))
+                            }
+                          />
                         </FormControl>
-                        <SelectContent>
-                          {UNIT_TYPES.map((unit) => (
-                            <SelectItem key={unit} value={unit}>
-                              {UNIT_TYPE_LABELS[unit]}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="minQuantity"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-bold">Min Quantity</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(Number(e.target.value))
-                          }
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="rate"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-bold flex items-center gap-2">
-                        <DollarSign size={14} className="text-primary" /> Base
-                        Rate
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          step="0.01"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(Number(e.target.value))
-                          }
-                        />
-                      </FormControl>
-                      <FormDescription className="text-[10px]">
-                        Per {UNIT_TYPE_LABELS[form.watch("unitType")]}
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="isNegotiable"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm bg-card mt-2">
-                      <div className="space-y-0.5">
-                        <FormLabel className="text-base font-bold">
-                          Negotiable
+                  <FormField
+                    control={form.control}
+                    name="rate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="font-bold flex items-center gap-2">
+                          <DollarSign size={14} className="text-primary" /> Base
+                          Rate
                         </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="0.01"
+                            {...field}
+                            onChange={(e) =>
+                              field.onChange(Number(e.target.value))
+                            }
+                          />
+                        </FormControl>
                         <FormDescription className="text-[10px]">
-                          Price can be negotiated?
+                          Per {UNIT_TYPE_LABELS[form.watch("unitType") || "Nos"]}
                         </FormDescription>
-                      </div>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-              </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="isNegotiable"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm bg-card mt-2">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-base font-bold">
+                            Negotiable
+                          </FormLabel>
+                          <FormDescription className="text-[10px]">
+                            Price can be negotiated?
+                          </FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              )}
             </TabsContent>
 
             <TabsContent value="attachments" className="mt-6 space-y-6">

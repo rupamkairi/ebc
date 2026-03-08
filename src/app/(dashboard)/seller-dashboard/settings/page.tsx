@@ -87,34 +87,6 @@ export default function SettingsPage() {
           <NotificationChannelList />
 
           <div className="space-y-4">
-            {/* Security Section */}
-            <Card className="pointer-events-none opacity-60 grayscale-[0.5]">
-              <CardContent className="p-4 space-y-4">
-                <div className="flex items-center gap-2">
-                  <Lock className="size-4 text-muted-foreground" />
-                  <p className="text-sm font-semibold">
-                    {t("security_section")}
-                  </p>
-                </div>
-                <div className="space-y-2">
-                  <Button
-                    variant="outline"
-                    disabled
-                    className="w-full justify-start text-xs h-9"
-                  >
-                    {t("change_password")}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    disabled
-                    className="w-full justify-start text-xs h-9"
-                  >
-                    {t("session_management")}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
             <Card className="border-dashed">
               <CardContent className="p-6 text-center space-y-2">
                 <ShieldCheck className="size-8 mx-auto text-muted-foreground/40" />

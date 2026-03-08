@@ -204,7 +204,7 @@ export interface CreateItemListingRequest {
   item_listing: {
     itemId: string;
     entityId: string;
-    item_rate: Omit<ItemRate, "id" | "itemListingId">;
+    item_rate?: Omit<ItemRate, "id" | "itemListingId">;
     item_region: Omit<ItemRegion, "id" | "itemListingId">[];
   };
 }

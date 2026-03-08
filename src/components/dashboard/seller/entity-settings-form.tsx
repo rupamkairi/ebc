@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { Loader2, Save, FileText, X } from "lucide-react";
 import { useEffect } from "react";
 import { UpdateEntityRequest } from "@/types/entity";
+import { ENTITY_TYPE_LABELS } from "@/constants/roles";
 
 export function EntitySettingsForm() {
   const { data: entities = [], isLoading: isLoadingEntity } =
@@ -137,6 +138,16 @@ export function EntitySettingsForm() {
                   </div>
                 )}
               </form.Field>
+
+              <div className="space-y-2">
+                <Label className="text-[#173072] text-xs font-bold uppercase tracking-wide">Entity Type</Label>
+                <div className="h-12 px-4 flex items-center border border-[#173072]/30 rounded-md bg-muted text-[#173072] font-medium">
+                  {entity.type ? ENTITY_TYPE_LABELS[entity.type as keyof typeof ENTITY_TYPE_LABELS] || entity.type : "Not Set"}
+                </div>
+                <p className="text-xs text-[#173072]/60">
+                  Entity type cannot be changed
+                </p>
+              </div>
 
               <form.Field name="legalName">
                 {(field) => (

@@ -18,19 +18,20 @@ import {
 import { ITEM_TYPE } from "@/constants/enums";
 import { isServiceBusiness, isProductBusiness } from "@/constants/roles";
 import { useLanguage } from "@/hooks/useLanguage";
-import { useSessionQuery } from "@/queries/authQueries";
+import { useAuthStore } from "@/store/authStore";
 export default function CatalogPage() {
   const { t } = useLanguage();
-  const { data: user } = useSessionQuery(); // Added this line
+  const { user: authUser } = useAuthStore();
+  
+  const isService = isServiceBusiness(authUser?.role);
+  const isProduct = isProductBusiness(authUser?.role);
+
   const {
     data: entities,
-    isLoading: isLoadingEntities, // Kept original name for consistency with other usages
+    isLoading: isLoadingEntities,
     isError: isErrorEntities,
   } = useEntitiesQuery();
   const sellerEntity = entities?.[0];
-
-  const isService = isServiceBusiness(user?.user?.role); // Modified
-  const isProduct = isProductBusiness(user?.user?.role); // Modified
 
   const [activeTab, setActiveTab] = useState(
     isService ? "services" : "products",

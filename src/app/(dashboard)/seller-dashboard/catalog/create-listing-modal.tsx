@@ -64,20 +64,32 @@ export function CreateListingModal({
     setSelectedRegions((prev) => prev.filter((r) => r.id !== id));
   };
 
+  const isService = itemType === ITEM_TYPE.SERVICE;
+
+  const handleItemSelect = (item: Item) => {
+    setSelectedItem(item);
+    if (isService) {
+      setStep(3);
+    } else {
+      setStep(2);
+    }
+  };
+
+  const getBackStep = () => {
+    if (isService) {
+      return 1;
+    }
+    return 2;
+  };
+
   const handleCreate = async () => {
     if (!selectedItem || selectedRegions.length === 0) return;
 
     try {
-      await createListingMutation.mutateAsync({
+      const payload: Parameters<typeof createListingMutation.mutateAsync>[0] = {
         item_listing: {
           itemId: selectedItem.id,
           entityId,
-          item_rate: {
-            unitType,
-            minQuantity,
-            rate,
-            isNegotiable,
-          },
           item_region: selectedRegions.map((r) => ({
             pincodeId: r.id,
             state: r.state,
@@ -86,7 +98,18 @@ export function CreateListingModal({
             wholeDistrict: false,
           })),
         },
-      });
+      };
+
+      if (!isService) {
+        payload.item_listing.item_rate = {
+          unitType,
+          minQuantity,
+          rate,
+          isNegotiable,
+        };
+      }
+
+      await createListingMutation.mutateAsync(payload);
 
       toast.success("Listing created successfully!");
       onClose();
@@ -103,10 +126,7 @@ export function CreateListingModal({
         <div className="p-6">
           {step === 1 && (
             <ItemSelectionStep
-              onItemSelect={(item) => {
-                setSelectedItem(item);
-                setStep(2);
-              }}
+              onItemSelect={handleItemSelect}
               itemType={itemType}
             />
           )}
@@ -141,7 +161,7 @@ export function CreateListingModal({
               toggleRegion={toggleRegion}
               removeRegion={removeRegion}
               setSelectedRegions={setSelectedRegions}
-              onBack={() => setStep(2)}
+              onBack={() => setStep(getBackStep())}
               onComplete={handleCreate}
               isSubmitting={createListingMutation.isPending}
             />

@@ -78,7 +78,7 @@ export default function EnquiriesPage() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
       {/* Main Content */}
-      <div className="lg:col-span-3 flex flex-col gap-6 p-4 md:p-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="col-span-4 flex flex-col gap-6 p-4 md:p-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 px-2">
           <div className="space-y-1">
             <h1 className="text-3xl font-black tracking-tight text-[#3D52A0]">
