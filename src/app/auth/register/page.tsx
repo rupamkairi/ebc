@@ -11,8 +11,8 @@ export default function RegisterPage() {
   const { t } = useLanguage();
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4 md:p-8 bg-[#F5F7FA]">
-      <div className="w-full max-w-[1200px] md:h-[800px] flex flex-col lg:flex-row rounded-3xl overflow-hidden bg-[#3D52A0] shadow-2xl relative">
+    <div className="flex min-h-screen items-center justify-center p-4 md:p-8 bg-muted">
+      <div className="w-full max-w-[1200px] md:h-[800px] flex flex-col lg:flex-row rounded-3xl overflow-hidden bg-primary shadow-2xl relative">
         {/* Left Pane - Image */}
         <div className="hidden lg:flex relative w-1/2 h-full p-4">
           <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-inner">

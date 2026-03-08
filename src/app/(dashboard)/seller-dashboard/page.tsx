@@ -126,7 +126,7 @@ export default function SellerDashboardPage() {
         <div className="lg:col-span-3 flex flex-col gap-8">
           {/* 1. Active Business */}
           <section>
-            <div className="flex items-center gap-2 mb-4 text-[#1E3A8A]">
+            <div className="flex items-center gap-2 mb-4 text-primary">
               <Bell className="h-5 w-5" />
               <h2 className="text-xl font-bold tracking-tight">
                 {t("active_business")}
@@ -135,13 +135,13 @@ export default function SellerDashboardPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-4">
               {/* Product / Service Catalogue — dynamic based on seller type */}
-              <Card className="bg-gradient-to-r from-[#173072] to-[#2547a4] text-white p-5 rounded-2xl shadow-sm flex flex-col justify-between col-span-1 border-0 overflow-hidden">
+              <Card className="bg-gradient-to-r from-primary to-primary/80 text-white p-5 rounded-2xl shadow-sm flex flex-col justify-between col-span-1 border-0 overflow-hidden">
                 <div className="flex flex-col items-center gap-3 mb-4 text-center">
                   <div className="bg-white/10 p-2 rounded-lg w-fit">
                     {isService ? (
-                      <Briefcase className="h-6 w-6 text-[#EF8A17]" />
+                      <Briefcase className="h-6 w-6 text-secondary" />
                     ) : (
-                      <Package className="h-6 w-6 text-[#EF8A17]" />
+                      <Package className="h-6 w-6 text-secondary" />
                     )}
                   </div>
                   <div>
@@ -160,7 +160,7 @@ export default function SellerDashboardPage() {
                   >
                     <Button
                       variant="secondary"
-                      className="w-full bg-white text-[#173072] hover:bg-gray-100 border-0 rounded-lg px-4 h-10 text-sm font-semibold justify-center"
+                      className="w-full bg-white text-primary hover:bg-gray-100 border-0 rounded-lg px-4 h-10 text-sm font-semibold justify-center"
                     >
                       <Plus className="mr-2 h-4 w-4" />
                       {isService
@@ -183,7 +183,7 @@ export default function SellerDashboardPage() {
                     href="/seller-dashboard/catalog"
                     className="w-full sm:w-auto"
                   >
-                    <Button className="w-full sm:w-auto bg-[#EF8A17] hover:bg-[#d87c14] text-white border-0 rounded-lg px-4 h-10 text-sm font-semibold">
+                    <Button className="w-full sm:w-auto bg-secondary hover:bg-secondary/90 text-white border-0 rounded-lg px-4 h-10 text-sm font-semibold">
                       <Eye className="mr-2 h-4 w-4" />
                       {isService
                         ? t("view_service_listing")
@@ -200,14 +200,14 @@ export default function SellerDashboardPage() {
                   className="h-full block"
                 >
                   <Card className="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col h-full border-0 group relative hover:shadow-md transition-shadow">
-                    <div className="bg-gradient-to-r from-[#173072] to-[#2547a4] text-white py-3 px-4 flex items-center justify-center gap-2 -mt-[25px]">
+                    <div className="bg-gradient-to-r from-primary to-primary/80 text-white py-3 px-4 flex items-center justify-center gap-2 -mt-[25px]">
                       <Users className="h-5 w-5" />
                       <span className="font-semibold text-lg">
                         {t("new_enquirers")}
                       </span>
                     </div>
                     <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 bg-white min-h-[100px] sm:min-h-[120px]">
-                      <span className="text-4xl sm:text-5xl font-bold text-[#173072]">
+                      <span className="text-4xl sm:text-5xl font-bold text-primary">
                         {pendingEnquiryCount}
                       </span>
                       {respondedEnquiryCount > 0 && (
@@ -227,7 +227,7 @@ export default function SellerDashboardPage() {
                   className="block h-full"
                 >
                   <Card className="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col h-full border border-orange-100 hover:shadow-md transition-shadow">
-                    <div className="bg-[#EF8A17] text-white h-[54px] shrink-0 px-4 flex items-center justify-center gap-2 -mt-[25px] whitespace-nowrap">
+                    <div className="bg-secondary text-white h-[54px] shrink-0 px-4 flex items-center justify-center gap-2 -mt-[25px] whitespace-nowrap">
                       <FileText className="h-5 w-5" />
                       <span className="font-semibold text-lg">
                         {t("your_quotations")}
@@ -238,7 +238,7 @@ export default function SellerDashboardPage() {
                         <span className="text-[11px] sm:text-[13px] uppercase tracking-wider text-muted-foreground font-semibold mb-1 sm:mb-2 text-center">
                           {t("sent")}
                         </span>
-                        <span className="text-3xl sm:text-4xl font-bold text-[#EF8A17]">
+                        <span className="text-3xl sm:text-4xl font-bold text-secondary">
                           {sentQuotations}
                         </span>
                       </div>
@@ -246,7 +246,7 @@ export default function SellerDashboardPage() {
                         <span className="text-[11px] sm:text-[13px] uppercase tracking-wider text-muted-foreground font-semibold mb-1 sm:mb-2 text-center">
                           {t("pending")}
                         </span>
-                        <span className="text-3xl sm:text-4xl font-bold text-[#EF8A17]">
+                        <span className="text-3xl sm:text-4xl font-bold text-secondary">
                           {pendingQuotations}
                         </span>
                       </div>
@@ -262,7 +262,7 @@ export default function SellerDashboardPage() {
                   className="block h-full"
                 >
                   <Card className="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col h-full border border-orange-100 hover:shadow-md transition-shadow">
-                    <div className="bg-[#EF8A17] text-white h-[54px] shrink-0 px-4 flex items-center justify-center gap-2 -mt-[25px] whitespace-nowrap">
+                    <div className="bg-secondary text-white h-[54px] shrink-0 px-4 flex items-center justify-center gap-2 -mt-[25px] whitespace-nowrap">
                       <CalendarDays className="h-5 w-5" />
                       <span className="font-semibold text-lg">
                         {t("your_appointments")}
@@ -273,7 +273,7 @@ export default function SellerDashboardPage() {
                       <span className="text-[11px] sm:text-[13px] uppercase tracking-wider text-muted-foreground font-semibold mb-1 sm:mb-2 text-center">
                         {t("site_visit_requests")}
                       </span>
-                      <span className="text-3xl sm:text-4xl font-bold text-[#EF8A17]">
+                      <span className="text-3xl sm:text-4xl font-bold text-secondary">
                         {appointmentAssignments.length}
                       </span>
                     </div>
@@ -285,7 +285,7 @@ export default function SellerDashboardPage() {
               {isService && (
                 <Link href="/seller-dashboard/visits" className="block h-full">
                   <Card className="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col h-full border border-orange-100 hover:shadow-md transition-shadow">
-                    <div className="bg-[#EF8A17] text-white h-[54px] shrink-0 px-4 flex items-center justify-center gap-2 -mt-[25px] whitespace-nowrap">
+                    <div className="bg-secondary text-white h-[54px] shrink-0 px-4 flex items-center justify-center gap-2 -mt-[25px] whitespace-nowrap">
                       <Map className="h-5 w-5" />
                       <span className="font-semibold text-lg">
                         {t("your_visits", "Your Visits")}
@@ -296,7 +296,7 @@ export default function SellerDashboardPage() {
                         <span className="text-[11px] sm:text-[13px] uppercase tracking-wider text-muted-foreground font-semibold mb-1 sm:mb-2 text-center">
                           {t("total")}
                         </span>
-                        <span className="text-3xl sm:text-4xl font-bold text-[#EF8A17]">
+                        <span className="text-3xl sm:text-4xl font-bold text-secondary">
                           {totalVisits}
                         </span>
                       </div>
@@ -304,7 +304,7 @@ export default function SellerDashboardPage() {
                         <span className="text-[11px] sm:text-[13px] uppercase tracking-wider text-muted-foreground font-semibold mb-1 sm:mb-2 text-center">
                           {t("pending")}
                         </span>
-                        <span className="text-3xl sm:text-4xl font-bold text-[#EF8A17]">
+                        <span className="text-3xl sm:text-4xl font-bold text-secondary">
                           {pendingVisits}
                         </span>
                       </div>
@@ -314,7 +314,7 @@ export default function SellerDashboardPage() {
               )}
 
               {/* Active Leads & Customers Combined */}
-              <Card className="bg-[#173072] text-white p-5 rounded-2xl shadow-sm flex flex-col justify-between h-full border-0 relative overflow-hidden">
+              <Card className="bg-primary text-white p-5 rounded-2xl shadow-sm flex flex-col justify-between h-full border-0 relative overflow-hidden">
                 <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-500 rounded-full blur-3xl opacity-20 pointer-events-none"></div>
                 <div className="flex flex-col items-center mb-4 z-10">
                   <div className="flex items-center gap-2">
@@ -325,7 +325,7 @@ export default function SellerDashboardPage() {
                       {t("active_leads")} & {t("customers")}
                     </span>
                   </div>
-                  <span className="text-4xl sm:text-5xl font-bold text-[#EF8A17] drop-shadow-md mt-2">
+                  <span className="text-4xl sm:text-5xl font-bold text-secondary drop-shadow-md mt-2">
                     {isService
                       ? appointmentAssignments.length
                       : pendingEnquiryCount}
@@ -345,7 +345,7 @@ export default function SellerDashboardPage() {
                   href="/seller-dashboard/customers"
                   className="w-full z-10"
                 >
-                  <Button className="w-full bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-lg h-11 text-sm font-semibold shadow-md active:scale-[0.98] transition-all">
+                  <Button className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-lg h-11 text-sm font-semibold shadow-md active:scale-[0.98] transition-all">
                     <ChevronRight className="mr-1 h-4 w-4" />{" "}
                     {t("view_all_leads_customers")}
                   </Button>
@@ -357,13 +357,13 @@ export default function SellerDashboardPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* 2. Finance */}
             <section className="h-full">
-              <div className="flex items-center gap-2 mb-4 text-[#1E3A8A]">
+              <div className="flex items-center gap-2 mb-4 text-primary">
                 <Wallet className="h-5 w-5" />
                 <h2 className="text-xl font-bold tracking-tight">
                   {t("finance")}
                 </h2>
               </div>
-              <Card className="bg-[#EF8A17] text-white p-6 rounded-2xl shadow-sm flex flex-col justify-between border-0 gap-6 h-[calc(100%-2.5rem)]">
+              <Card className="bg-secondary text-white p-6 rounded-2xl shadow-sm flex flex-col justify-between border-0 gap-6 h-[calc(100%-2.5rem)]">
                 <div className="flex items-center gap-4">
                   <div className="bg-white/20 p-3 rounded-xl backdrop-blur-md shadow-inner">
                     <Wallet className="h-6 w-6 text-white" />
@@ -388,7 +388,7 @@ export default function SellerDashboardPage() {
                   <Link href="/seller-dashboard/wallet" className="w-full">
                     <Button
                       variant="secondary"
-                      className="w-full bg-white text-[#EF8A17] hover:bg-gray-50 border-0 rounded-lg h-11 font-bold shadow-sm"
+                      className="w-full bg-white text-secondary hover:bg-gray-50 border-0 rounded-lg h-11 font-bold shadow-sm"
                     >
                       {t("add_coins")}
                     </Button>
@@ -407,7 +407,7 @@ export default function SellerDashboardPage() {
 
             {/* 3. Operations */}
             <section className="h-full">
-              <div className="flex items-center gap-2 mb-4 text-[#1E3A8A]">
+              <div className="flex items-center gap-2 mb-4 text-primary">
                 <Settings className="h-5 w-5" />
                 <h2 className="text-xl font-bold tracking-tight">
                   {t("operations")}
@@ -415,7 +415,7 @@ export default function SellerDashboardPage() {
               </div>
               <Card className="bg-white p-6 rounded-2xl shadow-sm flex flex-col justify-between border border-gray-100 hover:border-orange-200 transition-colors h-[calc(100%-2.5rem)]">
                 <div className="mb-6">
-                  <div className="flex items-center gap-3 text-[#173072] mb-3">
+                  <div className="flex items-center gap-3 text-primary mb-3">
                     <div className="bg-blue-50 p-2 rounded-lg">
                       <Store className="h-6 w-6" />
                     </div>
@@ -426,7 +426,7 @@ export default function SellerDashboardPage() {
                   </p>
                 </div>
                 <Link href="/seller-dashboard/settings" className="w-full">
-                  <Button className="w-full bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-lg h-11 font-medium shadow-sm active:scale-95 transition-all">
+                  <Button className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-lg h-11 font-medium shadow-sm active:scale-95 transition-all">
                     {t("manage_store_settings")}
                   </Button>
                 </Link>
@@ -436,19 +436,19 @@ export default function SellerDashboardPage() {
 
           {/* 4. Relations */}
           <section>
-            <div className="flex items-center gap-2 mb-4 text-[#1E3A8A]">
+            <div className="flex items-center gap-2 mb-4 text-primary">
               <MessageSquare className="h-5 w-5" />
               <h2 className="text-xl font-bold tracking-tight">
                 {t("relations")}
               </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card className="bg-gradient-to-b from-[#173072] to-[#0A163B] text-white p-6 rounded-2xl shadow-sm flex flex-col justify-between h-full border-0 relative overflow-hidden group">
+              <Card className="bg-gradient-to-b from-primary to-primary/60 text-white p-6 rounded-2xl shadow-sm flex flex-col justify-between h-full border-0 relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                   <Users className="w-16 h-16" />
                 </div>
                 <div className="flex items-center gap-3 mb-8 relative z-10">
-                  <Users className="h-6 w-6 text-[#EF8A17]" />
+                  <Users className="h-6 w-6 text-secondary" />
                   <h3 className="font-bold text-lg tracking-wide">
                     {t("customers")}
                   </h3>
@@ -457,18 +457,18 @@ export default function SellerDashboardPage() {
                   href="/seller-dashboard/customers"
                   className="w-full relative z-10"
                 >
-                  <Button className="w-full bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-lg h-11 shadow-md font-semibold text-[15px]">
+                  <Button className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-lg h-11 shadow-md font-semibold text-[15px]">
                     {t("my_buyers")}
                   </Button>
                 </Link>
               </Card>
 
-              <Card className="bg-gradient-to-b from-[#173072] to-[#0A163B] text-white p-6 rounded-2xl shadow-sm flex flex-col justify-between h-full border-0 relative overflow-hidden group">
+              <Card className="bg-gradient-to-b from-primary to-primary/60 text-white p-6 rounded-2xl shadow-sm flex flex-col justify-between h-full border-0 relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                   <Star className="w-16 h-16" />
                 </div>
                 <div className="flex items-center gap-3 mb-8 relative z-10">
-                  <Star className="h-6 w-6 text-[#EF8A17]" />
+                  <Star className="h-6 w-6 text-secondary" />
                   <h3 className="font-bold text-lg tracking-wide">
                     {t("reviews")}
                   </h3>
@@ -477,30 +477,30 @@ export default function SellerDashboardPage() {
                   href="/seller-dashboard/reviews"
                   className="w-full relative z-10"
                 >
-                  <Button className="w-full bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-lg h-11 shadow-md font-semibold text-[15px]">
+                  <Button className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-lg h-11 shadow-md font-semibold text-[15px]">
                     {t("view_feedback")}
                   </Button>
                 </Link>
               </Card>
 
-              <Card className="bg-gradient-to-b from-[#173072] to-[#0A163B] text-white p-6 rounded-2xl shadow-sm flex flex-col justify-between h-full border-0 relative overflow-hidden group">
+              <Card className="bg-gradient-to-b from-primary to-primary/60 text-white p-6 rounded-2xl shadow-sm flex flex-col justify-between h-full border-0 relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                   <Headphones className="w-16 h-16" />
                 </div>
                 <div className="flex items-center gap-3 mb-8 relative z-10">
-                  <Headphones className="h-6 w-6 text-[#EF8A17]" />
+                  <Headphones className="h-6 w-6 text-secondary" />
                   <h3 className="font-bold text-lg tracking-wide">
                     {t("technical_support")}
                   </h3>
                 </div>
                 <div className="flex flex-col gap-3 relative z-10 w-full">
                   <Link href="/seller-dashboard/support" className="w-full">
-                    <Button className="w-full bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-lg h-11 shadow-md text-sm font-semibold px-4">
+                    <Button className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-lg h-11 shadow-md text-sm font-semibold px-4">
                       {t("view_helpdesk")}
                     </Button>
                   </Link>
                   <Link href="/seller-dashboard/support" className="w-full">
-                    <Button className="w-full bg-[#EF8A17] hover:bg-[#d87c14] text-white rounded-lg h-11 shadow-md text-sm font-semibold px-4">
+                    <Button className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-lg h-11 shadow-md text-sm font-semibold px-4">
                       {t("view_tickets")}
                     </Button>
                   </Link>
@@ -519,9 +519,9 @@ export default function SellerDashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <Card className="p-5 flex flex-col gap-4 border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-3">
-                  <MessageSquare className="h-5 w-5 text-[#173072]" />
+                  <MessageSquare className="h-5 w-5 text-primary" />
                   <div>
-                    <h3 className="font-bold text-base text-[#1E3A8A]">
+                    <h3 className="font-bold text-base text-primary">
                       {t("offers")}
                     </h3>
                     <p className="text-xs text-muted-foreground font-medium">
@@ -543,9 +543,9 @@ export default function SellerDashboardPage() {
 
               <Card className="p-5 flex flex-col gap-4 border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-3">
-                  <FileText className="h-5 w-5 text-[#173072]" />
+                  <FileText className="h-5 w-5 text-primary" />
                   <div>
-                    <h3 className="font-bold text-base text-[#1E3A8A]">
+                    <h3 className="font-bold text-base text-primary">
                       {t("content")}
                     </h3>
                     <p className="text-xs text-muted-foreground font-medium">
@@ -567,9 +567,9 @@ export default function SellerDashboardPage() {
 
               <Card className="p-5 flex flex-col gap-4 border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-3">
-                  <CalendarDays className="h-5 w-5 text-[#173072]" />
+                  <CalendarDays className="h-5 w-5 text-primary" />
                   <div>
-                    <h3 className="font-bold text-base text-[#1E3A8A]">
+                    <h3 className="font-bold text-base text-primary">
                       {t("events")}
                     </h3>
                     <p className="text-xs text-muted-foreground font-medium">
@@ -591,9 +591,9 @@ export default function SellerDashboardPage() {
 
               <Card className="p-5 flex flex-col gap-4 border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-3">
-                  <Users className="h-5 w-5 text-[#173072]" />
+                  <Users className="h-5 w-5 text-primary" />
                   <div>
-                    <h3 className="font-bold text-base text-[#1E3A8A]">
+                    <h3 className="font-bold text-base text-primary">
                       {t("forum")}
                     </h3>
                     <p className="text-xs text-muted-foreground font-medium">
@@ -620,8 +620,8 @@ export default function SellerDashboardPage() {
         <div className="flex flex-col space-y-8 h-full">
           <div className="sticky top-24 pt-4 lg:pt-0">
             <div className="flex items-center gap-2 mb-4">
-              <Bell className="h-5 w-5 text-[#173072]" />
-              <h2 className="text-xl font-bold text-[#173072] tracking-tight">
+              <Bell className="h-5 w-5 text-primary" />
+              <h2 className="text-xl font-bold text-primary tracking-tight">
                 {t("notifications")}
               </h2>
             </div>

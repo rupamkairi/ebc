@@ -42,12 +42,12 @@ export function ListingCard({ listing, type, view = "list" }: ListingCardProps) 
 
   if (view === "grid") {
     return (
-      <Card className="bg-white border border-[#3D52A0]/10 hover:border-[#3D52A0]/20 shadow-xs hover:shadow-md rounded-[24px] overflow-hidden flex flex-col h-full group transition-all duration-500">
+      <Card className="bg-white border border-primary/10 hover:border-primary/20 shadow-xs hover:shadow-md rounded-[24px] overflow-hidden flex flex-col h-full group transition-all duration-500">
         <CardContent className="p-0 flex flex-col h-full">
           <div className="p-5 md:p-6 flex flex-col h-full space-y-5">
             {/* Header: ID and Status */}
             <div className="flex items-center justify-between">
-              <span className="text-[9px] font-black text-[#3D52A0]/30 uppercase tracking-[0.2em] bg-[#3D52A0]/5 px-2.5 py-1 rounded-full">
+              <span className="text-[9px] font-black text-primary/30 uppercase tracking-[0.2em] bg-primary/5 px-2.5 py-1 rounded-full">
                 ID: {listing.item?.id.substring(0, 6).toUpperCase()}
               </span>
               <div className="flex items-center gap-1.5">
@@ -57,7 +57,7 @@ export function ListingCard({ listing, type, view = "list" }: ListingCardProps) 
                     listing.isActive ? "bg-emerald-500 animate-pulse" : "bg-slate-300",
                   )}
                 />
-                <span className="text-[9px] font-black text-[#3D52A0]/40 uppercase tracking-widest">
+                <span className="text-[9px] font-black text-primary/40 uppercase tracking-widest">
                   {listing.isActive ? "Active" : "Inactive"}
                 </span>
               </div>
@@ -65,7 +65,7 @@ export function ListingCard({ listing, type, view = "list" }: ListingCardProps) 
 
             {/* Title Section */}
             <div className="flex gap-4 items-start">
-              <div className="w-12 h-12 bg-[#F8FAFF] rounded-xl flex items-center justify-center text-[#3D52A0]/40 shrink-0 group-hover:bg-[#0F28A9]/5 group-hover:text-[#0F28A9] transition-all duration-300">
+              <div className="w-12 h-12 bg-primary/5 rounded-xl flex items-center justify-center text-primary/40 shrink-0 group-hover:bg-primary/5 group-hover:text-primary transition-all duration-300">
                 {isProduct ? (
                   <Package size={24} strokeWidth={1.5} />
                 ) : (
@@ -73,10 +73,10 @@ export function ListingCard({ listing, type, view = "list" }: ListingCardProps) 
                 )}
               </div>
               <div className="space-y-1 min-w-0">
-                <h3 className="text-base font-black text-[#3D52A0] tracking-tight leading-tight line-clamp-2 min-h-10">
+                <h3 className="text-base font-black text-primary tracking-tight leading-tight line-clamp-2 min-h-10">
                   {listing.item?.name}
                 </h3>
-                <p className="text-[10px] font-bold text-[#3D52A0]/30 uppercase tracking-wider truncate">
+                <p className="text-[10px] font-bold text-primary/30 uppercase tracking-wider truncate">
                   {isProduct
                     ? listing.item?.brand?.name
                     : listing.itemRegions?.[0]?.state || "Global"}
@@ -85,13 +85,13 @@ export function ListingCard({ listing, type, view = "list" }: ListingCardProps) 
             </div>
 
             {/* Stats Section */}
-            <div className="bg-[#F8FAFF] rounded-2xl p-4 border border-[#3D52A0]/5 space-y-1 mt-auto">
-              <p className="text-[9px] font-black text-[#3D52A0]/30 uppercase tracking-widest leading-none">
+            <div className="bg-primary/5 rounded-2xl p-4 border border-primary/5 space-y-1 mt-auto">
+              <p className="text-[9px] font-black text-primary/30 uppercase tracking-widest leading-none">
                 Min Order Required
               </p>
-              <p className="text-sm font-black text-[#3D52A0]">
+              <p className="text-sm font-black text-primary">
                 {listing.itemRates?.[0]?.minQuantity || 0}{" "}
-                <span className="text-[10px] font-bold text-[#FFA500] ml-0.5 uppercase">
+                <span className="text-[10px] font-bold text-secondary ml-0.5 uppercase">
                   {listing.itemRates?.[0]?.unitType &&
                     UNIT_TYPE_LABELS[listing.itemRates[0].unitType]}
                 </span>
@@ -102,7 +102,7 @@ export function ListingCard({ listing, type, view = "list" }: ListingCardProps) 
             <div className="flex gap-2 pt-2">
               <Button
                 asChild
-                className="flex-1 bg-[#0F28A9] hover:bg-[#1A237E] text-white font-black rounded-xl h-10 text-[10px] tracking-widest uppercase transition-all shadow-sm active:scale-95 border-none"
+                className="flex-1 bg-primary hover:bg-primary/90 text-white font-black rounded-xl h-10 text-[10px] tracking-widest uppercase transition-all shadow-sm active:scale-95 border-none"
               >
                 <Link href={`/seller-dashboard/catalog/${listing.id}`}>
                   Edit Details
@@ -113,14 +113,14 @@ export function ListingCard({ listing, type, view = "list" }: ListingCardProps) 
                   <Button
                     variant="outline"
                     size="icon"
-                    className="h-10 w-10 border-[#3D52A0]/10 text-[#3D52A0]/40 hover:text-red-600 hover:border-red-100 hover:bg-red-50 rounded-xl transition-all"
+                    className="h-10 w-10 border-primary/10 text-primary/40 hover:text-red-600 hover:border-red-100 hover:bg-red-50 rounded-xl transition-all"
                   >
                     <MoreVertical size={16} />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="end"
-                  className="rounded-xl border-[#3D52A0]/10 shadow-xl"
+                  className="rounded-xl border-primary/10 shadow-xl"
                 >
                   <DropdownMenuItem
                     className="text-red-600 font-bold cursor-pointer text-[10px] uppercase tracking-widest py-2.5"
@@ -153,7 +153,7 @@ export function ListingCard({ listing, type, view = "list" }: ListingCardProps) 
               className="flex-1 space-y-1 min-w-0 pr-4"
             >
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-semibold truncate text-[#1A237E]">
+                <h3 className="text-base font-semibold truncate text-primary">
                   {listing.item?.name}
                 </h3>
                 <Badge
@@ -187,12 +187,12 @@ export function ListingCard({ listing, type, view = "list" }: ListingCardProps) 
             <div className="flex items-center gap-4 shrink-0">
               {isProduct && (
                 <div className="text-right flex flex-col items-end">
-                  <p className="text-[10px] text-[#1A237E]/40 uppercase font-black tracking-widest leading-none">
+                  <p className="text-[10px] text-primary/40 uppercase font-black tracking-widest leading-none">
                     Min Order
                   </p>
-                  <p className="text-sm font-black text-[#FFA000]">
+                  <p className="text-sm font-black text-secondary">
                     {listing.itemRates?.[0]?.minQuantity}{" "}
-                    <span className="text-[10px] font-bold text-[#1A237E]/30 italic opacity-60">
+                    <span className="text-[10px] font-bold text-primary/30 italic opacity-60">
                       {listing.itemRates?.[0]?.unitType &&
                         UNIT_TYPE_LABELS[listing.itemRates[0].unitType]}
                     </span>

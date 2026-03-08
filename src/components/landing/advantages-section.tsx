@@ -38,10 +38,10 @@ function AdvantageCard({
       {/* Info Box - Tightened padding and text */}
       <div className="bg-white p-4 flex flex-col grow">
         <div className="flex items-center gap-2 mb-2">
-          <div className="p-1 rounded-md bg-orange-50 text-[#ec8305]">
+          <div className="p-1 rounded-md bg-orange-50 text-secondary">
             {icon}
           </div>
-          <h3 className="text-[#ec8305] font-black text-base md:text-lg tracking-tight leading-tight">
+          <h3 className="text-secondary font-black text-base md:text-lg tracking-tight leading-tight">
             {title}
           </h3>
         </div>
@@ -112,7 +112,7 @@ export function AdvantagesSection() {
       <Container size="xl" className="relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-white text-3xl md:text-5xl font-black tracking-tight drop-shadow-lg">
-            Top <span className="text-[#ec8305]">Advantages</span> of EBC
+            Top <span className="text-secondary">Advantages</span> of EBC
           </h2>
         </div>
 

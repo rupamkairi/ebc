@@ -25,7 +25,7 @@ export default function SubmitSuccessPage() {
 
       {/* Header Section */}
       <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-bold text-[#3D52A0] tracking-tight">
+        <h1 className="text-3xl font-bold text-primary tracking-tight">
           {t("enquiries")}
         </h1>
         <p className="text-sm text-muted-foreground font-medium">
@@ -34,7 +34,7 @@ export default function SubmitSuccessPage() {
       </div>
 
       {/* Success Success Card */}
-      <div className="bg-white rounded-[2rem] shadow-2xl p-10 sm:p-20 flex flex-col items-center text-center space-y-8 border border-[#3D52A0]/5">
+      <div className="bg-white rounded-[2rem] shadow-2xl p-10 sm:p-20 flex flex-col items-center text-center space-y-8 border border-primary/5">
         <div className="relative">
           <div className="absolute inset-0 bg-green-500/20 rounded-full blur-2xl animate-pulse" />
           <div className="relative h-32 w-32 bg-white rounded-full flex items-center justify-center border-[6px] border-green-500 shadow-xl">
@@ -49,7 +49,7 @@ export default function SubmitSuccessPage() {
           <h2 className="text-3xl font-bold text-[#2e7d32] tracking-tight">
             {t("enquiry_submitted")}
           </h2>
-          <p className="text-lg text-[#3D52A0]/70 font-medium leading-relaxed">
+          <p className="text-lg text-primary/70 font-medium leading-relaxed">
             {t("enquiry_thank_you")}
           </p>
         </div>
@@ -58,13 +58,13 @@ export default function SubmitSuccessPage() {
           <Button
             asChild
             variant="outline"
-            className="flex-1 h-14 rounded-xl border-[#3D52A0] text-[#3D52A0] font-bold text-lg hover:bg-[#3D52A0]/5 border-2 transition-all duration-300"
+            className="flex-1 h-14 rounded-xl border-primary text-primary font-bold text-lg hover:bg-primary/5 border-2 transition-all duration-300"
           >
             <Link href="/browse">{t("browse_more_items")}</Link>
           </Button>
           <Button
             asChild
-            className="flex-1 h-14 rounded-xl bg-linear-to-r from-[#0F28A9] to-[#0A1B75] text-white font-bold text-lg shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-[1.02] active:scale-95 border-none"
+            className="flex-1 h-14 rounded-xl bg-linear-to-r from-primary to-primary/80 text-white font-bold text-lg shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-[1.02] active:scale-95 border-none"
           >
             <Link href="/buyer-dashboard">{t("goto_dashboard")}</Link>
           </Button>

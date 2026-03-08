@@ -44,14 +44,14 @@ export function Sidebar({ categories, facets, isLoading }: SidebarProps) {
   return (
     <div className="flex flex-col h-full bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
       {/* Sidebar Header */}
-      <div className="bg-[#445EB4] p-4">
+      <div className="bg-primary p-4">
         <h2 className="text-white font-black text-2xl tracking-tight">Materials</h2>
       </div>
 
       <div className="p-4 flex flex-col gap-8">
         {/* Categories Section */}
         <div>
-          <h3 className="text-[#445EB4] font-black text-lg mb-2">Filter</h3>
+          <h3 className="text-primary font-black text-lg mb-2">Filter</h3>
            <Separator className="mb-4 bg-slate-100" />
           <h4 className="font-bold text-xs uppercase tracking-widest text-slate-400 mb-4">Categories</h4>
           <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
@@ -65,7 +65,7 @@ export function Sidebar({ categories, facets, isLoading }: SidebarProps) {
                  >
                     <div className={cn(
                       "size-4 rounded border transition-colors",
-                      isActive ? "bg-[#FFA500] border-[#FFA500]" : "border-slate-300 group-hover:border-[#FFA500]"
+                      isActive ? "bg-secondary border-secondary" : "border-slate-300 group-hover:border-secondary"
                     )} />
                     <span className={cn(
                       "text-[11px] font-bold transition-colors uppercase",
@@ -84,7 +84,7 @@ export function Sidebar({ categories, facets, isLoading }: SidebarProps) {
 
         {/* Brands Section */}
         <div>
-          <h3 className="text-[#445EB4] font-black text-lg mb-2">Brands</h3>
+          <h3 className="text-primary font-black text-lg mb-2">Brands</h3>
           <Separator className="mb-4 bg-slate-100" />
           <h4 className="font-bold text-xs uppercase tracking-widest text-slate-400 mb-4">Brand Filter</h4>
           <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
@@ -94,7 +94,7 @@ export function Sidebar({ categories, facets, isLoading }: SidebarProps) {
                 <div key={brand.value} className="flex items-center gap-2 group cursor-pointer" onClick={() => handleBrandChange(brand.value, !isChecked)}>
                    <div className={cn(
                      "size-4 rounded border flex items-center justify-center transition-all",
-                     isChecked ? "bg-[#FFA500] border-[#FFA500] text-white" : "border-slate-300 group-hover:border-[#FFA500]"
+                     isChecked ? "bg-secondary border-secondary text-white" : "border-slate-300 group-hover:border-secondary"
                    )}>
                      {isChecked && <Check className="size-2.5" />}
                    </div>

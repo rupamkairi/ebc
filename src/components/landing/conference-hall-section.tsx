@@ -12,9 +12,9 @@ export function ConferenceHallSection() {
       <Container size="xl">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-[#445EB4] text-2xl md:text-3xl lg:text-4xl font-black tracking-tight mb-4">
+          <h2 className="text-primary text-2xl md:text-3xl lg:text-4xl font-black tracking-tight mb-4">
             Not Sure? Learn from Experts & Real{" "}
-            <span className="text-[#FFA500]">Home Builders</span>
+            <span className="text-secondary">Home Builders</span>
           </h2>
           <p className="text-slate-500 font-medium text-base md:text-lg">
             Ask questions. Read real experiences. Decide confidently.
@@ -36,10 +36,10 @@ export function ConferenceHallSection() {
           </div>
 
           {/* Right Side: Blue Information Card */}
-          <div className="bg-[#445EB4] p-8 md:p-12 lg:p-16 flex flex-col justify-center text-white">
+          <div className="bg-primary p-8 md:p-12 lg:p-16 flex flex-col justify-center text-white">
             <div className="space-y-8">
               <div className="space-y-4">
-                <h3 className="text-[#FFA500] text-3xl md:text-4xl font-black tracking-tight leading-tight">
+                <h3 className="text-secondary text-3xl md:text-4xl font-black tracking-tight leading-tight">
                   Join The Conference Hall
                 </h3>
                 <p className="text-white/80 text-base md:text-lg max-w-md leading-relaxed">
@@ -57,7 +57,7 @@ export function ConferenceHallSection() {
                   "Q&A Forum",
                 ].map((item, index) => (
                   <div key={index} className="flex items-center gap-4 group">
-                    <CheckCircle2 className="size-7 text-[#FFA500] shrink-0" />
+                    <CheckCircle2 className="size-7 text-secondary shrink-0" />
                     <span className="text-xl md:text-2xl font-bold tracking-tight">
                       {item}
                     </span>
@@ -68,7 +68,7 @@ export function ConferenceHallSection() {
               {/* Action Button */}
               <div className="pt-6">
                 <Button
-                  className="h-14 px-10 bg-[#FFA500] hover:bg-[#FFB733] text-white flex items-center gap-2 rounded-lg transition-all duration-300 shadow-xl group border-none"
+                  className="h-14 px-10 bg-secondary hover:bg-secondary/90 text-white flex items-center gap-2 rounded-lg transition-all duration-300 shadow-xl group border-none"
                   asChild
                 >
                   <Link href="/conference-hall" className="text-lg font-bold">

@@ -28,7 +28,7 @@ function ReviewCard({ name, time, rating, review, avatar }: ReviewCardProps) {
           />
         </div>
         <div className="flex flex-col">
-          <h4 className="font-bold text-[#1B2559] text-lg leading-tight">
+          <h4 className="font-bold text-primary text-lg leading-tight">
             {name}
           </h4>
           <span className="text-xs text-gray-400 font-medium">{time}</span>
@@ -84,13 +84,13 @@ export function ReviewsSection() {
     <section className="bg-white pt-16 pb-0 overflow-hidden">
       {/* Section Title */}
       <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-4xl font-bold text-[#3B5998] tracking-tight">
+        <h2 className="text-3xl md:text-4xl font-bold text-primary tracking-tight">
           ECON Reviews
         </h2>
       </div>
 
       {/* Yellow Background Wrapper */}
-      <div className="bg-[#FFCC66] py-16">
+      <div className="bg-secondary/40 py-16">
         <Container size="lg">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-items-center">
             {reviews.map((review, index) => (

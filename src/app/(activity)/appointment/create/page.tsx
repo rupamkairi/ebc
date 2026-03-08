@@ -129,10 +129,10 @@ export default function CreateAppointmentPage() {
       )}
 
       <div className="space-y-2">
-        <h1 className="text-4xl font-bold tracking-tight text-[#3D52A0]">
+        <h1 className="text-4xl font-bold tracking-tight text-primary">
           {t("create_new_appointment")}
         </h1>
-        <p className="text-[#3D52A0]/60 font-medium ml-1">
+        <p className="text-primary/60 font-medium ml-1">
           {t("select_item_choose_slots")}
         </p>
       </div>
@@ -155,15 +155,15 @@ export default function CreateAppointmentPage() {
             )}
 
             {item && (
-              <div className="pt-4 border-t border-[#3D52A0]/10">
+              <div className="pt-4 border-t border-primary/10">
                 <AppointmentLineItemWrapper />
               </div>
             )}
           </section>
 
           {/* Time Slots */}
-          <section className="space-y-6 pt-4 border-t border-[#3D52A0]/10">
-            <h2 className="text-2xl font-bold text-[#3D52A0] tracking-tight">
+          <section className="space-y-6 pt-4 border-t border-primary/10">
+            <h2 className="text-2xl font-bold text-primary tracking-tight">
               {t("preferred_time_slots")}
             </h2>
             <DateTimeSlotSelect
@@ -177,7 +177,7 @@ export default function CreateAppointmentPage() {
         {/* Right Column: Buyer Details & Action */}
         <div className="lg:col-span-2 space-y-10">
           <section className="space-y-8">
-            <h2 className="text-2xl font-bold text-[#3D52A0] tracking-tight">
+            <h2 className="text-2xl font-bold text-primary tracking-tight">
               {t("buyer_details")}
             </h2>
             <BuyerDetailsForm
@@ -190,7 +190,7 @@ export default function CreateAppointmentPage() {
           <div className="flex justify-center pt-8">
             <Button
               onClick={handleNext}
-              className="w-full bg-linear-to-r from-[#0F28A9] to-[#0A1B75] hover:from-[#FFA500] hover:to-[#FF8C00] text-white font-bold tracking-tight py-7 rounded-2xl text-lg shadow-[0_20px_50px_rgba(15,40,169,0.3)] transition-all duration-500 hover:scale-105 active:scale-95 group border-none"
+              className="w-full bg-linear-to-r from-primary to-primary/80 hover:from-secondary hover:to-secondary text-white font-bold tracking-tight py-7 rounded-2xl text-lg shadow-[0_20px_50px_rgba(15,40,169,0.3)] transition-all duration-500 hover:scale-105 active:scale-95 group border-none"
             >
               {t("proceed_to_verify")}
               <ArrowRight className="ml-3 h-5 w-5 transition-transform group-hover:translate-x-2 duration-500" />

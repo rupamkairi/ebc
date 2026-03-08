@@ -50,7 +50,7 @@ export default function BuyerVisitsPage() {
 
       {/* Header */}
       <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-black text-[#3D52A0] tracking-tight">
+        <h1 className="text-3xl font-black text-primary tracking-tight">
           {t("visits_page_title") || "Service Provider Visits"}
         </h1>
         <p className="text-sm text-muted-foreground font-medium">
@@ -68,8 +68,8 @@ export default function BuyerVisitsPage() {
             className={cn(
               "px-6 py-2 rounded-full text-xs font-bold transition-all shadow-sm",
               activeFilter === filter
-                ? "bg-[#3D52A0] text-white shadow-[#3D52A0]/20"
-                : "bg-white text-[#3D52A0] hover:bg-muted border border-muted",
+                ? "bg-primary text-white shadow-primary/20"
+                : "bg-white text-primary hover:bg-muted border border-muted",
             )}
           >
             {filter === "All" && (t("all_filter") || "All")}
@@ -83,7 +83,7 @@ export default function BuyerVisitsPage() {
       {/* List */}
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-20 gap-4">
-          <Loader2 className="h-10 w-10 animate-spin text-[#3D52A0]" />
+          <Loader2 className="h-10 w-10 animate-spin text-primary" />
           <p className="text-muted-foreground font-medium">
             {t("loading_visits_msg") || "Loading scheduled visits..."}
           </p>
@@ -135,8 +135,8 @@ export default function BuyerVisitsPage() {
                     <div className="flex-1 p-5 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                       {/* Left: info */}
                       <div className="flex items-center gap-4">
-                        <div className="h-12 w-12 rounded-xl bg-[#3D52A0]/5 flex items-center justify-center shrink-0">
-                          <Calendar className="h-6 w-6 text-[#3D52A0]" />
+                        <div className="h-12 w-12 rounded-xl bg-primary/5 flex items-center justify-center shrink-0">
+                          <Calendar className="h-6 w-6 text-primary" />
                         </div>
                         <div className="space-y-1">
                           <div className="flex items-center gap-2 flex-wrap">
@@ -181,7 +181,7 @@ export default function BuyerVisitsPage() {
                           <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">
                             {t("date_time_label") || "SCHEDULED FOR"}
                           </p>
-                          <div className="text-xs font-bold text-[#3D52A0]">
+                          <div className="text-xs font-bold text-primary">
                             {v.visitSlot ? (
                               <>
                                 {format(
@@ -204,7 +204,7 @@ export default function BuyerVisitsPage() {
                         <Button
                           asChild
                           variant="outline"
-                          className="border-[#3D52A0] text-[#3D52A0] hover:bg-[#3D52A0] hover:text-white font-black rounded-xl h-10 px-5 transition-all group/btn w-full md:w-auto"
+                          className="border-primary text-primary hover:bg-primary hover:text-white font-black rounded-xl h-10 px-5 transition-all group/btn w-full md:w-auto"
                         >
                           <Link
                             href={`/buyer-dashboard/appointments/${v.appointmentId}`}

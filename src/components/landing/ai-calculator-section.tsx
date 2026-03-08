@@ -14,11 +14,11 @@ interface FeatureProps {
 function CostFeature({ icon, title, description }: FeatureProps) {
   return (
     <div className="flex items-start gap-4">
-      <div className="shrink-0 size-12 rounded-xl bg-white border border-[#FFA500] shadow-sm flex items-center justify-center text-[#FFA500]">
+      <div className="shrink-0 size-12 rounded-xl bg-white border border-secondary shadow-sm flex items-center justify-center text-secondary">
         {icon}
       </div>
       <div className="flex flex-col">
-        <h4 className="text-[#445EB4] font-bold text-lg leading-tight mb-1">
+        <h4 className="text-primary font-bold text-lg leading-tight mb-1">
           {title}
         </h4>
         <p className="text-slate-500 text-sm leading-relaxed">{description}</p>
@@ -33,8 +33,8 @@ export function AiCalculatorSection() {
       <Container size="xl">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-[#445EB4] text-2xl md:text-3xl lg:text-4xl font-black tracking-tight mb-4">
-            EBC Offers <span className="text-[#FFA500]">AI-Powered</span> Cost
+          <h2 className="text-primary text-2xl md:text-3xl lg:text-4xl font-black tracking-tight mb-4">
+            EBC Offers <span className="text-secondary">AI-Powered</span> Cost
             Calculator
           </h2>
           <p className="text-slate-600 font-medium text-base md:text-lg">
@@ -59,7 +59,7 @@ export function AiCalculatorSection() {
           {/* Right: Features List */}
           <div className="flex flex-col space-y-8 lg:pl-12">
             <div className="space-y-4 mb-4">
-              <h3 className="text-[#445EB4] text-2xl lg:text-3xl font-black tracking-tight leading-tight">
+              <h3 className="text-primary text-2xl lg:text-3xl font-black tracking-tight leading-tight">
                 Smart Construction Cost <br className="hidden md:block" />{" "}
                 Calculator
               </h3>

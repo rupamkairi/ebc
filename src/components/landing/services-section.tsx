@@ -24,7 +24,7 @@ function ServiceCard({ title, image }: ServiceCardProps) {
           unoptimized
         />
       </div>
-      <div className="bg-[#FFA500] p-3 text-center">
+      <div className="bg-secondary p-3 text-center">
         <p className="text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider line-clamp-2 min-h-10 flex items-center justify-center">
           {title}
         </p>
@@ -79,8 +79,8 @@ export function ServicesSection() {
         {/* Section Heading */}
         <div className="text-center mb-12">
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold">
-            <span className="text-[#FFA500]">Trending</span>{" "}
-            <span className="text-[#2D3E7F]">Construction Services</span>
+            <span className="text-secondary">Trending</span>{" "}
+            <span className="text-primary">Construction Services</span>
           </h2>
         </div>
 

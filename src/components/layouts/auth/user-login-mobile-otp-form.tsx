@@ -152,7 +152,7 @@ export function UserLoginMobileOtpForm({
               href="/auth/register"
               className={cn(
                 "hover:underline",
-                isDarkTheme ? "text-[#FFA500]" : "text-primary",
+                isDarkTheme ? "text-secondary" : "text-primary",
               )}
             >
               {t("register")}
@@ -205,7 +205,7 @@ export function UserLoginMobileOtpForm({
                       className={cn(
                         "w-full h-11 text-base font-semibold",
                         isDarkTheme &&
-                          "bg-[#FFA500] hover:bg-[#E69500] text-white rounded-md shadow-lg shadow-[#FFA500]/20",
+                          "bg-secondary hover:bg-secondary/90 text-white rounded-md shadow-lg shadow-secondary/20",
                       )}
                     >
                       {isLoading && (
@@ -266,7 +266,7 @@ export function UserLoginMobileOtpForm({
                       className={cn(
                         "w-full h-11 text-base font-semibold",
                         isDarkTheme &&
-                          "bg-[#FFA500] hover:bg-[#E69500] text-white rounded-md shadow-lg shadow-[#FFA500]/20",
+                          "bg-secondary hover:bg-secondary/90 text-white rounded-md shadow-lg shadow-secondary/20",
                       )}
                     >
                       {isLoading && (

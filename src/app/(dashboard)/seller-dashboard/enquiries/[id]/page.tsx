@@ -62,7 +62,7 @@ export default function EnquiryDetailsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-[#3D52A0]" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -89,10 +89,10 @@ export default function EnquiryDetailsPage() {
       <div className="flex items-center gap-4">
         <PageBackButton href="/seller-dashboard/enquiries" />
         <div>
-          <h1 className="text-2xl font-black text-[#1e2b6b] tracking-tight">
+          <h1 className="text-2xl font-black text-primary tracking-tight">
             {t("active_enquiries")}
           </h1>
-          <p className="text-sm text-[#3D52A0]/60 font-medium">
+          <p className="text-sm text-primary/60 font-medium">
             {isPending
               ? t("manage_respond_enquiries_buyer")
               : t("already_responded_enquiry")}
@@ -108,16 +108,16 @@ export default function EnquiryDetailsPage() {
             {/* Title row */}
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
               <div className="space-y-3">
-                <h2 className="text-xl font-black text-[#1e2b6b]">
+                <h2 className="text-xl font-black text-primary">
                   {t("buyer_requirements")}
                 </h2>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="px-3 py-1 rounded-full border-2 border-[#FFA500] text-[#FFA500] text-xs font-black tracking-wide">
+                  <span className="px-3 py-1 rounded-full border-2 border-secondary text-secondary text-xs font-black tracking-wide">
                     ID: {enquiry.id.slice(0, 8)}
                   </span>
                   <span
                     className={`px-4 py-1 rounded-full text-xs font-black tracking-wide text-white ${
-                      isPending ? "bg-[#3D52A0]" : "bg-green-600"
+                      isPending ? "bg-primary" : "bg-green-600"
                     }`}
                   >
                     {enquiry.status}
@@ -128,7 +128,7 @@ export default function EnquiryDetailsPage() {
                 <p className="text-xs text-gray-400 font-semibold">
                   {t("submitted_on")}
                 </p>
-                <p className="text-sm font-black text-[#1e2b6b]">
+                <p className="text-sm font-black text-primary">
                   {format(new Date(enquiry.createdAt), "MMMM do, yyyy")}
                 </p>
               </div>
@@ -138,8 +138,8 @@ export default function EnquiryDetailsPage() {
 
             {/* Items */}
             <div className="space-y-3">
-              <h3 className="font-black text-[#1e2b6b] flex items-center gap-2 text-base">
-                <PackageCheck className="h-5 w-5 text-[#FFA500]" />
+              <h3 className="font-black text-primary flex items-center gap-2 text-base">
+                <PackageCheck className="h-5 w-5 text-secondary" />
                 {t("products_requested")}
               </h3>
               <div className="space-y-3">
@@ -150,7 +150,7 @@ export default function EnquiryDetailsPage() {
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                       <div className="space-y-0.5">
-                        <p className="font-black text-[#FFA500]">
+                        <p className="font-black text-secondary">
                           {item.item?.name || "Unknown Item"}
                         </p>
                         <p className="text-sm text-gray-500 font-medium">
@@ -165,12 +165,12 @@ export default function EnquiryDetailsPage() {
                       </div>
                       <div className="flex flex-wrap gap-2 shrink-0">
                         {details?.expectedDate && (
-                          <span className="px-3 py-1 rounded-full bg-[#3D52A0] text-white text-[10px] font-black tracking-wide whitespace-nowrap">
+                          <span className="px-3 py-1 rounded-full bg-primary text-white text-[10px] font-black tracking-wide whitespace-nowrap">
                             Deliver Within 7 days
                           </span>
                         )}
                         {item.flexibleWithBrands && (
-                          <span className="px-3 py-1 rounded-full bg-[#FFA500] text-white text-[10px] font-black tracking-wide whitespace-nowrap">
+                          <span className="px-3 py-1 rounded-full bg-secondary text-white text-[10px] font-black tracking-wide whitespace-nowrap">
                             Flexible with brands
                           </span>
                         )}
@@ -186,7 +186,7 @@ export default function EnquiryDetailsPage() {
             {/* Delivery info */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="space-y-1.5">
-                <h4 className="text-sm font-black text-[#FFA500] flex items-center gap-2">
+                <h4 className="text-sm font-black text-secondary flex items-center gap-2">
                   <MapPin className="h-4 w-4" />
                   {t("delivery_location")}
                 </h4>
@@ -195,7 +195,7 @@ export default function EnquiryDetailsPage() {
                 </p>
               </div>
               <div className="space-y-1.5">
-                <h4 className="text-sm font-black text-[#3D52A0] flex items-center gap-2">
+                <h4 className="text-sm font-black text-primary flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
                   {t("expected_delivery_date")}
                 </h4>
@@ -209,7 +209,7 @@ export default function EnquiryDetailsPage() {
 
             {/* Additional remarks */}
             <div className="space-y-2">
-              <h4 className="text-sm font-black text-[#3D52A0] flex items-center gap-2">
+              <h4 className="text-sm font-black text-primary flex items-center gap-2">
                 <MessageSquare className="h-4 w-4" />
                 {t("additional_remarks")}
               </h4>

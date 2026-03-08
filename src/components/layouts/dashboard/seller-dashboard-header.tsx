@@ -39,25 +39,25 @@ export function SellerDashboardHeader() {
     <nav className="hidden lg:flex items-center gap-6">
       <Link
         href="/seller-dashboard"
-        className="text-sm font-medium transition-colors hover:text-[#445EB4] flex items-center gap-2"
+        className="text-sm font-medium transition-colors hover:text-primary flex items-center gap-2"
       >
         {t("home", "Home")}
       </Link>
       <Link
         href="/seller-dashboard/catalog"
-        className="text-sm font-medium text-slate-500 transition-colors hover:text-[#445EB4] flex items-center gap-2"
+        className="text-sm font-medium text-slate-500 transition-colors hover:text-primary flex items-center gap-2"
       >
         {t("catalog", "Catalog")}
       </Link>
       <Link
         href={middleNavLink.href}
-        className="text-sm font-medium text-slate-500 transition-colors hover:text-[#445EB4] flex items-center gap-2"
+        className="text-sm font-medium text-slate-500 transition-colors hover:text-primary flex items-center gap-2"
       >
         {middleNavLink.label}
       </Link>
       <Link
         href="/seller-dashboard/wallet"
-        className="text-sm font-medium text-slate-500 transition-colors hover:text-[#445EB4] flex items-center gap-2"
+        className="text-sm font-medium text-slate-500 transition-colors hover:text-primary flex items-center gap-2"
       >
         {t("wallet", "Wallet")}
       </Link>
@@ -92,7 +92,7 @@ export function SellerDashboardHeader() {
           className="w-[300px] sm:w-[350px] p-0 flex flex-col"
         >
           <SheetHeader className="p-6 border-b text-left">
-            <SheetTitle className="text-xl font-bold text-[#173072]">
+            <SheetTitle className="text-xl font-bold text-primary">
               Seller Hub
             </SheetTitle>
           </SheetHeader>
@@ -100,21 +100,21 @@ export function SellerDashboardHeader() {
             <Link
               href="/seller-dashboard"
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 transition-colors font-medium text-gray-700 hover:text-[#173072]"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 transition-colors font-medium text-gray-700 hover:text-primary"
             >
               <Home className="h-5 w-5" /> {t("home", "Home")}
             </Link>
             <Link
               href="/seller-dashboard/catalog"
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 transition-colors font-medium text-gray-700 hover:text-[#173072]"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 transition-colors font-medium text-gray-700 hover:text-primary"
             >
               <Package className="h-5 w-5" /> {t("catalog", "Catalog")}
             </Link>
             <Link
               href={middleNavLink.href}
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 transition-colors font-medium text-gray-700 hover:text-[#173072]"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 transition-colors font-medium text-gray-700 hover:text-primary"
             >
               {isServiceProvider ? (
                 <CalendarDays className="h-5 w-5" />
@@ -126,7 +126,7 @@ export function SellerDashboardHeader() {
             <Link
               href="/seller-dashboard/wallet"
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 transition-colors font-medium text-gray-700 hover:text-[#173072]"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 transition-colors font-medium text-gray-700 hover:text-primary"
             >
               <Wallet className="h-5 w-5" /> {t("wallet", "Wallet")}
             </Link>

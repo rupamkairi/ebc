@@ -49,8 +49,7 @@ export function CoinBalance({
           <Button
             size="icon"
             variant="outline"
-            className="h-9 w-9 rounded-full"
-            style={{ backgroundColor: "#22c55e", borderColor: "#22c55e", color: "#fff" }}
+className="h-9 w-9 rounded-full bg-green-500 border-green-500 text-white"
             title="Add Coins"
           >
             <Plus className="h-4 w-4" />

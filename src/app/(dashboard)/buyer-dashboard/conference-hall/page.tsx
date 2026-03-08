@@ -60,7 +60,7 @@ function BuyerConferenceHallContent() {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start gap-8 mb-12">
         <div className="space-y-4 max-w-3xl">
-          <h1 className="text-5xl md:text-6xl font-black tracking-tight text-[#3D52A0]">
+          <h1 className="text-5xl md:text-6xl font-black tracking-tight text-primary">
             {t("conference_hall_title")}
           </h1>
           <p className="text-muted-foreground text-lg md:text-xl font-medium leading-relaxed">
@@ -69,8 +69,8 @@ function BuyerConferenceHallContent() {
         </div>
 
         {/* Pincode Filter */}
-        <div className="w-full md:w-80 bg-white p-6 rounded-2xl border-2 border-[#3D52A0]/20 shadow-sm space-y-3">
-          <Label className="text-sm font-bold text-[#3D52A0] flex items-center gap-2">
+        <div className="w-full md:w-80 bg-white p-6 rounded-2xl border-2 border-primary/20 shadow-sm space-y-3">
+          <Label className="text-sm font-bold text-primary flex items-center gap-2">
             <MapPin className="h-4 w-4" />
             Filter by Location
           </Label>
@@ -94,7 +94,7 @@ function BuyerConferenceHallContent() {
               value="events"
               className={cn(
                 "flex-1 h-full gap-2 md:gap-3 font-bold text-sm md:text-base border-r border-[#9CA3AF] last:border-r-0 whitespace-nowrap px-6 md:px-0",
-                "data-[state=active]:bg-[#3D52A0]! data-[state=active]:text-white! data-[state=active]:md:rounded-tl-2xl",
+                "data-[state=active]:bg-primary! data-[state=active]:text-white! data-[state=active]:md:rounded-tl-2xl",
                 "text-muted-foreground",
               )}
             >
@@ -105,7 +105,7 @@ function BuyerConferenceHallContent() {
               value="offers"
               className={cn(
                 "flex-1 h-full gap-2 md:gap-3 font-bold text-sm md:text-base transition-all rounded-none border-r border-[#9CA3AF] last:border-r-0 whitespace-nowrap px-6 md:px-0",
-                "data-[state=active]:bg-[#3D52A0]! data-[state=active]:text-white!",
+                "data-[state=active]:bg-primary! data-[state=active]:text-white!",
                 "text-muted-foreground",
               )}
             >
@@ -116,7 +116,7 @@ function BuyerConferenceHallContent() {
               value="lounge"
               className={cn(
                 "flex-1 h-full gap-2 md:gap-3 font-bold text-sm md:text-base transition-all rounded-none border-r border-[#9CA3AF] last:border-r-0 whitespace-nowrap px-6 md:px-0",
-                "data-[state=active]:bg-[#3D52A0]! data-[state=active]:text-white! data-[state=active]:md:rounded-tr-2xl",
+                "data-[state=active]:bg-primary! data-[state=active]:text-white! data-[state=active]:md:rounded-tr-2xl",
                 "text-muted-foreground",
               )}
             >
@@ -127,7 +127,7 @@ function BuyerConferenceHallContent() {
         </div>
 
         {/* Content Container */}
-        <div className="bg-white border-2 border-[#3D52A0] rounded-b-2xl min-h-[500px] shadow-xl overflow-hidden">
+        <div className="bg-white border-2 border-primary rounded-b-2xl min-h-[500px] shadow-xl overflow-hidden">
           <TabsContent
             value="events"
             className="m-0 focus-visible:outline-none"

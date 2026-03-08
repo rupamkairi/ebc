@@ -70,7 +70,7 @@ export default function ItemDetailsPage() {
         </Button>
 
         <div className="space-y-2">
-          <h1 className="text-3xl md:text-4xl font-black text-[#445EB4] tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-black text-primary tracking-tight">
             {item.name}
           </h1>
           <p className="text-slate-400 font-bold text-xs uppercase tracking-widest">
@@ -79,7 +79,7 @@ export default function ItemDetailsPage() {
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm overflow-hidden">
-          <h2 className="text-xl font-black text-[#445EB4] mb-4">
+          <h2 className="text-xl font-black text-primary mb-4">
             {t("raw_details")}
           </h2>
           <pre className="whitespace-pre-wrap bg-slate-50 p-4 rounded-md text-xs sm:text-sm overflow-auto max-h-[600px] border border-slate-100 text-slate-700 font-mono">

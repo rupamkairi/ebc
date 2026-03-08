@@ -38,11 +38,11 @@ export function Hero() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t("search_placeholder")}
-            className="w-full h-12 md:h-14 pl-6 pr-14 rounded-full border border-slate-200 bg-white/95 backdrop-blur-md shadow-xl focus:outline-none focus:ring-2 focus:ring-[#FFA500]/40 transition-all text-slate-700 text-base md:text-lg"
+            className="w-full h-12 md:h-14 pl-6 pr-14 rounded-full border border-slate-200 bg-white/95 backdrop-blur-md shadow-xl focus:outline-none focus:ring-2 focus:ring-secondary/40 transition-all text-slate-700 text-base md:text-lg"
           />
           <button
             type="submit"
-            className="absolute right-1.5 top-1.5 h-9 w-9 md:h-11 md:w-11 flex items-center justify-center bg-[#FFA500] hover:bg-[#E69500] rounded-full text-white transition-all shadow-md active:scale-95"
+            className="absolute right-1.5 top-1.5 h-9 w-9 md:h-11 md:w-11 flex items-center justify-center bg-secondary hover:bg-secondary/90 rounded-full text-white transition-all shadow-md active:scale-95"
           >
             <Search className="size-4 md:size-5" />
           </button>
@@ -53,11 +53,11 @@ export function Hero() {
 
   const Heading = (
     <div className="w-full text-center max-w-6xl mb-4 md:mb-12 mx-auto px-2">
-      <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-[#445EB4] leading-tight mb-3 md:mb-4 tracking-tight">
-        Build Your <span className="text-[#FFA500]">{t("hero_dream_home")}</span>
+      <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-primary leading-tight mb-3 md:mb-4 tracking-tight">
+        Build Your <span className="text-secondary">{t("hero_dream_home")}</span>
         <br className="md:hidden" /> {t("hero_build_with")}
       </h1>
-      <p className="text-[13px] sm:text-base md:text-lg text-[#3B5998] md:text-slate-700 font-bold max-w-4xl mx-auto leading-relaxed px-4">
+      <p className="text-[13px] sm:text-base md:text-lg text-primary/60 md:text-slate-700 font-bold max-w-4xl mx-auto leading-relaxed px-4">
         {t("hero_subtitle_text")}
       </p>
     </div>
@@ -67,11 +67,11 @@ export function Hero() {
     <div className="flex flex-col gap-3.5 md:gap-4 w-full md:w-auto">
       {/* CTA 1: Consult with Expert */}
       <Button
-        className="group h-[54px] md:h-[60px] pl-1.5 pr-6 md:pr-8 py-0 bg-[#445EB4] hover:bg-[#3b519b] text-white rounded-full flex items-center gap-4 transition-all duration-300 shadow-xl border-none w-full md:w-auto"
+        className="group h-[54px] md:h-[60px] pl-1.5 pr-6 md:pr-8 py-0 bg-primary hover:bg-primary/90 text-white rounded-full flex items-center gap-4 transition-all duration-300 shadow-xl border-none w-full md:w-auto"
         asChild
       >
         <a href="#consult">
-          <div className="h-10 w-10 md:h-11 md:w-11 shrink-0 rounded-full bg-[#FFA500] flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
+          <div className="h-10 w-10 md:h-11 md:w-11 shrink-0 rounded-full bg-secondary flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
             <UserRound className="size-5 md:size-6 text-white" />
           </div>
             <span className="text-[15px] md:text-lg font-extrabold whitespace-nowrap mx-auto md:mx-0 pr-4 md:pr-0">
@@ -82,11 +82,11 @@ export function Hero() {
 
       {/* CTA 2: Compare Material Rate */}
       <Button
-        className="group h-[54px] md:h-[60px] pl-1.5 pr-6 md:pr-8 py-0 bg-[#445EB4] hover:bg-[#3b519b] text-white rounded-full flex items-center gap-4 transition-all duration-300 shadow-xl border-none w-full md:w-auto"
+        className="group h-[54px] md:h-[60px] pl-1.5 pr-6 md:pr-8 py-0 bg-primary hover:bg-primary/90 text-white rounded-full flex items-center gap-4 transition-all duration-300 shadow-xl border-none w-full md:w-auto"
         asChild
       >
         <a href="#compare">
-          <div className="h-10 w-10 md:h-11 md:w-11 shrink-0 rounded-full bg-[#FFA500] flex items-center justify-center shadow-lg group-hover:-rotate-12 transition-transform">
+          <div className="h-10 w-10 md:h-11 md:w-11 shrink-0 rounded-full bg-secondary flex items-center justify-center shadow-lg group-hover:-rotate-12 transition-transform">
             <Scale className="size-5 md:size-6 text-white" />
           </div>
             <span className="text-[15px] md:text-lg font-extrabold whitespace-nowrap mx-auto md:mx-0 pr-4 md:pr-0">
@@ -107,8 +107,8 @@ export function Hero() {
                 key={`${feature.key}-${index}`}
                 className="flex items-center gap-2 shrink-0"
               >
-                <CheckCircle2 className="size-4 md:size-6 text-[#FFA500]" />
-                <span className="text-[#445EB4] font-bold text-xs md:text-base whitespace-nowrap">
+                <CheckCircle2 className="size-4 md:size-6 text-secondary" />
+                <span className="text-primary font-bold text-xs md:text-base whitespace-nowrap">
                   {t(feature.key)}
                 </span>
               </div>

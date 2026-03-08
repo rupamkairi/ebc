@@ -62,7 +62,7 @@ function ConferenceHallContent() {
           <div className="flex-1 max-w-7xl mx-auto w-full py-6 md:py-12 px-4">
             {/* Header Section */}
             <div className="text-center space-y-4 mb-8">
-              <h1 className="text-5xl md:text-6xl font-black tracking-tight text-[#3D52A0]">
+              <h1 className="text-5xl md:text-6xl font-black tracking-tight text-primary">
                 {t("conference_hall")}
               </h1>
               <p className="text-muted-foreground text-lg md:text-xl font-medium max-w-3xl mx-auto leading-relaxed">
@@ -94,7 +94,7 @@ function ConferenceHallContent() {
                       maxLength={6}
                     />
                     <Button
-                      className="h-10 rounded-xl bg-[#3D52A0] hover:bg-[#2d3f7c] text-white font-semibold shrink-0"
+                      className="h-10 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold shrink-0"
                       onClick={handlePincodeSearch}
                       disabled={manualPincode.trim().length < 4}
                     >
@@ -159,7 +159,7 @@ function ConferenceHallContent() {
                       value="events"
                       className={cn(
                         "flex-1 h-full gap-2 md:gap-3 font-bold text-sm md:text-base border-r border-[#9CA3AF] last:border-r-0 whitespace-nowrap px-6 md:px-0",
-                        "data-[state=active]:bg-[#3D52A0]! data-[state=active]:text-white! data-[state=active]:md:rounded-tl-2xl",
+                        "data-[state=active]:bg-primary! data-[state=active]:text-white! data-[state=active]:md:rounded-tl-2xl",
                         "text-muted-foreground",
                       )}
                     >
@@ -170,7 +170,7 @@ function ConferenceHallContent() {
                       value="offers"
                       className={cn(
                         "flex-1 h-full gap-2 md:gap-3 font-bold text-sm md:text-base transition-all rounded-none border-r border-[#9CA3AF] last:border-r-0 whitespace-nowrap px-6 md:px-0",
-                        "data-[state=active]:bg-[#3D52A0]! data-[state=active]:text-white!",
+                        "data-[state=active]:bg-primary! data-[state=active]:text-white!",
                         "text-muted-foreground",
                       )}
                     >
@@ -181,7 +181,7 @@ function ConferenceHallContent() {
                       value="lounge"
                       className={cn(
                         "flex-1 h-full gap-2 md:gap-3 font-bold text-sm md:text-base transition-all rounded-none border-r border-[#9CA3AF] last:border-r-0 whitespace-nowrap px-6 md:px-0",
-                        "data-[state=active]:bg-[#3D52A0]! data-[state=active]:text-white! data-[state=active]:md:rounded-tr-2xl",
+                        "data-[state=active]:bg-primary! data-[state=active]:text-white! data-[state=active]:md:rounded-tr-2xl",
                         "text-muted-foreground",
                       )}
                     >
@@ -192,7 +192,7 @@ function ConferenceHallContent() {
                 </div>
 
                 {/* Content Container with Blue Border */}
-                <div className="bg-white border-2 border-[#3D52A0] rounded-b-2xl min-h-[500px] shadow-xl overflow-hidden">
+                <div className="bg-white border-2 border-primary rounded-b-2xl min-h-[500px] shadow-xl overflow-hidden">
                   <TabsContent
                     value="events"
                     className="m-0 focus-visible:outline-none"

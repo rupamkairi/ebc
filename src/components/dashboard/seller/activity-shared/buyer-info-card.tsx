@@ -17,10 +17,7 @@ export function BuyerInfoCard({
 
   return (
     <div
-      className="rounded-2xl p-5 space-y-4"
-      style={{
-        background: "linear-gradient(135deg, #FFA500 0%, #e69500 100%)",
-      }}
+      className="rounded-2xl p-5 space-y-4 bg-gradient-to-br from-secondary to-secondary/80"
     >
       <h3 className="text-white font-black text-base flex items-center gap-2">
         <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center shrink-0">

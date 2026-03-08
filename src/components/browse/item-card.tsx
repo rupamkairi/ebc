@@ -56,7 +56,7 @@ export function ItemCard({ product }: ItemCardProps) {
         />
       </div>
       <div className="p-4 pt-1 flex flex-col gap-1 items-start">
-        <h3 className="text-[#445EB4] font-black text-lg line-clamp-1 leading-tight group-hover:text-[#FFA500] transition-colors">
+        <h3 className="text-primary font-black text-lg line-clamp-1 leading-tight group-hover:text-secondary transition-colors">
           {product.title}
         </h3>
         <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">
@@ -66,7 +66,7 @@ export function ItemCard({ product }: ItemCardProps) {
 
       <div className="p-4 pt-2 mt-auto">
         <Button
-          className="w-full bg-[#FFA500] hover:bg-[#E69500] text-white font-black rounded-md h-10 shadow-sm active:scale-95 transition-all"
+          className="w-full bg-secondary hover:bg-secondary/90 text-white font-black rounded-md h-10 shadow-sm active:scale-95 transition-all"
           size="sm"
           onClick={handleAddInquiry}
         >

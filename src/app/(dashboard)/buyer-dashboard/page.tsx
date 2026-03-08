@@ -102,8 +102,8 @@ export default function BuyerDashboardPage() {
             {/* Project Pulse - Rooms */}
             <section>
               <div className="flex items-center gap-3 mb-4 md:mb-6">
-                <div className="h-8 w-1.5 bg-[#FFA500] rounded-full" />
-                <h2 className="text-xl md:text-2xl font-black text-[#3D52A0] uppercase tracking-wider">
+                <div className="h-8 w-1.5 bg-secondary rounded-full" />
+                <h2 className="text-xl md:text-2xl font-black text-primary uppercase tracking-wider">
                   {t("project_pulse")}
                 </h2>
               </div>
@@ -134,8 +134,8 @@ export default function BuyerDashboardPage() {
             {/* Operations Center - Activity Stats */}
             <section>
               <div className="flex items-center gap-3 mb-4 md:mb-6">
-                <div className="h-8 w-1.5 bg-[#FFA500] rounded-full" />
-                <h2 className="text-xl md:text-2xl font-black text-[#3D52A0] uppercase tracking-wider">
+                <div className="h-8 w-1.5 bg-secondary rounded-full" />
+                <h2 className="text-xl md:text-2xl font-black text-primary uppercase tracking-wider">
                   {t("operations_center")}
                 </h2>
               </div>
@@ -217,8 +217,8 @@ export default function BuyerDashboardPage() {
             {/* Project Domains - Conference Hall */}
             <section>
               <div className="flex items-center gap-3 mb-4 md:mb-6">
-                <div className="h-8 w-1.5 bg-[#FFA500] rounded-full" />
-                <h2 className="text-xl md:text-2xl font-black text-[#3D52A0] uppercase tracking-wider">
+                <div className="h-8 w-1.5 bg-secondary rounded-full" />
+                <h2 className="text-xl md:text-2xl font-black text-primary uppercase tracking-wider">
                   {t("project_domains")}
                 </h2>
               </div>
@@ -254,8 +254,8 @@ export default function BuyerDashboardPage() {
             {/* Precision Tools - AI Calculator */}
             <section>
               <div className="flex items-center gap-3 mb-4 md:mb-6">
-                <div className="h-8 w-1.5 bg-[#FFA500] rounded-full" />
-                <h2 className="text-xl md:text-2xl font-black text-[#3D52A0] uppercase tracking-wider">
+                <div className="h-8 w-1.5 bg-secondary rounded-full" />
+                <h2 className="text-xl md:text-2xl font-black text-primary uppercase tracking-wider">
                   {t("precision_tools")}
                 </h2>
               </div>
@@ -269,8 +269,8 @@ export default function BuyerDashboardPage() {
           <div className="hidden lg:block space-y-8 h-full">
             <div className="sticky top-24">
               <div className="flex items-center gap-2 mb-4 px-2">
-                <Bell className="h-5 w-5 text-[#3D52A0]" />
-                <h2 className="text-xl font-bold text-[#3D52A0] tracking-tight">
+                <Bell className="h-5 w-5 text-primary" />
+                <h2 className="text-xl font-bold text-primary tracking-tight">
                   {t("notifications")}
                 </h2>
               </div>

@@ -87,11 +87,11 @@ export default function SupportPage() {
               rel="noopener noreferrer"
               className="group flex items-center gap-4 rounded-2xl p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
               style={{
-                background: "linear-gradient(135deg, #3D52A0 0%, #2a3a7c 100%)",
+                background: "linear-gradient(135deg, var(--primary) 0%, var(--primary) 100%)",
               }}
             >
               <div className="shrink-0 h-14 w-14 rounded-xl bg-white flex items-center justify-center shadow-md">
-                <Icon size={28} className="text-[#3D52A0]" />
+                <Icon size={28} className="text-primary" />
               </div>
               <div className="flex flex-col gap-2 min-w-0">
                 <h3 className="text-white font-black text-base leading-tight">
@@ -100,7 +100,7 @@ export default function SupportPage() {
                 <p className="text-white/60 text-xs font-medium truncate">
                   {sub}
                 </p>
-                <span className="inline-block self-start bg-[#FFA500] hover:bg-[#e69500] text-white text-xs font-bold px-4 py-1.5 rounded-full transition-colors">
+                <span className="inline-block self-start bg-secondary hover:bg-secondary/90 text-white text-xs font-bold px-4 py-1.5 rounded-full transition-colors">
                   {btnLabel}
                 </span>
               </div>
@@ -112,16 +112,13 @@ export default function SupportPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-start">
           {/* Submit a Ticket */}
           <div
-            className="rounded-2xl p-6 md:p-8 flex flex-col gap-5"
-            style={{
-              background: "linear-gradient(145deg, #3D52A0 0%, #2a3a7c 100%)",
-            }}
+            className="rounded-2xl p-6 md:p-8 flex flex-col gap-5 bg-gradient-to-br from-primary to-primary/80"
           >
             <div>
               <h2 className="text-white text-2xl font-black">
                 {t("submit_ticket")}
               </h2>
-              <div className="mt-2 h-0.5 w-12 rounded-full bg-[#FFA500]" />
+              <div className="mt-2 h-0.5 w-12 rounded-full bg-secondary" />
             </div>
 
             <form
@@ -138,7 +135,7 @@ export default function SupportPage() {
                   placeholder={t("write_subject_of_issue")}
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 px-4 py-3 text-sm outline-none focus:border-[#FFA500] focus:ring-2 focus:ring-[#FFA500]/20 transition-all"
+                  className="w-full rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 px-4 py-3 text-sm outline-none focus:border-secondary focus:ring-2 focus:ring-secondary/20 transition-all"
                 />
               </div>
 
@@ -152,13 +149,13 @@ export default function SupportPage() {
                   rows={5}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 px-4 py-3 text-sm outline-none focus:border-[#FFA500] focus:ring-2 focus:ring-[#FFA500]/20 transition-all resize-none"
+                  className="w-full rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 px-4 py-3 text-sm outline-none focus:border-secondary focus:ring-2 focus:ring-secondary/20 transition-all resize-none"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-[#FFA500] hover:bg-[#e69500] active:scale-95 text-white font-black py-3.5 rounded-xl text-sm tracking-wide transition-all duration-200 shadow-lg shadow-orange-300/20"
+                className="w-full bg-secondary hover:bg-secondary/90 active:scale-95 text-white font-black py-3.5 rounded-xl text-sm tracking-wide transition-all duration-200 shadow-lg shadow-orange-300/20"
               >
                 {t("submit_your_ticket")}
               </button>
@@ -168,10 +165,10 @@ export default function SupportPage() {
           {/* Common Questions / FAQ */}
           <div className="flex flex-col gap-5">
             <div>
-              <h2 className="text-[#1e2b6b] text-2xl font-black">
+              <h2 className="text-primary text-2xl font-black">
                 {t("common_questions")}
               </h2>
-              <div className="mt-2 h-0.5 w-12 rounded-full bg-[#FFA500]" />
+              <div className="mt-2 h-0.5 w-12 rounded-full bg-secondary" />
             </div>
 
             <div className="flex flex-col gap-3">
@@ -180,15 +177,15 @@ export default function SupportPage() {
                   key={i}
                   type="button"
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full text-left rounded-xl border border-[#e8ecf4] bg-white px-5 py-4 transition-all duration-200 hover:border-[#3D52A0]/30 hover:shadow-sm focus:outline-none"
+                  className="w-full text-left rounded-xl border border-primary/20 bg-white px-5 py-4 transition-all duration-200 hover:border-primary/30 hover:shadow-sm focus:outline-none"
                 >
                   <div className="flex items-center justify-between gap-3">
-                    <span className="text-sm font-semibold text-[#1e2b6b] leading-snug">
+                    <span className="text-sm font-semibold text-primary leading-snug">
                       {faq.q}
                     </span>
                     <ChevronDown
                       size={18}
-                      className={`shrink-0 text-[#3D52A0] transition-transform duration-300 ${
+                      className={`shrink-0 text-primary transition-transform duration-300 ${
                         openFaq === i ? "rotate-180" : ""
                       }`}
                     />
@@ -209,7 +206,7 @@ export default function SupportPage() {
               </p>
               <a
                 href="mailto:support@ebc.com"
-                className="inline-block border-2 border-[#3D52A0] text-[#3D52A0] font-black text-sm px-8 py-2.5 rounded-full hover:bg-[#3D52A0] hover:text-white transition-all duration-200"
+                className="inline-block border-2 border-primary text-primary font-black text-sm px-8 py-2.5 rounded-full hover:bg-primary hover:text-white transition-all duration-200"
               >
                 {t("view_full_knowledge_base")}
               </a>

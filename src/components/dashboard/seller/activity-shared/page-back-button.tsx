@@ -21,7 +21,7 @@ export function PageBackButton({
     return (
       <Link
         href={href}
-        className="inline-flex items-center gap-1 text-xs font-black tracking-widest uppercase text-[#3D52A0] hover:text-[#1e2b6b] transition-colors"
+        className="inline-flex items-center gap-1 text-xs font-black tracking-widest uppercase text-primary hover:text-primary transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
         {label}
@@ -33,7 +33,7 @@ export function PageBackButton({
     <Button
       asChild
       size="icon"
-      className="h-10 w-10 rounded-xl bg-[#FFA500] hover:bg-[#e69500] text-white border-0 shadow-md shrink-0"
+      className="h-10 w-10 rounded-xl bg-secondary hover:bg-secondary/90 text-white border-0 shadow-md shrink-0"
     >
       <Link href={href}>
         <ArrowLeft className="h-5 w-5" />

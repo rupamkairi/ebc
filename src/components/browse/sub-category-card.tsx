@@ -30,8 +30,8 @@ export function SubCategoryCard({
       className={cn(
         "px-8 py-2.5 rounded-md text-sm font-black transition-all duration-200 border-2",
         isSelected
-          ? "bg-[#FFA500] border-[#FFA500] text-white shadow-md"
-          : "bg-white border-slate-300 text-slate-800 hover:border-[#FFA500]/50 hover:bg-slate-50",
+          ? "bg-secondary border-secondary text-white shadow-md"
+          : "bg-white border-slate-300 text-slate-800 hover:border-secondary/50 hover:bg-slate-50",
       )}
     >
       {item.name}

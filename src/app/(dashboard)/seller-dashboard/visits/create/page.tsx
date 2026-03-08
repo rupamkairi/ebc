@@ -34,7 +34,7 @@ function VisitCreateContent() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-[#3D52A0]" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -84,10 +84,10 @@ function VisitCreateContent() {
           href={`/seller-dashboard/appointments/${appointment.id}`}
         />
         <div>
-          <h1 className="text-2xl font-black text-[#1e2b6b] tracking-tight">
+          <h1 className="text-2xl font-black text-primary tracking-tight">
             {t("confirm_visit_title", "Confirm Site Visit")}
           </h1>
-          <p className="text-sm text-[#3D52A0]/60 font-medium">
+          <p className="text-sm text-primary/60 font-medium">
             {t(
               "appointment_confirmation_subtitle",
               "Review appointment details and confirm to schedule a visit.",
@@ -100,22 +100,22 @@ function VisitCreateContent() {
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-black text-[#1e2b6b]">
+            <h2 className="text-lg font-black text-primary">
               {t("appointment_summary", "Appointment Summary")}
             </h2>
-            <span className="px-3 py-1 rounded-full border border-[#3D52A0]/10 text-[#3D52A0] text-[10px] font-black tracking-widest bg-[#3D52A0]/5 uppercase">
+            <span className="px-3 py-1 rounded-full border border-primary/10 text-primary text-[10px] font-black tracking-widest bg-primary/5 uppercase">
               ID: {appointment.id.slice(0, 8)}
             </span>
           </div>
 
           <div className="rounded-xl border border-gray-100 bg-gray-50/50 p-4 space-y-3">
             <div className="flex items-start gap-3">
-              <PackageCheck className="h-5 w-5 text-[#FFA500] shrink-0 mt-0.5" />
+              <PackageCheck className="h-5 w-5 text-secondary shrink-0 mt-0.5" />
               <div>
-                <p className="font-black text-[#1e2b6b]">
+                <p className="font-black text-primary">
                   {firstItem?.item?.name || t("site_visit")}
                 </p>
-                <p className="text-xs text-[#3D52A0]/60 font-medium mt-0.5">
+                <p className="text-xs text-primary/60 font-medium mt-0.5">
                   {t("requested_by")}:{" "}
                   <span className="font-bold">
                     {appointment.createdBy?.name || t("anonymous_buyer")}
@@ -128,14 +128,14 @@ function VisitCreateContent() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-[#3D52A0]/40" />
-                <p className="text-xs text-[#3D52A0]/60 font-medium truncate">
+                <MapPin className="h-4 w-4 text-primary/40" />
+                <p className="text-xs text-primary/60 font-medium truncate">
                   {details?.address || t("not_provided")}
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-[#3D52A0]/40" />
-                <p className="text-xs text-[#3D52A0]/60 font-medium">
+                <Calendar className="h-4 w-4 text-primary/40" />
+                <p className="text-xs text-primary/60 font-medium">
                   {format(new Date(appointment.createdAt), "PPP")}
                 </p>
               </div>
@@ -147,8 +147,8 @@ function VisitCreateContent() {
 
         {/* Slot Selection */}
         <div className="space-y-4">
-          <h3 className="font-black text-[#1e2b6b] flex items-center gap-2 text-base">
-            <Clock className="h-5 w-5 text-[#3D52A0]" />
+          <h3 className="font-black text-primary flex items-center gap-2 text-base">
+            <Clock className="h-5 w-5 text-primary" />
             {t("select_preferred_slot", "Confirm Time Slot")}
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -159,17 +159,17 @@ function VisitCreateContent() {
                 onClick={() => setSelectedSlotIdx(index)}
                 className={`rounded-xl border-2 p-4 transition-all text-left ${
                   selectedSlotIdx === index
-                    ? "border-[#FFA500] bg-[#FFA500]/5 shadow-sm"
-                    : "border-gray-100 bg-white hover:border-[#3D52A0]/20"
+                    ? "border-secondary bg-secondary/5 shadow-sm"
+                    : "border-gray-100 bg-white hover:border-primary/20"
                 }`}
               >
-                <p className="text-xs font-black text-[#3D52A0]/50 uppercase tracking-widest mb-1">
+                <p className="text-xs font-black text-primary/50 uppercase tracking-widest mb-1">
                   Slot {index + 1}
                 </p>
-                <p className="text-sm font-black text-[#1e2b6b]">
+                <p className="text-sm font-black text-primary">
                   {format(new Date(slot.fromDateTime), "MMM do, yyyy")}
                 </p>
-                <p className="text-xs text-[#3D52A0]/60 font-medium mt-0.5">
+                <p className="text-xs text-primary/60 font-medium mt-0.5">
                   {format(new Date(slot.fromDateTime), "h:mm a")} –{" "}
                   {format(new Date(slot.toDateTime), "h:mm a")}
                 </p>
@@ -183,7 +183,7 @@ function VisitCreateContent() {
         <div className="pt-2">
           <Button
             onClick={() => setShowCoinModal(true)}
-            className="w-full bg-[#FFA500] hover:bg-[#e69500] text-white font-black text-sm rounded-xl h-12 shadow-md transition-all active:scale-95"
+            className="w-full bg-secondary hover:bg-secondary/90 text-white font-black text-sm rounded-xl h-12 shadow-md transition-all active:scale-95"
           >
             {t("confirm_and_pay", "Confirm Visit & Pay Coins")}
           </Button>
@@ -212,7 +212,7 @@ export default function VisitCreatePage() {
     <Suspense
       fallback={
         <div className="flex items-center justify-center min-h-[400px]">
-          <Loader2 className="h-8 w-8 animate-spin text-[#3D52A0]" />
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       }
     >

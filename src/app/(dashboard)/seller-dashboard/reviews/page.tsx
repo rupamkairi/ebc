@@ -36,7 +36,7 @@ function StarRow({ rating }: { rating: number }) {
         <Star
           key={s}
           size={14}
-          className={s <= rating ? "fill-[#FFA500] text-[#FFA500]" : "text-gray-300 fill-gray-200"}
+          className={s <= rating ? "fill-secondary text-secondary" : "text-gray-300 fill-gray-200"}
         />
       ))}
     </div>
@@ -53,17 +53,16 @@ function ReviewCard({ review, entityId }: { review: Review; entityId: string }) 
   return (
     <div
       className={cn(
-        "relative rounded-2xl p-5 group transition-all duration-300",
+        "relative rounded-2xl p-5 group transition-all duration-300 bg-gradient-to-br from-primary to-primary/80",
         review.isHidden ? "opacity-50 grayscale" : "",
         review.isPinned
-          ? "ring-2 ring-[#FFA500]/40"
+          ? "ring-2 ring-secondary/40"
           : "",
       )}
-      style={{ background: "linear-gradient(145deg, #3D52A0 0%, #2a3a7c 100%)" }}
     >
       {/* Pinned badge */}
       {review.isPinned && (
-        <div className="absolute -top-2.5 left-5 px-3 py-0.5 bg-[#FFA500] text-white text-[9px] font-black uppercase tracking-widest rounded-full flex items-center gap-1">
+        <div className="absolute -top-2.5 left-5 px-3 py-0.5 bg-secondary text-white text-[9px] font-black uppercase tracking-widest rounded-full flex items-center gap-1">
           <Pin size={9} className="fill-white" /> Pinned
         </div>
       )}
@@ -123,7 +122,7 @@ function ReviewCard({ review, entityId }: { review: Review; entityId: string }) 
 
       {/* Quote mark + body */}
       <div className="relative pl-6">
-        <span className="absolute left-0 top-0 text-[#FFA500] text-4xl font-black leading-none">&ldquo;</span>
+        <span className="absolute left-0 top-0 text-secondary text-4xl font-black leading-none">&ldquo;</span>
         {review.title && (
           <p className="text-white font-bold text-sm mb-1">{review.title}</p>
         )}
@@ -170,7 +169,7 @@ export default function ReviewsPage() {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-4">
-        <Loader2 className="h-10 w-10 animate-spin text-[#3D52A0] opacity-40" />
+        <Loader2 className="h-10 w-10 animate-spin text-primary opacity-40" />
         <p className="text-sm font-medium text-muted-foreground animate-pulse">{t("loading")}</p>
       </div>
     );
@@ -186,8 +185,8 @@ export default function ReviewsPage() {
     <div className="flex flex-col gap-8">
       {/* ── Page heading ───────────────────────────────────────────── */}
       <div>
-        <h1 className="text-3xl font-black text-[#1e2b6b] tracking-tight">{t("ratings_and_reviews")}</h1>
-        <div className="mt-1.5 h-0.5 w-12 rounded-full bg-[#FFA500]" />
+        <h1 className="text-3xl font-black text-primary tracking-tight">{t("ratings_and_reviews")}</h1>
+        <div className="mt-1.5 h-0.5 w-12 rounded-full bg-secondary" />
       </div>
 
       {/* ── Rating Summary Card ────────────────────────────────────── */}
@@ -202,7 +201,7 @@ export default function ReviewsPage() {
             {/* Left: big score */}
             <div className="flex flex-col items-center text-center gap-2">
               <p className="text-sm font-semibold text-gray-500">Ratings and Review</p>
-              <div className="text-6xl md:text-7xl font-black text-[#3D52A0] leading-none">
+              <div className="text-6xl md:text-7xl font-black text-primary leading-none">
                 {avgRating.toFixed(1)}
               </div>
               <div className="flex gap-1 mt-1">
@@ -210,7 +209,7 @@ export default function ReviewsPage() {
                   <Star
                     key={s}
                     size={20}
-                    className={s <= Math.round(avgRating) ? "fill-[#FFA500] text-[#FFA500]" : "fill-gray-200 text-gray-200"}
+                    className={s <= Math.round(avgRating) ? "fill-secondary text-secondary" : "fill-gray-200 text-gray-200"}
                   />
                 ))}
               </div>
@@ -225,12 +224,12 @@ export default function ReviewsPage() {
                 return (
                   <div key={star} className="flex items-center gap-2">
                     <div className="flex items-center gap-1 w-12 shrink-0">
-                      <Star size={11} className="fill-[#FFA500] text-[#FFA500] shrink-0" />
+                      <Star size={11} className="fill-secondary text-secondary shrink-0" />
                       <span className="text-[11px] font-bold text-gray-500 whitespace-nowrap">{star}★</span>
                     </div>
                     <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden">
                       <div
-                        className="h-full rounded-full bg-[#FFA500] transition-all duration-700"
+                        className="h-full rounded-full bg-secondary transition-all duration-700"
                         style={{ width: `${pct}%` }}
                       />
                     </div>
@@ -252,8 +251,7 @@ export default function ReviewsPage() {
         ].map(({ icon: Icon, label, value }) => (
           <div
             key={label}
-            className="flex items-center gap-3 md:gap-4 rounded-2xl p-4 md:p-5"
-            style={{ background: "linear-gradient(135deg, #FFA500 0%, #e69500 100%)" }}
+            className="flex items-center gap-3 md:gap-4 rounded-2xl p-4 md:p-5 bg-gradient-to-br from-secondary to-secondary/80"
           >
             <div className="shrink-0 h-12 w-12 md:h-14 md:w-14 rounded-xl bg-white/20 flex items-center justify-center">
               <Icon size={22} className="text-white" />
@@ -268,8 +266,8 @@ export default function ReviewsPage() {
 
       {/* ── Reviews Grid ───────────────────────────────────────────── */}
       <div>
-        <h2 className="text-xl md:text-2xl font-black text-[#1e2b6b] mb-1">{t("reviews_title")}</h2>
-        <div className="mb-4 h-0.5 w-10 rounded-full bg-[#FFA500]" />
+        <h2 className="text-xl md:text-2xl font-black text-primary mb-1">{t("reviews_title")}</h2>
+        <div className="mb-4 h-0.5 w-10 rounded-full bg-secondary" />
 
         {reviews.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 bg-gray-50 rounded-2xl border border-dashed border-gray-200 gap-3">

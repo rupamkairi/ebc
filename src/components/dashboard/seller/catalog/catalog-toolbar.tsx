@@ -51,7 +51,7 @@ export function CatalogToolbar({
             variant={viewMode === "grid" ? "default" : "ghost"}
             size="icon"
             onClick={() => onViewModeChange("grid")}
-            className={`h-9 w-9 rounded-lg transition-all ${viewMode === "grid" ? "bg-[#1A237E] text-white shadow-md" : "text-slate-400 hover:text-[#1A237E]"}`}
+            className={`h-9 w-9 rounded-lg transition-all ${viewMode === "grid" ? "bg-primary text-white shadow-md" : "text-slate-400 hover:text-primary"}`}
           >
             <LayoutGrid size={18} />
           </Button>
@@ -59,7 +59,7 @@ export function CatalogToolbar({
             variant={viewMode === "list" ? "default" : "ghost"}
             size="icon"
             onClick={() => onViewModeChange("list")}
-            className={`h-9 w-9 rounded-lg transition-all ${viewMode === "list" ? "bg-[#1A237E] text-white shadow-md" : "text-slate-400 hover:text-[#1A237E]"}`}
+            className={`h-9 w-9 rounded-lg transition-all ${viewMode === "list" ? "bg-primary text-white shadow-md" : "text-slate-400 hover:text-primary"}`}
           >
             <List size={18} />
           </Button>

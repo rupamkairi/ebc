@@ -117,24 +117,24 @@ export function BuyerDetailsForm({
   const hasSession = !!session?.user;
 
   const inputClass =
-    "h-12 bg-white dark:bg-white border-[#3D52A0]/20 rounded-xl focus:border-[#FFA500] focus:ring-[#FFA500]/10 font-medium text-[#3D52A0] transition-all duration-200 placeholder:text-[#3D52A0]/20";
+    "h-12 bg-white dark:bg-white border-primary/20 rounded-xl focus:border-secondary focus:ring-secondary/10 font-medium text-primary transition-all duration-200 placeholder:text-primary/20";
   const labelClass =
-    "text-xs font-semibold tracking-wider text-[#3D52A0] opacity-80 ml-1";
+    "text-xs font-semibold tracking-wider text-primary opacity-80 ml-1";
 
   return (
-    <div className="rounded-2xl bg-white border-2 border-[#3D52A0]/10 p-6 sm:p-8 shadow-xl relative overflow-hidden group hover:border-[#3D52A0]/20 transition-all duration-500">
+    <div className="rounded-2xl bg-white border-2 border-primary/10 p-6 sm:p-8 shadow-xl relative overflow-hidden group hover:border-primary/20 transition-all duration-500">
       {/* Decorative Blur */}
-      <div className="absolute top-0 left-0 w-32 h-32 bg-[#3D52A0]/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+      <div className="absolute top-0 left-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
 
       <div className="relative z-10 space-y-6">
         <div className="space-y-3">
           <div className="flex items-center gap-3">
-            <User className="size-6 text-[#3D52A0]" />
-            <h2 className="text-xl font-bold tracking-tight text-[#3D52A0]">
+            <User className="size-6 text-primary" />
+            <h2 className="text-xl font-bold tracking-tight text-primary">
               {title}
             </h2>
           </div>
-          <div className="h-0.5 w-24 bg-linear-to-r from-[#3D52A0] to-transparent rounded-full" />
+          <div className="h-0.5 w-24 bg-linear-to-r from-primary to-transparent rounded-full" />
         </div>
 
         <Form {...form}>
@@ -149,7 +149,7 @@ export function BuyerDetailsForm({
                     <FormLabel className={labelClass}>Full Name</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-[#3D52A0]/30" />
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-primary/30" />
                         <Input
                           placeholder="Enter Full Name"
                           {...field}
@@ -169,7 +169,7 @@ export function BuyerDetailsForm({
                     <FormLabel className={labelClass}>Email Address</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-[#3D52A0]/30" />
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-primary/30" />
                         <Input
                           placeholder="Enter Email"
                           {...field}
@@ -189,9 +189,9 @@ export function BuyerDetailsForm({
                     <FormLabel className={labelClass}>Phone Number</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-[#3D52A0]/30" />
+                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-primary/30" />
                         <div className="flex w-full">
-                          <span className="flex items-center px-3 rounded-l-xl text-sm font-medium bg-[#3D52A0]/10 border border-r-0 border-[#3D52A0]/20 text-[#3D52A0] shrink-0">
+                          <span className="flex items-center px-3 rounded-l-xl text-sm font-medium bg-primary/10 border border-r-0 border-primary/20 text-primary shrink-0">
                             +91
                           </span>
                           <Input
@@ -210,7 +210,7 @@ export function BuyerDetailsForm({
                         </div>
                       </div>
                     </FormControl>
-                    <p className="text-xs text-[#3D52A0]/60">
+                    <p className="text-xs text-primary/60">
                       Enter 10-digit mobile number (digits only, no spaces or special characters)
                     </p>
                     <FormMessage />
@@ -225,7 +225,7 @@ export function BuyerDetailsForm({
                     <FormLabel className={labelClass}>PinCode</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-[#3D52A0]/40 z-10" />
+                        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-primary/40 z-10" />
                         <PincodeSearchAutocomplete
                           value={field.value}
                           onRecordSelect={(record) => {
@@ -253,7 +253,7 @@ export function BuyerDetailsForm({
                   <FormLabel className={labelClass}>Address</FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <MapPin className="absolute left-3 top-3 size-4 text-[#3D52A0]/30" />
+                      <MapPin className="absolute left-3 top-3 size-4 text-primary/30" />
                       <Textarea
                         placeholder="Enter Full Address..."
                         {...field}
@@ -281,7 +281,7 @@ export function BuyerDetailsForm({
                       </FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-[#3D52A0]/30" />
+                          <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-primary/30" />
                           <Input
                             type="date"
                             {...field}

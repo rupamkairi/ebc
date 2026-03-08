@@ -22,7 +22,7 @@ interface ProblemCardProps {
 
 function ProblemCard({ title, image, icon }: ProblemCardProps) {
   return (
-    <div className="bg-white rounded-lg overflow-hidden shadow-xl border-2 border-transparent hover:border-[#FFA500]/50 flex flex-col h-full group transition-all duration-300">
+    <div className="bg-white rounded-lg overflow-hidden shadow-xl border-2 border-transparent hover:border-secondary/50 flex flex-col h-full group transition-all duration-300">
       {/* Top Image Area */}
       <div className="relative aspect-4/3 w-full p-3 bg-white flex items-center justify-center">
         <div className="relative w-full h-full">
@@ -38,13 +38,13 @@ function ProblemCard({ title, image, icon }: ProblemCardProps) {
       </div>
 
       {/* Bottom Yellow Info Area */}
-      <div className="bg-[#FFA500] p-4 pt-6 flex flex-col grow relative">
+      <div className="bg-secondary p-4 pt-6 flex flex-col grow relative">
         {/* Floating Icon Circle */}
-        <div className="absolute -top-4 left-4 size-8 rounded-full bg-white shadow-md flex items-center justify-center text-[#445EB4] border border-[#FFA500] z-10 transition-transform duration-300 group-hover:scale-110">
+        <div className="absolute -top-4 left-4 size-8 rounded-full bg-white shadow-md flex items-center justify-center text-primary border border-secondary z-10 transition-transform duration-300 group-hover:scale-110">
           {icon}
         </div>
 
-        <p className="text-[#445EB4] font-black text-sm sm:text-base leading-tight">
+        <p className="text-primary font-black text-sm sm:text-base leading-tight">
           {title}
         </p>
       </div>
@@ -111,8 +111,8 @@ export function ProblemSection() {
           priority
         />
         {/* Dark Blue Overlay with Multiplay effect to match screenshot depth */}
-        <div className="absolute inset-0 bg-[#445EB4]/90 mix-blend-multiply" />
-        <div className="absolute inset-0 bg-linear-to-b from-[#445EB4]/20 via-transparent to-[#445EB4]/20" />
+        <div className="absolute inset-0 bg-primary/90 mix-blend-multiply" />
+        <div className="absolute inset-0 bg-linear-to-b from-primary/20 via-transparent to-primary/20" />
       </div>
 
       <Container size="xl" className="relative z-10">

@@ -39,9 +39,9 @@ export function Header() {
         href={link.href}
         className={cn(
           "px-4 py-2 transition-all duration-200 text-sm font-medium rounded-full",
-          isActive
-            ? "bg-[#445EB4] text-white"
-            : "text-slate-500 hover:text-slate-900",
+            isActive
+              ? "bg-primary text-white"
+              : "text-slate-500 hover:text-slate-900",
         )}
       >
         {link.name}
@@ -71,7 +71,7 @@ export function Header() {
               <Link
                 key={link.name}
                 href={link.href}
-                className="block text-lg font-medium text-slate-600 hover:text-[#445EB4] transition-colors"
+                className="block text-lg font-medium text-slate-600 hover:text-primary transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {link.name}
@@ -86,12 +86,12 @@ export function Header() {
                   </p>
                   <div className="grid grid-cols-2 gap-3">
                     <Link href="/auth/register?role=SELLER" className="w-full">
-                      <Button className="w-full bg-[#FFA500] hover:bg-[#E69500] text-white font-bold rounded-lg py-5">
+                      <Button className="w-full bg-secondary hover:bg-secondary/90 text-white font-bold rounded-lg py-5">
                         {t("seller_btn")}
                       </Button>
                     </Link>
                     <Link href="/auth/register?role=BUYER" className="w-full">
-                      <Button className="w-full bg-[#FFA500] hover:bg-[#E69500] text-white font-bold rounded-lg py-5">
+                      <Button className="w-full bg-secondary hover:bg-secondary/90 text-white font-bold rounded-lg py-5">
                         {t("buyer_btn")}
                       </Button>
                     </Link>
@@ -99,7 +99,7 @@ export function Header() {
                 </>
               ) : (
                 <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-lg">
-                  <div className="h-10 w-10 rounded-full bg-[#445EB4] flex items-center justify-center text-white font-bold">
+                  <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">
                     {user.name?.charAt(0) || "U"}
                   </div>
                   <div className="flex flex-col">

@@ -21,13 +21,13 @@ function CategoryCard({ item, isSelected, onClick }: CategoryCardProps) {
   // Map colors based on category name or ID - simulated from image
   const getColor = (name: string) => {
     const n = name.toLowerCase();
-    if (n.includes("cement")) return "bg-[#FFA500]";
+    if (n.includes("cement")) return "bg-secondary";
     if (n.includes("bricks")) return "bg-[#AA764F]";
-    if (n.includes("steel")) return "bg-[#445EB4]";
+    if (n.includes("steel")) return "bg-primary";
     if (n.includes("elec")) return "bg-[#2D3663]";
     if (n.includes("floor")) return "bg-[#3AB795]";
     if (n.includes("sand")) return "bg-[#D69F3C]";
-    return "bg-[#445EB4]"; // Default
+    return "bg-primary"; // Default
   };
 
   return (
@@ -35,7 +35,7 @@ function CategoryCard({ item, isSelected, onClick }: CategoryCardProps) {
       onClick={onClick}
       className={cn(
         "w-[140px] shrink-0 rounded-lg overflow-hidden transition-all duration-300 flex flex-col items-center p-2 group",
-        isSelected ? "scale-105 shadow-xl ring-2 ring-[#FFA500]" : "hover:scale-102",
+        isSelected ? "scale-105 shadow-xl ring-2 ring-secondary" : "hover:scale-102",
         getColor(item.name)
       )}
     >

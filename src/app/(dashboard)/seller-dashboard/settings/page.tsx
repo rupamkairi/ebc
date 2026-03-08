@@ -26,7 +26,7 @@ export default function SettingsPage() {
     <Container className="py-8 space-y-8 max-w-[1400px] mx-auto">
       {/* Header */}
       <div className="space-y-1">
-        <h1 className="text-[32px] font-bold tracking-tight text-[#445EB4]">
+        <h1 className="text-[32px] font-bold tracking-tight text-primary">
           {t("profile_settings")}
         </h1>
       </div>

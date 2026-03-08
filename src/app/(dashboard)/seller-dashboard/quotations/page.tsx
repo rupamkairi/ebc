@@ -66,7 +66,7 @@ export default function QuotationsPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-[#3D52A0]" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -76,10 +76,10 @@ export default function QuotationsPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tight text-[#3D52A0]">
+          <h1 className="text-3xl font-black tracking-tight text-primary">
             {t("deal_board", "Deal Board")}
           </h1>
-          <p className="text-sm text-[#3D52A0]/60 font-medium mt-1">
+          <p className="text-sm text-primary/60 font-medium mt-1">
             {t(
               "track_active_quotations",
               "Track and manage your sent and accepted quotations",
@@ -88,7 +88,7 @@ export default function QuotationsPage() {
         </div>
         <Button
           asChild
-          className="bg-[#0F28A9] hover:bg-[#1A237E] text-white rounded-xl font-black text-[11px] tracking-widest uppercase px-5 h-10 shadow-sm transition-all shrink-0"
+          className="bg-primary hover:bg-primary/90 text-white rounded-xl font-black text-[11px] tracking-widest uppercase px-5 h-10 shadow-sm transition-all shrink-0"
         >
           <Link href="/seller-dashboard/quotations/create">
             <Plus className="h-4 w-4 mr-2" />
@@ -99,9 +99,9 @@ export default function QuotationsPage() {
 
       {/* Search Bar */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#3D52A0]/40" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary/40" />
         <Input
-          className="pl-10 bg-white border-[#3D52A0]/10 rounded-xl h-11 font-medium text-sm focus:border-[#3D52A0]/30 focus:ring-1 focus:ring-[#3D52A0]/10"
+          className="pl-10 bg-white border-primary/10 rounded-xl h-11 font-medium text-sm focus:border-primary/30 focus:ring-1 focus:ring-primary/10"
           placeholder={t(
             "search_quote_customer",
             "Search by ID, customer or item name...",
@@ -115,11 +115,11 @@ export default function QuotationsPage() {
       <div className="space-y-4">
         {displayQuotations.length === 0 ? (
           <div className="flex flex-col items-center justify-center min-h-[300px] gap-3 text-center">
-            <FileText className="h-12 w-12 text-[#3D52A0]/20" />
-            <p className="text-[#3D52A0]/40 font-bold text-sm">
+            <FileText className="h-12 w-12 text-primary/20" />
+            <p className="text-primary/40 font-bold text-sm">
               {t("no_quotations_found", "No Quotations Found")}
             </p>
-            <p className="text-[#3D52A0]/30 text-xs max-w-md">
+            <p className="text-primary/30 text-xs max-w-md">
               {t(
                 "when_respond_enquiries_appear",
                 "When you respond to enquiries, they will appear here.",
@@ -132,13 +132,13 @@ export default function QuotationsPage() {
             return (
               <Card
                 key={qut.id}
-                className="bg-white border border-[#3D52A0]/10 rounded-[20px] p-5 md:p-7 shadow-none hover:shadow-md hover:border-[#3D52A0]/25 transition-all group"
+                className="bg-white border border-primary/10 rounded-[20px] p-5 md:p-7 shadow-none hover:shadow-md hover:border-primary/25 transition-all group"
               >
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                   <div className="flex-1 space-y-3">
                     {/* Badges row */}
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="px-3 py-1 rounded-full border border-[#3D52A0]/10 text-[#3D52A0] text-[9px] font-black tracking-widest bg-[#3D52A0]/5 uppercase">
+                      <span className="px-3 py-1 rounded-full border border-primary/10 text-primary text-[9px] font-black tracking-widest bg-primary/5 uppercase">
                         ID: {qut.id.slice(-8).toUpperCase()}
                       </span>
                       <span
@@ -154,7 +154,7 @@ export default function QuotationsPage() {
                           "px-3 py-1 rounded-full text-[9px] font-black tracking-widest uppercase",
                           qut.uiStatus === "Accepted"
                             ? "bg-green-600 text-white"
-                            : "bg-[#3D52A0] text-white",
+                            : "bg-primary text-white",
                         )}
                       >
                         {qut.uiStatus}
@@ -162,17 +162,17 @@ export default function QuotationsPage() {
                     </div>
 
                     {/* Customer Name */}
-                    <h3 className="font-black text-[#1e2b6b] text-base">
+                    <h3 className="font-black text-primary text-base">
                       {qut.customerName}
                     </h3>
 
                     {/* Items */}
-                    <p className="text-sm font-bold text-[#FFA500] flex items-center gap-2">
+                    <p className="text-sm font-bold text-secondary flex items-center gap-2">
                       {qut.displayItems}
                     </p>
 
                     {/* Date */}
-                    <p className="text-xs text-[#3D52A0]/50 font-medium flex items-center gap-1.5">
+                    <p className="text-xs text-primary/50 font-medium flex items-center gap-1.5">
                       <Clock className="h-3 w-3" />
                       {t("updated", "Updated")}: {qut.displayDate}
                     </p>
@@ -181,10 +181,10 @@ export default function QuotationsPage() {
                   <div className="flex flex-col sm:flex-row sm:items-center gap-6 shrink-0">
                     {/* Amount */}
                     <div className="text-left sm:text-right">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-[#3D52A0]/30 mb-0.5">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-primary/30 mb-0.5">
                         {t("quote_value", "Quote Value")}
                       </p>
-                      <div className="flex items-center sm:justify-end font-black text-[#3D52A0] text-2xl tracking-tighter">
+                      <div className="flex items-center sm:justify-end font-black text-primary text-2xl tracking-tighter">
                         <IndianRupee size={20} className="mr-0.5" />
                         {qut.displayAmount}
                       </div>
@@ -193,7 +193,7 @@ export default function QuotationsPage() {
                     {/* Action */}
                     <Button
                       asChild
-                      className="bg-[#0F28A9] hover:bg-[#1A237E] text-white rounded-xl font-black text-[11px] tracking-widest uppercase px-5 h-10 shadow-sm transition-all group-hover:shadow-md"
+                      className="bg-primary hover:bg-primary/90 text-white rounded-xl font-black text-[11px] tracking-widest uppercase px-5 h-10 shadow-sm transition-all group-hover:shadow-md"
                     >
                       <Link href={`/seller-dashboard/quotations/${qut.id}`}>
                         {t("view_details", "View Details")}
@@ -209,19 +209,19 @@ export default function QuotationsPage() {
       </div>
 
       {/* Quick Tip */}
-      <div className="bg-[#3D52A0]/5 border border-[#3D52A0]/10 rounded-2xl p-6 flex items-start gap-4 shadow-sm">
-        <div className="bg-white p-3 rounded-xl shadow-sm text-[#FFA500] shrink-0 mt-0.5">
+      <div className="bg-primary/5 border border-primary/10 rounded-2xl p-6 flex items-start gap-4 shadow-sm">
+        <div className="bg-white p-3 rounded-xl shadow-sm text-secondary shrink-0 mt-0.5">
           <CheckCircle2 size={24} />
         </div>
         <div>
-          <p className="text-base font-black text-[#3D52A0]">
+          <p className="text-base font-black text-primary">
             {t("pro_tip_title", "Pro Tip")}:{" "}
             {t(
               "follow_up_tip",
               "Following up on sent quotations within 24 hours increases conversion by 40%!",
             )}
           </p>
-          <p className="text-xs font-medium text-[#3D52A0]/60 mt-1">
+          <p className="text-xs font-medium text-primary/60 mt-1">
             {t(
               "follow_up_subtitle",
               "Personal reaching out builds trust and shows commitment to the buyer's needs.",

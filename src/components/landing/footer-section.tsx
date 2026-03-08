@@ -7,7 +7,7 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 export function FooterSection() {
   const { t } = useLanguage();
   return (
-    <footer className="bg-linear-to-b from-[#3B52B1] to-[#19234B] text-white pt-10 pb-6">
+    <footer className="bg-linear-to-b from-primary to-primary/50 text-white pt-10 pb-6">
       <Container size="xl">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-8 mb-8 px-2">
           {/* Brand Column */}
@@ -32,13 +32,13 @@ export function FooterSection() {
                   key={i}
                   className="flex items-center gap-2.5 text-[13px] font-semibold"
                 >
-                  <span className="shrink-0 h-4 w-4 rounded-full border border-[#FFA500] flex items-center justify-center">
+                  <span className="shrink-0 h-4 w-4 rounded-full border border-secondary flex items-center justify-center">
                     <svg
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="3"
-                      className="h-2.5 w-2.5 text-[#FFA500]"
+                      className="h-2.5 w-2.5 text-secondary"
                     >
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
@@ -48,14 +48,14 @@ export function FooterSection() {
               ))}
             </ul>
 
-            <div className="inline-flex items-center gap-3 bg-white text-[#3B5998] px-4 py-2 rounded-full shadow-sm">
+            <div className="inline-flex items-center gap-3 bg-white text-primary px-4 py-2 rounded-full shadow-sm">
               <div className="shrink-0 flex items-center justify-center">
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2.5"
-                  className="h-[18px] w-[18px] text-[#FFA500]"
+                  className="h-[18px] w-[18px] text-secondary"
                 >
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                   <path d="M9 12l2 2 4-4" />
@@ -229,7 +229,7 @@ export function FooterSection() {
             <div className="flex items-center gap-2.5">
               <div className="bg-white p-1.5 rounded-full shadow-sm">
                 <svg
-                  className="h-[14px] w-[14px] text-[#FFA500]"
+                  className="h-[14px] w-[14px] text-secondary"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -246,7 +246,7 @@ export function FooterSection() {
             <div className="flex items-center gap-2.5">
               <div className="bg-white p-1.5 rounded-full shadow-sm">
                 <svg
-                  className="h-[14px] w-[14px] text-[#FFA500]"
+                  className="h-[14px] w-[14px] text-secondary"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -262,7 +262,7 @@ export function FooterSection() {
             <div className="flex items-center gap-2.5">
               <div className="bg-white p-1.5 rounded-full shadow-sm">
                 <svg
-                  className="h-[14px] w-[14px] text-[#FFA500]"
+                  className="h-[14px] w-[14px] text-secondary"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -285,7 +285,7 @@ export function FooterSection() {
               className="bg-white p-1.5 md:p-2 rounded-full hover:bg-white/90 transition-all shadow-sm"
             >
               <svg
-                className="h-[14px] w-[14px] md:h-4 md:w-4 text-[#3D52A0]"
+                className="h-[14px] w-[14px] md:h-4 md:w-4 text-primary"
                 viewBox="0 0 24 24"
                 fill="currentColor"
               >
@@ -297,7 +297,7 @@ export function FooterSection() {
               className="bg-white p-1.5 md:p-2 rounded-full hover:bg-white/90 transition-all shadow-sm"
             >
               <svg
-                className="h-[14px] w-[14px] md:h-4 md:w-4 text-[#3D52A0]"
+                className="h-[14px] w-[14px] md:h-4 md:w-4 text-primary"
                 viewBox="0 0 24 24"
                 fill="currentColor"
               >
@@ -309,7 +309,7 @@ export function FooterSection() {
               className="bg-white p-1.5 md:p-2 rounded-full hover:bg-white/90 transition-all shadow-sm"
             >
               <svg
-                className="h-[14px] w-[14px] md:h-4 md:w-4 text-[#3D52A0]"
+                className="h-[14px] w-[14px] md:h-4 md:w-4 text-primary"
                 viewBox="0 0 24 24"
                 fill="currentColor"
               >

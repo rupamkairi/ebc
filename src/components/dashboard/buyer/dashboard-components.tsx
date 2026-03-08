@@ -57,12 +57,12 @@ export function BuyerProfileCard({
   };
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-linear-to-r from-[#FF8C00] to-[#FFA500] p-4 sm:p-8 text-white shadow-lg">
+    <div className="relative overflow-hidden rounded-2xl bg-linear-to-r from-secondary to-secondary p-4 sm:p-8 text-white shadow-lg">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
         <div className="flex items-center gap-4 sm:gap-6">
           <Avatar className="h-16 w-16 sm:h-24 sm:w-24 border-2 sm:border-4 border-white/30 shadow-xl">
             <AvatarImage src={avatarUrl} alt={name} />
-            <AvatarFallback className="bg-white text-[#FFA500] text-xl sm:text-3xl font-bold">
+            <AvatarFallback className="bg-white text-secondary text-xl sm:text-3xl font-bold">
               {name.charAt(0)}
             </AvatarFallback>
           </Avatar>
@@ -155,12 +155,12 @@ export function RoomCard({
 }) {
   return (
     <div className="group flex flex-col items-center gap-4 rounded-xl bg-white p-6 shadow-sm ring-1 ring-muted/50 transition-all hover:shadow-md h-full">
-      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#FFA500] text-white">
+      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary text-white">
         <Icon className="size-6" />
       </div>
-      <h3 className="text-lg font-bold text-[#3D52A0] text-center">{title}</h3>
+      <h3 className="text-lg font-bold text-primary text-center">{title}</h3>
       <Link href={href} className="w-full mt-auto">
-        <Button className="w-full bg-[#2A3B7D] hover:bg-[#1D2A5C] text-sm font-semibold h-10 px-8">
+        <Button className="w-full bg-primary hover:bg-primary/90 text-sm font-semibold h-10 px-8">
           Browse Area
         </Button>
       </Link>
@@ -185,7 +185,7 @@ export function ActivitySectionCard({
   footerText: string;
 }) {
   return (
-    <div className="flex flex-col overflow-hidden rounded-2xl bg-[#0F28A9] text-white shadow-xl">
+    <div className="flex flex-col overflow-hidden rounded-2xl bg-primary text-white shadow-xl">
       <div className="flex items-center justify-center gap-3 p-6 pb-4">
         <Icon className="size-8" />
         <h2 className="text-2xl font-bold">{title}</h2>
@@ -197,7 +197,7 @@ export function ActivitySectionCard({
 
       <div className="p-6">
         <Link href={footerLink}>
-          <Button className="w-full bg-[#FFA500] hover:bg-[#E69500] text-white font-bold h-12 text-md">
+          <Button className="w-full bg-secondary hover:bg-secondary/90 text-white font-bold h-12 text-md">
             {footerText}
           </Button>
         </Link>
@@ -219,9 +219,9 @@ export function ActivityStatCard({
   icon: React.ElementType;
 }) {
   return (
-    <div className="flex flex-col items-center gap-2 rounded-xl bg-white p-4 text-[#3D52A0] shadow-inner">
+    <div className="flex flex-col items-center gap-2 rounded-xl bg-white p-4 text-primary shadow-inner">
       <div className="flex items-center gap-2">
-        <Icon className="size-4 text-[#FFA500]" />
+        <Icon className="size-4 text-secondary" />
         <span className="text-xs font-semibold opacity-70">{label}</span>
       </div>
       <span className="text-2xl font-bold">{value}</span>
@@ -244,7 +244,7 @@ export function ConferenceHallItem({
   return (
     <Link
       href={href}
-      className="group flex items-center justify-between rounded-xl bg-[#4D65B2] p-4 text-white transition-all hover:bg-[#3D52A0]"
+      className="group flex items-center justify-between rounded-xl bg-primary p-4 text-white transition-all hover:bg-primary"
     >
       <div className="flex items-center gap-4">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10">

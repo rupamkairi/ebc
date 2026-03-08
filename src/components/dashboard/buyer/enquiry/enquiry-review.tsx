@@ -177,7 +177,7 @@ export function EnquiryReview({ onSubmit, isSubmitting }: EnquiryReviewProps) {
       <div className="flex justify-end gap-4">
         <Button
           onClick={onSubmit}
-          className="w-full md:w-auto bg-linear-to-r from-[#0F28A9] to-[#0A1B75] hover:from-[#FFA500] hover:to-[#FF8C00] text-white font-bold tracking-tight py-7 px-10 rounded-2xl text-lg shadow-[0_20px_50px_rgba(15,40,169,0.3)] transition-all duration-500 hover:scale-105 active:scale-95 border-none flex items-center gap-2 group"
+          className="w-full md:w-auto bg-linear-to-r from-primary to-primary/80 hover:from-secondary hover:to-secondary text-white font-bold tracking-tight py-7 px-10 rounded-2xl text-lg shadow-[0_20px_50px_rgba(15,40,169,0.3)] transition-all duration-500 hover:scale-105 active:scale-95 border-none flex items-center gap-2 group"
           disabled={isSubmitting}
         >
           {isSubmitting

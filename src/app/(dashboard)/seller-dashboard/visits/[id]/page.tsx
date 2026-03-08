@@ -48,7 +48,7 @@ export default function VisitDetailsPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-[#3D52A0]" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -112,10 +112,10 @@ export default function VisitDetailsPage() {
       <div className="flex items-center gap-4">
         <PageBackButton href="/seller-dashboard/visits" />
         <div>
-          <h1 className="text-2xl font-black text-[#1e2b6b] tracking-tight">
+          <h1 className="text-2xl font-black text-primary tracking-tight">
             {t("visit_details_title", "Visit Details")}
           </h1>
-          <p className="text-sm text-[#3D52A0]/60 font-medium">
+          <p className="text-sm text-primary/60 font-medium">
             {t(
               "manage_confirmed_visits",
               "Manage your scheduled onsite visits and consultations",
@@ -132,17 +132,17 @@ export default function VisitDetailsPage() {
             {/* Title row */}
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
               <div className="space-y-3">
-                <h2 className="text-xl font-black text-[#1e2b6b]">
+                <h2 className="text-xl font-black text-primary">
                   {t("visit_details_title", "Visit Details")}
                 </h2>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="px-3 py-1 rounded-full border-2 border-[#FFA500] text-[#FFA500] text-xs font-black tracking-wide">
+                  <span className="px-3 py-1 rounded-full border-2 border-secondary text-secondary text-xs font-black tracking-wide">
                     ID: {visit.id.slice(0, 8)}
                   </span>
                   <span
                     className={cn(
                       "px-4 py-1 rounded-full text-xs font-black tracking-wide text-white",
-                      isCompleted ? "bg-green-600" : "bg-[#3D52A0]",
+                      isCompleted ? "bg-green-600" : "bg-primary",
                     )}
                   >
                     {visit.status}
@@ -153,7 +153,7 @@ export default function VisitDetailsPage() {
                 <p className="text-xs text-gray-400 font-semibold">
                   {t("submitted_on", "Created On")}
                 </p>
-                <p className="text-sm font-black text-[#1e2b6b]">
+                <p className="text-sm font-black text-primary">
                   {format(new Date(visit.createdAt), "MMMM do, yyyy")}
                 </p>
               </div>
@@ -163,23 +163,23 @@ export default function VisitDetailsPage() {
 
             {/* Linked Appointment */}
             <div className="space-y-3">
-              <h3 className="font-black text-[#1e2b6b] flex items-center gap-2 text-base">
-                <PackageCheck className="h-5 w-5 text-[#FFA500]" />
+              <h3 className="font-black text-primary flex items-center gap-2 text-base">
+                <PackageCheck className="h-5 w-5 text-secondary" />
                 {t("linked_appointment_info", "Linked Appointment")}
               </h3>
               <div className="rounded-xl border border-gray-100 bg-gray-50/50 p-4 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-black text-[#3D52A0]/40 uppercase tracking-widest">
+                  <span className="text-xs font-black text-primary/40 uppercase tracking-widest">
                     ID: {appointment.id.slice(0, 8)}
                   </span>
                   <Link
                     href={`/seller-dashboard/appointments/${appointment.id}`}
-                    className="text-xs font-black text-[#FFA500] hover:underline"
+                    className="text-xs font-black text-secondary hover:underline"
                   >
                     {t("view_details", "View Appointment")} →
                   </Link>
                 </div>
-                <p className="font-black text-[#1e2b6b]">
+                <p className="font-black text-primary">
                   {firstItem?.item?.name || t("site_visit")}
                 </p>
                 {firstItem?.remarks && (
@@ -195,7 +195,7 @@ export default function VisitDetailsPage() {
             {/* Location + Remarks */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="space-y-1.5">
-                <h4 className="text-sm font-black text-[#FFA500] flex items-center gap-2">
+                <h4 className="text-sm font-black text-secondary flex items-center gap-2">
                   <MapPin className="h-4 w-4" />
                   {t("visit_location_title", "Visit Location")}
                 </h4>
@@ -204,7 +204,7 @@ export default function VisitDetailsPage() {
                 </p>
               </div>
               <div className="space-y-1.5">
-                <h4 className="text-sm font-black text-[#3D52A0] flex items-center gap-2">
+                <h4 className="text-sm font-black text-primary flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
                   {t("scheduled_visit_label", "Scheduled Date")}
                 </h4>
@@ -217,7 +217,7 @@ export default function VisitDetailsPage() {
             {/* Additional remarks */}
             {details?.remarks && (
               <div className="space-y-2">
-                <h4 className="text-sm font-black text-[#3D52A0] flex items-center gap-2">
+                <h4 className="text-sm font-black text-primary flex items-center gap-2">
                   <MessageSquare className="h-4 w-4" />
                   {t("additional_remarks")}
                 </h4>
@@ -295,7 +295,7 @@ export default function VisitDetailsPage() {
             <Button
               asChild
               variant="outline"
-              className="w-full rounded-xl font-black text-xs h-10 border-[#3D52A0]/20 text-[#3D52A0]"
+              className="w-full rounded-xl font-black text-xs h-10 border-primary/20 text-primary"
             >
               <Link
                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(details?.address || "")}`}

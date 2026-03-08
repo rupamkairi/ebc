@@ -13,7 +13,7 @@ export function InquiryPanel({ isMobile }: { isMobile?: boolean }) {
   return (
     <div
       className={cn(
-        "bg-[#FFA500] overflow-hidden flex flex-col shadow-lg",
+        "bg-secondary overflow-hidden flex flex-col shadow-lg",
         isMobile ? "h-full rounded-none" : "h-[calc(100vh-120px)] rounded-lg",
       )}
     >
@@ -70,7 +70,7 @@ export function InquiryPanel({ isMobile }: { isMobile?: boolean }) {
       <div className="p-4 bg-orange-600/5 mt-auto">
         <Button
           disabled={items.length === 0}
-          className="w-full bg-white text-[#FFA500] hover:bg-white/90 font-black rounded-md shadow-md disabled:opacity-50"
+          className="w-full bg-white text-secondary hover:bg-white/90 font-black rounded-md shadow-md disabled:opacity-50"
         >
           SEND INQUIRY
         </Button>

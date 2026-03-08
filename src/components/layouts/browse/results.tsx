@@ -72,7 +72,7 @@ export function Results({ isLoading }: ResultsProps) {
       {/* 4. Results Breadcrumb/Line */}
       <div className="border-b border-slate-200 pb-2">
          <p className="text-sm font-bold text-slate-400">
-           Result : <span className="text-[#445EB4]">
+           Result : <span className="text-primary">
              {categories.find(c => c.id === parentCategory)?.name || (parentCategory ? "Loading..." : "All Materials")}
            </span> 
            {subCategory.length > 0 && " > "}

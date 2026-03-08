@@ -55,24 +55,24 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
   };
 
   return (
-    <Card className="hover:shadow-xl transition-all duration-300 border-[#3D52A0]/10 overflow-hidden group rounded-2xl bg-white">
+    <Card className="hover:shadow-xl transition-all duration-300 border-primary/10 overflow-hidden group rounded-2xl bg-white">
       <CardHeader className="pb-4 border-b bg-slate-50/30">
         <div className="flex justify-between items-start">
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-black uppercase text-[#3D52A0]/40 tracking-wider">
+            <span className="text-[10px] font-black uppercase text-primary/40 tracking-wider">
               {t("appointment_id")}
             </span>
-            <CardTitle className="text-sm font-black text-[#3D52A0] flex items-center gap-2">
-              <CalendarDays className="h-4 w-4 text-[#FFA500]" />
+            <CardTitle className="text-sm font-black text-primary flex items-center gap-2">
+              <CalendarDays className="h-4 w-4 text-secondary" />
               <span className="truncate max-w-[200px] sm:max-w-md">
                 {firstItem?.item?.name || "Appointment Item"}
               </span>
             </CardTitle>
-            <div className="flex items-center gap-2 text-[10px] font-black text-[#3D52A0]/60 mt-1 uppercase">
+            <div className="flex items-center gap-2 text-[10px] font-black text-primary/60 mt-1 uppercase">
               <span className="bg-slate-100 px-1.5 py-0.5 rounded">
                 #{appointment.id.slice(0, 8).toUpperCase()}
               </span>
-              <span className="text-[#3D52A0]/20">•</span>
+              <span className="text-primary/20">•</span>
               <span className="flex items-center gap-1">
                 <Clock className="h-3 w-3" />
                 {format(new Date(appointment.createdAt), "dd MMM yyyy")}
@@ -94,7 +94,7 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
         <div className="flex flex-col md:flex-row justify-between gap-8">
           <div className="space-y-6 flex-1">
             <div>
-              <span className="text-[10px] font-black uppercase text-[#3D52A0]/60 mb-4 tracking-widest flex items-center gap-2">
+              <span className="text-[10px] font-black uppercase text-primary/60 mb-4 tracking-widest flex items-center gap-2">
                 <Clock className="h-4 w-4" />
                 {t("preferred_time_slots")}
               </span>
@@ -104,16 +104,16 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
                   return (
                     <div
                       key={slot.id || index}
-                      className="flex items-center gap-3 px-4 py-3 bg-slate-50 rounded-2xl border border-slate-100 hover:border-[#3D52A0]/20 transition-all duration-300"
+                      className="flex items-center gap-3 px-4 py-3 bg-slate-50 rounded-2xl border border-slate-100 hover:border-primary/20 transition-all duration-300"
                     >
                       <div className="h-9 w-9 rounded-xl bg-white flex items-center justify-center shadow-sm border border-slate-50">
-                        <CalendarDays className="h-4 w-4 text-[#3D52A0]" />
+                        <CalendarDays className="h-4 w-4 text-primary" />
                       </div>
                       <div className="text-xs">
-                        <p className="font-black text-[#3D52A0]">
+                        <p className="font-black text-primary">
                           {parsed.date}
                         </p>
-                        <p className="text-[#3D52A0]/60 font-bold uppercase text-[9px] mt-0.5 tracking-wider">
+                        <p className="text-primary/60 font-bold uppercase text-[9px] mt-0.5 tracking-wider">
                           {parsed.time}
                         </p>
                       </div>
@@ -121,7 +121,7 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
                   );
                 })}
                 {slots.length === 0 && (
-                  <p className="text-xs font-bold text-[#3D52A0]/40">
+                  <p className="text-xs font-bold text-primary/40">
                     {t("no_slots_specified")}
                   </p>
                 )}
@@ -130,12 +130,12 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
 
             {details?.remarks && (
               <div className="pt-5 border-t border-slate-100">
-                <span className="text-[10px] font-black uppercase text-[#3D52A0]/60 mb-3 tracking-widest flex items-center gap-2">
+                <span className="text-[10px] font-black uppercase text-primary/60 mb-3 tracking-widest flex items-center gap-2">
                   <FileText className="h-4 w-4" />
                   {t("additional_details")}
                 </span>
-                <div className="flex items-start gap-3 text-xs font-bold text-[#3D52A0]/80 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                  <MapPin className="h-4 w-4 shrink-0 text-[#3D52A0]/40 mt-0.5" />
+                <div className="flex items-start gap-3 text-xs font-bold text-primary/80 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                  <MapPin className="h-4 w-4 shrink-0 text-primary/40 mt-0.5" />
                   <p className="leading-relaxed">{details.remarks}</p>
                 </div>
               </div>
@@ -147,7 +147,7 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
               variant="outline"
               size="sm"
               asChild
-              className="bg-white border-[#3D52A0]/20 text-[#3D52A0] font-black text-xs px-8 h-12 rounded-xl hover:bg-[#3D52A0] hover:text-white transition-all shadow-sm flex items-center gap-2 uppercase tracking-widest group"
+              className="bg-white border-primary/20 text-primary font-black text-xs px-8 h-12 rounded-xl hover:bg-primary hover:text-white transition-all shadow-sm flex items-center gap-2 uppercase tracking-widest group"
             >
               <Link href={`/buyer-dashboard/appointments/${appointment.id}`}>
                 {t("view_details")}

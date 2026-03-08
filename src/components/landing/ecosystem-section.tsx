@@ -41,10 +41,10 @@ function EcosystemCard({
       </div>
 
       <div className="space-y-1 mb-8">
-        <h3 className="text-[#ec8305] font-black text-sm md:text-base tracking-tight uppercase">
+        <h3 className="text-secondary font-black text-sm md:text-base tracking-tight uppercase">
           {title}
         </h3>
-        <p className="text-[#2b429d] font-bold text-base md:text-lg leading-tight uppercase">
+        <p className="text-primary font-bold text-base md:text-lg leading-tight uppercase">
           — {subtitle}
         </p>
       </div>
@@ -125,13 +125,13 @@ export function EcosystemSection() {
   ];
 
   return (
-    <section className="bg-[#2b429d] py-32 relative overflow-hidden">
+    <section className="bg-primary py-32 relative overflow-hidden">
       {/* Optional: Subtle background pattern could go here */}
 
       <Container size="xl">
         <div className="text-center mb-32 space-y-4">
           <h2 className="text-white text-3xl md:text-5xl lg:text-5xl font-black tracking-tight drop-shadow-lg">
-            Local <span className="text-[#ec8305]">Construction</span>{" "}
+            Local <span className="text-secondary">Construction</span>{" "}
             Eco-System of India
           </h2>
           <p className="text-white/90 text-xl md:text-2xl font-bold tracking-wide uppercase">

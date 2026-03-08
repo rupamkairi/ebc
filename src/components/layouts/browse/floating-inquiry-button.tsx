@@ -23,10 +23,10 @@ export function FloatingInquiryButton() {
         <SheetTrigger asChild>
           <button
             key={inquiryCount} // Triggers CSS animation when count changes
-            className="relative bg-[#FFA500] hover:bg-[#E69500] text-white p-4 rounded-full shadow-2xl transition-all hover:scale-110 active:scale-95 group animate-in zoom-in spin-in-1 duration-300"
+            className="relative bg-secondary hover:bg-secondary/90 text-white p-4 rounded-full shadow-2xl transition-all hover:scale-110 active:scale-95 group animate-in zoom-in spin-in-1 duration-300"
           >
             <ClipboardList className="size-8" />
-            <div className="absolute -top-2 -right-2 bg-[#445EB4] text-white text-xs font-black size-7 rounded-full flex items-center justify-center border-2 border-white shadow-md">
+            <div className="absolute -top-2 -right-2 bg-primary text-white text-xs font-black size-7 rounded-full flex items-center justify-center border-2 border-white shadow-md">
               {inquiryCount}
             </div>
             

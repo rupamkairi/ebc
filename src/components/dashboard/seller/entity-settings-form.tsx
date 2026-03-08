@@ -106,7 +106,7 @@ export function EntitySettingsForm() {
   }
 
   return (
-    <Card className="border-[#445EB4] border-2 bg-[#F8F9FE] shadow-sm rounded-xl overflow-hidden p-6 md:p-10">
+    <Card className="border-primary border-2 bg-primary/5 shadow-sm rounded-xl overflow-hidden p-6 md:p-10">
       <CardContent className="p-0">
         <form
           onSubmit={(e) => {
@@ -118,33 +118,33 @@ export function EntitySettingsForm() {
         >
           {/* User Details Section */}
           <div className="space-y-6">
-            <div className="border-b-2 border-[#FFA500]/30 pb-2 inline-block">
-               <h2 className="text-2xl font-bold text-[#FFA500]">User Details</h2>
+            <div className="border-b-2 border-secondary/30 pb-2 inline-block">
+               <h2 className="text-2xl font-bold text-secondary">User Details</h2>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
               <form.Field name="name">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label htmlFor={field.name} className="text-[#173072] text-xs font-bold uppercase tracking-wide">Display Name</Label>
+                    <Label htmlFor={field.name} className="text-primary text-xs font-bold uppercase tracking-wide">Display Name</Label>
                     <Input
                       id={field.name}
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       placeholder="e.g. Acme Corp"
-                      className="border-[#173072]/30 focus-visible:ring-[#173072] h-12 bg-white"
+                      className="border-primary/30 focus-visible:ring-primary h-12 bg-white"
                     />
                   </div>
                 )}
               </form.Field>
 
               <div className="space-y-2">
-                <Label className="text-[#173072] text-xs font-bold uppercase tracking-wide">Entity Type</Label>
-                <div className="h-12 px-4 flex items-center border border-[#173072]/30 rounded-md bg-muted text-[#173072] font-medium">
+                <Label className="text-primary text-xs font-bold uppercase tracking-wide">Entity Type</Label>
+                <div className="h-12 px-4 flex items-center border border-primary/30 rounded-md bg-muted text-primary font-medium">
                   {entity.type ? ENTITY_TYPE_LABELS[entity.type as keyof typeof ENTITY_TYPE_LABELS] || entity.type : "Not Set"}
                 </div>
-                <p className="text-xs text-[#173072]/60">
+                <p className="text-xs text-primary/60">
                   Entity type cannot be changed
                 </p>
               </div>
@@ -152,14 +152,14 @@ export function EntitySettingsForm() {
               <form.Field name="legalName">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label htmlFor={field.name} className="text-[#173072] text-xs font-bold uppercase tracking-wide">Legal Business Name</Label>
+                    <Label htmlFor={field.name} className="text-primary text-xs font-bold uppercase tracking-wide">Legal Business Name</Label>
                     <Input
                       id={field.name}
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       placeholder="e.g. Acme Services Pvt Ltd"
-                      className="border-[#173072]/30 focus-visible:ring-[#173072] h-12 bg-white"
+                      className="border-primary/30 focus-visible:ring-primary h-12 bg-white"
                     />
                   </div>
                 )}
@@ -169,14 +169,14 @@ export function EntitySettingsForm() {
                 <form.Field name="description">
                   {(field) => (
                     <div className="space-y-2">
-                      <Label htmlFor={field.name} className="text-[#173072] text-xs font-bold uppercase tracking-wide">Business Description</Label>
+                      <Label htmlFor={field.name} className="text-primary text-xs font-bold uppercase tracking-wide">Business Description</Label>
                       <Textarea
                         id={field.name}
                         value={field.state.value}
                         onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value)}
                         placeholder="Tell customers about your business..."
-                        className="min-h-[120px] border-[#173072]/30 focus-visible:ring-[#173072] resize-none bg-white"
+                        className="min-h-[120px] border-primary/30 focus-visible:ring-primary resize-none bg-white"
                       />
                     </div>
                   )}
@@ -186,7 +186,7 @@ export function EntitySettingsForm() {
               <form.Field name="contactEmail">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label htmlFor={field.name} className="text-[#173072] text-xs font-bold uppercase tracking-wide">Contact E-Mail</Label>
+                    <Label htmlFor={field.name} className="text-primary text-xs font-bold uppercase tracking-wide">Contact E-Mail</Label>
                     <Input
                       id={field.name}
                       type="email"
@@ -194,7 +194,7 @@ export function EntitySettingsForm() {
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       placeholder="contact@business.com"
-                      className="border-[#173072]/30 focus-visible:ring-[#173072] h-12 bg-white"
+                      className="border-primary/30 focus-visible:ring-primary h-12 bg-white"
                     />
                   </div>
                 )}
@@ -203,7 +203,7 @@ export function EntitySettingsForm() {
               <form.Field name="supportEmail">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label htmlFor={field.name} className="text-[#173072] text-xs font-bold uppercase tracking-wide">Support E-Mail</Label>
+                    <Label htmlFor={field.name} className="text-primary text-xs font-bold uppercase tracking-wide">Support E-Mail</Label>
                     <Input
                       id={field.name}
                       type="email"
@@ -211,7 +211,7 @@ export function EntitySettingsForm() {
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       placeholder="support@business.com"
-                      className="border-[#173072]/30 focus-visible:ring-[#173072] h-12 bg-white"
+                      className="border-primary/30 focus-visible:ring-primary h-12 bg-white"
                     />
                   </div>
                 )}
@@ -220,9 +220,9 @@ export function EntitySettingsForm() {
               <form.Field name="primaryContactNumber">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label htmlFor={field.name} className="text-[#173072] text-xs font-bold uppercase tracking-wide">Phone Number</Label>
+                    <Label htmlFor={field.name} className="text-primary text-xs font-bold uppercase tracking-wide">Phone Number</Label>
                     <div className="flex gap-0 w-full">
-                      <span className="flex items-center px-4 rounded-l-md text-sm font-medium border border-r-0 border-[#173072]/30 bg-muted text-muted-foreground shrink-0">
+                      <span className="flex items-center px-4 rounded-l-md text-sm font-medium border border-r-0 border-primary/30 bg-muted text-muted-foreground shrink-0">
                         +91
                       </span>
                       <Input
@@ -232,10 +232,10 @@ export function EntitySettingsForm() {
                         onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value.replace(/\D/g, "").slice(0, 10))}
                         placeholder="Enter 10-digit mobile number"
-                        className="border-[#173072]/30 focus-visible:ring-[#173072] h-12 bg-white rounded-l-none"
+                        className="border-primary/30 focus-visible:ring-primary h-12 bg-white rounded-l-none"
                       />
                     </div>
-                    <p className="text-xs text-[#173072]/60">
+                    <p className="text-xs text-primary/60">
                       Enter 10-digit mobile number (digits only)
                     </p>
                   </div>
@@ -245,9 +245,9 @@ export function EntitySettingsForm() {
               <form.Field name="secondaryContactNumber">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label htmlFor={field.name} className="text-[#173072] text-xs font-bold uppercase tracking-wide">Secondary Phone Number</Label>
+                    <Label htmlFor={field.name} className="text-primary text-xs font-bold uppercase tracking-wide">Secondary Phone Number</Label>
                     <div className="flex gap-0 w-full">
-                      <span className="flex items-center px-4 rounded-l-md text-sm font-medium border border-r-0 border-[#173072]/30 bg-muted text-muted-foreground shrink-0">
+                      <span className="flex items-center px-4 rounded-l-md text-sm font-medium border border-r-0 border-primary/30 bg-muted text-muted-foreground shrink-0">
                         +91
                       </span>
                       <Input
@@ -257,10 +257,10 @@ export function EntitySettingsForm() {
                         onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value.replace(/\D/g, "").slice(0, 10))}
                         placeholder="Enter 10-digit mobile number"
-                        className="border-[#173072]/30 focus-visible:ring-[#173072] h-12 bg-white rounded-l-none"
+                        className="border-primary/30 focus-visible:ring-primary h-12 bg-white rounded-l-none"
                       />
                     </div>
-                    <p className="text-xs text-[#173072]/60">
+                    <p className="text-xs text-primary/60">
                       Enter 10-digit mobile number (digits only)
                     </p>
                   </div>
@@ -271,22 +271,22 @@ export function EntitySettingsForm() {
 
           {/* Business Details Section */}
           <div className="space-y-6 pt-4">
-            <div className="border-b-2 border-[#FFA500]/30 pb-2 inline-block">
-               <h2 className="text-2xl font-bold text-[#FFA500]">Business Details</h2>
+            <div className="border-b-2 border-secondary/30 pb-2 inline-block">
+               <h2 className="text-2xl font-bold text-secondary">Business Details</h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
               <form.Field name="addressLine1">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label htmlFor={field.name} className="text-[#173072] text-xs font-bold uppercase tracking-wide">Address</Label>
+                    <Label htmlFor={field.name} className="text-primary text-xs font-bold uppercase tracking-wide">Address</Label>
                     <Input
                       id={field.name}
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       placeholder="Company Address"
-                      className="border-[#173072]/30 focus-visible:ring-[#173072] h-12 bg-white"
+                      className="border-primary/30 focus-visible:ring-primary h-12 bg-white"
                     />
                   </div>
                 )}
@@ -295,14 +295,14 @@ export function EntitySettingsForm() {
               <form.Field name="addressLine2">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label htmlFor={field.name} className="text-[#173072] text-xs font-bold uppercase tracking-wide">Landmark (Line 2)</Label>
+                    <Label htmlFor={field.name} className="text-primary text-xs font-bold uppercase tracking-wide">Landmark (Line 2)</Label>
                     <Input
                       id={field.name}
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       placeholder="Nearby landmark"
-                      className="border-[#173072]/30 focus-visible:ring-[#173072] h-12 bg-white"
+                      className="border-primary/30 focus-visible:ring-primary h-12 bg-white"
                     />
                   </div>
                 )}
@@ -311,14 +311,14 @@ export function EntitySettingsForm() {
               <form.Field name="city">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label htmlFor={field.name} className="text-[#173072] text-xs font-bold uppercase tracking-wide">City</Label>
+                    <Label htmlFor={field.name} className="text-primary text-xs font-bold uppercase tracking-wide">City</Label>
                     <Input
                       id={field.name}
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       placeholder="City"
-                      className="border-[#173072]/30 focus-visible:ring-[#173072] h-12 bg-white"
+                      className="border-primary/30 focus-visible:ring-primary h-12 bg-white"
                     />
                   </div>
                 )}
@@ -327,8 +327,8 @@ export function EntitySettingsForm() {
               <form.Field name="pincodeId">
                 {(field) => (
                   <div className="space-y-2 text-left flex flex-col justify-end">
-                    <Label htmlFor={field.name} className="text-[#173072] text-xs font-bold uppercase tracking-wide mb-1">Pincode</Label>
-                    <div className="border-[#173072]/30 rounded-md focus-within:ring-2 focus-within:ring-[#173072] bg-white w-full">
+                    <Label htmlFor={field.name} className="text-primary text-xs font-bold uppercase tracking-wide mb-1">Pincode</Label>
+                    <div className="border-primary/30 rounded-md focus-within:ring-2 focus-within:ring-primary bg-white w-full">
                        <PincodeSearchAutocomplete
                          value={field.state.value}
                          initialRecord={entity.pincode as PincodeRecord}
@@ -366,9 +366,9 @@ export function EntitySettingsForm() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {!field.state.value || field.state.value.length === 0 ? (
-                      <div className="col-span-full py-12 text-center border-2 border-dashed border-[#445EB4]/50 rounded-xl bg-white/50 flex flex-col items-center justify-center">
-                        <FileText className="size-10 mx-auto text-[#445EB4] opacity-80 mb-3" strokeWidth={1.5} />
-                        <p className="text-sm font-semibold text-[#445EB4]">
+                      <div className="col-span-full py-12 text-center border-2 border-dashed border-primary/50 rounded-xl bg-white/50 flex flex-col items-center justify-center">
+                        <FileText className="size-10 mx-auto text-primary opacity-80 mb-3" strokeWidth={1.5} />
+                        <p className="text-sm font-semibold text-primary">
                           No Files Uploaded Yet
                         </p>
                       </div>
@@ -376,10 +376,10 @@ export function EntitySettingsForm() {
                       (field.state.value as string[]).map((docId, idx) => (
                         <div
                           key={docId}
-                          className="flex items-center justify-between p-4 border border-[#445EB4]/30 rounded-lg bg-white group shadow-sm"
+                          className="flex items-center justify-between p-4 border border-primary/30 rounded-lg bg-white group shadow-sm"
                         >
                           <div className="flex items-center gap-3 overflow-hidden">
-                            <FileText className="size-5 shrink-0 text-[#173072]" />
+                            <FileText className="size-5 shrink-0 text-primary" />
                             <div className="flex flex-col">
                               {(() => {
                                 const attachment =
@@ -400,7 +400,7 @@ export function EntitySettingsForm() {
 
                                 return (
                                   <>
-                                    <span className="text-sm font-semibold truncate text-[#173072]">
+                                    <span className="text-sm font-semibold truncate text-primary">
                                       {decodeURIComponent(fileName)}
                                     </span>
                                     <span className="text-[11px] text-muted-foreground truncate">
@@ -436,7 +436,7 @@ export function EntitySettingsForm() {
                                 window.open(downloadUrl, "_blank");
                               }}
                             >
-                              <FileText className="size-4 text-[#173072]" />
+                              <FileText className="size-4 text-primary" />
                             </Button>
                             <Button
                               type="button"
@@ -471,7 +471,7 @@ export function EntitySettingsForm() {
                 <Button
                   type="submit"
                   disabled={!canSubmit || isSubmitting}
-                  className="bg-[#445EB4] hover:bg-[#2A3B7D] text-white px-8 h-12 text-sm font-semibold rounded-md shadow-md"
+                  className="bg-primary hover:bg-primary/90 text-white px-8 h-12 text-sm font-semibold rounded-md shadow-md"
                 >
                   {isSubmitting ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

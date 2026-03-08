@@ -39,20 +39,20 @@ export function PricingSection() {
         {/* Section Heading */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-            <span className="text-[#3B5998]">EBC</span>{" "}
-            <span className="text-[#FFA500]">Pricing</span>
+            <span className="text-primary">EBC</span>{" "}
+            <span className="text-secondary">Pricing</span>
           </h2>
         </div>
 
         <div className="max-w-4xl mx-auto shadow-sm border border-[#E5E7EB] rounded-sm overflow-hidden">
           {/* Header Row */}
           <div className="grid grid-cols-12">
-            <div className="col-span-7 bg-[#FFA500] py-5 px-4">
+            <div className="col-span-7 bg-secondary py-5 px-4">
               <h3 className="text-xl md:text-2xl font-bold text-white text-center">
                 Services
               </h3>
             </div>
-            <div className="col-span-5 bg-[#3B5998] py-5 px-4">
+            <div className="col-span-5 bg-primary py-5 px-4">
               <h3 className="text-xl md:text-2xl font-bold text-white text-center">
                 Charges
               </h3>
@@ -96,7 +96,7 @@ export function PricingSection() {
         </div>
 
         <div className="mt-16 text-center max-w-3xl mx-auto">
-          <h4 className="text-lg md:text-xl font-semibold text-[#1B2559]">
+          <h4 className="text-lg md:text-xl font-semibold text-primary">
             You choose the help you want. Full control. No hidden commissions.
           </h4>
         </div>

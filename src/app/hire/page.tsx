@@ -38,8 +38,8 @@ function HireHeader() {
     <div className="py-12 md:py-16 text-center space-y-6 bg-slate-50/50">
       <Container size="lg">
         <h1 className="text-3xl md:text-5xl font-black tracking-tight flex flex-col md:block line-shimmer">
-          <span className="text-[#445EB4]">{t("hire_professional")}</span>{" "}
-          <span className="text-[#FFA500]">{t("construction_services")}</span>
+          <span className="text-primary">{t("hire_professional")}</span>{" "}
+          <span className="text-secondary">{t("construction_services")}</span>
         </h1>
         <p className="text-slate-500 font-medium text-base md:text-lg max-w-2xl mx-auto mt-4">
           {t("connect_experts")}
@@ -55,7 +55,7 @@ function HireHeader() {
               key={i}
               className="flex items-center gap-2 bg-white/50 backdrop-blur-sm px-3 py-2 rounded-full shadow-sm border border-slate-100 max-w-xs w-full justify-center"
             >
-              <CheckCircle2 className="size-4 text-[#FFA500] shrink-0" />
+              <CheckCircle2 className="size-4 text-secondary shrink-0" />
               <span className="text-slate-600 font-bold text-xs md:text-sm">{text}</span>
             </div>
           ))}
@@ -83,9 +83,9 @@ function ServiceCategoryGrid({
     <div className="py-10 md:py-16 bg-white border-y border-slate-100">
       <Container size="lg">
         <div className="text-center mb-8 md:mb-12">
-          <h2 className="text-lg md:text-2xl font-black text-[#445EB4] uppercase tracking-wider relative inline-block">
+          <h2 className="text-lg md:text-2xl font-black text-primary uppercase tracking-wider relative inline-block">
             {t("service_categories")}
-            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-1 bg-[#FFA500] rounded-full" />
+            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-1 bg-secondary rounded-full" />
           </h2>
         </div>
 
@@ -104,8 +104,8 @@ function ServiceCategoryGrid({
                 className={cn(
                   "flex flex-col md:flex-row items-center gap-2 md:gap-4 p-3 md:p-5 rounded-xl border transition-all duration-300 group relative overflow-hidden text-center md:text-left",
                   isActive
-                    ? "bg-[#FFA500] border-[#FFA500] text-white shadow-xl scale-105 z-10"
-                    : "bg-white border-slate-200 text-slate-800 hover:border-[#FFA500] hover:shadow-lg",
+                    ? "bg-secondary border-secondary text-white shadow-xl scale-105 z-10"
+                    : "bg-white border-slate-200 text-slate-800 hover:border-secondary hover:shadow-lg",
                 )}
               >
                 <span className="text-2xl md:text-3xl shrink-0 group-hover:scale-110 transition-transform">
@@ -140,7 +140,7 @@ function SubServiceTabs({
     <div className="py-8 md:py-12 bg-slate-50/50">
       <Container size="lg">
         <div className="text-center mb-6 md:mb-10">
-          <h2 className="text-base md:text-xl font-black text-[#445EB4] uppercase tracking-wider">
+          <h2 className="text-base md:text-xl font-black text-primary uppercase tracking-wider">
             {t("sub_service_categories")}
           </h2>
         </div>
@@ -154,8 +154,8 @@ function SubServiceTabs({
                 className={cn(
                   "px-4 md:px-6 py-2 rounded-full border text-[10px] md:text-xs font-black uppercase transition-all tracking-widest",
                   isActive
-                    ? "bg-[#FFA500] border-[#FFA500] text-white shadow-lg -translate-y-0.5"
-                    : "bg-white border-slate-200 text-slate-400 hover:border-[#FFA500] hover:text-[#FFA500] hover:bg-[#FFA500]/5",
+                    ? "bg-secondary border-secondary text-white shadow-lg -translate-y-0.5"
+                    : "bg-white border-slate-200 text-slate-400 hover:border-secondary hover:text-secondary hover:bg-secondary/5",
                 )}
               >
                 {sub.name}
@@ -172,7 +172,7 @@ function ServiceCard({ product }: { product: Product }) {
   const { t } = useLanguage();
   return (
     <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col group h-full">
-      <div className="bg-[#4D4D4D] p-3 md:p-4 text-center group-hover:bg-[#445EB4] transition-colors duration-500">
+      <div className="bg-[#4D4D4D] p-3 md:p-4 text-center group-hover:bg-primary transition-colors duration-500">
         <h3 className="text-white text-[11px] md:text-sm font-black uppercase tracking-tight line-clamp-2 leading-snug">
           {product.title}
         </h3>
@@ -188,13 +188,13 @@ function ServiceCard({ product }: { product: Product }) {
           />
         </div>
         <Button
-          className="w-full bg-white border border-slate-200 text-[#FFA500] hover:bg-[#FFA500] hover:text-white font-black rounded-lg h-9 md:h-12 text-[10px] md:text-[12px] uppercase tracking-widest transition-all duration-300 shadow-sm"
+          className="w-full bg-white border border-slate-200 text-secondary hover:bg-secondary hover:text-white font-black rounded-lg h-9 md:h-12 text-[10px] md:text-[12px] uppercase tracking-widest transition-all duration-300 shadow-sm"
           variant="outline"
         >
           {t("request_appointment")}
         </Button>
       </div>
-      <div className="h-1.5 w-0 bg-[#FFA500] group-hover:w-full transition-all duration-700" />
+      <div className="h-1.5 w-0 bg-secondary group-hover:w-full transition-all duration-700" />
     </div>
   );
 }
@@ -204,10 +204,10 @@ function CTASection() {
   return (
     <div className="py-16 md:py-24 bg-white text-center space-y-8 border-t border-slate-100 px-4">
       <h2 className="text-2xl md:text-5xl font-black tracking-tight">
-        <span className="text-[#445EB4]">{t("not_sure_need")}</span>
+        <span className="text-primary">{t("not_sure_need")}</span>
       </h2>
       <div className="flex justify-center">
-        <Button className="bg-[#0A1D56] hover:bg-[#152C74] text-white w-full max-w-sm px-5 py-6 md:py-8 rounded-xl font-black text-sm md:text-base whitespace-nowrap shadow-[0_20px_50px_rgba(10,29,86,0.3)] transition-all hover:scale-105 active:scale-95 group">
+        <Button className="bg-primary hover:bg-primary/90 text-white w-full max-w-sm px-5 py-6 md:py-8 rounded-xl font-black text-sm md:text-base whitespace-nowrap shadow-[0_20px_50px_rgba(10,29,86,0.3)] transition-all hover:scale-105 active:scale-95 group">
           {t("talk_expert_consultation")}
           <ChevronRight className="ml-2 shrink-0 group-hover:translate-x-1 transition-transform" />
         </Button>
@@ -251,9 +251,9 @@ function HirePageContent() {
       <div className="py-12 md:py-20 bg-white">
         <Container size="lg">
           <div className="text-center mb-10 md:mb-16">
-            <h2 className="text-xl md:text-3xl font-black text-[#445EB4] uppercase tracking-wider relative inline-block">
+            <h2 className="text-xl md:text-3xl font-black text-primary uppercase tracking-wider relative inline-block">
               {t("available_services")}
-              <span className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-16 h-1.5 bg-[#FFA500] rounded-full" />
+              <span className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-16 h-1.5 bg-secondary rounded-full" />
             </h2>
           </div>
 
@@ -286,7 +286,7 @@ function HirePageContent() {
                 <Button
                   variant="link"
                   onClick={() => setParentCategory(null)}
-                  className="text-[#FFA500] font-black"
+                  className="text-secondary font-black"
                 >
                   {t("clear_filters")}
                 </Button>
@@ -305,7 +305,7 @@ export default function HirePage() {
   return (
     <Suspense
       fallback={
-        <div className="h-screen flex items-center justify-center font-black text-2xl text-[#445EB4] animate-pulse">
+        <div className="h-screen flex items-center justify-center font-black text-2xl text-primary animate-pulse">
           EBC LOADING...
         </div>
       }

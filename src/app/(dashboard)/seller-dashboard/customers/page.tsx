@@ -139,7 +139,7 @@ export default function CustomersPage() {
     <div className="flex flex-col gap-10">
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <h1 className="text-2xl md:text-3xl font-bold text-[#1A237E] tracking-tight">
+        <h1 className="text-2xl md:text-3xl font-bold text-primary tracking-tight">
           {t("my_customers")}
         </h1>
       </div>
@@ -154,13 +154,13 @@ export default function CustomersPage() {
           filteredCustomers.map((cus) => (
             <Card
               key={cus.id}
-              className="bg-[#001D8D] border-none shadow-xl rounded-[24px] overflow-hidden"
+              className="bg-primary border-none shadow-xl rounded-[24px] overflow-hidden"
             >
               <CardContent className="p-6 space-y-5">
                 {/* Header Section */}
                 <div className="flex items-start gap-5">
                   <div className="h-20 w-20 rounded-xl bg-white flex items-center justify-center shrink-0">
-                    <User size={40} className="text-[#001D8D]" />
+                    <User size={40} className="text-primary" />
                   </div>
                   <div className="flex-1 space-y-2">
                     <h3 className="text-2xl font-bold text-white">
@@ -170,24 +170,24 @@ export default function CustomersPage() {
                       <Badge
                         className={`uppercase text-[10px] font-bold rounded px-3 py-0.5 ${
                           cus.status === "Lead"
-                            ? "bg-[#FFEB3B] text-black"
-                            : "bg-[#FFA000] text-white"
+                            ? "bg-yellow-100 text-yellow-700"
+                            : "bg-secondary text-white"
                         }`}
                       >
                         {cus.status}
                       </Badge>
-                      <Badge className="bg-[#3D52A0]/50 text-white/80 uppercase text-[10px] font-bold rounded px-3 py-0.5 border-none">
+                      <Badge className="bg-primary/50 text-white/80 uppercase text-[10px] font-bold rounded px-3 py-0.5 border-none">
                         ID: {cus.id.substring(0, 8)}
                       </Badge>
                     </div>
-                    <Button className="w-full mt-2 bg-[#FFA000] hover:bg-[#FF8F00] text-white font-bold h-10 rounded-lg text-sm transition-all shadow-md">
+                    <Button className="w-full mt-2 bg-secondary hover:bg-secondary/90 text-white font-bold h-10 rounded-lg text-sm transition-all shadow-md">
                       {t("view_profile")}
                     </Button>
                   </div>
                 </div>
 
                 {/* Location & Contact */}
-                <div className="bg-[#3D52A0]/30 rounded-2xl p-4 space-y-2">
+                <div className="bg-primary/30 rounded-2xl p-4 space-y-2">
                   <div className="flex items-center gap-3 text-white/90 text-[13px] font-medium italic">
                     <MapPin size={16} className="shrink-0" />
                     {cus.location}
@@ -202,19 +202,19 @@ export default function CustomersPage() {
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
                   {/* Total Orders Box */}
                   <div className="md:col-span-4 rounded-xl overflow-hidden border border-white/10">
-                    <div className="bg-[#3D52A0] py-1.5 px-3 text-white text-[11px] font-bold">
+                    <div className="bg-primary py-1.5 px-3 text-white text-[11px] font-bold">
                       {t("total_orders")}
                     </div>
                     <div className="bg-white p-3 flex flex-col items-center justify-center gap-2">
-                      <div className="flex justify-between w-full text-[9px] font-black uppercase text-[#1A237E]/40">
+                      <div className="flex justify-between w-full text-[9px] font-black uppercase text-primary/40">
                         <span>{t("orders_delivered")}</span>
                         <span>{t("total_order_value")}</span>
                       </div>
                       <div className="flex justify-between w-full">
-                        <span className="text-xl font-black text-[#FFA000]">
+                        <span className="text-xl font-black text-secondary">
                           {cus.orders}
                         </span>
-                        <span className="text-xl font-black text-[#FFA000]">
+                        <span className="text-xl font-black text-secondary">
                           ₹{cus.totalValue.toLocaleString()}
                         </span>
                       </div>
@@ -223,12 +223,12 @@ export default function CustomersPage() {
 
                   {/* Recent Product Purchases Box */}
                   <div className="md:col-span-8 rounded-xl overflow-hidden border border-white/10">
-                    <div className="bg-[#3D52A0] py-1.5 px-4 text-white text-[11px] font-bold">
+                    <div className="bg-primary py-1.5 px-4 text-white text-[11px] font-bold">
                       {t("recent_product_purchases")}
                     </div>
                     <div className="bg-white p-0">
                       <table className="w-full text-[9px] font-medium">
-                        <thead className="bg-[#F0F4FF] text-[#1A237E]/50 border-b border-slate-100">
+                        <thead className="bg-primary/5 text-primary/50 border-b border-slate-100">
                           <tr>
                             <th className="py-1.5 px-3 text-left">ID Unit</th>
                             <th className="py-1.5 px-3 text-left">
@@ -251,7 +251,7 @@ export default function CustomersPage() {
                                     : [];
                               const item = items?.[0] as any;
                               return (
-                                <tr key={idx} className="text-[#1A237E]/80">
+                                <tr key={idx} className="text-primary/80">
                                   <td className="py-2 px-3">U-#{idx + 1}</td>
                                   <td className="py-2 px-3 font-bold truncate max-w-[80px]">
                                     {item?.item?.name || "Service"}
@@ -285,16 +285,16 @@ export default function CustomersPage() {
       <div className="mt-8 bg-white border border-slate-100 rounded-[32px] p-8 md:p-12 shadow-2xl shadow-indigo-100 flex flex-col md:flex-row items-center justify-between gap-8">
         <div className="flex items-center gap-10 flex-col md:flex-row text-center md:text-left">
           <div className="relative">
-            <Star size={80} className="text-[#FFA000]" strokeWidth={1.5} />
+            <Star size={80} className="text-secondary" strokeWidth={1.5} />
             <div className="absolute inset-0 flex items-center justify-center pt-1 animate-pulse">
               <div className="h-4 w-4 bg-white rounded-full blur-md" />
             </div>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-[#1A237E]">
-            {t("loyalty_score")} : <span className="text-[#FFA000]">A+</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-primary">
+            {t("loyalty_score")} : <span className="text-secondary">A+</span>
           </h2>
         </div>
-        <Button className="w-full md:w-auto bg-[#3D52A0] hover:bg-[#1A237E] text-white font-black px-12 h-16 rounded-2xl shadow-xl shadow-[#3D52A0]/20 text-lg transition-all active:scale-95">
+        <Button className="w-full md:w-auto bg-primary hover:bg-primary/90 text-white font-black px-12 h-16 rounded-2xl shadow-xl shadow-primary/20 text-lg transition-all active:scale-95">
           {t("view_analytics")}
         </Button>
       </div>

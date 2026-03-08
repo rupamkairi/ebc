@@ -48,7 +48,7 @@ export function ItemSearch({
   return (
     <div className={cn("space-y-6", className)}>
       {/* Choose Items Blue Section */}
-      <div className="rounded-4xl bg-linear-to-br from-[#0F28A9] to-[#0A1B75] p-6 sm:p-10 shadow-2xl overflow-hidden relative">
+      <div className="rounded-4xl bg-linear-to-br from-primary to-primary/80 p-6 sm:p-10 shadow-2xl overflow-hidden relative">
         {/* Subtle Background Pattern/Glow */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
 
@@ -71,7 +71,7 @@ export function ItemSearch({
                   onValueChange={setCategoryId}
                   placeholder="Select Sub Category"
                   additionalParams={{ isSubCategory: true }}
-                  className="bg-white dark:bg-white hover:bg-white dark:hover:bg-white border-none h-14 rounded-xl text-[#3D52A0] font-bold shadow-lg focus:ring-2 focus:ring-[#FFA500]"
+                  className="bg-white dark:bg-white hover:bg-white dark:hover:bg-white border-none h-14 rounded-xl text-primary font-bold shadow-lg focus:ring-2 focus:ring-secondary"
                 />
               </div>
             </div>
@@ -84,7 +84,7 @@ export function ItemSearch({
                 value={brandId}
                 onValueChange={setBrandId}
                 placeholder="Select Brand"
-                className="bg-white dark:bg-white hover:bg-white dark:hover:bg-white border-none h-14 rounded-xl text-[#3D52A0] font-bold shadow-lg focus:ring-2 focus:ring-[#FFA500]"
+                className="bg-white dark:bg-white hover:bg-white dark:hover:bg-white border-none h-14 rounded-xl text-primary font-bold shadow-lg focus:ring-2 focus:ring-secondary"
               />
             </div>
 
@@ -96,7 +96,7 @@ export function ItemSearch({
                 value={specificationId}
                 onValueChange={setSpecificationId}
                 placeholder="Select Specification"
-                className="bg-white dark:bg-white hover:bg-white dark:hover:bg-white border-none h-14 rounded-xl text-[#3D52A0] font-bold shadow-lg focus:ring-2 focus:ring-[#FFA500]"
+                className="bg-white dark:bg-white hover:bg-white dark:hover:bg-white border-none h-14 rounded-xl text-primary font-bold shadow-lg focus:ring-2 focus:ring-secondary"
               />
             </div>
           </div>
@@ -110,9 +110,9 @@ export function ItemSearch({
                 placeholder="Enter Name..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="bg-white dark:bg-white border-none h-14 rounded-xl pl-12 text-[#3D52A0] font-bold shadow-lg focus:ring-2 focus:ring-[#FFA500] placeholder:text-[#3D52A0]/30"
+                className="bg-white dark:bg-white border-none h-14 rounded-xl pl-12 text-primary font-bold shadow-lg focus:ring-2 focus:ring-secondary placeholder:text-primary/30"
               />
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-[#3D52A0]/40 group-focus-within:text-[#FFA500] transition-colors" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-primary/40 group-focus-within:text-secondary transition-colors" />
             </div>
           </div>
         </div>
@@ -121,33 +121,33 @@ export function ItemSearch({
       {/* Results Section */}
       <div className="pt-4">
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-20 bg-muted/30 rounded-3xl border-2 border-dashed border-[#3D52A0]/20">
-            <Loader2 className="size-10 animate-spin text-[#3D52A0] mb-3" />
-            <p className="text-[#3D52A0] font-bold">Searching for items...</p>
+          <div className="flex flex-col items-center justify-center py-20 bg-muted/30 rounded-3xl border-2 border-dashed border-primary/20">
+            <Loader2 className="size-10 animate-spin text-primary mb-3" />
+            <p className="text-primary font-bold">Searching for items...</p>
           </div>
         ) : items && items.length > 0 ? (
-          <div className="max-h-[500px] overflow-y-auto rounded-3xl border border-[#3D52A0]/10 bg-white/50 backdrop-blur-sm p-4 space-y-4 scrollbar-thin scrollbar-thumb-[#3D52A0]/20 scrollbar-track-transparent">
+          <div className="max-h-[500px] overflow-y-auto rounded-3xl border border-primary/10 bg-white/50 backdrop-blur-sm p-4 space-y-4 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
             {items.map((item) => (
               <div
                 key={item.id}
-                className="group flex items-center justify-between gap-4 p-5 rounded-2xl bg-white shadow-sm ring-1 ring-[#3D52A0]/5 hover:ring-[#FFA500]/50 hover:shadow-xl transition-all animate-in fade-in slide-in-from-bottom-2 duration-300"
+                className="group flex items-center justify-between gap-4 p-5 rounded-2xl bg-white shadow-sm ring-1 ring-primary/5 hover:ring-secondary/50 hover:shadow-xl transition-all animate-in fade-in slide-in-from-bottom-2 duration-300"
               >
                 <div className="flex items-center gap-4">
-                  <div className="bg-[#3D52A0]/5 p-3 rounded-xl group-hover:bg-[#FFA500] group-hover:text-white transition-all duration-300">
+                  <div className="bg-primary/5 p-3 rounded-xl group-hover:bg-secondary group-hover:text-white transition-all duration-300">
                     <Package className="size-6" />
                   </div>
                   <div className="flex flex-col">
-                    <h4 className="font-bold text-[#3D52A0] text-lg leading-tight">
+                    <h4 className="font-bold text-primary text-lg leading-tight">
                       {item.name}
                     </h4>
                     <div className="flex items-center gap-3 text-xs font-semibold text-muted-foreground mt-1">
                       {item.brand && (
-                        <span className="flex items-center gap-1 bg-[#3D52A0]/5 px-2 py-0.5 rounded-md">
+                        <span className="flex items-center gap-1 bg-primary/5 px-2 py-0.5 rounded-md">
                           {item.brand.name}
                         </span>
                       )}
                       {item.category && (
-                        <span className="flex items-center gap-1 bg-[#3D52A0]/5 px-2 py-0.5 rounded-md">
+                        <span className="flex items-center gap-1 bg-primary/5 px-2 py-0.5 rounded-md">
                           {item.category.name}
                         </span>
                       )}
@@ -156,7 +156,7 @@ export function ItemSearch({
                 </div>
                 <Button
                   onClick={() => handleSelectItem(item)}
-                  className="rounded-xl bg-[#3D52A0] hover:bg-[#FFA500] text-white font-bold h-11 px-6 shadow-lg shadow-[#3D52A0]/10 hover:shadow-[#FFA500]/20 transition-all duration-300 transform group-hover:scale-105 active:scale-95"
+                  className="rounded-xl bg-primary hover:bg-secondary text-white font-bold h-11 px-6 shadow-lg shadow-primary/10 hover:shadow-secondary/20 transition-all duration-300 transform group-hover:scale-105 active:scale-95"
                 >
                   Select
                 </Button>
@@ -164,9 +164,9 @@ export function ItemSearch({
             ))}
           </div>
         ) : isSearchValid ? (
-          <div className="flex flex-col items-center justify-center py-20 bg-muted/30 rounded-3xl border-2 border-dashed border-[#3D52A0]/20">
-            <Package className="size-10 text-[#3D52A0]/30 mb-3" />
-            <p className="text-[#3D52A0] font-bold opacity-60">
+          <div className="flex flex-col items-center justify-center py-20 bg-muted/30 rounded-3xl border-2 border-dashed border-primary/20">
+            <Package className="size-10 text-primary/30 mb-3" />
+            <p className="text-primary font-bold opacity-60">
               No items found matching your search.
             </p>
           </div>

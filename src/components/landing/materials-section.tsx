@@ -15,7 +15,7 @@ interface MaterialCardProps {
 
 function MaterialCard({ title, category, image }: MaterialCardProps) {
   return (
-    <div className="bg-[#ec8305] p-1 rounded-xl shadow-lg transition-transform duration-300 hover:scale-105">
+    <div className="bg-secondary p-1 rounded-xl shadow-lg transition-transform duration-300 hover:scale-105">
       {/* Top White Area for Image - Tightened padding */}
       <div className="bg-white rounded-lg p-1.5 aspect-square flex items-center justify-center relative overflow-hidden">
         <Image
@@ -90,7 +90,7 @@ export function MaterialsSection() {
       <Container size="lg">
         {/* Section Heading */}
         <div className="text-center mb-16">
-          <h2 className="text-[#2b429d] text-3xl md:text-4xl lg:text-5xl font-black tracking-tight uppercase">
+          <h2 className="text-primary text-3xl md:text-4xl lg:text-5xl font-black tracking-tight uppercase">
             Major Construction Materials
           </h2>
         </div>

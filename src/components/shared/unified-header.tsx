@@ -118,12 +118,12 @@ export function UnifiedHeader({
                     Join As
                   </span>
                   <Link href="/auth/register?role=SELLER">
-                    <Button className="bg-[#FFA500] hover:bg-[#E69500] text-white font-bold rounded-lg px-6 h-10 border-none shadow-sm">
+                    <Button className="bg-secondary hover:bg-secondary/90 text-white font-bold rounded-lg px-6 h-10 border-none shadow-sm">
                       Seller
                     </Button>
                   </Link>
                   <Link href="/auth/register?role=BUYER">
-                    <Button className="bg-[#FFA500] hover:bg-[#E69500] text-white font-bold rounded-lg px-6 h-10 border-none shadow-sm">
+                    <Button className="bg-secondary hover:bg-secondary/90 text-white font-bold rounded-lg px-6 h-10 border-none shadow-sm">
                       Buyer
                     </Button>
                   </Link>
@@ -134,7 +134,7 @@ export function UnifiedHeader({
             {mounted && user && !isAdmin && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Avatar className="h-10 w-10 border-2 border-[#FFA500] hover:opacity-80 transition-opacity cursor-pointer">
+                  <Avatar className="h-10 w-10 border-2 border-secondary hover:opacity-80 transition-opacity cursor-pointer">
                     <AvatarImage src={user.image || ""} alt={displayName} />
                     <AvatarFallback className="bg-gray-100 text-gray-600 font-semibold text-lg">
                       {getInitials(displayName)}

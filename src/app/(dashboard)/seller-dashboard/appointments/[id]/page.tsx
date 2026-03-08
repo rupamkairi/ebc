@@ -47,7 +47,7 @@ export default function AppointmentDetailsPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-[#3D52A0]" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -87,10 +87,10 @@ export default function AppointmentDetailsPage() {
       <div className="flex items-center gap-4">
         <PageBackButton href="/seller-dashboard/appointments" />
         <div>
-          <h1 className="text-2xl font-black text-[#1e2b6b] tracking-tight">
+          <h1 className="text-2xl font-black text-primary tracking-tight">
             {t("appointment_details")}
           </h1>
-          <p className="text-sm text-[#3D52A0]/60 font-medium">
+          <p className="text-sm text-primary/60 font-medium">
             {isPending
               ? t("manage_onsite_visits")
               : t("appointment_rejected", "Appointment processed")}
@@ -106,16 +106,16 @@ export default function AppointmentDetailsPage() {
             {/* Title row */}
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
               <div className="space-y-3">
-                <h2 className="text-xl font-black text-[#1e2b6b]">
+                <h2 className="text-xl font-black text-primary">
                   {t("site_visit", "Service Requirements")}
                 </h2>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="px-3 py-1 rounded-full border-2 border-[#FFA500] text-[#FFA500] text-xs font-black tracking-wide">
+                  <span className="px-3 py-1 rounded-full border-2 border-secondary text-secondary text-xs font-black tracking-wide">
                     ID: {appointment.id.slice(0, 8)}
                   </span>
                   <span
                     className={`px-4 py-1 rounded-full text-xs font-black tracking-wide text-white ${
-                      isPending ? "bg-[#3D52A0]" : "bg-green-600"
+                      isPending ? "bg-primary" : "bg-green-600"
                     }`}
                   >
                     {appointment.status}
@@ -126,7 +126,7 @@ export default function AppointmentDetailsPage() {
                 <p className="text-xs text-gray-400 font-semibold">
                   {t("submitted_on")}
                 </p>
-                <p className="text-sm font-black text-[#1e2b6b]">
+                <p className="text-sm font-black text-primary">
                   {format(new Date(appointment.createdAt), "MMMM do, yyyy")}
                 </p>
               </div>
@@ -136,8 +136,8 @@ export default function AppointmentDetailsPage() {
 
             {/* Line Items */}
             <div className="space-y-3">
-              <h3 className="font-black text-[#1e2b6b] flex items-center gap-2 text-base">
-                <PackageCheck className="h-5 w-5 text-[#FFA500]" />
+              <h3 className="font-black text-primary flex items-center gap-2 text-base">
+                <PackageCheck className="h-5 w-5 text-secondary" />
                 {t("service_request_title", "Service Requested")}
               </h3>
               <div className="space-y-3">
@@ -147,7 +147,7 @@ export default function AppointmentDetailsPage() {
                     className="rounded-xl border border-gray-100 bg-gray-50/50 p-4"
                   >
                     <div className="space-y-0.5">
-                      <p className="font-black text-[#FFA500]">
+                      <p className="font-black text-secondary">
                         {item.item?.name || "Service Item"}
                       </p>
                       {item.remarks && (
@@ -165,8 +165,8 @@ export default function AppointmentDetailsPage() {
 
             {/* Appointment Slots */}
             <div className="space-y-3">
-              <h3 className="font-black text-[#1e2b6b] flex items-center gap-2 text-base">
-                <Clock className="h-5 w-5 text-[#3D52A0]" />
+              <h3 className="font-black text-primary flex items-center gap-2 text-base">
+                <Clock className="h-5 w-5 text-primary" />
                 {t("preferred_time_slots")}
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -178,17 +178,17 @@ export default function AppointmentDetailsPage() {
                     onClick={() => setSelectedSlotIdx(index)}
                     className={`rounded-xl border-2 p-4 transition-all text-left ${
                       selectedSlotIdx === index
-                        ? "border-[#FFA500] bg-[#FFA500]/5 shadow-sm"
-                        : "border-gray-100 bg-white hover:border-[#3D52A0]/20"
+                        ? "border-secondary bg-secondary/5 shadow-sm"
+                        : "border-gray-100 bg-white hover:border-primary/20"
                     } ${!isPending ? "opacity-60 cursor-default" : "cursor-pointer"}`}
                   >
-                    <p className="text-xs font-black text-[#3D52A0]/50 uppercase tracking-widest mb-1">
+                    <p className="text-xs font-black text-primary/50 uppercase tracking-widest mb-1">
                       Slot {index + 1}
                     </p>
-                    <p className="text-sm font-black text-[#1e2b6b]">
+                    <p className="text-sm font-black text-primary">
                       {format(new Date(slot.fromDateTime), "MMM do, yyyy")}
                     </p>
-                    <p className="text-xs text-[#3D52A0]/60 font-medium mt-0.5">
+                    <p className="text-xs text-primary/60 font-medium mt-0.5">
                       {format(new Date(slot.fromDateTime), "h:mm a")} –{" "}
                       {format(new Date(slot.toDateTime), "h:mm a")}
                     </p>
@@ -207,7 +207,7 @@ export default function AppointmentDetailsPage() {
             {/* Location + Remarks */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="space-y-1.5">
-                <h4 className="text-sm font-black text-[#FFA500] flex items-center gap-2">
+                <h4 className="text-sm font-black text-secondary flex items-center gap-2">
                   <MapPin className="h-4 w-4" />
                   {t("visit_location_title", "Visit Location")}
                 </h4>
@@ -216,7 +216,7 @@ export default function AppointmentDetailsPage() {
                 </p>
               </div>
               <div className="space-y-1.5">
-                <h4 className="text-sm font-black text-[#3D52A0] flex items-center gap-2">
+                <h4 className="text-sm font-black text-primary flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
                   {t("preferred_date")}
                 </h4>
@@ -231,7 +231,7 @@ export default function AppointmentDetailsPage() {
             {/* Additional remarks */}
             {details?.remarks && (
               <div className="space-y-2">
-                <h4 className="text-sm font-black text-[#3D52A0] flex items-center gap-2">
+                <h4 className="text-sm font-black text-primary flex items-center gap-2">
                   <MessageSquare className="h-4 w-4" />
                   {t("additional_remarks")}
                 </h4>
@@ -303,7 +303,7 @@ export default function AppointmentDetailsPage() {
           {hasActiveVisit && existingVisit && (
             <Button
               asChild
-              className="w-full bg-[#3D52A0] hover:bg-[#2a3a7c] text-white rounded-xl font-black text-xs h-10"
+              className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl font-black text-xs h-10"
             >
               <Link
                 href={`/seller-dashboard/visits/${existingVisit.id}`}

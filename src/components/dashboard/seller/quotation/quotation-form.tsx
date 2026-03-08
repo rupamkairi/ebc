@@ -153,10 +153,10 @@ export function QuotationForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-8 max-w-5xl mx-auto pb-20">
       <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-black text-[#1e2b6b] tracking-tight">
+        <h1 className="text-3xl font-black text-primary tracking-tight">
           {isUpdate ? "Update Quotation" : "Create Quotation"}
         </h1>
-        <p className="text-[#3D52A0]/60 font-medium text-sm">
+        <p className="text-primary/60 font-medium text-sm">
           Provide your best pricing for the buyer&apos;s requirement.
         </p>
       </div>
@@ -226,34 +226,34 @@ export function QuotationForm({
         <div className="lg:col-span-2 space-y-8">
           {/* Enquiry Information Card */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
-            <h2 className="text-lg font-black text-[#1e2b6b] flex items-center gap-2 border-b border-gray-100 pb-3">
-              <Package className="h-5 w-5 text-[#3D52A0]" />
+            <h2 className="text-lg font-black text-primary flex items-center gap-2 border-b border-gray-100 pb-3">
+              <Package className="h-5 w-5 text-primary" />
               Enquiry Details
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* Buyer */}
               <div className="space-y-1.5">
-                <span className="text-[10px] font-black uppercase tracking-widest text-[#3D52A0]/50">Buyer</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary/50">Buyer</span>
                 <div className="flex items-center gap-2">
-                  <User className="h-4 w-4 text-[#3D52A0]" />
-                  <span className="font-bold text-[#1e2b6b] text-sm">
+                  <User className="h-4 w-4 text-primary" />
+                  <span className="font-bold text-primary text-sm">
                     {enquiry.createdBy?.name || "Anonymous"}
                   </span>
                 </div>
               </div>
               {/* Contact Details */}
               <div className="space-y-1.5">
-                <span className="text-[10px] font-black uppercase tracking-widest text-[#3D52A0]/50">Contact Details</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary/50">Contact Details</span>
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
-                    <Phone className="h-4 w-4 text-[#3D52A0]" />
-                    <span className={`font-medium text-sm text-[#3D52A0] ${quotation && !quotation.isActive ? "blur-md select-none" : ""}`}>
+                    <Phone className="h-4 w-4 text-primary" />
+                    <span className={`font-medium text-sm text-primary ${quotation && !quotation.isActive ? "blur-md select-none" : ""}`}>
                       {quotation?.isActive ? enquiry.createdBy?.phone : "+91 ••••• •••••"}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Mail className="h-4 w-4 text-[#3D52A0]" />
-                    <span className={`font-medium text-sm text-[#3D52A0] ${quotation && !quotation.isActive ? "blur-md select-none" : ""}`}>
+                    <Mail className="h-4 w-4 text-primary" />
+                    <span className={`font-medium text-sm text-primary ${quotation && !quotation.isActive ? "blur-md select-none" : ""}`}>
                       {quotation?.isActive ? enquiry.createdBy?.email || "No email" : "••••••••@••••.com"}
                     </span>
                   </div>
@@ -261,10 +261,10 @@ export function QuotationForm({
               </div>
               {/* Location */}
               <div className="space-y-1.5 md:col-span-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-[#3D52A0]/50">Location</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary/50">Location</span>
                 <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-[#3D52A0]" />
-                  <span className="font-medium text-sm text-[#3D52A0] line-clamp-1">
+                  <MapPin className="h-4 w-4 text-primary" />
+                  <span className="font-medium text-sm text-primary line-clamp-1">
                     {enquiry.enquiryDetails?.[0]?.address || "N/A"}
                   </span>
                 </div>
@@ -274,7 +274,7 @@ export function QuotationForm({
 
           {/* Line Items Section */}
           <div className="space-y-5">
-            <h2 className="text-2xl font-black text-[#1e2b6b] px-1">
+            <h2 className="text-2xl font-black text-primary px-1">
               Items to quote
             </h2>
             {enquiry.enquiryLineItems.map((eli, index) => {
@@ -288,19 +288,19 @@ export function QuotationForm({
                   <div className="px-5 py-4 border-b border-gray-50">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                       <div>
-                        <p className="font-black text-[#FFA500] text-base">{eli.item?.name}</p>
+                        <p className="font-black text-secondary text-base">{eli.item?.name}</p>
                         <p className="text-sm text-gray-400 font-medium mt-0.5">
                           Requested {eli.quantity} {UNIT_TYPE_LABELS[eli.unitType]}
                         </p>
                       </div>
                       <div className="flex flex-wrap gap-2 shrink-0">
                         {enquiry.enquiryDetails?.[0]?.expectedDate && (
-                          <span className="px-3 py-1 rounded-full bg-[#3D52A0] text-white text-[10px] font-black tracking-wide whitespace-nowrap">
+                          <span className="px-3 py-1 rounded-full bg-primary text-white text-[10px] font-black tracking-wide whitespace-nowrap">
                             Deliver Within 7 days
                           </span>
                         )}
                         {eli.flexibleWithBrands && (
-                          <span className="px-3 py-1 rounded-full bg-[#FFA500] text-white text-[10px] font-black tracking-wide whitespace-nowrap">
+                          <span className="px-3 py-1 rounded-full bg-secondary text-white text-[10px] font-black tracking-wide whitespace-nowrap">
                             Flexible with brands
                           </span>
                         )}
@@ -318,7 +318,7 @@ export function QuotationForm({
                   <div className="p-5 space-y-5">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       <div className="space-y-1.5">
-                        <Label className="text-[10px] font-black uppercase tracking-widest text-[#3D52A0]/50">
+                        <Label className="text-[10px] font-black uppercase tracking-widest text-primary/50">
                           Select Your Matching Listing
                         </Label>
                         {sellerEntityId ? (
@@ -354,14 +354,14 @@ export function QuotationForm({
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1.5">
-                          <Label className="text-[10px] font-black uppercase tracking-widest text-[#3D52A0]/50">
+                          <Label className="text-[10px] font-black uppercase tracking-widest text-primary/50">
                             Rate (Per {UNIT_TYPE_LABELS[eli.unitType]})
                           </Label>
                           <div className="relative">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#3D52A0] text-sm font-bold">₹</span>
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-primary text-sm font-bold">₹</span>
                             <Input
                               type="number"
-                              className="pl-7 border-[#3D52A0]/15 focus:border-[#3D52A0] focus:ring-[#3D52A0]/10 rounded-xl"
+                              className="pl-7 border-primary/15 focus:border-primary focus:ring-primary/10 rounded-xl"
                               placeholder=""
                               value={currentLineItem?.rate || ""}
                               onChange={(e) => updateLineItem(index, { rate: parseFloat(e.target.value) || 0 })}
@@ -370,11 +370,11 @@ export function QuotationForm({
                           </div>
                         </div>
                         <div className="space-y-1.5">
-                          <Label className="text-[10px] font-black uppercase tracking-widest text-[#3D52A0]/50">
+                          <Label className="text-[10px] font-black uppercase tracking-widest text-primary/50">
                             Total Amount
                           </Label>
                           <div className="relative">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#3D52A0] text-sm font-bold">₹</span>
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-primary text-sm font-bold">₹</span>
                             <Input
                               type="number"
                               className="pl-7 bg-gray-50 font-bold rounded-xl"
@@ -386,12 +386,12 @@ export function QuotationForm({
                       </div>
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-[10px] font-black uppercase tracking-widest text-[#3D52A0]/50">
+                      <Label className="text-[10px] font-black uppercase tracking-widest text-primary/50">
                         Item Specific Remarks (Optional)
                       </Label>
                       <Input
                         placeholder="e.g. Write Delivery Included, Brand Specifics, etc."
-                        className="border-[#3D52A0]/15 focus:border-[#3D52A0] rounded-xl"
+                        className="border-primary/15 focus:border-primary rounded-xl"
                         value={currentLineItem?.remarks || ""}
                         onChange={(e) => updateLineItem(index, { remarks: e.target.value })}
                         disabled={killSwitchUpdateDisabled && isUpdate}
@@ -407,8 +407,7 @@ export function QuotationForm({
         {/* Summary sidebar — dark blue gradient */}
         <div className="space-y-4">
           <div
-            className="sticky top-24 rounded-2xl overflow-hidden"
-            style={{ background: "linear-gradient(145deg, #3D52A0 0%, #2a3a7c 100%)" }}
+            className="sticky top-24 rounded-2xl overflow-hidden bg-gradient-to-br from-primary to-primary/80"
           >
             <div className="px-6 py-5 border-b border-white/10">
               <h3 className="text-white font-black text-lg">Quotation Summary</h3>
@@ -442,7 +441,7 @@ export function QuotationForm({
                 </Label>
                 <Input
                   type="date"
-                  className="bg-white/10 border-white/20 text-white placeholder-white/30 rounded-xl focus:border-[#FFA500] focus:ring-[#FFA500]/20 [color-scheme:dark]"
+                  className="bg-white/10 border-white/20 text-white placeholder-white/30 rounded-xl focus:border-secondary focus:ring-secondary/20 [color-scheme:dark]"
                   value={details.expectedDate ? format(new Date(details.expectedDate), "yyyy-MM-dd") : ""}
                   onChange={(e) => {
                     if (e.target.value) setDetails({ expectedDate: new Date(e.target.value).toISOString() });
@@ -458,7 +457,7 @@ export function QuotationForm({
                 </Label>
                 <Textarea
                   placeholder="Write Something..."
-                  className="bg-white border-0 rounded-xl placeholder:text-gray-300 text-[#1e2b6b] min-h-[100px] resize-none focus:ring-0"
+                  className="bg-white border-0 rounded-xl placeholder:text-gray-300 text-primary min-h-[100px] resize-none focus:ring-0"
                   value={details.remarks || ""}
                   onChange={(e) => setDetails({ remarks: e.target.value })}
                   disabled={killSwitchUpdateDisabled && isUpdate}
@@ -476,7 +475,7 @@ export function QuotationForm({
               ) : (
                 <Button
                   type="submit"
-                  className="w-full h-12 bg-[#FFA500] hover:bg-[#e69500] active:scale-95 text-white font-black text-base rounded-xl border-0 shadow-lg shadow-orange-300/20 transition-all"
+                  className="w-full h-12 bg-secondary hover:bg-secondary/90 active:scale-95 text-white font-black text-base rounded-xl border-0 shadow-lg shadow-orange-300/20 transition-all"
                   disabled={isLoading}
                 >
                   {isLoading ? "Processing..." : isUpdate ? "Update Quotation" : "Submit Quotation"}

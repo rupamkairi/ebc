@@ -43,12 +43,9 @@ export function ActivityActionCard({
 }: ActivityActionCardProps) {
   if (isPending) {
     return (
-      <div
-        className="rounded-2xl p-5 space-y-4"
-        style={{
-          background: "linear-gradient(145deg, #3D52A0 0%, #2a3a7c 100%)",
-        }}
-      >
+    <div
+      className="rounded-2xl p-5 space-y-4 bg-gradient-to-br from-primary to-primary/80"
+    >
         <div>
           <h3 className="text-white font-black text-lg">{actionLabel}</h3>
           {actionDescription && (
@@ -60,7 +57,7 @@ export function ActivityActionCard({
         {actionHref ? (
           <Button
             asChild
-            className="w-full bg-[#FFA500] hover:bg-[#e69500] active:scale-95 text-white font-black text-sm rounded-xl h-11 border-0 shadow-md transition-all"
+            className="w-full bg-secondary hover:bg-secondary/90 active:scale-95 text-white font-black text-sm rounded-xl h-11 border-0 shadow-md transition-all"
           >
             <Link
               href={actionHref}
@@ -74,7 +71,7 @@ export function ActivityActionCard({
           <Button
             onClick={onAction}
             disabled={isProcessing}
-            className="w-full bg-[#FFA500] hover:bg-[#e69500] active:scale-95 text-white font-black text-sm rounded-xl h-11 border-0 shadow-md transition-all"
+            className="w-full bg-secondary hover:bg-secondary/90 active:scale-95 text-white font-black text-sm rounded-xl h-11 border-0 shadow-md transition-all"
           >
             {actionIcon}
             {isProcessing ? "Processing..." : actionLabel}
