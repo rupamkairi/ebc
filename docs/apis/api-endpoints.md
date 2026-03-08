@@ -130,6 +130,8 @@ Only accessible by specific roles (defined in `permissions.json`).
 
 ### User Routes (Phone/OTP)
 
+User login uses Phone/OTP.
+
 #### 1.8 Send OTP
 
 **POST** `/user/send-otp`
@@ -149,6 +151,7 @@ Only accessible by specific roles (defined in `permissions.json`).
     "isNewUser": true
   }
   ```
+- **Note:** `isNewUser` will be `true` if a new user record was created, and `false` if an existing user was found and their OTP was updated. Check server console logs for the OTP.
 
 #### 1.9 Verify OTP
 
@@ -177,6 +180,7 @@ Only accessible by specific roles.
     "phone": "+919876543210"
   }
   ```
+- **Note:** Newly created users must use "Send OTP" to login.
 
 #### 1.11 Update Profile (Self)
 
@@ -218,18 +222,21 @@ _All routes require `Authorization: Bearer <token>` header._
     "pincodeId": "uuid-of-pincode"
   }
   ```
+- **Note:** `op_type` is automatically assigned based on the user's role (`PRODUCT` for `USER_PRODUCT_SELLER_ADMIN` or `SERVICE` for `USER_SERVICE_PROVIDER_ADMIN`).
 
 ### 2.2 Get Entities
 
 **GET** `/`
 
 - **Roles:** `USER_PRODUCT_SELLER_ADMIN`, `USER_SERVICE_PROVIDER_ADMIN` (Fetch own), `ADMIN_MANAGER`, `ADMIN_EXECUTIVE` (Fetch all).
+- **Response:** Array of Entity objects including Pincode details.
 
 ### 2.3 Update Entity Details
 
 **PATCH** `/:id`
 
 - **Roles:** `USER_PRODUCT_SELLER_ADMIN`, `USER_SERVICE_PROVIDER_ADMIN`.
+- Updates the entity with the specified ID. Must be owned by the user.
 
 ### 2.4 Verify Entity
 
@@ -253,20 +260,45 @@ _All routes require `Authorization: Bearer <token>` header._
 ### 3.1 Category
 
 - **Create:** `POST /category`
+  - Body (Top Level):
+    ```json
+    {
+      "name": "Cement & Binders",
+      "type": "PRODUCT",
+      "categoryIconId": "UUID?"
+    }
+    ```
+  - Body (Sub-Category):
+    ```json
+    {
+      "name": "Cement",
+      "type": "PRODUCT",
+      "parentCategoryId": "UUID",
+      "categoryIconId": "UUID?"
+    }
+    ```
 - **Update:** `PATCH /category`
+  - Body: `{ "id": "UUID", "name": "String", ... }`
 - **Delete:** `DELETE /category`
+  - Body: `{ "id": "UUID" }`
 - **List:** `POST /category/list`
+  - Body: `{ "type": "PRODUCT?", "isSubCategory": "Boolean?", "parentCategoryId": "UUID?", "search": "String?" }`
 
 ### 3.2 Brand
 
 - **Create:** `POST /brand`
+  - Body: `{ "name": "String", "brandLogoId": "UUID?" }`
 - **Update:** `PATCH /brand`
+  - Body: `{ "id": "UUID", "name": "String" }`
 - **Delete:** `DELETE /brand`
+  - Body: `{ "id": "UUID" }`
 - **List:** `POST /brand/list`
+  - Body: `{ "search": "String?" }`
 
 ### 3.3 Specification
 
 - **Create:** `POST /specification`
+  - Body: `{ "name": "String", "description": "String?" }`
 - **Update:** `PATCH /specification`
 - **Delete:** `DELETE /specification`
 - **List:** `POST /specification/list`
@@ -274,21 +306,49 @@ _All routes require `Authorization: Bearer <token>` header._
 ### 3.4 Item
 
 - **Create:** `POST /item`
+  - Body:
+    ```json
+    {
+      "name": "ACC 10kg Cement",
+      "description": "Corrosion Resistant...",
+      "type": "PRODUCT",
+      "HSNCode": "2524",
+      "GSTPercentage": 5,
+      "categoryId": "UUID",
+      "brandId": "UUID",
+      "specificationId": "UUID"
+    }
+    ```
 - **Update:** `PATCH /item`
 - **Delete:** `DELETE /item`
+- **Get by Id:** `GET /item/:id`
 - **List:** `POST /item/list`
+  - Body: `{ "search": "String?", "categoryId": "UUID?", "brandId": "UUID?", "specificationId": "UUID?", "type": "PRODUCT" }`
 
 ### 3.5 Import Catalog (CSV)
 
 - **POST** `/import/csv`
 - **Content-Type**: `multipart/form-data`
 - **Body**: `file` (CSV file)
-- **Response**: Streaming JSON (NDJSON) indicating progress.
+- **Response**: Streaming JSON indicating progress.
+
+### 3.6 Bulk Upload (JSON)
+
+- **POST** `/upload`
+- **Body**: Array of Objects
   ```json
-  {"status": "started", "message": "Import started..."}
-  {"status": "progress", "processed": 10, "success": 10}
-  ...
-  {"status": "completed", "total": 20, "success": 20, "failed": 0}
+  [
+    {
+      "type": "PRODUCT",
+      "category": "Electronics",
+      "subCategory": "Laptops",
+      "brand": "Dell",
+      "specification": "Core i7",
+      "item": "XPS 15",
+      "HSNCode": "8471",
+      "GSTPercentage": "18"
+    }
+  ]
   ```
 
 ---
@@ -302,6 +362,7 @@ _All routes require `Authorization: Bearer <token>` header._
 - **Composite Create**: `POST /listing`
 - **Update**: `PATCH /listing/:id`
 - **Delete**: `DELETE /listing/:id`
+- **Get Details**: `GET /listing/:id`
 - **List**: `POST /listing/list`
 
 ### 4.2 Item Rate (Granular)
@@ -336,27 +397,7 @@ _All routes require `Authorization: Bearer <token>` header._
 - **Verify**: `PATCH /:id/verify` (Admin Only)
 - **Publish**: `POST /:id/publish` (Seller/Admin)
 
-#### 5.1.1 Verify Event
-
-**PATCH** `/:id/verify`
-Updates the verification status of an event and notifies the creator.
-
-- **Roles:** `ADMIN`, `ADMIN_MANAGER`, `ADMIN_EXECUTIVE`
-- **Request Body:**
-  ```json
-  {
-    "status": "APPROVED",
-    "remarks": "Event approved."
-  }
-  ```
-
-#### 5.1.2 Publish Event
-
-**POST** `/:id/publish`
-Publishes an event. Deducts coins from entity's wallet.
-_Note: Event must be APPROVED by an admin before it can be published._
-
-#### 5.1.4 Create/Update Event Request Body
+#### 5.1.1 Event Request Body
 
 ```json
 {
@@ -379,12 +420,10 @@ _Note: Event must be APPROVED by an admin before it can be published._
 
 **Base Path:** `/offer`
 
-Detailed endpoints for managing offers within the conference hall.
-
 #### 5.2.1 Create Offer
 
 **POST** `/`
-Create a new offer draft. Does not publish it.
+Create a new offer draft.
 
 **Request Body**
 
@@ -393,234 +432,44 @@ Create a new offer draft. Does not publish it.
   "name": "Offer Name",
   "description": "Offer Description",
   "entityId": "uuid",
-  "categoryIds": ["uuid", "uuid"],
+  "categoryIds": ["uuid"],
   "brandIds": ["uuid"],
   "specificationIds": [],
   "itemIds": [],
   "itemListingIds": [],
-  "targetRegions": [{ "pincodeId": "uuid" }],
+  "pincodeIds": ["uuid"],
   "attachmentIds": [{ "mediaId": "uuid" }, { "documentId": "uuid" }],
   "startDate": "2024-01-25T00:00:00.000Z",
   "endDate": "2024-12-25T00:00:00.000Z"
 }
 ```
 
-**Response**
-Returns the created offer object.
-
----
-
 #### 5.2.2 Publish Offer
 
 **POST** `/:id/publish`
-Publishes transactionally. Deducts coins from entity's wallet.
-_Note: Offer must be APPROVED by an admin before it can be published._
-
-**Response**
-
-```json
-{
-  "message": "Offer published successfully",
-  "offerId": "uuid"
-}
-```
-
----
+Deducts coins from entity's wallet and makes the offer public.
 
 #### 5.2.3 Update Offer
 
 **PATCH** `/:id`
-Updates an offer. If published, only `name`, `description`, and `isActive` can be updated. If draft, relations and regions can also be updated.
-_Note: If an offer is APPROVED, sellers can only update `isActive`. Admins can update all fields._
+If published, only `name`, `description`, and `isActive` can be updated.
 
-**Request Body**
-
-```json
-{
-  "name": "Updated Name",
-  "description": "Updated Description",
-  "isActive": true,
-  "categoryIds": ["uuid"], // Only allowed if NOT published
-  "targetRegions": [{ "pincodeId": "uuid" }],
-  "startDate": "2024-01-25T00:00:00.000Z",
-  "endDate": "2024-12-25T00:00:00.000Z"
-}
-```
-
-**Response**
-Returns the updated offer object.
-
----
-
-#### 5.2.4 Delete Offer
-
-**DELETE** `/:id`
-Soft deletes the offer.
-
-**Response**
-Returns the updated (deleted) offer object.
-
----
-
-#### 5.2.5 Get Offer
-
-**GET** `/:id`
-Get offer details including relations, regions, and attachments.
-
----
-
-#### 5.2.7 Verify Offer
+#### 5.2.4 Verify Offer (Admin Only)
 
 **PATCH** `/:id/verify`
-Updates the verification status of an offer and notifies the creator.
-
-- **Roles:** `ADMIN`, `ADMIN_MANAGER`, `ADMIN_EXECUTIVE`
-- **Request Body:**
-  ```json
-  {
-    "status": "APPROVED", // "PENDING" | "APPROVED" | "REJECTED" | "REVISE" | etc.
-    "remarks": "Approving this offer for publication."
-  }
-  ```
-
----
-
-#### 5.2.6 List Offers
-
-**POST** `/list`
-List offers with filtering.
-
-**Request Body**
-
-```json
-{
-  "entityId": "uuid",
-  "isActive": true,
-  "isPublic": true,
-  "search": "keyword"
-}
-```
-
-**Response**
-Returns array of offer objects.
-
----
+Body: `{ "status": "APPROVED", "remarks": "..." }`
 
 ### 5.3 Content
 
 **Base Path:** `/content`
 
-Detailed endpoints for managing content within the conference hall.
-
-#### 5.3.1 Create Content
-
-**POST** `/`
-Create a new content draft.
-
-**Request Body**
-
-```json
-{
-  "name": "Content Name",
-  "description": "Content Description",
-  "entityId": "uuid",
-  "isActive": true,
-  "targetRegions": [{ "pincodeId": "uuid" }],
-  "attachmentIds": [{ "mediaId": "uuid" }, { "documentId": "uuid" }]
-}
-```
-
-**Response**
-Returns the created content object.
-
----
-
-#### 5.3.2 Publish Content
-
-**POST** `/:id/publish`
-Publishes the content. Deducts coins from entity's wallet.
-_Note: Content must be APPROVED by an admin before it can be published._
-
-**Response**
-
-```json
-{
-  "id": "uuid",
-  "name": "Content Name",
-  "isPublic": true,
-  "publishedAt": "2024-01-25T00:00:00.000Z",
-  ...
-}
-```
-
----
-
-#### 5.3.3 Update Content
-
-**PATCH** `/:id`
-Updates a content entry.
-
-**Request Body**
-
-```json
-{
-  "name": "Updated Name",
-  "description": "Updated Description",
-  "isActive": true,
-  "isPublic": false,
-  "targetRegions": [{ "pincodeId": "uuid" }]
-}
-```
-
-_Note: If content is APPROVED, sellers can only update `isActive`, `isPublic`, and `publishedAt`. Admins can update all fields._
-
----
-
-#### 5.3.4 Delete Content
-
-**DELETE** `/:id`
-Soft deletes the content.
-
----
-
-#### 5.3.5 Get Content
-
-**GET** `/:id`
-Get content details including attachments.
-
----
-
-#### 5.3.6 List Contents
-
-**POST** `/list`
-List contents with filtering.
-
-**Request Body**
-
-```json
-{
-  "entityId": "uuid",
-  "isActive": true,
-  "isPublic": true,
-  "search": "keyword"
-}
-```
-
----
-
-#### 5.3.7 Verify Content
-
-**PATCH** `/:id/verify`
-Updates the verification status of content and notifies the creator.
-
-- **Roles:** `ADMIN`, `ADMIN_MANAGER`, `ADMIN_EXECUTIVE`
-- **Request Body:**
-  ```json
-  {
-    "status": "APPROVED",
-    "remarks": "Content looks good."
-  }
-  ```
+- **Create**: `POST /`
+- **Publish**: `POST /:id/publish`
+- **Update**: `PATCH /:id`
+- **Delete**: `DELETE /:id`
+- **Get**: `GET /:id`
+- **List**: `POST /list`
+- **Verify**: `PATCH /:id/verify` (Admin Only)
 
 ---
 
@@ -630,37 +479,93 @@ Updates the verification status of content and notifies the creator.
 
 ### 6.1 Enquiry
 
-- **Create:** `POST /enquiry`
-- **Get Details:** `GET /enquiry/:id`
-- **Delete:** `DELETE /enquiry/:id`
-- **List:** `POST /enquiry/list`
+- **Create**: `POST /enquiry`
+  - Body:
+    ```json
+    {
+      "lineItems": [
+        {
+          "itemId": "uuid",
+          "quantity": 10,
+          "unitType": "Piece",
+          "remarks": "...",
+          "flexibleWithBrands": true
+        }
+      ],
+      "details": {
+        "expectedDate": "2024-12-30T00:00:00.000Z",
+        "remarks": "...",
+        "address": "...",
+        "pincodeDirectoryId": "uuid"
+      }
+    }
+    ```
+- **Get Details**: `GET /enquiry/:id`
+- **Delete**: `DELETE /enquiry/:id`
+- **List**: `POST /enquiry/list`
+  - Body: `{ "createdById": "UUID?", "itemId": "UUID?", "search": "String?" }`
 
 ### 6.2 Appointment
 
-- **Create:** `POST /appointment`
-- **Get Details:** `GET /appointment/:id`
-- **Delete:** `DELETE /appointment/:id`
-- **List:** `POST /appointment/list`
+- **Create**: `POST /appointment`
+  - Body:
+    ```json
+    {
+      "lineItems": [{ "itemId": "uuid", "remarks": "..." }],
+      "details": {
+        "remarks": "...",
+        "address": "...",
+        "pincodeDirectoryId": "uuid"
+      },
+      "slots": [
+        { "remarks": "...", "fromDateTime": "...", "toDateTime": "..." }
+      ]
+    }
+    ```
+- **Get Details**: `GET /appointment/:id`
+- **Delete**: `DELETE /appointment/:id`
+- **List**: `POST /appointment/list`
 
 ### 6.3 Quotation
 
-- **Create:** `POST /quotation`
-- **Get Details:** `GET /quotation/:id`
-- **Delete:** `DELETE /quotation/:id`
-- **List:** `POST /quotation/list`
+- **Create**: `POST /quotation`
+  - Body:
+    ```json
+    {
+      "enquiryId": "uuid",
+      "lineItems": [
+        {
+          "itemId": "uuid",
+          "rate": 100.0,
+          "amount": 1000.0,
+          "isNegotiable": true
+        }
+      ],
+      "details": {
+        "expectedDate": "...",
+        "remarks": "...",
+        "attachmentIds": ["uuid"]
+      }
+    }
+    ```
+- **Get Details**: `GET /quotation/:id`
+- **Delete**: `DELETE /quotation/:id`
+- **List**: `POST /quotation/list`
 
 ### 6.4 Activity Assignment
 
-- **Create:** `POST /activity-assignment`
-- **Get Details:** `GET /activity-assignment/:id`
-- **List:** `POST /activity-assignment/list`
+- **Create**: `POST /activity-assignment`
+  - Body: `{ "type": "ENQUIRY_ASSIGNMENT", "enquiryId": "uuid", "toEntityId": "uuid" }`
+- **Get Details**: `GET /activity-assignment/:id`
+- **List**: `POST /activity-assignment/list`
 
 ### 6.5 Visit
 
-- **Create:** `POST /visit`
-- **Get Details:** `GET /visit/:id`
-- **Delete:** `DELETE /visit/:id`
-- **List:** `POST /visit/list`
+- **Create**: `POST /visit`
+  - Body: `{ "appointmentId": "uuid", "visitSlotId": "uuid" }`
+- **Get Details**: `GET /visit/:id`
+- **Delete**: `DELETE /visit/:id`
+- **List**: `POST /visit/list`
 
 ---
 
@@ -668,91 +573,32 @@ Updates the verification status of content and notifies the creator.
 
 **Base URL:** `/api/wallet`
 
-### 7.1 Get Wallet
+### 7.1 Wallet Management
 
-**GET** `/:entityId`
+- **Get Wallet**: `GET /:entityId` (Balance & Transactions)
+- **List Wallets**: `GET /list` (Admin Only)
+- **Manual Adjustment**: `POST /adjust` (Admin Only)
+- **Transactions**: `POST /transaction`
+  - Body:
+    ```json
+    {
+      "walletId": "uuid",
+      "cost": 100.0,
+      "reason": "QUOTATION_SUMBIT", // or VISIT_SUBMIT, OFFER_PUBLISH, etc.
+      "type": "DEBIT", // or CREDIT
+      "refType": "QUOTATION",
+      "refId": "uuid"
+    }
+    ```
+  - **Side Effects**: Debiting for `QUOTATION` or `VISIT` automatically sets `isActive = true` on the reference.
 
-- Returns balance and recent transactions.
+### 7.2 Packages & Pricing
 
-### 7.2 List Wallets
-
-**GET** `/list`
-
-- **Roles:** `ADMIN` (Root Admin), `ADMIN_ACCOUNTANT`
-- Returns all wallets with entity and owner (user) details.
-
-### 7.3 Manual Wallet Adjustment
-
-**POST** `/adjust`
-
-- **Roles:** `ADMIN` (Root Admin)
-- **Request Body:**
-  ```json
-  {
-    "walletId": "uuid",
-    "cost": 100,
-    "type": "CREDIT", // "CREDIT" | "DEBIT"
-    "reason": "MANUAL_ADJUSTMENT"
-  }
-  ```
-
-### 7.4 Get Coin Packages
-
-**GET** `/packages`
-
-- Returns all active coin packages.
-- **Roles:** `AUTHENTICATED`
-
-### 7.5 Create/Update Coin Package
-
-**POST** `/packages`
-
-- **Roles:** `ADMIN`
-- **Request Body:**
-  ```json
-  {
-    "name": "Standard Pack",
-    "coins": 100,
-    "priceInInr": 1000,
-    "description": "Optional"
-  }
-  ```
-
-### 7.6 Get Lead Pricing Configs
-
-**GET** `/pricing`
-
-- **Roles:** `AUTHENTICATED`
-- Returns all lead pricing configurations.
-
-### 7.7 Get Lead Cost
-
-**GET** `/pricing/cost/:leadType`
-
-- **Params:** `leadType` (e.g., `QUOTATION`, `VISIT`, `OFFER`, `EVENT`, `CONTENT`)
-- **Roles:** `AUTHENTICATED`
-- Returns the cost in coins for the specified lead type.
-
-### 7.8 Set Lead Pricing
-
-**POST** `/pricing`
-
-- **Roles:** `ADMIN`
-- **Request Body:**
-  ```json
-  {
-    "leadType": "CONTENT",
-    "costInCoins": 10
-  }
-  ```
-
-### 7.9 Process Transaction
-
-**POST** `/transaction`
-
-- **Reasons:** `QUOTATION_SUMBIT`, `VISIT_SUBMIT`, `OFFER_PUBLISH`, `EVENT_PUBLISH`, `EVENT_JOIN`, `CONTENT_PUBLISH`, `WALLET_TOPUP`, `MANUAL_ADJUSTMENT`, `REFUND`, `BONUS`
-- **Types:** `CREDIT`, `DEBIT`
-- **Ref Types:** `QUOTATION`, `VISIT`, `OFFER`, `EVENT`, `CONTENT`
+- **Get Packages**: `GET /packages`
+- **Create Package**: `POST /packages` (Admin Only)
+- **Get Pricing**: `GET /pricing`
+- **Get Lead Cost**: `GET /pricing/cost/:leadType`
+- **Set Lead Pricing**: `POST /pricing` (Admin Only)
 
 ---
 
@@ -760,55 +606,24 @@ Updates the verification status of content and notifies the creator.
 
 **Base URL:** `/api/notification`
 
-### 8.1 Management
+### 8.1 Notification Management
 
-- **Create:** `POST /`
-  - Body:
-    ```json
-    {
-      "type": "ENQUIRY_RECEIVE",
-      "activityId": "activity-uuid",
-      "metadata": { "subject": "Hello" },
-      "recipients": [
-        {
-          "userId": "uuid",
-          "channelId": "uuid",
-          "destination": "email@example.com"
-        }
-      ]
-    }
-    ```
-- **Get Details:** `GET /:id` (Returns notification + list of sendees)
-- **List:** `POST /list`
-  - Body: `{ "type": "TYPE", "activityId": "uuid" }`
-- **Delete:** `DELETE /:id`
+- **Create**: `POST /`
+  - Body: `{ "channel": "EMAIL", "type": "ENQUIRY_SUMBIT", "metadata": { "subject": "..." } }`
+- **Get Details**: `GET /:id`
+- **List**: `POST /list`
+- **Update**: `PATCH /:id` (e.g., mark as processed)
+- **Delete**: `DELETE /:id`
 
 ### 8.2 Channel Management
 
 **Base URL:** `/api/notification-channel`
 
-> [!NOTE]
-> Channels are linked to the authenticated user. Users can only manage their own channels.
-
-- **Create:** `POST /`
-  - Body:
-    ```json
-    {
-      "name": "Primary Phone",
-      "type": "SMS",
-      "destination": "+919999999901",
-      "isActive": true
-    }
-    ```
-- **List:** `GET /` (Returns only channels owned by user)
-- **Get:** `GET /:id` (Owner only)
-- **Update:** `PATCH /:id`
-  - Body: `{ "name": "...", "destination": "...", "isActive": true }`
-  - Note: Changing `destination` resets `isVerified` to false.
-- **Delete:** `DELETE /:id`
-- **Request Verification:** `POST /:id/request-verification`
-- **Confirm Verification:** `POST /:id/verify`
-  - Body: `{ "otp": "123456" }`
+- **Create**: `POST /`
+- **List**: `GET /` (Own channels)
+- **Verification**:
+  - `POST /:id/request-verification`
+  - `POST /:id/verify` (Body: `{ "otp": "..." }`)
 
 ---
 
@@ -818,16 +633,14 @@ Updates the verification status of content and notifies the creator.
 
 ### 9.1 Media Routes (`/media`)
 
-- **Single Upload:** `POST /upload/single`
-- **Multiple Upload:** `POST /upload/multiple`
-- **Get URL:** `GET /url/:id`
+- **Upload**: `POST /upload/single` | `POST /upload/multiple`
+- **Get URL**: `GET /url/:id`
 
 ### 9.2 Document Routes (`/document`)
 
-- **Single Upload:** `POST /upload/single`
-- **Multiple Upload:** `POST /upload/multiple`
-- **Get URL:** `GET /url/:id`
-- **Supported Types:** PDF, Doc, Docx, txt, md
+- **Upload**: `POST /upload/single` | `POST /upload/multiple`
+- **Get URL**: `GET /url/:id`
+- **Supported Types**: PDF, Doc, Docx, txt, md
 
 ---
 
@@ -838,14 +651,8 @@ Updates the verification status of content and notifies the creator.
 ### 10.1 Pincode Directory
 
 - **Search:** `POST /list`
-- **Body:**
-  ```json
-  {
-    "state": "maharashtra",
-    "district": "mumbai",
-    "pincode": "400001"
-  }
-  ```
+- **Body:** `{ "state": "...", "district": "...", "pincode": "..." }`
+- **Note:** All fields are optional. Partial matches are supported for `state` and `district` (case-insensitive).
 
 ---
 
@@ -853,57 +660,7 @@ Updates the verification status of content and notifies the creator.
 
 **Base URL:** `/api/forum`
 
-### 11.1 Get Discussion Context
-
-**GET** `/context`
-Get or create a discussion for a specific context (Event, Offer, Item, or Content).
-
-**Query Parameters:**
-
-- `eventId`: (Optional) UUID of the event.
-- `offerId`: (Optional) UUID of the offer.
-- `itemId`: (Optional) UUID of the item.
-- `contentId`: (Optional) UUID of the content.
-- `slug`: (Optional) Unique slug for the discussion.
-
-**Response:**
-Returns the discussion object along with its posts.
-
-### 11.2 Post Message
-
-**POST** `/:discussionId/post`
-Post a new message to a discussion. Requires authentication.
-
-**Request Body:**
-
-```json
-{
-  "content": "Your message here..."
-}
-```
-
-### 11.3 Flag Post
-
-**PATCH** `/post/:postId/flag`
-Flag a post for moderation.
-
-**Request Body:**
-
-```json
-{
-  "reason": "Reason for flagging"
-}
-```
-
-### 11.4 Hide/Unhide Post
-
-**PATCH** `/post/:postId/hide`
-Hide or unhide a post. Requires ADMIN or ADMIN_MANAGER role.
-
-**Request Body:**
-
-```json
-{
-  "isHidden": true
-}
-```
+- **Get Context**: `GET /context?eventId=...` (Event, Offer, Item, or Content)
+- **Post Message**: `POST /:discussionId/post`
+- **Flag Post**: `PATCH /post/:postId/flag`
+- **Moderate**: `PATCH /post/:postId/hide` (Admin Only)

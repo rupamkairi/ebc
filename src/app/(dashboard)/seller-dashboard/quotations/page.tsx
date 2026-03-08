@@ -8,6 +8,7 @@ import {
   ChevronRight,
   Loader2,
   CheckCircle2,
+  Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -73,16 +74,27 @@ export default function QuotationsPage() {
   return (
     <div className="flex flex-col gap-6 max-w-5xl mx-auto">
       {/* Page Header */}
-      <div>
-        <h1 className="text-3xl font-black tracking-tight text-[#3D52A0]">
-          {t("deal_board", "Deal Board")}
-        </h1>
-        <p className="text-sm text-[#3D52A0]/60 font-medium mt-1">
-          {t(
-            "track_active_quotations",
-            "Track and manage your sent and accepted quotations",
-          )}
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-black tracking-tight text-[#3D52A0]">
+            {t("deal_board", "Deal Board")}
+          </h1>
+          <p className="text-sm text-[#3D52A0]/60 font-medium mt-1">
+            {t(
+              "track_active_quotations",
+              "Track and manage your sent and accepted quotations",
+            )}
+          </p>
+        </div>
+        <Button
+          asChild
+          className="bg-[#0F28A9] hover:bg-[#1A237E] text-white rounded-xl font-black text-[11px] tracking-widest uppercase px-5 h-10 shadow-sm transition-all shrink-0"
+        >
+          <Link href="/seller-dashboard/quotations/create">
+            <Plus className="h-4 w-4 mr-2" />
+            {t("create_quotation", "Create Quotation")}
+          </Link>
+        </Button>
       </div>
 
       {/* Search Bar */}

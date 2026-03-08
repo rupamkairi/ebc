@@ -38,7 +38,7 @@ export default function ViewQuotationPage() {
   const { mutate: updateQuotation, isPending: isUpdating } =
     useUpdateQuotationMutation();
 
-  const killSwitchUpdateDisabled = true; // The Kill Switch
+  const killSwitchUpdateDisabled = false; // Enabled for editing
 
   const initialData: Pick<QuotationState, "lineItems" | "details"> | null =
     useMemo(() => {

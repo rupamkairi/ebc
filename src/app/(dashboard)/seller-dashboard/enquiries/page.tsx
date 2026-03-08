@@ -76,28 +76,28 @@ export default function EnquiriesPage() {
   );
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-      {/* Main Content */}
-      <div className="col-span-4 flex flex-col gap-6 p-4 md:p-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 px-2">
-          <div className="space-y-1">
+    <div className="flex flex-col gap-6 max-w-5xl mx-auto">
+      <div className="flex flex-col gap-6 p-4 md:p-0 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
             <h1 className="text-3xl font-black tracking-tight text-[#3D52A0]">
               {t("active_enquiries")}
             </h1>
-            <p className="text-[#3D52A0]/60 font-medium text-base ml-1">
+            <p className="text-sm text-[#3D52A0]/60 font-medium mt-1">
               {t("manage_respond_enquiries_buyer")}
             </p>
           </div>
-          <div className="relative w-full md:w-72 group">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#3D52A0]/30 group-focus-within:text-[#3D52A0] transition-colors" />
-            <Input
-              type="search"
-              placeholder={t("search_enquiries")}
-              className="h-10 pl-9 bg-white border-[#3D52A0]/10 rounded-xl focus:border-[#3D52A0] focus:ring-[#3D52A0]/10 transition-all placeholder:text-[#3D52A0]/20 text-sm"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
+        </div>
+
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#3D52A0]/40" />
+          <Input
+            type="search"
+            className="pl-10 bg-white border-[#3D52A0]/10 rounded-xl h-11 font-medium text-sm focus:border-[#3D52A0]/30 focus:ring-1 focus:ring-[#3D52A0]/10"
+            placeholder={t("search_enquiries")}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
 
         {/* ── Active / Pending ─────────────────────────────────────── */}
