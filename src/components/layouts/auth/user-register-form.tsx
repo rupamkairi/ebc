@@ -56,9 +56,9 @@ export function UserRegisterForm({
   
   // Initialize type from search params if provided, otherwise default to buyer
   const initialType = requestedType?.toUpperCase() === "SELLER" 
-    ? ITEM_TYPE.PRODUCT 
+    ? USER_ROLE.USER_PRODUCT_SELLER_ADMIN
     : requestedType?.toUpperCase() === "SERVICE"
-    ? ITEM_TYPE.SERVICE
+    ? USER_ROLE.USER_SERVICE_PROVIDER_ADMIN
     : requestedType?.toUpperCase() === "BUYER"
     ? USER_ROLE.USER_BUYER_ADMIN
     : USER_ROLE.USER_BUYER_ADMIN;
@@ -263,10 +263,10 @@ export function UserRegisterForm({
                         <SelectValue placeholder={t("select_type")} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value={ITEM_TYPE.PRODUCT}>
+                        <SelectItem value={USER_ROLE.USER_PRODUCT_SELLER_ADMIN}>
                           {t("product_seller")}
                         </SelectItem>
-                        <SelectItem value={ITEM_TYPE.SERVICE}>
+                        <SelectItem value={USER_ROLE.USER_SERVICE_PROVIDER_ADMIN}>
                           {t("service_provider")}
                         </SelectItem>
                         <SelectItem value={USER_ROLE.USER_BUYER_ADMIN}>

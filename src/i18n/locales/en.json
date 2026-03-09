@@ -505,6 +505,7 @@
   "business_identification_info": "Provide accurate information for your business identification.",
   "identity": "Identity",
   "business_name_required": "Business name is required",
+  "business_type_required": "Business type selection is required",
   "display_name": "Display Name",
   "legal_name": "Legal Name",
   "business_type": "Business Type",

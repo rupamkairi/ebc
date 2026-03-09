@@ -74,6 +74,8 @@ export interface UpdateEntityRequest {
   city?: string;
   pincodeId?: string;
   documents?: string[];
+  type?: ENTITY_TYPE;
+  op_type?: ITEM_TYPE;
 }
 
 export interface VerifyEntityRequest {

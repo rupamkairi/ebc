@@ -506,6 +506,7 @@
   "business_identification_info": "Apni business ke liye accurate information provide karein.",
   "identity": "Identity",
   "business_name_required": "Business ka naam zaroori hai",
+  "business_type_required": "Business type select karna zaroori hai",
   "display_name": "Display Name",
   "legal_name": "Legal Name",
   "business_type": "Business Type",

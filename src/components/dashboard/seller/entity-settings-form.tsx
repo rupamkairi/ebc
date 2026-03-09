@@ -25,7 +25,16 @@ import { toast } from "sonner";
 import { Loader2, Save, FileText, X } from "lucide-react";
 import { useEffect } from "react";
 import { UpdateEntityRequest } from "@/types/entity";
-import { ENTITY_TYPE_LABELS } from "@/constants/roles";
+import { ENTITY_TYPE_LABELS, isServiceBusiness, isProductBusiness } from "@/constants/roles";
+import { ENTITY_TYPE, VERIFICATION_STATUS } from "@/constants/enums";
+import { useAuthStore } from "@/store/authStore";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function EntitySettingsForm() {
   const { data: entities = [], isLoading: isLoadingEntity } =
@@ -48,6 +57,7 @@ export function EntitySettingsForm() {
       city: "",
       pincodeId: "",
       documents: [] as string[],
+      type: "" as string,
     },
     onSubmit: async ({ value }) => {
       if (!entity) return;
@@ -68,7 +78,7 @@ export function EntitySettingsForm() {
   });
 
   useEffect(() => {
-    if (entity) {
+    if (entity && !isLoadingEntity) {
       form.reset({
         name: entity.name || "",
         legalName: entity.legalName || "",
@@ -81,13 +91,16 @@ export function EntitySettingsForm() {
         addressLine2: entity.addressLine2 || "",
         city: entity.city || "",
         pincodeId: entity.pincodeId || "",
-        documents: [
-          ...((entity.documents as string[]) || []),
-          ...(entity.entityAttachments?.map((a) => a.document.id) || []),
-        ].filter((id, index, self) => self.indexOf(id) === index),
+        documents: (entity.entityAttachments || []).map((a) => a.documentId),
+        type: (entity.type as string) || "",
       });
     }
-  }, [entity, form]);
+  }, [entity, isLoadingEntity, form]);
+
+  const userRole = useAuthStore((state) => state.user?.role);
+  const isServiceProvider = isServiceBusiness(userRole);
+  const isProductSeller = isProductBusiness(userRole);
+  const isApproved = entity?.verificationStatus === VERIFICATION_STATUS.APPROVED;
 
   if (isLoadingEntity) {
     return (
@@ -140,12 +153,61 @@ export function EntitySettingsForm() {
               </form.Field>
 
               <div className="space-y-2">
-                <Label className="text-primary text-xs font-bold uppercase tracking-wide">Entity Type</Label>
-                <div className="h-12 px-4 flex items-center border border-primary/30 rounded-md bg-muted text-primary font-medium">
-                  {entity.type ? ENTITY_TYPE_LABELS[entity.type as keyof typeof ENTITY_TYPE_LABELS] || entity.type : "Not Set"}
-                </div>
+                <Label className="text-primary text-xs font-bold uppercase tracking-wide">
+                  Business Type
+                </Label>
+                {isApproved ? (
+                  <div className="h-12 px-4 flex items-center border border-primary/30 rounded-md bg-muted text-primary font-medium">
+                    {entity.type
+                      ? ENTITY_TYPE_LABELS[entity.type as ENTITY_TYPE] ||
+                        entity.type
+                      : "Not Set"}
+                  </div>
+                ) : (
+                  <form.Field name="type">
+                    {(field) => (
+                      <Select
+                        key={field.state.value} // Key forces re-render when value changes
+                        value={field.state.value || ""}
+                        onValueChange={(val) => field.handleChange(val)}
+                      >
+                        <SelectTrigger className="border-primary/30 focus:ring-primary h-12 bg-white">
+                          <SelectValue placeholder="Select Business Type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem
+                            value={ENTITY_TYPE.MANUFACTURER}
+                            disabled={isServiceProvider}
+                          >
+                            {ENTITY_TYPE_LABELS[ENTITY_TYPE.MANUFACTURER]}
+                          </SelectItem>
+                          <SelectItem
+                            value={ENTITY_TYPE.WHOLESALER}
+                            disabled={isServiceProvider}
+                          >
+                            {ENTITY_TYPE_LABELS[ENTITY_TYPE.WHOLESALER]}
+                          </SelectItem>
+                          <SelectItem
+                            value={ENTITY_TYPE.RETAILER}
+                            disabled={isServiceProvider}
+                          >
+                            {ENTITY_TYPE_LABELS[ENTITY_TYPE.RETAILER]}
+                          </SelectItem>
+                          <SelectItem
+                            value={ENTITY_TYPE.SERVICE_PROVIDER}
+                            disabled={isProductSeller}
+                          >
+                            {ENTITY_TYPE_LABELS[ENTITY_TYPE.SERVICE_PROVIDER]}
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  </form.Field>
+                )}
                 <p className="text-xs text-primary/60">
-                  Entity type cannot be changed
+                  {isApproved
+                    ? "Business type is verified and locked"
+                    : "Select your primary business structure"}
                 </p>
               </div>
 

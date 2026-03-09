@@ -66,7 +66,7 @@ export function OnboardingForm() {
       pincodeId: "",
       type: (isServiceProvider
         ? ENTITY_TYPE.SERVICE_PROVIDER
-        : ENTITY_TYPE.RETAILER) as CreateEntityRequest["type"],
+        : undefined) as CreateEntityRequest["type"],
       op_type: (isServiceProvider
         ? ITEM_TYPE.SERVICE
         : ITEM_TYPE.PRODUCT) as CreateEntityRequest["op_type"],
@@ -162,7 +162,13 @@ export function OnboardingForm() {
                 )}
               </form.Field>
 
-              <form.Field name="type">
+              <form.Field
+                name="type"
+                validators={{
+                  onChange: ({ value }) =>
+                    !value ? t("business_type_required") : undefined,
+                }}
+              >
                 {(field) => (
                   <Field>
                     <FieldLabel>{t("business_type")} *</FieldLabel>
@@ -202,6 +208,11 @@ export function OnboardingForm() {
                         </SelectItem>
                       </SelectContent>
                     </Select>
+                    <FieldError
+                      errors={[
+                        { message: field.state.meta.errors[0]?.toString() },
+                      ]}
+                    />
                     <FieldDescription>
                       {t("cannot_change_later")}
                     </FieldDescription>
