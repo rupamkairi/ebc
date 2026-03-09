@@ -52,18 +52,18 @@ export function OnboardingForm() {
 
   const form = useForm({
     defaultValues: {
-      name: "",
+      name: user?.name || "",
       legalName: "",
       description: "",
       primaryContactNumber:
-        ((user as { phoneNumber?: string })?.phoneNumber || "").replace(/^\+91/, ""),
+        (user?.phone || "").replace(/^\+91/, ""),
       secondaryContactNumber: "",
       contactEmail: user?.email || "",
       supportEmail: "",
       addressLine1: "",
       addressLine2: "",
       city: "",
-      pincodeId: "",
+      pincodeId: user?.pincodeId || "",
       type: (isServiceProvider
         ? ENTITY_TYPE.SERVICE_PROVIDER
         : undefined) as CreateEntityRequest["type"],
@@ -312,6 +312,7 @@ export function OnboardingForm() {
                     <FieldLabel>{t("area_pincode")} *</FieldLabel>
                     <PincodeSearchAutocomplete
                       value={field.state.value}
+                      initialRecord={user?.pincode || undefined}
                       onValueChange={(val) => field.handleChange(val as string)}
                     />
                     <FieldError
