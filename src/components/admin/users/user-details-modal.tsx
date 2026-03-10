@@ -19,6 +19,7 @@ import {
   Loader2,
   CheckCircle,
   XCircle,
+  PauseCircle,
   Building2,
   User2,
   FileText,
@@ -47,22 +48,37 @@ export function UserDetailsModal({
   const entity = user.createdEntities?.[0] || user.staffAt;
   const isPending = entity?.verificationStatus === "PENDING";
 
-  const handleVerify = async (status: "APPROVED" | "REJECTED") => {
+  const handleVerify = async (status: "APPROVED" | "REJECTED" | "PAUSED") => {
     if (!entity) return;
+
+    const remark =
+      status === "APPROVED"
+        ? "Verified by Admin"
+        : status === "PAUSED"
+          ? "Business activity paused by Admin"
+          : "Rejected by Admin";
 
     try {
       await verifyMutation.mutateAsync({
         id: entity.id,
         data: {
           status: status as VERIFICATION_STATUS,
-          remark:
-            status === "APPROVED" ? "Verified by Admin" : "Rejected by Admin",
+          remark,
         },
       });
-      toast.success(`Business ${status.toLowerCase()} successfully`);
+
+      const successMessage =
+        status === "APPROVED"
+          ? "Business approved successfully"
+          : status === "PAUSED"
+            ? "Business paused successfully"
+            : "Business rejected successfully";
+
+      toast.success(successMessage);
       onOpenChange(false);
-    } catch {
-      toast.error("Failed to verify business");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : (status === "PAUSED" ? "Failed to pause business" : "Failed to verify business");
+      toast.error(errorMessage);
     }
   };
 
@@ -120,13 +136,17 @@ export function UserDetailsModal({
                       variant={
                         entity.verificationStatus === "APPROVED"
                           ? "default"
-                          : entity.verificationStatus === "REJECTED"
-                            ? "destructive"
-                            : "secondary"
+                          : entity.verificationStatus === "PAUSED"
+                            ? "outline"
+                            : entity.verificationStatus === "REJECTED"
+                              ? "destructive"
+                              : "secondary"
                       }
                       className={cn(
                         entity.verificationStatus === "APPROVED" &&
                           "bg-emerald-500 hover:bg-emerald-600 border-none",
+                        entity.verificationStatus === "PAUSED" &&
+                          "border-amber-500 text-amber-600 hover:bg-amber-50"
                       )}
                     >
                       {entity.verificationStatus}
@@ -271,37 +291,61 @@ export function UserDetailsModal({
           </ScrollArea>
 
           <DialogFooter className="p-6 pt-2 border-t bg-muted/5">
-            {isPending ? (
-              <div className="flex gap-3 w-full sm:w-auto">
-                <Button
-                  variant="destructive"
-                  className="flex-1 sm:flex-none"
-                  disabled={verifyMutation.isPending}
-                  onClick={() => handleVerify("REJECTED")}
-                >
-                  {verifyMutation.isPending ? (
-                    <Loader2 className="size-4 animate-spin" />
-                  ) : (
-                    <>
-                      <XCircle className="size-4 mr-2" />
-                      Reject
-                    </>
-                  )}
-                </Button>
-                <Button
-                  variant="default"
-                  className="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700"
-                  disabled={verifyMutation.isPending}
-                  onClick={() => handleVerify("APPROVED")}
-                >
-                  {verifyMutation.isPending ? (
-                    <Loader2 className="size-4 animate-spin" />
-                  ) : (
-                    <>
-                      <CheckCircle className="size-4 mr-2" />
-                      Approve
-                    </>
-                  )}
+            {entity ? (
+              <div className="flex flex-wrap gap-3 w-full sm:w-auto">
+                {entity.verificationStatus !== "REJECTED" && (
+                  <Button
+                    variant="destructive"
+                    className="flex-1 sm:flex-none"
+                    disabled={verifyMutation.isPending}
+                    onClick={() => handleVerify("REJECTED")}
+                  >
+                    {verifyMutation.isPending ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <>
+                        <XCircle className="size-4 mr-2" />
+                        Reject
+                      </>
+                    )}
+                  </Button>
+                )}
+                {entity.verificationStatus !== "PAUSED" && (
+                  <Button
+                    variant="outline"
+                    className="flex-1 sm:flex-none bg-amber-500 hover:bg-amber-600 text-white border-none"
+                    disabled={verifyMutation.isPending}
+                    onClick={() => handleVerify("PAUSED")}
+                  >
+                    {verifyMutation.isPending ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <>
+                        <PauseCircle className="size-4 mr-2" />
+                        Pause
+                      </>
+                    )}
+                  </Button>
+                )}
+                {entity.verificationStatus !== "APPROVED" && (
+                  <Button
+                    variant="default"
+                    className="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700"
+                    disabled={verifyMutation.isPending}
+                    onClick={() => handleVerify("APPROVED")}
+                  >
+                    {verifyMutation.isPending ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <>
+                        <CheckCircle className="size-4 mr-2" />
+                        Approve
+                      </>
+                    )}
+                  </Button>
+                )}
+                <Button variant="secondary" onClick={() => onOpenChange(false)}>
+                  Close
                 </Button>
               </div>
             ) : (

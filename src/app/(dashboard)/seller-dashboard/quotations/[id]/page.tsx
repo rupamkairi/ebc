@@ -31,14 +31,16 @@ export default function ViewQuotationPage() {
     quotation?.enquiryId || "",
   );
   const { data: entities } = useEntitiesQuery();
-  const sellerEntityId = entities?.[0]?.id;
+  const sellerEntity = entities?.[0];
+  const isApproved = sellerEntity?.verificationStatus === "APPROVED";
+  const sellerEntityId = sellerEntity?.id;
 
   const { data: listings } = useItemListingsQuery({ entityId: sellerEntityId });
 
   const { mutate: updateQuotation, isPending: isUpdating } =
     useUpdateQuotationMutation();
 
-  const killSwitchUpdateDisabled = false; // Enabled for editing
+  const killSwitchUpdateDisabled = !isApproved; // Restricted if not approved
 
   const initialData: Pick<QuotationState, "lineItems" | "details"> | null =
     useMemo(() => {
@@ -94,7 +96,12 @@ export default function ViewQuotationPage() {
   }
 
   const handleSubmit = (data: CreateQuotationRequest) => {
-    if (killSwitchUpdateDisabled) return;
+    if (killSwitchUpdateDisabled) {
+      toast.error(
+        `Your business must be APPROVED to update quotations. Current status: ${sellerEntity?.verificationStatus || "unknown"}`,
+      );
+      return;
+    }
 
     updateQuotation(
       { id, data },

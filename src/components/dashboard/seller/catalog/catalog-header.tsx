@@ -7,6 +7,7 @@ interface CatalogHeaderProps {
   isLoading: boolean;
   isServiceBusiness: boolean;
   businessName?: string;
+  verificationStatus?: string;
   onCreateClick: () => void;
 }
 
@@ -14,6 +15,7 @@ export function CatalogHeader({
   isLoading,
   isServiceBusiness,
   businessName,
+  verificationStatus,
   onCreateClick,
 }: CatalogHeaderProps) {
   return (
@@ -32,8 +34,8 @@ export function CatalogHeader({
       <div className="flex items-center gap-3">
         <Button
           onClick={onCreateClick}
-          disabled={isLoading}
-          className="bg-secondary hover:bg-secondary/90 text-white font-black px-6 h-12 rounded-xl shadow-lg shadow-amber-200/50 transition-all active:scale-95 flex items-center gap-2 border-none"
+          disabled={isLoading || verificationStatus !== "APPROVED"}
+          className="bg-secondary hover:bg-secondary/90 text-white font-black px-6 h-12 rounded-xl shadow-lg shadow-amber-200/50 transition-all active:scale-95 flex items-center gap-2 border-none disabled:opacity-50"
         >
           {isLoading ? (
             <Loader2 className="h-5 w-5 animate-spin" />

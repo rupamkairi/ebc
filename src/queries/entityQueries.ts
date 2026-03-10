@@ -28,6 +28,7 @@ export function useCreateEntityMutation() {
     mutationFn: (data: CreateEntityRequest) => entityService.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: entityKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: ["admin"] });
     },
   });
 }
@@ -39,6 +40,7 @@ export function useUpdateEntityMutation() {
       entityService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: entityKeys.all });
+      queryClient.invalidateQueries({ queryKey: ["admin"] });
     },
   });
 }
@@ -50,6 +52,7 @@ export function useVerifyEntityMutation() {
       entityService.verify(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: entityKeys.all });
+      queryClient.invalidateQueries({ queryKey: ["admin"] });
     },
   });
 }

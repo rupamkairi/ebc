@@ -69,10 +69,14 @@ export default function CatalogPage() {
           isLoading={isLoadingEntities}
           isServiceBusiness={isService}
           businessName={sellerEntity?.name}
+          verificationStatus={sellerEntity?.verificationStatus}
           onCreateClick={() => {
-            if (isLoadingEntities) return;
-            if (!sellerEntity) {
-              toast.error(t("business_entity_not_found"));
+            if (!sellerEntity || sellerEntity.verificationStatus !== "APPROVED") {
+              toast.error(
+                !sellerEntity 
+                  ? t("business_entity_not_found")
+                  : `Your business must be APPROVED to create listings. Current status: ${sellerEntity.verificationStatus}`
+              );
               return;
             }
             setIsCreateModalOpen(true);
@@ -129,7 +133,14 @@ export default function CatalogPage() {
                     ) : (
                       <EmptyCatalogState
                         type="products"
-                        onAddClick={() => setIsCreateModalOpen(true)}
+                        onAddClick={() => {
+                          if (sellerEntity?.verificationStatus !== "APPROVED") {
+                            toast.error(`Your business must be APPROVED to create listings. Current status: ${sellerEntity?.verificationStatus}`);
+                            return;
+                          }
+                          setIsCreateModalOpen(true);
+                        }}
+                        disabled={sellerEntity?.verificationStatus !== "APPROVED"}
                       />
                     )}
                   </div>
@@ -160,7 +171,14 @@ export default function CatalogPage() {
                     ) : (
                       <EmptyCatalogState
                         type="services"
-                        onAddClick={() => setIsCreateModalOpen(true)}
+                        onAddClick={() => {
+                          if (sellerEntity?.verificationStatus !== "APPROVED") {
+                            toast.error(`Your business must be APPROVED to create listings. Current status: ${sellerEntity?.verificationStatus}`);
+                            return;
+                          }
+                          setIsCreateModalOpen(true);
+                        }}
+                        disabled={sellerEntity?.verificationStatus !== "APPROVED"}
                       />
                     )}
                   </div>

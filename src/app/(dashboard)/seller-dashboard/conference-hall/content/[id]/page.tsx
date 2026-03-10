@@ -27,6 +27,21 @@ export default function EditContentPage() {
     return <div>Content or Entity not found.</div>;
   }
 
+  if (entity.verificationStatus !== "APPROVED") {
+    return (
+      <div className="container mx-auto py-20 text-center space-y-4">
+        <h1 className="text-2xl font-bold">Business Not Approved</h1>
+        <p className="text-muted-foreground">
+          Your business must be APPROVED to edit content. Current status:{" "}
+          {entity.verificationStatus}
+        </p>
+        <div className="flex justify-center gap-4">
+          <Button onClick={() => router.back()}>Go Back</Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex items-center gap-4">

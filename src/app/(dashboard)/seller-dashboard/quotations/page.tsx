@@ -13,6 +13,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useQuotationsQuery } from "@/queries/activityQueries";
+import { useEntitiesQuery } from "@/queries/entityQueries";
+import { toast } from "sonner";
 import { format } from "date-fns";
 import Link from "next/link";
 import { useMemo, useState } from "react";
@@ -24,6 +26,10 @@ import { getTimeBadge } from "@/lib/activity-utils";
 export default function QuotationsPage() {
   const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
+
+  const { data: entities } = useEntitiesQuery();
+  const sellerEntity = entities?.[0];
+  const isApproved = sellerEntity?.verificationStatus === "APPROVED";
 
   const { data: quotations, isLoading } = useQuotationsQuery();
 
@@ -87,13 +93,28 @@ export default function QuotationsPage() {
           </p>
         </div>
         <Button
-          asChild
-          className="bg-primary hover:bg-primary/90 text-white rounded-xl font-black text-[11px] tracking-widest uppercase px-5 h-10 shadow-sm transition-all shrink-0"
+          asChild={isApproved}
+          disabled={!isApproved}
+          onClick={() => {
+            if (!isApproved) {
+              toast.error(
+                `Your business must be APPROVED to create quotations. Current status: ${sellerEntity?.verificationStatus || "unknown"}`,
+              );
+            }
+          }}
+          className="bg-primary hover:bg-primary/90 text-white rounded-xl font-black text-[11px] tracking-widest uppercase px-5 h-10 shadow-sm transition-all shrink-0 disabled:opacity-50"
         >
-          <Link href="/seller-dashboard/quotations/create">
-            <Plus className="h-4 w-4 mr-2" />
-            {t("create_quotation", "Create Quotation")}
-          </Link>
+          {isApproved ? (
+            <Link href="/seller-dashboard/quotations/create">
+              <Plus className="h-4 w-4 mr-2" />
+              {t("create_quotation", "Create Quotation")}
+            </Link>
+          ) : (
+            <div className="flex items-center">
+              <Plus className="h-4 w-4 mr-2" />
+              {t("create_quotation", "Create Quotation")}
+            </div>
+          )}
         </Button>
       </div>
 

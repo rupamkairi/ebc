@@ -39,6 +39,7 @@ import Link from "next/link";
 export function ContentList() {
   const { data: entities } = useEntitiesQuery();
   const entity = entities?.[0];
+  const isApproved = entity?.verificationStatus === "APPROVED";
 
   const { data: contents, isLoading } = useContentsQuery({
     entityId: entity?.id,
@@ -48,6 +49,10 @@ export function ContentList() {
   const publishContent = usePublishContentMutation();
 
   const handlePublish = async (id: string) => {
+    if (!isApproved) {
+      toast.error("Business must be APPROVED to publish content.");
+      return;
+    }
     try {
       await publishContent.mutateAsync(id);
       toast.success("Content published successfully!");
@@ -57,6 +62,10 @@ export function ContentList() {
   };
 
   const handleDelete = async (id: string) => {
+    if (!isApproved) {
+      toast.error("Business must be APPROVED to delete content.");
+      return;
+    }
     try {
       await deleteContent.mutateAsync(id);
       toast.success("Content deleted successfully");
@@ -173,18 +182,27 @@ export function ContentList() {
             </div>
           </CardContent>
           <CardFooter className="pt-4 px-6 pb-6 bg-muted/5 gap-2">
-            <Button variant="outline" className="flex-1 rounded-xl" asChild>
-              <Link
-                href={`/seller-dashboard/conference-hall/content/${content.id}`}
-              >
-                Edit
-              </Link>
+            <Button
+              variant="outline"
+              className="flex-1 rounded-xl disabled:opacity-50"
+              disabled={!isApproved}
+              asChild={isApproved}
+            >
+              {isApproved ? (
+                <Link
+                  href={`/seller-dashboard/conference-hall/content/${content.id}`}
+                >
+                  Edit
+                </Link>
+              ) : (
+                <span>Edit</span>
+              )}
             </Button>
             {!content.isPublic && (
               <Button
-                className="flex-1 rounded-xl gap-2"
+                className="flex-1 rounded-xl gap-2 disabled:opacity-50"
                 onClick={() => handlePublish(content.id)}
-                disabled={publishContent.isPending}
+                disabled={publishContent.isPending || !isApproved}
               >
                 {publishContent.isPending ? (
                   <Loader2 className="h-3 w-3 animate-spin" />

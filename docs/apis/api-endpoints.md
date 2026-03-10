@@ -246,7 +246,7 @@ _All routes require `Authorization: Bearer <token>` header._
 - **Request Body:**
   ```json
   {
-    "status": "APPROVED", // "APPROVED" | "REJECTED"
+    "status": "APPROVED", // "APPROVED" | "REJECTED" | "PAUSED"
     "remark": "All documents are valid."
   }
   ```

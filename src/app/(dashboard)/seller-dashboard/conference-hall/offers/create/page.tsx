@@ -6,11 +6,42 @@ import { ArrowLeft } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
+import { useEntitiesQuery } from "@/queries/entityQueries";
+import Link from "next/link";
+
 function CreateOfferContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const offerId = searchParams.get("offerId");
   const isEdit = !!offerId;
+
+  const { data: entities, isLoading } = useEntitiesQuery();
+  const entity = entities?.[0];
+
+  if (isLoading) {
+    return <div className="p-10 text-center">Loading business context...</div>;
+  }
+
+  if (!entity || entity.verificationStatus !== "APPROVED") {
+    return (
+      <div className="container mx-auto py-20 text-center space-y-4">
+        <h1 className="text-2xl font-bold">
+          {!entity ? "No Business Found" : "Business Not Approved"}
+        </h1>
+        <p className="text-muted-foreground">
+          {!entity
+            ? "Please setup your business profile first."
+            : `Your business must be APPROVED to ${isEdit ? "edit" : "create"} offers. Current status: ${entity.verificationStatus}`}
+        </p>
+        <div className="flex justify-center gap-4">
+          <Button onClick={() => router.back()}>Go Back</Button>
+          <Button variant="outline" asChild>
+            <Link href="/seller-dashboard/settings">Settings</Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-6 space-y-6">

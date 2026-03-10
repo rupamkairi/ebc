@@ -63,11 +63,13 @@ export function NoEntityState({ onSetupClick }: NoEntityStateProps) {
 interface EmptyCatalogStateProps {
   type: "products" | "services";
   onAddClick: () => void;
+  disabled?: boolean;
 }
 
 export function EmptyCatalogState({
   type,
   onAddClick,
+  disabled,
 }: EmptyCatalogStateProps) {
   const isProducts = type === "products";
   return (
@@ -79,7 +81,8 @@ export function EmptyCatalogState({
       </p>
       <Button
         onClick={onAddClick}
-        className="mt-4 font-semibold flex items-center gap-2 mx-auto"
+        disabled={disabled}
+        className="mt-4 font-semibold flex items-center gap-2 mx-auto disabled:opacity-50"
       >
         <Plus size={18} /> Add First {isProducts ? "Product" : "Service"}
       </Button>

@@ -73,7 +73,7 @@ export default function ListingDetailsPage() {
 
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button disabled={listing.entity?.verificationStatus !== "APPROVED"}>
               <Edit className="mr-2 h-4 w-4" />
               {t("edit_listing")}
             </Button>

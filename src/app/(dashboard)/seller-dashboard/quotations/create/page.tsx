@@ -16,6 +16,7 @@ import { CoinDeductionModal } from "@/components/dashboard/seller/coin-deduction
 import { REF_TYPE } from "@/constants/enums";
 import { PageBackButton } from "@/components/dashboard/seller/activity-shared/page-back-button";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useEntitiesQuery } from "@/queries/entityQueries";
 
 function CreateQuotationContent() {
   const { t } = useLanguage();
@@ -30,6 +31,10 @@ function CreateQuotationContent() {
   const { data: enquiry, isLoading: isEnquiryLoading } = useEnquiryQuery(
     enquiryId || "",
   );
+  const { data: entities, isLoading: isEntitiesLoading } = useEntitiesQuery();
+  const sellerEntity = entities?.[0];
+  const isApproved = sellerEntity?.verificationStatus === "APPROVED";
+
   const { mutate: createQuotation, isPending: isSubmitting } =
     useCreateQuotationMutation();
 
@@ -46,10 +51,33 @@ function CreateQuotationContent() {
     );
   }
 
-  if (isEnquiryLoading) {
+  if (isEnquiryLoading || isEntitiesLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!isApproved) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] gap-6 text-center">
+        <div className="bg-destructive/10 p-4 rounded-full">
+          <Loader2 className="h-12 w-12 text-destructive" />
+        </div>
+        <div className="space-y-2">
+          <h2 className="text-2xl font-bold text-primary">Access Restricted</h2>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            Your business must be <strong>APPROVED</strong> to create
+            quotations. Current status:{" "}
+            <span className="font-bold uppercase">
+              {sellerEntity?.verificationStatus || "unknown"}
+            </span>
+          </p>
+        </div>
+        <Button onClick={() => router.back()} className="rounded-xl px-8 h-12">
+          Go Back
+        </Button>
       </div>
     );
   }

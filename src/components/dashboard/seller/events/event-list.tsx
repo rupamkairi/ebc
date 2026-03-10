@@ -29,10 +29,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 
 export function EventList() {
   const { data: entities } = useEntitiesQuery();
   const entity = entities?.[0];
+  const isApproved = entity?.verificationStatus === "APPROVED";
 
   const { data: events, isLoading } = useEventsQuery({
     entityId: entity?.id,
@@ -78,7 +80,14 @@ export function EventList() {
               <DropdownMenuContent align="end" className="w-40">
                 <DropdownMenuItem
                   className="text-destructive focus:text-destructive"
-                  onClick={() => deleteEvent.mutate(event.id)}
+                  onClick={() => {
+                    if (!isApproved) {
+                      toast.error("Business must be APPROVED to delete events.");
+                      return;
+                    }
+                    deleteEvent.mutate(event.id);
+                  }}
+                  disabled={!isApproved}
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
                   Delete Event
@@ -156,10 +165,19 @@ export function EventList() {
             </div>
           </CardContent>
           <CardFooter className="pt-4 px-6 pb-6 bg-muted/5">
-            <Button variant="outline" className="w-full rounded-xl hover:bg-primary hover:text-primary-foreground transition-all duration-300" asChild>
-              <a href={`/seller-dashboard/conference-hall/events/${event.id}`}>
-                Manage Event & Stats
-              </a>
+            <Button 
+              variant="outline" 
+              className="w-full rounded-xl hover:bg-primary hover:text-primary-foreground transition-all duration-300 disabled:opacity-50" 
+              disabled={!isApproved}
+              asChild={isApproved}
+            >
+              {isApproved ? (
+                <a href={`/seller-dashboard/conference-hall/events/${event.id}`}>
+                  Manage Event & Stats
+                </a>
+              ) : (
+                <span>Manage Event & Stats</span>
+              )}
             </Button>
           </CardFooter>
         </Card>

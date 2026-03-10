@@ -70,6 +70,17 @@ export function ForumSection({
       toast.error("Please login to participate in the discussion");
       return;
     }
+
+    // Check if the business is approved (for non-admins/buyers)
+    const isAdmin = ["ADMIN", "ADMIN_MANAGER", "ADMIN_EXECUTIVE", "ADMIN_ACCOUNTANT"].includes(user.role || "");
+    const isBuyer = user.role === "USER_BUYER_ADMIN";
+    
+    if (!isAdmin && !isBuyer && user.staffAt && user.staffAt.verificationStatus !== "APPROVED") {
+      toast.error(
+        `Your business must be APPROVED to post in forums. Current status: ${user.staffAt.verificationStatus}`
+      );
+      return;
+    }
     if (!content.trim()) return;
 
     try {
@@ -107,7 +118,7 @@ export function ForumSection({
   }
 
   const allPosts = data?.posts || [];
-  const isAdmin = user?.role === "ADMIN" || user?.role === "ADMIN_MANAGER";
+  const isAdmin = user?.role && ["ADMIN", "ADMIN_MANAGER", "ADMIN_EXECUTIVE", "ADMIN_ACCOUNTANT"].includes(user.role);
 
   interface ThreadedPost extends DiscussionPost {
     children: ThreadedPost[];

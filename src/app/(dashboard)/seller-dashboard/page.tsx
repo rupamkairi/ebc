@@ -19,7 +19,6 @@ import {
   Bell,
   Plus,
   Edit2,
-  Eye,
   Store,
   ChevronRight,
   CheckCircle2,
@@ -94,7 +93,15 @@ export default function SellerDashboardPage() {
   return (
     <div className="flex flex-col gap-8 py-2">
       {status && status !== "APPROVED" && (
-        <Alert variant={status === "REJECTED" ? "destructive" : "default"}>
+        <Alert
+          variant={
+            status === "REJECTED"
+              ? "destructive"
+              : status === "PAUSED"
+                ? "destructive"
+                : "default"
+          }
+        >
           {status === "PENDING" ? (
             <Clock className="h-4 w-4" />
           ) : (
@@ -103,14 +110,17 @@ export default function SellerDashboardPage() {
           <AlertTitle>
             {status === "PENDING"
               ? t("verification_pending")
-              : t("verification_rejected")}
+              : status === "PAUSED"
+                ? t("verification_paused")
+                : t("verification_rejected")}
           </AlertTitle>
           <AlertDescription className="flex items-center justify-between">
             <span>
               {status === "PENDING"
                 ? t("complete_info_in_settings")
-                : mainEntity?.verificaitonRemark ||
-                  t("verification_rejected_desc")}
+                : status === "PAUSED"
+                  ? t("verification_paused_desc")
+                  : mainEntity?.verificaitonRemark || t("verification_rejected_desc")}
             </span>
             <Link href="/seller-dashboard/settings" className="ml-4">
               <Button variant="outline" size="sm" className="bg-background">
@@ -154,31 +164,52 @@ export default function SellerDashboardPage() {
                   </div>
                 </div>
                 <div className="flex flex-col items-center gap-3 w-full">
-                  <Link
-                    href="/seller-dashboard/catalog?create=true"
-                    className="w-full"
-                  >
+                  <div className="w-full">
                     <Button
                       variant="secondary"
-                      className="w-full bg-white text-primary hover:bg-gray-100 border-0 rounded-lg px-4 h-10 text-sm font-semibold justify-center"
+                      className="w-full bg-white text-primary hover:bg-gray-100 border-0 rounded-lg px-4 h-10 text-sm font-semibold justify-center disabled:opacity-50"
+                      disabled={status !== "APPROVED"}
+                      asChild={status === "APPROVED"}
                     >
-                      <Plus className="mr-2 h-4 w-4" />
-                      {isService
-                        ? t("new_service_listing")
-                        : t("new_product_listing")}
+                      {status === "APPROVED" ? (
+                        <Link href="/seller-dashboard/catalog?create=true">
+                          <Plus className="mr-2 h-4 w-4" />
+                          {isService
+                            ? t("new_service_listing")
+                            : t("new_product_listing")}
+                        </Link>
+                      ) : (
+                        <>
+                          <Plus className="mr-2 h-4 w-4" />
+                          {isService
+                            ? t("new_service_listing")
+                            : t("new_product_listing")}
+                        </>
+                      )}
                     </Button>
-                  </Link>
-                  <Link href="/seller-dashboard/catalog" className="w-full">
-                    <Button
-                      variant="outline"
-                      className="w-full bg-white/10 text-white hover:bg-white/20 border-0 rounded-lg px-4 h-10 text-sm font-semibold justify-center"
-                    >
-                      <Edit2 className="mr-2 h-4 w-4" />
-                      {isService
-                        ? t("edit_service_listing")
-                        : t("edit_product_listing")}
-                    </Button>
-                  </Link>
+                  </div>
+                  <Button
+                    variant="outline"
+                    className="w-full bg-white/10 text-white hover:bg-white/20 border-0 rounded-lg px-4 h-10 text-sm font-semibold justify-center disabled:opacity-50"
+                    disabled={status !== "APPROVED"}
+                    asChild={status === "APPROVED"}
+                  >
+                    {status === "APPROVED" ? (
+                      <Link href="/seller-dashboard/catalog">
+                        <Edit2 className="mr-2 h-4 w-4" />
+                        {isService
+                          ? t("edit_service_listing")
+                          : t("edit_product_listing")}
+                      </Link>
+                    ) : (
+                      <>
+                        <Edit2 className="mr-2 h-4 w-4" />
+                        {isService
+                          ? t("edit_service_listing")
+                          : t("edit_product_listing")}
+                      </>
+                    )}
+                  </Button>
                   {/* <Link
                     href="/seller-dashboard/catalog"
                     className="w-full sm:w-auto"
@@ -530,14 +561,20 @@ export default function SellerDashboardPage() {
                   </div>
                 </div>
                 <div className="mt-auto pt-2">
-                  <Link href="/seller-dashboard/conference-hall/offers">
-                    <Button
-                      variant="outline"
-                      className="w-full rounded-xl h-10 font-semibold border-gray-300"
-                    >
-                      {t("create_offers")}
-                    </Button>
-                  </Link>
+                  <Button
+                    variant="outline"
+                    className="w-full rounded-xl h-10 font-semibold border-gray-300 disabled:opacity-50"
+                    disabled={status !== "APPROVED"}
+                    asChild={status === "APPROVED"}
+                  >
+                    {status === "APPROVED" ? (
+                      <Link href="/seller-dashboard/conference-hall/offers">
+                        {t("create_offers")}
+                      </Link>
+                    ) : (
+                      <span>{t("create_offers")}</span>
+                    )}
+                  </Button>
                 </div>
               </Card>
 
@@ -554,14 +591,20 @@ export default function SellerDashboardPage() {
                   </div>
                 </div>
                 <div className="mt-auto pt-2">
-                  <Link href="/seller-dashboard/conference-hall/content">
-                    <Button
-                      variant="outline"
-                      className="w-full rounded-xl h-10 font-semibold border-gray-300"
-                    >
-                      {t("create_content")}
-                    </Button>
-                  </Link>
+                  <Button
+                    variant="outline"
+                    className="w-full rounded-xl h-10 font-semibold border-gray-300 disabled:opacity-50"
+                    disabled={status !== "APPROVED"}
+                    asChild={status === "APPROVED"}
+                  >
+                    {status === "APPROVED" ? (
+                      <Link href="/seller-dashboard/conference-hall/content">
+                        {t("create_content")}
+                      </Link>
+                    ) : (
+                      <span>{t("create_content")}</span>
+                    )}
+                  </Button>
                 </div>
               </Card>
 
@@ -578,14 +621,20 @@ export default function SellerDashboardPage() {
                   </div>
                 </div>
                 <div className="mt-auto pt-2">
-                  <Link href="/seller-dashboard/conference-hall/events">
-                    <Button
-                      variant="outline"
-                      className="w-full rounded-xl h-10 font-semibold border-gray-300"
-                    >
-                      {t("create_events")}
-                    </Button>
-                  </Link>
+                  <Button
+                    variant="outline"
+                    className="w-full rounded-xl h-10 font-semibold border-gray-300 disabled:opacity-50"
+                    disabled={status !== "APPROVED"}
+                    asChild={status === "APPROVED"}
+                  >
+                    {status === "APPROVED" ? (
+                      <Link href="/seller-dashboard/conference-hall/events">
+                        {t("create_events")}
+                      </Link>
+                    ) : (
+                      <span>{t("create_events")}</span>
+                    )}
+                  </Button>
                 </div>
               </Card>
 
@@ -602,14 +651,20 @@ export default function SellerDashboardPage() {
                   </div>
                 </div>
                 <div className="mt-auto pt-2">
-                  <Link href="/seller-dashboard/conference-hall/forum">
-                    <Button
-                      variant="outline"
-                      className="w-full rounded-xl h-10 font-semibold border-gray-300"
-                    >
-                      {t("join_discussion")}
-                    </Button>
-                  </Link>
+                  <Button
+                    variant="outline"
+                    className="w-full rounded-xl h-10 font-semibold border-gray-300 disabled:opacity-50"
+                    disabled={status !== "APPROVED"}
+                    asChild={status === "APPROVED"}
+                  >
+                    {status === "APPROVED" ? (
+                      <Link href="/seller-dashboard/conference-hall/forum">
+                        {t("join_discussion")}
+                      </Link>
+                    ) : (
+                      <span>{t("join_discussion")}</span>
+                    )}
+                  </Button>
                 </div>
               </Card>
             </div>

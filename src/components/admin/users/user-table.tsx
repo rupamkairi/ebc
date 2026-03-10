@@ -10,10 +10,18 @@ import { DataTable } from "@/components/datatable/data-table";
 import { DataTableColumnHeader } from "@/components/datatable/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Eye } from "lucide-react";
+import { Eye, MoreVertical, CheckCircle, XCircle, PauseCircle } from "lucide-react";
 import { AdminUser } from "@/types/auth";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface UserTableProps {
   users: AdminUser[];
@@ -90,7 +98,9 @@ export function UserTable({
             }
             className={cn(
               entity.verificationStatus === "APPROVED" &&
-                "bg-emerald-500 hover:bg-emerald-600 border-none"
+                "bg-emerald-500 hover:bg-emerald-600 border-none",
+              entity.verificationStatus === "PAUSED" && 
+                "border-amber-500 text-amber-600 hover:bg-amber-50"
             )}
           >
             {entity.verificationStatus}
@@ -112,18 +122,73 @@ export function UserTable({
     {
       id: "actions",
       header: () => <div className="text-right">Actions</div>,
-      cell: ({ row }) => (
-        <div className="text-right">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onViewDetails(row.original)}
-          >
-            <Eye className="size-4 mr-2" />
-            Details
-          </Button>
-        </div>
-      ),
+      cell: ({ row }) => {
+        const user = row.original;
+        const entity = user.createdEntities?.[0] || user.staffAt;
+        const status = entity?.verificationStatus;
+
+        return (
+          <div className="text-right">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <MoreVertical className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem
+                  onClick={() => onViewDetails(user)}
+                  className="cursor-pointer"
+                >
+                  <Eye className="size-4 mr-2" />
+                  View Details
+                </DropdownMenuItem>
+                {entity && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuLabel className="text-[10px] font-bold uppercase text-muted-foreground/60 px-2 py-1.5">
+                      Status Management
+                    </DropdownMenuLabel>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        /* Handle direct approval if needed, or rely on modal */
+                        onViewDetails(user);
+                      }}
+                      disabled={status === "APPROVED"}
+                      className="cursor-pointer text-emerald-600 focus:text-emerald-600"
+                    >
+                      <CheckCircle className="size-4 mr-2" />
+                      Approve
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        /* Handle direct rejection if needed, or rely on modal */
+                        onViewDetails(user);
+                      }}
+                      disabled={status === "REJECTED"}
+                      className="cursor-pointer text-destructive focus:text-destructive"
+                    >
+                      <XCircle className="size-4 mr-2" />
+                      Disapprove
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        /* Handle direct pause if needed, or rely on modal */
+                        onViewDetails(user);
+                      }}
+                      disabled={status === "PAUSED"}
+                      className="cursor-pointer text-amber-600 focus:text-amber-600"
+                    >
+                      <PauseCircle className="size-4 mr-2" />
+                      Pause Activity
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        );
+      },
     },
   ];
 

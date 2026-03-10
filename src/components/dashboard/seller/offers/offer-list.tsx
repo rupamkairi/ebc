@@ -21,9 +21,15 @@ import { OfferPublishDialog } from "./offer-publish-dialog";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Offer } from "@/types/conference-hall";
+import { useEntitiesQuery } from "@/queries/entityQueries";
+import { cn } from "@/lib/utils";
 
 export function OfferList() {
   const router = useRouter();
+  const { data: entities } = useEntitiesQuery();
+  const entity = entities?.[0];
+  const isApproved = entity?.verificationStatus === "APPROVED";
+
   const { data: offers, isLoading } = useOffersQuery();
   const deleteMutation = useDeleteOfferMutation();
 
@@ -38,6 +44,10 @@ export function OfferList() {
   }
 
   const handleDelete = (id: string) => {
+    if (!isApproved) {
+      toast.error("Business must be APPROVED to delete offers.");
+      return;
+    }
     // Basic confirmation before delete
     if (confirm("Are you sure you want to delete this offer?")) {
       deleteMutation.mutate(id, {
@@ -125,8 +135,9 @@ export function OfferList() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            title="Publish"
-                            onClick={() => setPublishOfferId(offer.id)}
+                            title={isApproved ? "Publish" : "Publication Restricted"}
+                            onClick={() => isApproved ? setPublishOfferId(offer.id) : toast.error("Business must be APPROVED to publish offers.")}
+                            className={cn(!isApproved && "opacity-50 cursor-not-allowed")}
                           >
                             <Globe className="h-4 w-4 text-blue-500" />
                           </Button>
@@ -135,12 +146,13 @@ export function OfferList() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          title="Edit"
+                          title={isApproved ? "Edit" : "Edit Restricted"}
                           onClick={() =>
-                            router.push(
-                              `/seller-dashboard/conference-hall/offers/create?offerId=${offer.id}`,
-                            )
+                            isApproved 
+                              ? router.push(`/seller-dashboard/conference-hall/offers/create?offerId=${offer.id}`)
+                              : toast.error("Business must be APPROVED to edit offers.")
                           }
+                          className={cn(!isApproved && "opacity-50 cursor-not-allowed")}
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
@@ -148,9 +160,9 @@ export function OfferList() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          title="Delete"
-                          className="text-destructive"
-                          onClick={() => handleDelete(offer.id)}
+                          title={isApproved ? "Delete" : "Delete Restricted"}
+                          className={cn("text-destructive", !isApproved && "opacity-50 cursor-not-allowed")}
+                          onClick={() => isApproved ? handleDelete(offer.id) : toast.error("Business must be APPROVED to delete offers.")}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>

@@ -34,7 +34,8 @@ export default function EnquiryDetailsPage() {
 
   // Fetch seller entity to identify current seller
   const { data: entities } = useEntitiesQuery();
-  const sellerEntityId = entities?.[0]?.id;
+  const sellerEntity = entities?.[0];
+  const isApproved = sellerEntity?.verificationStatus === "APPROVED";
 
   // Fetch quotations related to this enquiry
   const { data: quotations } = useQuotationsQuery({ enquiryId: id });
@@ -245,6 +246,7 @@ export default function EnquiryDetailsPage() {
             respondedDescription={t("already_responded_enquiry")}
             backHref="/seller-dashboard/enquiries"
             backLabel={t("back_to_enquiries")}
+            disabled={!isApproved}
           />
 
           {/* Tip card */}

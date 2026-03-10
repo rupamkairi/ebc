@@ -26,6 +26,8 @@ interface ActivityActionCardProps {
   backLabel: string;
   /** Whether a processing action is in progress */
   isProcessing?: boolean;
+  /** Whether the action should be disabled (e.g. business not approved) */
+  disabled?: boolean;
 }
 
 export function ActivityActionCard({
@@ -40,11 +42,12 @@ export function ActivityActionCard({
   backHref,
   backLabel,
   isProcessing = false,
+  disabled = false,
 }: ActivityActionCardProps) {
   if (isPending) {
     return (
     <div
-      className="rounded-2xl p-5 space-y-4 bg-gradient-to-br from-primary to-primary/80"
+      className="rounded-2xl p-5 space-y-4 bg-linear-to-br from-primary to-primary/80"
     >
         <div>
           <h3 className="text-white font-black text-lg">{actionLabel}</h3>
@@ -56,22 +59,30 @@ export function ActivityActionCard({
         </div>
         {actionHref ? (
           <Button
-            asChild
-            className="w-full bg-secondary hover:bg-secondary/90 active:scale-95 text-white font-black text-sm rounded-xl h-11 border-0 shadow-md transition-all"
+            asChild={!disabled}
+            disabled={disabled}
+            className="w-full bg-secondary hover:bg-secondary/90 active:scale-95 text-white font-black text-sm rounded-xl h-11 border-0 shadow-md transition-all disabled:opacity-50"
           >
-            <Link
-              href={actionHref}
-              className="flex items-center justify-center gap-2"
-            >
-              {actionIcon}
-              {actionLabel}
-            </Link>
+            {disabled ? (
+              <div className="flex items-center justify-center gap-2">
+                {actionIcon}
+                {actionLabel}
+              </div>
+            ) : (
+              <Link
+                href={actionHref}
+                className="flex items-center justify-center gap-2"
+              >
+                {actionIcon}
+                {actionLabel}
+              </Link>
+            )}
           </Button>
         ) : (
           <Button
             onClick={onAction}
-            disabled={isProcessing}
-            className="w-full bg-secondary hover:bg-secondary/90 active:scale-95 text-white font-black text-sm rounded-xl h-11 border-0 shadow-md transition-all"
+            disabled={isProcessing || disabled}
+            className="w-full bg-secondary hover:bg-secondary/90 active:scale-95 text-white font-black text-sm rounded-xl h-11 border-0 shadow-md transition-all disabled:opacity-50"
           >
             {actionIcon}
             {isProcessing ? "Processing..." : actionLabel}

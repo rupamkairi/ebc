@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+import Link from "next/link";
+
 export default function CreateContentPage() {
   const router = useRouter();
   const { data: entities, isLoading } = useEntitiesQuery();
@@ -18,6 +20,23 @@ export default function CreateContentPage() {
 
   if (!entity) {
     return <div>Entity not found. Please create an entity first.</div>;
+  }
+
+  if (entity.verificationStatus !== "APPROVED") {
+    return (
+      <div className="container mx-auto py-6 text-center space-y-4">
+        <h1 className="text-2xl font-bold">Business Not Approved</h1>
+        <p className="text-muted-foreground">
+          Your business must be APPROVED to create content. Current status: {entity.verificationStatus}
+        </p>
+        <div className="flex justify-center gap-4">
+          <Button onClick={() => window.history.back()}>Go Back</Button>
+          <Button variant="outline" asChild>
+            <Link href="/seller-dashboard/settings">Check Status</Link>
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   return (

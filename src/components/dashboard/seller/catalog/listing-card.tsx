@@ -25,9 +25,15 @@ interface ListingCardProps {
 
 export function ListingCard({ listing, type, view = "list" }: ListingCardProps) {
   const isProduct = type === "PRODUCT";
+  const status = listing.entity?.verificationStatus;
+  const isApproved = status === "APPROVED";
   const deleteMutation = useDeleteItemListingMutation();
 
   const handleDelete = () => {
+    if (!isApproved) {
+      toast.error("Business must be APPROVED to delete listings.");
+      return;
+    }
     if (confirm("Are you sure you want to delete this listing?")) {
       deleteMutation.mutate(listing.id, {
         onSuccess: () => {
@@ -101,12 +107,17 @@ export function ListingCard({ listing, type, view = "list" }: ListingCardProps) 
             {/* Action Row */}
             <div className="flex gap-2 pt-2">
               <Button
-                asChild
-                className="flex-1 bg-primary hover:bg-primary/90 text-white font-black rounded-xl h-10 text-[10px] tracking-widest uppercase transition-all shadow-sm active:scale-95 border-none"
+                asChild={isApproved}
+                className="flex-1 bg-primary hover:bg-primary/90 text-white font-black rounded-xl h-10 text-[10px] tracking-widest uppercase transition-all shadow-sm active:scale-95 border-none disabled:opacity-50"
+                disabled={!isApproved}
               >
-                <Link href={`/seller-dashboard/catalog/${listing.id}`}>
-                  Edit Details
-                </Link>
+                {isApproved ? (
+                  <Link href={`/seller-dashboard/catalog/${listing.id}`}>
+                    Edit Details
+                  </Link>
+                ) : (
+                  <span>Edit Details</span>
+                )}
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -125,7 +136,7 @@ export function ListingCard({ listing, type, view = "list" }: ListingCardProps) 
                   <DropdownMenuItem
                     className="text-red-600 font-bold cursor-pointer text-[10px] uppercase tracking-widest py-2.5"
                     onClick={handleDelete}
-                    disabled={deleteMutation.isPending}
+                    disabled={deleteMutation.isPending || !isApproved}
                   >
                     {deleteMutation.isPending ? "Deleting..." : "Delete Listing"}
                   </DropdownMenuItem>
@@ -148,14 +159,21 @@ export function ListingCard({ listing, type, view = "list" }: ListingCardProps) 
           </div>
 
           <div className="flex-1 p-4 flex items-center justify-between">
-            <Link
-              href={`/seller-dashboard/catalog/${listing.id}`}
+            <div
               className="flex-1 space-y-1 min-w-0 pr-4"
             >
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-semibold truncate text-primary">
-                  {listing.item?.name}
-                </h3>
+                {isApproved ? (
+                  <Link href={`/seller-dashboard/catalog/${listing.id}`}>
+                    <h3 className="text-base font-semibold truncate text-primary hover:underline">
+                      {listing.item?.name}
+                    </h3>
+                  </Link>
+                ) : (
+                  <h3 className="text-base font-semibold truncate text-primary">
+                    {listing.item?.name}
+                  </h3>
+                )}
                 <Badge
                   variant={listing.isActive ? "outline" : "secondary"}
                   className={cn(
@@ -182,7 +200,7 @@ export function ListingCard({ listing, type, view = "list" }: ListingCardProps) 
                   </div>
                 )}
               </div>
-            </Link>
+            </div>
 
             <div className="flex items-center gap-4 shrink-0">
               {isProduct && (
@@ -207,15 +225,21 @@ export function ListingCard({ listing, type, view = "list" }: ListingCardProps) 
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="rounded-xl border shadow-xl">
-                  <DropdownMenuItem asChild>
-                    <Link href={`/seller-dashboard/catalog/${listing.id}`} className="font-bold cursor-pointer">
-                      View Details
-                    </Link>
-                  </DropdownMenuItem>
+                  {isApproved ? (
+                    <DropdownMenuItem asChild>
+                      <Link href={`/seller-dashboard/catalog/${listing.id}`} className="font-bold cursor-pointer">
+                        View Details
+                      </Link>
+                    </DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuItem disabled className="font-bold opacity-50">
+                      View Details (Restricted)
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem
                     className="text-red-600 font-bold cursor-pointer"
                     onClick={handleDelete}
-                    disabled={deleteMutation.isPending}
+                    disabled={deleteMutation.isPending || !isApproved}
                   >
                     {deleteMutation.isPending ? "Deleting..." : "Delete"}
                   </DropdownMenuItem>
