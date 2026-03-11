@@ -47,7 +47,7 @@ export function UserRegisterForm({
 }: React.ComponentProps<"div"> & { isDarkTheme?: boolean }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const requestedType = searchParams.get("type");
+  const requestedRole = searchParams.get("role");
   const { setToken, setUser } = useAuthStore();
   const { t } = useLanguage();
   const [name, setName] = useState("");
@@ -55,14 +55,16 @@ export function UserRegisterForm({
   const [pincodeId, setPincodeId] = useState("");
   
   // Initialize type from search params if provided, otherwise default to buyer
-  const initialType = requestedType?.toUpperCase() === "SELLER" 
+  const initialType = requestedRole?.toUpperCase() === "SELLER" 
     ? USER_ROLE.USER_PRODUCT_SELLER_ADMIN
-    : requestedType?.toUpperCase() === "SERVICE"
+    : requestedRole?.toUpperCase() === "SERVICE"
     ? USER_ROLE.USER_SERVICE_PROVIDER_ADMIN
-    : requestedType?.toUpperCase() === "BUYER"
+    : requestedRole?.toUpperCase() === "BUYER"
     ? USER_ROLE.USER_BUYER_ADMIN
     : USER_ROLE.USER_BUYER_ADMIN;
 
+  const isBuyerType = requestedRole?.toUpperCase() === "BUYER";
+  const isSellerType = requestedRole?.toUpperCase() === "SELLER" || requestedRole?.toUpperCase() === "SERVICE";
   const [type, setType] = useState<string>(initialType);
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"info" | "otp">("info");
@@ -251,30 +253,34 @@ export function UserRegisterForm({
                       )}
                     />
                   </Field>
-                  <Field>
-                    <Select value={type} onValueChange={setType}>
-                      <SelectTrigger
-                        id="type"
-                        className={cn(
-                          isDarkTheme &&
-                            "h-12 bg-white/10 border-none text-white focus:ring-1 focus:ring-white/30",
-                        )}
-                      >
-                        <SelectValue placeholder={t("select_type")} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value={USER_ROLE.USER_PRODUCT_SELLER_ADMIN}>
-                          {t("product_seller")}
-                        </SelectItem>
-                        <SelectItem value={USER_ROLE.USER_SERVICE_PROVIDER_ADMIN}>
-                          {t("service_provider")}
-                        </SelectItem>
-                        <SelectItem value={USER_ROLE.USER_BUYER_ADMIN}>
-                          {t("buyer_customer")}
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </Field>
+                  {!isBuyerType && (
+                    <Field>
+                      <Select value={type} onValueChange={setType}>
+                        <SelectTrigger
+                          id="type"
+                          className={cn(
+                            isDarkTheme &&
+                              "h-12 bg-white/10 border-none text-white focus:ring-1 focus:ring-white/30",
+                          )}
+                        >
+                          <SelectValue placeholder={t("select_type")} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value={USER_ROLE.USER_PRODUCT_SELLER_ADMIN}>
+                            {t("product_seller")}
+                          </SelectItem>
+                          <SelectItem value={USER_ROLE.USER_SERVICE_PROVIDER_ADMIN}>
+                            {t("service_provider")}
+                          </SelectItem>
+                          {!isSellerType && (
+                            <SelectItem value={USER_ROLE.USER_BUYER_ADMIN}>
+                              {t("buyer_customer")}
+                            </SelectItem>
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </Field>
+                  )}
                   <Field className="pt-2">
                     <Button
                       type="submit"
