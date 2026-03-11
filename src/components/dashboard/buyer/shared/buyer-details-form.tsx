@@ -74,36 +74,36 @@ export function BuyerDetailsForm({
     session?.user,
   );
 
-  // Prefill with session if no defaultValues
+  // Always apply phone from session if the form phone is currently empty.
+  // This runs independently of defaultValues so the store can't overwrite it with an empty string.
   useEffect(() => {
-    if (session?.user && !defaultValues) {
-      const rawPhone = session.user.phone || "";
-      // Strip +91 or 91 country code prefix to get the 10-digit local number
+    if (session?.user) {
+      const rawPhone = (session.user as { phone?: string; phoneNumber?: string }).phone
+        || (session.user as { phone?: string; phoneNumber?: string }).phoneNumber
+        || "";
       const localPhone = rawPhone.replace(/^\+?91/, "").replace(/\D/g, "").slice(0, 10);
-      form.reset({
-        ...form.getValues(),
-        name: session.user.name || "",
-        email: session.user.email || "",
-        phoneNumber: localPhone,
-      });
+      if (localPhone && !form.getValues("phoneNumber")) {
+        form.setValue("phoneNumber", localPhone, { shouldValidate: false, shouldDirty: false });
+      }
     }
-  }, [session, defaultValues, form]);
+  }, [session, form]);
 
+  // Sync form when store defaultValues change, but preserve non-empty phone
   useEffect(() => {
     if (defaultValues) {
       const currentValues = form.getValues();
+      const merged = { ...currentValues, ...defaultValues } as BuyerDetailsSchema;
+      // Never overwrite a valid phone with an empty one from the store
+      if (!merged.phoneNumber && currentValues.phoneNumber) {
+        merged.phoneNumber = currentValues.phoneNumber;
+      }
       const hasChanged = (
         Object.keys(buyerDetailsSchema.shape) as Array<
           keyof typeof buyerDetailsSchema.shape
         >
-      ).some((key) => {
-        return defaultValues[key] !== currentValues[key];
-      });
+      ).some((key) => merged[key] !== currentValues[key]);
       if (hasChanged) {
-        form.reset({
-          ...currentValues,
-          ...defaultValues,
-        } as BuyerDetailsSchema);
+        form.reset(merged);
       }
     }
   }, [defaultValues, form]);
@@ -206,7 +206,7 @@ export function BuyerDetailsForm({
                             className={cn(
                               inputClass,
                               "pl-3 rounded-l-none",
-                              hasSession && "opacity-70 cursor-not-allowed",
+                              hasSession && "bg-muted/30 text-primary cursor-not-allowed select-none",
                             )}
                             disabled={hasSession}
                           />

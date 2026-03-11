@@ -15,8 +15,8 @@ import {
 import {
   ReputationSection,
   ReviewForm,
-  ReviewSnapshot,
 } from "@/components/shared/reviews";
+import { useEnquiryReviewQuery } from "@/queries/reviewQueries";
 import {
   Card,
   CardContent,
@@ -61,6 +61,15 @@ export default function BuyerEnquiryDetailsPage() {
     (q: Quotation) => q.status === "ACCEPTED",
   );
   const isCompleted = enquiry?.status === "COMPLETED";
+
+  const acceptedEntityId =
+    acceptedQuotation?.createdBy?.staffAtEntityId ||
+    acceptedQuotation?.createdBy?.createdEntities?.[0]?.id ||
+    "";
+
+  // Check if buyer already left a review for this specific enquiry
+  const existingReview = useEnquiryReviewQuery(acceptedEntityId, id);
+  const hasReviewed = !!existingReview;
 
   const handleAccept = async (quotationId: string) => {
     try {
@@ -172,23 +181,29 @@ export default function BuyerEnquiryDetailsPage() {
               </p>
             </div>
           </div>
-          <ReviewForm
-            entityId={
-              acceptedQuotation?.createdBy?.staffAtEntityId ||
-              acceptedQuotation?.createdBy?.createdEntities?.[0]?.id
-            }
-            enquiryId={id}
-            isVerified={true}
-            trigger={
-              <Button
-                size="lg"
-                className="h-16 rounded-full px-10 bg-emerald-500 hover:bg-emerald-600 font-black gap-3 text-lg shadow-xl shadow-emerald-500/20 group"
-              >
-                <Star className="h-6 w-6 fill-current group-hover:rotate-12 transition-transform" />
-                {t("rate_your_experience")}
-              </Button>
-            }
-          />
+          {hasReviewed ? (
+            <div className="flex items-center gap-3 px-8 py-4 rounded-full bg-emerald-500/20 border border-emerald-500/30">
+              <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+              <span className="font-black text-emerald-700 text-sm">
+                {t("review_submitted") || "Review Submitted — Thank you!"}
+              </span>
+            </div>
+          ) : (
+            <ReviewForm
+              entityId={acceptedEntityId || undefined}
+              enquiryId={id}
+              isVerified={true}
+              trigger={
+                <Button
+                  size="lg"
+                  className="h-16 rounded-full px-10 bg-emerald-500 hover:bg-emerald-600 font-black gap-3 text-lg shadow-xl shadow-emerald-500/20 group"
+                >
+                  <Star className="h-6 w-6 fill-current group-hover:rotate-12 transition-transform" />
+                  {t("rate_your_experience")}
+                </Button>
+              }
+            />
+          )}
         </div>
       )}
 
@@ -248,132 +263,138 @@ export default function BuyerEnquiryDetailsPage() {
               </div>
             ) : (
               <div className="space-y-6 md:space-y-10">
-                {quotations.map((q: Quotation) => (
-                  <div
-                    key={q.id}
-                    className="space-y-6 md:space-y-8 p-4 md:p-8 rounded-2xl md:rounded-4xl bg-white border shadow-xl shadow-black/5 overflow-hidden"
-                  >
-                    {/* Header row: who proposed + badge */}
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">
-                          {t("proposed_by")}
-                        </p>
-                        <h4 className="text-lg md:text-2xl font-black tracking-tight">
-                          {q.createdBy?.staffAt?.name || q.createdBy?.name}
+                {enquiry?.enquiryLineItems?.map((eli: EnquiryLineItem) => {
+                  const unitLabel = UNIT_TYPE_LABELS[(eli.unitType || "NUM") as UnitType];
+                  const quotesForItem = quotations.filter(q =>
+                    q.quotationLineItems.some(qli => qli.itemId === eli.itemId)
+                  );
+
+                  if (quotesForItem.length === 0) return null;
+
+                  return (
+                    <div key={eli.id} className="space-y-4 md:space-y-6">
+                      <div className="flex items-center gap-3">
+                        <h4 className="text-xl font-black tracking-tight">
+                          {eli.item?.name}
                         </h4>
+                        <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest">
+                          {eli.quantity} {unitLabel}
+                        </Badge>
                       </div>
-                      <Badge className="bg-primary/10 text-primary border-primary/20 uppercase text-[10px] font-black tracking-widest shrink-0 mt-1">
-                        {t("proposal_label")}
-                      </Badge>
-                    </div>
 
-                    {/* Main content: line items + price/action */}
-                    <div className="flex flex-col md:flex-row gap-6 md:gap-10">
-                      <div className="flex-1 space-y-4 md:space-y-6 min-w-0">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-6">
-                          {q.quotationLineItems.map((li: QuotationLineItem) => (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                        {quotesForItem.map((q: Quotation) => {
+                          const li = q.quotationLineItems.find(
+                            (qli: QuotationLineItem) => qli.itemId === eli.itemId,
+                          );
+                          if (!li) return null; // Should not happen due to filter above, but for type safety
+
+                          const isAcceptedQuote = q.status === "ACCEPTED";
+
+                          return (
                             <div
-                              key={li.id}
-                              className="p-3 md:p-4 rounded-xl md:rounded-2xl bg-muted/50 border"
+                              key={q.id}
+                              className={cn(
+                                "p-4 md:p-6 rounded-2xl md:rounded-3xl border space-y-4",
+                                isAcceptedQuote
+                                  ? "bg-emerald-500/10 border-emerald-500/30 shadow-lg shadow-emerald-500/10"
+                                  : "bg-white shadow-sm"
+                              )}
                             >
-                              <p className="text-[10px] font-bold text-muted-foreground uppercase mb-1 truncate">
-                                {li.item?.name}
-                              </p>
-                              <div className="text-base md:text-xl font-black tracking-tight">
-                                ₹{li.rate} /{" "}
-                                {
-                                  UNIT_TYPE_LABELS[
-                                    (enquiry?.enquiryLineItems?.find(
-                                      (eli: EnquiryLineItem) =>
-                                        eli.itemId === li.itemId,
-                                    )?.unitType || "NUM") as UnitType
-                                  ]
-                                }
+                              <div className="flex items-start justify-between gap-3">
+                                <div>
+                                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">
+                                    {t("proposed_by")}
+                                  </p>
+                                  <h5 className="text-base font-black tracking-tight">
+                                    {q.createdBy?.staffAt?.name || q.createdBy?.name}
+                                  </h5>
+                                </div>
+                                <Badge
+                                  className={cn(
+                                    "uppercase text-[10px] font-black tracking-widest shrink-0 mt-1",
+                                    isAcceptedQuote
+                                      ? "bg-emerald-500 text-white"
+                                      : "bg-primary/10 text-primary border-primary/20"
+                                  )}
+                                >
+                                  {isAcceptedQuote ? t("accepted_status") : t("proposal_label")}
+                                </Badge>
                               </div>
-                              <p className="text-[10px] text-primary font-bold mt-1 uppercase tracking-tighter">
-                                {li.isNegotiable ? t("negotiable_price") : t("fixed_price_label")}
-                              </p>
+
+                              <div className="space-y-2">
+                                <div className="flex items-end justify-between gap-2">
+                                  <div className="text-xl md:text-2xl font-black tracking-tight">
+                                    ₹{li.rate}{" "}
+                                    <span className="text-sm font-medium text-muted-foreground">
+                                      / {unitLabel}
+                                    </span>
+                                  </div>
+                                  {li.amount > 0 && (
+                                    <p className="text-xs text-muted-foreground text-right">
+                                      Total:{" "}
+                                      <span className="font-bold text-foreground">₹{li.amount}</span>
+                                    </p>
+                                  )}
+                                </div>
+                                <p className={cn(
+                                  "text-[10px] font-black uppercase tracking-tighter",
+                                  li.isNegotiable ? "text-amber-600" : "text-primary",
+                                )}>
+                                  {li.isNegotiable ? t("negotiable_price") : t("fixed_price_label")}
+                                </p>
+                                {li.remarks && (
+                                  <p className="text-xs italic text-muted-foreground border-t pt-2">
+                                    {li.remarks}
+                                  </p>
+                                )}
+                              </div>
+
+                              {/* Accept button — only on non-completed enquiries */}
+                              {!isCompleted && (
+                                q.status === "ACCEPTED" ? (
+                                  <Button
+                                    className="w-full h-10 rounded-2xl bg-emerald-500 hover:bg-emerald-600 font-black gap-2 text-sm"
+                                    disabled
+                                  >
+                                    <CheckCircle2 className="h-4 w-4" />
+                                    {t("accepted_status")}
+                                  </Button>
+                                ) : (
+                                  <Button
+                                    className="w-full h-10 rounded-2xl font-black shadow-md shadow-primary/20 hover:scale-[1.02] transition-transform text-sm"
+                                    onClick={() => handleAccept(q.id)}
+                                    disabled={acceptMutation.isPending}
+                                  >
+                                    {acceptMutation.isPending ? (
+                                      <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                      t("accept_proposal_btn")
+                                    )}
+                                  </Button>
+                                )
+                              )}
                             </div>
-                          ))}
-                        </div>
-
-                        {q.quotationDetails?.[0]?.remarks && (
-                          <div className="p-3 md:p-4 rounded-xl md:rounded-2xl bg-primary/5 border border-primary/10 italic text-sm">
-                            &quot;{q.quotationDetails[0].remarks}&quot;
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Price + accept */}
-                      <div className="w-full md:w-56 space-y-4 shrink-0">
-                        <div className="p-4 md:p-6 rounded-2xl md:rounded-4xl bg-primary text-primary-foreground text-center space-y-1">
-                          <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">
-                            {t("final_proposal")}
-                          </p>
-                          <div className="text-2xl md:text-3xl font-black">
-                            ₹
-                            {q.quotationLineItems.reduce(
-                              (acc: number, li: QuotationLineItem) =>
-                                acc + (li.amount || 0),
-                              0,
-                            )}
-                          </div>
-                        </div>
-
-                        <ReviewSnapshot
-                          entityId={
-                            q.createdBy?.staffAtEntityId ||
-                            q.createdBy?.createdEntities?.[0]?.id ||
-                            ""
-                          }
-                          entityName={
-                            q.createdBy?.staffAt?.name ||
-                            q.createdBy?.createdEntities?.[0]?.name
-                          }
-                        />
-
-                        {q.status === "ACCEPTED" ? (
-                          <Button
-                            className="w-full h-12 md:h-14 rounded-2xl md:rounded-3xl bg-emerald-500 hover:bg-emerald-600 font-black gap-2"
-                            disabled
-                          >
-                            <CheckCircle2 className="h-5 w-5" />
-                            {t("accepted_status")}
-                          </Button>
-                        ) : (
-                          <Button
-                            className="w-full h-12 md:h-14 rounded-2xl md:rounded-3xl font-black shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform"
-                            onClick={() => handleAccept(q.id)}
-                            disabled={acceptMutation.isPending || isCompleted}
-                          >
-                            {acceptMutation.isPending ? (
-                              <Loader2 className="h-5 w-5 animate-spin" />
-                            ) : (
-                              t("accept_proposal_btn")
-                            )}
-                          </Button>
-                        )}
+                          );
+                        })}
                       </div>
                     </div>
+                  );
+                })}
 
-                    {/* Reputation Section */}
-                    <div className="pt-6 md:pt-10 border-t border-dashed">
-                      <ReputationSection
-                        entityId={
-                          q.createdBy?.staffAtEntityId ||
-                          q.createdBy?.createdEntities?.[0]?.id ||
-                          ""
-                        }
-                        entityName={
-                          q.createdBy?.staffAt?.name ||
-                          q.createdBy?.createdEntities?.[0]?.name
-                        }
-                        canReview={q.status === "ACCEPTED"}
-                      />
-                    </div>
+                {/* Reputation Section — only for the accepted seller, shown once at the bottom */}
+                {acceptedQuotation && (
+                  <div className="pt-6 md:pt-10 border-t border-dashed">
+                    <ReputationSection
+                      entityId={acceptedEntityId}
+                      entityName={
+                        acceptedQuotation.createdBy?.staffAt?.name ||
+                        acceptedQuotation.createdBy?.createdEntities?.[0]?.name
+                      }
+                      canReview={isCompleted && !hasReviewed}
+                    />
                   </div>
-                ))}
+                )}
               </div>
             )}
           </section>

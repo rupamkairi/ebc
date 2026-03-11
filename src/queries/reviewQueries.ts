@@ -8,19 +8,25 @@ export const useEntityReviewsQuery = (entityId: string) => {
   return useQuery({
     queryKey: ["entity-reviews", entityId],
     queryFn: async () => {
-      const resp = await fetchClient(`${REVIEW_API}/entity/${entityId}`);
-      return ((resp as any).data || resp) as Review[];
+      const resp = await fetchClient(`${REVIEW_API}/entity/${entityId}`) as { data?: Review[] } | Review[];
+      return ((resp as { data?: Review[] }).data || resp) as Review[];
     },
     enabled: !!entityId,
   });
+};
+
+/** Returns the existing review for the given enquiryId (if any), derived from the entity's public reviews. */
+export const useEnquiryReviewQuery = (entityId: string, enquiryId: string) => {
+  const { data: reviews = [] } = useEntityReviewsQuery(entityId);
+  return reviews.find((r) => r.enquiryId === enquiryId) ?? null;
 };
 
 export const useEntityReviewsFullQuery = (entityId: string) => {
   return useQuery({
     queryKey: ["entity-reviews-full", entityId],
     queryFn: async () => {
-      const resp = await fetchClient(`${REVIEW_API}/entity/${entityId}/all`);
-      return ((resp as any).data || resp) as Review[];
+      const resp = await fetchClient(`${REVIEW_API}/entity/${entityId}/all`) as { data?: Review[] } | Review[];
+      return ((resp as { data?: Review[] }).data || resp) as Review[];
     },
     enabled: !!entityId,
   });
@@ -32,8 +38,8 @@ export const useReviewSummaryQuery = (entityId: string) => {
     queryFn: async () => {
       const resp = await fetchClient(
         `${REVIEW_API}/entity/${entityId}/summary`,
-      );
-      return ((resp as any).data || resp) as ReviewSummary;
+      ) as { data?: ReviewSummary } | ReviewSummary;
+      return ((resp as { data?: ReviewSummary }).data || resp) as ReviewSummary;
     },
     enabled: !!entityId,
   });

@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { useSessionQuery, useSendOtpMutation } from "@/queries/authQueries";
 import { BuyerProfileCard } from "@/components/dashboard/buyer/dashboard-components";
 import { AddToEnquiryModal } from "@/components/browse/add-to-enquiry-modal";
+import { usePrefetchBuyerDetails } from "@/hooks/usePrefetchBuyerDetails";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useState } from "react";
 import { Item } from "@/types/catalog";
@@ -61,6 +62,8 @@ export default function CreateEnquiryPage() {
     setSelectedProduct(product);
     setIsModalOpen(true);
   };
+
+  usePrefetchBuyerDetails(setBuyerDetails, buyerDetails, session?.user);
 
   const handleNext = async () => {
     // Validate that items exist

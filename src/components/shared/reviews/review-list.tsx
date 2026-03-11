@@ -18,7 +18,7 @@ interface ReviewListProps {
 export function ReviewList({ entityId, isOwner }: ReviewListProps) {
   const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
   const { data: publicReviews, isLoading: loadingPublic } = useEntityReviewsQuery(entityId);
-  const { data: fullReviews, isLoading: loadingFull } = useEntityReviewsFullQuery(entityId);
+  const { data: fullReviews, isLoading: loadingFull } = useEntityReviewsFullQuery(isOwner ? entityId : "");
 
   const reviews: Review[] = (isOwner ? fullReviews : publicReviews) || [];
   const isLoading = isOwner ? loadingFull : loadingPublic;
