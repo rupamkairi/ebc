@@ -36,6 +36,7 @@ export interface Specification {
   id: string;
   name: string;
   description?: string | null;
+  acceptableUnitTypes?: UnitType[] | null;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -55,6 +56,8 @@ export interface Item {
   category?: Category;
   brand?: Brand;
   specification?: Specification;
+  /** Convenience field: populated from the backend's acceptableUnitTypes column */
+  acceptableUnitTypes?: UnitType[] | null;
 }
 
 export interface CreateCategoryRequest {

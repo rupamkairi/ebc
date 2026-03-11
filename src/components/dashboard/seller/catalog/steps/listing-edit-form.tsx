@@ -35,7 +35,9 @@ import {
   Image as ImageIcon,
   X,
   DollarSign,
+  Scale,
 } from "lucide-react";
+
 import { ItemListing } from "@/types/catalog";
 import { useEffect, useState, useRef } from "react";
 import { UNIT_TYPES, UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
@@ -50,6 +52,7 @@ import { usePincodeRecordsQuery } from "@/queries/regionQueries";
 import { Badge } from "@/components/ui/badge";
 import { RegionSelectionStep } from "./region-selection-step";
 import { ITEM_TYPE } from "@/constants/enums";
+
 
 const listingEditSchema = z.object({
   isActive: z.boolean(),
@@ -82,6 +85,22 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
   const updateRegionMutation = useUpdateItemRegionMutation();
 
   const isService = listing.item?.type === ITEM_TYPE.SERVICE;
+
+  // Derive allowed unit types from the listing's item/specification
+  const allowedUnits: UnitType[] | undefined = (() => {
+    const item = listing.item;
+    if (!item) return undefined;
+    if (item.acceptableUnitTypes?.length) return item.acceptableUnitTypes as UnitType[];
+    if (item.specification?.acceptableUnitTypes?.length)
+      return item.specification.acceptableUnitTypes as UnitType[];
+    return undefined;
+  })();
+
+  // Which units to show in the dropdown
+  const visibleUnits =
+    allowedUnits && allowedUnits.length > 0
+      ? UNIT_TYPES.filter((u) => allowedUnits.includes(u))
+      : UNIT_TYPES;
 
   const [activeTab, setActiveTab] = useState("general");
 
@@ -278,6 +297,20 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
 
               {!isService && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Info banner when unit types are restricted by the backend */}
+                  {allowedUnits && allowedUnits.length > 0 && (
+                    <div className="col-span-full flex items-start gap-2 rounded-md border border-primary/20 bg-primary/5 px-4 py-3 text-xs text-primary">
+                      <Scale size={14} className="mt-0.5 shrink-0" />
+                      <span>
+                        This item can only be listed in:{" "}
+                        <strong>
+                          {allowedUnits.map((u) => UNIT_TYPE_LABELS[u]).join(", ")}
+                        </strong>
+                        . Other unit types have been hidden.
+                      </span>
+                    </div>
+                  )}
+
                   <FormField
                     control={form.control}
                     name="unitType"
@@ -294,7 +327,7 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {UNIT_TYPES.map((unit) => (
+                            {visibleUnits.map((unit) => (
                               <SelectItem key={unit} value={unit}>
                                 {UNIT_TYPE_LABELS[unit]}
                               </SelectItem>
