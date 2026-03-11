@@ -13,8 +13,8 @@ import {
   QuotationLineItem,
 } from "@/types/activity";
 import {
-  ReputationSection,
   ReviewForm,
+  ReviewSnapshot,
 } from "@/components/shared/reviews";
 import { useEnquiryReviewQuery } from "@/queries/reviewQueries";
 import {
@@ -351,6 +351,21 @@ export default function BuyerEnquiryDetailsPage() {
                               </div>
 
                               {/* Accept button — only on non-completed enquiries */}
+                              {/* Seller reputation snapshot — always visible for comparison */}
+                              <ReviewSnapshot
+                                entityId={
+                                  q.createdBy?.staffAtEntityId ||
+                                  q.createdBy?.createdEntities?.[0]?.id ||
+                                  ""
+                                }
+                                entityName={
+                                  q.createdBy?.staffAt?.name ||
+                                  q.createdBy?.createdEntities?.[0]?.name
+                                }
+                                className="w-full justify-center"
+                              />
+
+                              {/* Accept / Accepted button */}
                               {!isCompleted && (
                                 q.status === "ACCEPTED" ? (
                                   <Button
@@ -382,16 +397,29 @@ export default function BuyerEnquiryDetailsPage() {
                   );
                 })}
 
-                {/* Reputation Section — only for the accepted seller, shown once at the bottom */}
-                {acceptedQuotation && (
-                  <div className="pt-6 md:pt-10 border-t border-dashed">
-                    <ReputationSection
-                      entityId={acceptedEntityId}
-                      entityName={
-                        acceptedQuotation.createdBy?.staffAt?.name ||
-                        acceptedQuotation.createdBy?.createdEntities?.[0]?.name
+                {/* Post-completion review — only for the accepted seller, only after delivery */}
+                {isCompleted && acceptedQuotation && !hasReviewed && (
+                  <div className="pt-6 border-t border-dashed flex items-center justify-between gap-4 flex-wrap">
+                    <div>
+                      <p className="text-sm font-black text-foreground">
+                        Rate your experience with{" "}
+                        <span className="text-primary">
+                          {acceptedQuotation.createdBy?.staffAt?.name ||
+                            acceptedQuotation.createdBy?.createdEntities?.[0]?.name}
+                        </span>
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-0.5">Your feedback helps the community.</p>
+                    </div>
+                    <ReviewForm
+                      entityId={acceptedEntityId || undefined}
+                      enquiryId={id}
+                      isVerified={true}
+                      trigger={
+                        <Button size="sm" className="rounded-xl gap-2 font-black">
+                          <Star className="h-4 w-4 fill-current" />
+                          Write a Review
+                        </Button>
                       }
-                      canReview={isCompleted && !hasReviewed}
                     />
                   </div>
                 )}
