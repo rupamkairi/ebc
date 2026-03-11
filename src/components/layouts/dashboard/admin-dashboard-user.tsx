@@ -3,6 +3,7 @@
 import { Bell, ChevronsUpDown, LogOut, RefreshCcw } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +13,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { useAuthStore } from "@/store/authStore";
 import { firstAndLastNameInitials } from "@/lib/utils";
 import { useRefreshSession } from "@/queries/authQueries";
@@ -28,9 +28,9 @@ export function AdminDashboardUser() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <SidebarMenuButton
-          size="lg"
-          className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+        <Button
+          variant="ghost"
+          className="flex h-auto items-center gap-2 px-2 py-1.5 hover:bg-accent data-[state=open]:bg-accent"
         >
           <Avatar className="h-8 w-8 rounded-lg">
             <AvatarImage src={user?.image || ""} alt={user?.name} />
@@ -38,12 +38,12 @@ export function AdminDashboardUser() {
               {user?.name ? firstAndLastNameInitials(user.name) : "U"}
             </AvatarFallback>
           </Avatar>
-          <div className="grid flex-1 text-left text-sm leading-tight">
+          <div className="hidden md:grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-medium">{user?.name}</span>
-            <span className="truncate text-xs">{user?.email}</span>
+            <span className="truncate text-xs text-muted-foreground">{user?.email}</span>
           </div>
-          <ChevronsUpDown className="ml-auto size-4" />
-        </SidebarMenuButton>
+          <ChevronsUpDown className="ml-auto size-4 text-muted-foreground" />
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"

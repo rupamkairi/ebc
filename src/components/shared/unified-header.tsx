@@ -74,7 +74,7 @@ export function UnifiedHeader({
   const isBuyer = user?.role && BUYER_ROLES.includes(user.role as USER_ROLE);
 
   const getDashboardLink = () => {
-    if (isAdmin) return "/admin";
+    if (isAdmin) return "/admin-dashboard";
     if (isSeller) return "/seller-dashboard";
     if (isBuyer) return "/buyer-dashboard";
     return "/";
@@ -131,7 +131,7 @@ export function UnifiedHeader({
               )}
             </div>
 
-            {mounted && user && !isAdmin && (
+            {mounted && user && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Avatar className="h-10 w-10 border-2 border-secondary hover:opacity-80 transition-opacity cursor-pointer">
