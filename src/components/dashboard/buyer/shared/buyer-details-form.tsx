@@ -77,11 +77,14 @@ export function BuyerDetailsForm({
   // Prefill with session if no defaultValues
   useEffect(() => {
     if (session?.user && !defaultValues) {
+      const rawPhone = session.user.phone || "";
+      // Strip +91 or 91 country code prefix to get the 10-digit local number
+      const localPhone = rawPhone.replace(/^\+?91/, "").replace(/\D/g, "").slice(0, 10);
       form.reset({
         ...form.getValues(),
         name: session.user.name || "",
         email: session.user.email || "",
-        phoneNumber: session.user.phone || "",
+        phoneNumber: localPhone,
       });
     }
   }, [session, defaultValues, form]);
@@ -198,8 +201,8 @@ export function BuyerDetailsForm({
                             type="tel"
                             placeholder="Enter 10-digit mobile number"
                             {...field}
-                            value={field.value.replace(/\D/g, "").slice(0, 10)}
-                            onChange={(e) => field.onChange(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                            value={field.value.replace(/^\+?91/, "").replace(/\D/g, "").slice(0, 10)}
+                            onChange={(e) => field.onChange(e.target.value.replace(/^\+?91/, "").replace(/\D/g, "").slice(0, 10))}
                             className={cn(
                               inputClass,
                               "pl-3 rounded-l-none",

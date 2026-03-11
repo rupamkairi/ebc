@@ -42,10 +42,12 @@ export function usePrefetchBuyerDetails(
         !currentDetails.address);
 
     if (isEmpty) {
+      const rawPhone = user.phoneNumber || user.phone || "";
+      const localPhone = rawPhone.replace(/^\+?91/, "").replace(/\D/g, "").slice(0, 10);
       setBuyerDetails({
         name: user.name || "",
         email: user.email || "",
-        phoneNumber: user.phoneNumber || user.phone || "",
+        phoneNumber: localPhone,
         address: "",
         pincode: "",
         pincodeDirectoryId: "",

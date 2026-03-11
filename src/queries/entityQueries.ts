@@ -6,6 +6,7 @@ import {
   UpdateEntityRequest,
   VerifyEntityRequest,
 } from "@/types/entity";
+import { SELLER_ROLES, USER_ROLE } from "@/constants/roles";
 
 export const entityKeys = {
   all: ["entities"] as const,
@@ -15,10 +16,12 @@ export const entityKeys = {
 
 export function useEntitiesQuery() {
   const token = useAuthStore((state) => state.token);
+  const role = useAuthStore((state) => state.user?.role);
+  const isSeller = !!role && SELLER_ROLES.includes(role as USER_ROLE);
   return useQuery({
     queryKey: entityKeys.lists(),
     queryFn: () => entityService.getAll(),
-    enabled: !!token,
+    enabled: !!token && isSeller,
   });
 }
 
