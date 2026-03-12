@@ -137,15 +137,7 @@ export function useCompleteAppointmentMutation() {
   });
 }
 
-export function useRejectAppointmentMutation() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (id: string) => activityService.rejectAppointment(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: activityKeys.all });
-    },
-  });
-}
+
 
 // Assignment Hooks
 export function useAssignmentsQuery(params: AssignmentListParams = {}) {

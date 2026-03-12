@@ -12,12 +12,11 @@ import {
   PackageCheck,
 } from "lucide-react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import {
   useAppointmentQuery,
-  useRejectAppointmentMutation,
   useVisitsQuery,
 } from "@/queries/activityQueries";
 import { BuyerInfoCard } from "@/components/dashboard/seller/activity-shared/buyer-info-card";
@@ -25,18 +24,14 @@ import { ActivityActionCard } from "@/components/dashboard/seller/activity-share
 import { ActivityTipCard } from "@/components/dashboard/seller/activity-shared/activity-tip-card";
 import { PageBackButton } from "@/components/dashboard/seller/activity-shared/page-back-button";
 import { REF_TYPE } from "@/types/activity";
-import { toast } from "sonner";
 
 export default function AppointmentDetailsPage() {
   const { t } = useLanguage();
   const params = useParams();
-  const router = useRouter();
   const id = params.id as string;
 
   const { data: appointment, isLoading } = useAppointmentQuery(id);
   const { data: visits = [] } = useVisitsQuery({ appointmentId: id });
-  const { mutate: rejectAppointment, isPending: isRejecting } =
-    useRejectAppointmentMutation();
 
   const [selectedSlotIdx, setSelectedSlotIdx] = useState(0);
 
@@ -69,17 +64,7 @@ export default function AppointmentDetailsPage() {
   const isPending = appointment.status === "PENDING";
   const selectedSlot = appointment.appointmentSlots?.[selectedSlotIdx];
 
-  const handleReject = () => {
-    rejectAppointment(id, {
-      onSuccess: () => {
-        toast.success(t("appointment_rejected"));
-        router.push("/seller-dashboard/appointments");
-      },
-      onError: (err: Error) => {
-        toast.error(err.message || t("failed_reject_appointment"));
-      },
-    });
-  };
+
 
   return (
     <div className="flex flex-col gap-6 max-w-5xl mx-auto">
@@ -268,14 +253,7 @@ export default function AppointmentDetailsPage() {
                 backHref="/seller-dashboard/appointments"
                 backLabel={t("back_to_appointments_link")}
               />
-              <Button
-                onClick={handleReject}
-                disabled={isRejecting}
-                variant="outline"
-                className="w-full rounded-xl font-black text-xs text-red-600 border-red-200 hover:bg-red-50 h-10"
-              >
-                {isRejecting ? "Rejecting..." : t("reject")}
-              </Button>
+
             </div>
           ) : (
             <ActivityActionCard

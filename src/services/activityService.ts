@@ -67,14 +67,7 @@ export const activityService = {
     });
   },
 
-  async rejectAppointment(id: string) {
-    return fetchClient(
-      `${API_ENDPOINTS.ACTIVITY.APPOINTMENT.GET}/reject/${id}`,
-      {
-        method: "POST",
-      },
-    );
-  },
+
 
   async getAppointments(params: AppointmentListParams = {}) {
     return fetchClient<Appointment[]>(API_ENDPOINTS.ACTIVITY.APPOINTMENT.LIST, {
