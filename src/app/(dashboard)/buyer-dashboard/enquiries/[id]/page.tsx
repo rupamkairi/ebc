@@ -57,15 +57,30 @@ export default function BuyerEnquiryDetailsPage() {
   const acceptMutation = useAcceptQuotationMutation();
   const completeMutation = useCompleteEnquiryMutation();
 
-  const acceptedQuotation = quotations?.find(
+  // Use the MOST RECENTLY accepted quotation as the canonical one for reviews.
+  // Sort by updatedAt desc — when a quotation is accepted, updatedAt changes,
+  // so the highest updatedAt among ACCEPTED quotations = buyer's last acceptance action.
+  const acceptedQuotations = (quotations ?? []).filter(
     (q: Quotation) => q.status === "ACCEPTED",
   );
+  const acceptedQuotation =
+    acceptedQuotations.length > 0
+      ? [...acceptedQuotations].sort(
+          (a: Quotation, b: Quotation) =>
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+        )[0]
+      : null;
   const isCompleted = enquiry?.status === "COMPLETED";
 
   const acceptedEntityId =
     acceptedQuotation?.createdBy?.staffAtEntityId ||
     acceptedQuotation?.createdBy?.createdEntities?.[0]?.id ||
     "";
+  const acceptedSellerName =
+    acceptedQuotation?.createdBy?.staffAt?.name ||
+    acceptedQuotation?.createdBy?.createdEntities?.[0]?.name ||
+    acceptedQuotation?.createdBy?.name ||
+    "the seller";
 
   // Check if buyer already left a review for this specific enquiry
   const existingReview = useEnquiryReviewQuery(acceptedEntityId, id);
@@ -173,11 +188,7 @@ export default function BuyerEnquiryDetailsPage() {
               </h2>
               <p className="text-muted-foreground font-medium max-w-sm">
                 {t("how_was_experience_with")}{" "}
-                <b>
-                  {acceptedQuotation?.createdBy?.staffAt?.name ||
-                    acceptedQuotation?.createdBy?.name}
-                </b>
-                ?
+                <b>{acceptedSellerName}</b>?
               </p>
             </div>
           </div>
@@ -188,7 +199,7 @@ export default function BuyerEnquiryDetailsPage() {
                 {t("review_submitted") || "Review Submitted — Thank you!"}
               </span>
             </div>
-          ) : (
+          ) : acceptedQuotation ? (
             <ReviewForm
               entityId={acceptedEntityId || undefined}
               enquiryId={id}
@@ -199,11 +210,11 @@ export default function BuyerEnquiryDetailsPage() {
                   className="h-16 rounded-full px-10 bg-emerald-500 hover:bg-emerald-600 font-black gap-3 text-lg shadow-xl shadow-emerald-500/20 group"
                 >
                   <Star className="h-6 w-6 fill-current group-hover:rotate-12 transition-transform" />
-                  {t("rate_your_experience")}
+                  Rate <span className="underline underline-offset-2">{acceptedSellerName}</span>
                 </Button>
               }
             />
-          )}
+          ) : null}
         </div>
       )}
 
