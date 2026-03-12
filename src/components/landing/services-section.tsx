@@ -109,7 +109,7 @@ export function ServicesSection() {
 
           {/* Select Your Service Button */}
           <div className="mt-12 z-10">
-            <Link href="/hire">
+            <Link href="/browse?type=SERVICE">
               <Button variant="glow" size="action" className="group">
                 Select your Service
                 <ChevronRight className="size-6 transition-transform group-hover:translate-x-1" />

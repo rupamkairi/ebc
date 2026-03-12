@@ -16,7 +16,6 @@ import { WhatsAppButton } from "@/components/shared/whatsapp-button";
 import { FloatingInquiryButton } from "@/components/layouts/browse/floating-inquiry-button";
 
 function BrowsePageContent() {
-  const { t } = useLanguage();
   const { params } = useBrowseParams();
   const { data, isLoading } = useBrowseData(params);
   const setBrowseData = useBrowseStore((state) => state.setBrowseData);
@@ -24,8 +23,9 @@ function BrowsePageContent() {
   // Sync data to global store
   useEffect(() => {
     if (data) {
+      console.log(data);
       setBrowseData({
-        products: data.products,
+        items: data.items,
         categories: data.categories,
         subCategories: data.subCategories,
         facets: data.facets,

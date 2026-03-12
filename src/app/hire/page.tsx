@@ -6,7 +6,7 @@ import { CheckCircle2, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { useBrowseData, Product } from "@/queries/browse.queries";
+import { useBrowseData, BrowseItem } from "@/queries/browse.queries";
 import { useBrowseParams, BrowseParams } from "@/hooks/useBrowseParams";
 import { cn } from "@/lib/utils";
 
@@ -168,20 +168,20 @@ function SubServiceTabs({
   );
 }
 
-function ServiceCard({ product }: { product: Product }) {
+function ServiceCard({ item }: { item: BrowseItem }) {
   const { t } = useLanguage();
   return (
     <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col group h-full">
       <div className="bg-[#4D4D4D] p-3 md:p-4 text-center group-hover:bg-primary transition-colors duration-500">
         <h3 className="text-white text-[11px] md:text-sm font-black uppercase tracking-tight line-clamp-2 leading-snug">
-          {product.title}
+          {item.title}
         </h3>
       </div>
       <div className="p-3 md:p-6 flex flex-col gap-4 md:gap-6 items-center grow relative">
         <div className="relative size-20 md:size-36 transition-all duration-500 group-hover:scale-110">
           <Image
-            src={product.image}
-            alt={product.title}
+            src={item.image || ""}
+            alt={item.title}
             fill
             className="object-contain grayscale contrast-125 brightness-110 group-hover:grayscale-0 transition-all duration-700"
             unoptimized
@@ -268,13 +268,13 @@ function HirePageContent() {
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
-              {data?.products.map((service) => (
-                <ServiceCard key={service.id} product={service} />
+              {data?.items.map((item) => (
+                <ServiceCard key={item.id} item={item} />
               ))}
             </div>
           )}
 
-          {!isLoading && (!data?.products || data.products.length === 0) && (
+          {!isLoading && (!data?.items || data.items.length === 0) && (
             <div className="py-20 md:py-32 text-center rounded-3xl bg-slate-50 border-2 border-dashed border-slate-200">
               <div className="max-w-md mx-auto space-y-4 px-4">
                 <p className="text-slate-400 font-bold text-base md:text-lg uppercase tracking-widest">

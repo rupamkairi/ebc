@@ -2,28 +2,34 @@ import { BrowseParams } from "@/hooks/useBrowseParams";
 import {
   useBrandsQuery,
   useCategoriesQuery,
-  useItemListingsQuery,
   useItemsQuery,
   useSpecificationsQuery,
 } from "./catalogQueries";
-import { ItemListing } from "@/types/catalog";
 import { ITEM_TYPE } from "@/constants/enums";
 
 // UI Types
-export interface Product {
+export interface BrowseItem {
   id: string;
   title: string;
   description: string;
-  price: number;
-  image: string;
+  image?: string;
   category: string;
   categoryName: string;
   subCategoryName?: string;
   categoryId?: string;
   subCategoryId?: string;
   brand: string;
-  rating: number;
   type: string;
+}
+
+export interface BrowserCategory {
+  id: string;
+  name: string;
+  image?: string;
+}
+
+export interface BrowseSubCategory extends BrowserCategory {
+  parentId?: string;
 }
 
 export interface Facet {
@@ -33,9 +39,9 @@ export interface Facet {
 }
 
 export interface BrowseData {
-  products: Product[];
-  categories: { id: string; name: string; image: string }[];
-  subCategories: { id: string; name: string; image: string }[];
+  items: BrowseItem[];
+  categories: { id: string; name: string; image?: string }[];
+  subCategories: { id: string; name: string; image?: string }[];
   total: number;
   facets: {
     brands: Facet[];
@@ -87,23 +93,7 @@ export const useBrowseData = (params: BrowseParams) => {
     type: type as ITEM_TYPE, // Pass type to filter products vs services
   });
 
-  // 6. Fetch Listings for price/media info
-  const { data: listings, isLoading: isLoadingListings } = useItemListingsQuery(
-    {
-      search: params.q || undefined,
-    },
-  );
-
-  const isLoading =
-    isLoadingCats || isLoadingSubCats || isLoadingItems || isLoadingListings;
-
-  // Create listing lookup map
-  const listingMap = new Map<string, ItemListing>();
-  (listings || []).forEach((listing) => {
-    if (!listingMap.has(listing.itemId)) {
-      listingMap.set(listing.itemId, listing);
-    }
-  });
+  const isLoading = isLoadingCats || isLoadingSubCats || isLoadingItems;
 
   // Filter items client-side
   const allItems = itemsFromCatalog || [];
@@ -147,10 +137,8 @@ export const useBrowseData = (params: BrowseParams) => {
   // Lookup maps for names
   const brandMap = new Map((brands || []).map((b) => [b.id, b]));
 
-  // Map to Product interface
-  const products: Product[] = paginatedItems.map((item) => {
-    const listing = listingMap.get(item.id);
-
+  // Map to BrowseItem interface
+  const items: BrowseItem[] = paginatedItems.map((item) => {
     // In our schema, item.categoryId usually points to the specific sub-category it belongs to
     const subCategoryId = item.category?.parentCategoryId
       ? item.categoryId
@@ -161,8 +149,6 @@ export const useBrowseData = (params: BrowseParams) => {
       id: item.id,
       title: item.name,
       description: item.description,
-      price: listing?.itemRates?.[0]?.rate || 0,
-      image: listing?.mediaIds?.[0] || "https://placehold.co/300x300",
       category: item.category?.name || "Uncategorized",
       categoryName:
         item.category?.parentCategory?.name ||
@@ -175,8 +161,8 @@ export const useBrowseData = (params: BrowseParams) => {
       categoryId: categoryId,
       subCategoryId: subCategoryId,
       brand: brandMap.get(item.brandId)?.name || "Generic",
-      rating: 4.5,
-      type: item.type || "PRODUCT",
+      // rating: 4.5,
+      type: item.type,
     };
   });
 
@@ -219,17 +205,17 @@ export const useBrowseData = (params: BrowseParams) => {
   const categories = (parentCategories || []).map((c) => ({
     id: c.id,
     name: c.name,
-    image: c.categoryIcon?.url || "https://placehold.co/120x70",
+    image: c.categoryIcon?.url,
   }));
 
   const subCategories = (subCategoriesData || []).map((sc) => ({
     id: sc.id,
     name: sc.name,
-    image: sc.categoryIcon?.url || "https://placehold.co/150x100",
+    image: sc.categoryIcon?.url,
   }));
 
   const data: BrowseData = {
-    products,
+    items,
     categories,
     subCategories,
     total,

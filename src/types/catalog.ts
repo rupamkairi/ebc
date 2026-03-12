@@ -161,6 +161,13 @@ export interface ItemListParams {
   order?: "asc" | "desc";
 }
 
+export interface ItemParams {
+  categoryId?: string;
+  brandId?: string;
+  specificationId?: string;
+  type?: ITEM_TYPE;
+}
+
 export interface ItemRate {
   id?: string;
   itemListingId?: string;
