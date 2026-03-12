@@ -1,13 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { BrowseItem } from "@/queries/browse.queries";
+import { BrowseItem, Product } from "@/queries/browse.queries";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { AddToEnquiryModal } from "./add-to-enquiry-modal";
-import { useEnquiryStore } from "@/store/enquiryStore";
-import { toast } from "sonner";
+import { AddToAppointmentModal } from "./add-to-appointment-modal";
 
 interface ItemCardProps {
   item: BrowseItem;
@@ -15,28 +14,24 @@ interface ItemCardProps {
 
 export function ItemCard({ item }: ItemCardProps) {
   const router = useRouter();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const addItem = useEnquiryStore((state) => state.addItem);
+  const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
+  const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
+
+  const isProduct = item.type === "PRODUCT";
+  const isService = item.type === "SERVICE";
 
   const handleCardClick = () => {
+    if (isEnquiryModalOpen || isAppointmentModalOpen) return;
     router.push(`/browse/${item.id}`);
   };
 
-  const handleAddInquiry = (e: React.MouseEvent) => {
+  const handleCta = (e: React.MouseEvent) => {
     e.stopPropagation();
-    addItem({
-      itemId: item.id,
-      title: item.title,
-      type: item.type.toUpperCase(),
-      quantity: 1,
-      unitType: "Nos",
-      categoryId: item.categoryId,
-      subCategoryId: item.subCategoryId,
-      categoryName: item.categoryName,
-      subCategoryName: item.subCategoryName,
-      brand: item.brand,
-    } as any);
-    toast.success(`${item.title} added to inquiry`);
+    if (isProduct) {
+      setIsEnquiryModalOpen(true);
+    } else if (isService) {
+      setIsAppointmentModalOpen(true);
+    }
   };
 
   return (
@@ -69,16 +64,28 @@ export function ItemCard({ item }: ItemCardProps) {
         <Button
           className="w-full bg-secondary hover:bg-secondary/90 text-white font-black rounded-md h-10 shadow-sm active:scale-95 transition-all"
           size="sm"
-          onClick={handleAddInquiry}
+          onClick={handleCta}
         >
-          Make enquiry
+          {isProduct ? "Add to Enquiry" : "Make Appointment"}
         </Button>
       </div>
 
+      {/* Enquiry Modal for PRODUCT items */}
       <AddToEnquiryModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        product={item as any}
+        isOpen={isEnquiryModalOpen}
+        onClose={() => setIsEnquiryModalOpen(false)}
+        product={item as Product}
+        onSuccess={() => router.push("/enquiry/create")}
+      />
+
+      {/* Appointment Modal for SERVICE items */}
+      <AddToAppointmentModal
+        isOpen={isAppointmentModalOpen}
+        onClose={() => setIsAppointmentModalOpen(false)}
+        product={item as Product}
+        onSuccess={() => {
+          router.push("/appointment/create");
+        }}
       />
     </div>
   );

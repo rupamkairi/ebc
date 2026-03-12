@@ -18,12 +18,14 @@ interface AddToAppointmentModalProps {
   isOpen: boolean;
   onClose: () => void;
   product: Product;
+  onSuccess?: () => void;
 }
 
 export function AddToAppointmentModal({
   isOpen,
   onClose,
   product,
+  onSuccess,
 }: AddToAppointmentModalProps) {
   const setAppointmentItem = useAppointmentStore(
     (state) => state.setAppointmentItem,
@@ -33,7 +35,7 @@ export function AddToAppointmentModal({
     setAppointmentItem({
       itemId: product.id,
       title: product.title,
-      type: product.type.toLowerCase() as "product" | "service",
+      type: product.type.toLowerCase() as "service",
       price: product.price,
       description: product.description,
       image: product.image,
@@ -41,6 +43,7 @@ export function AddToAppointmentModal({
 
     toast.success("Item set for appointment");
     onClose();
+    onSuccess?.();
   };
 
   return (
