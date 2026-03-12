@@ -80,7 +80,9 @@ export default function ItemDetailsPage() {
       return (
         <div className="flex flex-col items-center justify-center min-h-[50vh]">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="mt-2 text-muted-foreground">{t("loading_item_details")}</p>
+          <p className="mt-2 text-muted-foreground">
+            {t("loading_item_details")}
+          </p>
         </div>
       );
     }
@@ -141,8 +143,8 @@ export default function ItemDetailsPage() {
             className={cn(
               "px-8 py-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6",
               isProduct
-                ? "bg-gradient-to-br from-primary/5 via-white to-primary/10"
-                : "bg-gradient-to-br from-secondary/5 via-white to-secondary/10",
+                ? "bg-linear-to-br from-primary/5 via-white to-primary/10"
+                : "bg-linear-to-br from-secondary/5 via-white to-secondary/10",
             )}
           >
             {/* Left: Title + badges */}
@@ -220,9 +222,13 @@ export default function ItemDetailsPage() {
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">
                 Category
               </p>
-              <p className="text-sm font-bold text-slate-800">{parentCategoryName}</p>
+              <p className="text-sm font-bold text-slate-800">
+                {parentCategoryName}
+              </p>
               {subCategoryName && (
-                <p className="text-xs text-slate-500 mt-0.5">→ {subCategoryName}</p>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  → {subCategoryName}
+                </p>
               )}
             </div>
           </div>

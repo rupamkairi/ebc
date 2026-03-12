@@ -169,7 +169,7 @@ After Event is created, it will be listed in the Events List. From here One Even
   - Informed about Potential Split Enquiries.
   - **Action:** Submit Enquiry
 
-### Buyer Activity - Quotation (Registered or Guest.)
+### Buyer Activity - Appointment (Registered or Guest.)
 
 - **Step 1.1 (Item selection)**
   - Or, "Create Apporintment"
@@ -191,5 +191,82 @@ After Event is created, it will be listed in the Events List. From here One Even
   - **Action:** Submit Quotation
 
 ## Buyer Dashboard
+ 
+ ### Enquiry List
+- Displays a list of all enquiries sent by the buyer.
+- **Filters:** All, Pending, Approved, Rejected.
+- **Card Details:** Enquiry ID, Status Badge, Item List (Count & Names), Date Created, Delivery Location.
+- **Action:** View Details (Redirects to enquiry detail page).
 
-### Enquiry List
+ ### Quotation List
+- Displays offers received from sellers for products/services.
+- **Filters:** All, Pending, Accepted.
+- **Card Details:** Quotation ID, Status (Pending/Accepted), Items (Main Item + Count), Date, Seller Reputation Snapshot, Total Quote Value.
+- **Action:** View (Redirects to associated Enquiry detail page).
+
+ ### Appointment List
+- Tracks requests for site visits or service consultations.
+- **Filters:** All, Upcoming, Completed, Cancelled.
+- **Card Details:** Appointment ID, Main Item Name, Preferred Time Slots (Date & Time), Created Date, Status Badge, Location/Remarks.
+- **Action:** View Details.
+
+ ### Visit List
+- Tracks confirmed site visits scheduled by service providers.
+- **Filters:** All, Pending, Accepted, Completed.
+- **Card Details:** Visit ID, Appointment Item Reference, Scheduled Date & Time Slot, Status Badge (Pending/Accepted/Completed), Seller Reputation Snapshot.
+- **Action:** View (Redirects to Appointment Details).
+
+## Seller Activities - Seller Dashboard (Again)
+ 
+ ### Enquiry List
+- Divided into **Active Enquiries** (Pending response) and **Responded Enquiries**.
+- **Search:** Search by ID, Buyer Name, or Item Name.
+- **Card Details:** Assignment ID, Time Badge (New/Active/Aging), Buyer Name, Location, Item Summary (Main Item + Count).
+- **Action:** Respond / View Details.
+ 
+ ### Quotation List
+- Referred to as the **Deal Board**.
+- **Search:** Search by ID, Customer, or Item Name.
+- **Card Details:** Quotation ID, Status (Sent/Accepted), Customer Name, Item Summary, Quote Value.
+- **Action:** View Details.
+ 
+ #### Quotation Create Form
+- Triggered from an Enquiry response.
+- **Step 1:** Select matching "Item Listing" from seller's own catalog.
+- **Step 2:** Provide Rate per Unit (Total amount calculated automatically).
+- **Step 3:** Add item-specific remarks and overall quotation remarks.
+- **Step 4:** Set Expected Delivery Date.
+- **Action:** Submit Quotation (Triggers **Coin Deduction Modal**).
+ 
+ ### Appointment List
+- Tracks incoming Site Visit / Service requests.
+- **Filters:** Pending (Active requests) and Confirmed/Completed (Collapsible).
+- **Card Details:** Appointment ID, Item Name, Buyer Name, Time Badge, Scheduled Slot (if confirmed), Location.
+- **Action:** View Details / Confirm Visit.
+ 
+ ### Visit List
+- List of confirmed and upcoming site visits.
+- Tracks visits that have moved from Appointment -> Confirmed Visit phase.
+ 
+ #### Visit Create Form
+- Used to confirm a buyer's Appointment request.
+- **Action:** Seller selects one of the **Preferred Time Slots** provided by the buyer.
+- **Action:** Confirm & Pay (Triggers **Coin Deduction Modal** for the lead).
+ 
+ ## Reviews
+ 
+ ### Buyer - Dashboard
+ 
+ #### Review Form
+- Accessible from Enquiry or Appointment details.
+- **Fields:** Rating (1-5 Stars), Title (Optional), Detailed Feedback, Media Upload (Multiple Photos/Videos).
+- **Status:** Verified badge is automatically applied for reviews linked to successful completions.
+ 
+ ### Seller - Dashboard
+- Reputation management center.
+- **Summary:** Overall average rating, total feedbacks, rating distribution bars (1-5 stars).
+ 
+ #### Sellers actions over Reviews
+- **Pin to Top:** Feature up to 5 best reviews at the top of the seller profile.
+- **Hide Review:** Hide unfair or irrelevant reviews from the public profile.
+- **View:** Read full feedback and associated buyer details.
