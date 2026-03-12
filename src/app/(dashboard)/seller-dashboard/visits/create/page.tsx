@@ -200,7 +200,7 @@ function VisitCreateContent() {
         isOpen={showCoinModal}
         onClose={() => setShowCoinModal(false)}
         onConfirm={handleConfirm}
-        leadType={REF_TYPE.APPOINTMENT}
+        leadType={REF_TYPE.VISIT}
         isProcessing={isCreating}
       />
     </div>

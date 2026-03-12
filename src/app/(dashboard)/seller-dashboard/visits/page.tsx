@@ -80,15 +80,6 @@ export default function VisitsPage() {
             )}
           </p>
         </div>
-        <Button
-          asChild
-          className="bg-primary hover:bg-primary/90 text-white rounded-xl font-black text-[11px] tracking-widest uppercase px-5 h-10 shadow-sm transition-all shrink-0"
-        >
-          <Link href="/seller-dashboard/visits/create">
-            <Plus className="h-4 w-4 mr-2" />
-            {t("create_visit", "Create Visit")}
-          </Link>
-        </Button>
       </div>
 
       {/* Search */}

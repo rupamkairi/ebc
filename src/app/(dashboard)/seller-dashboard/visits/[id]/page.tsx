@@ -270,7 +270,7 @@ export default function VisitDetailsPage() {
                 respondedLabel=""
                 respondedDescription=""
                 backHref="/seller-dashboard/visits"
-                backLabel={t("back_to_visits")}
+                backLabel={t("back_to_visits", "Back to Visits")}
                 isProcessing={isCompleting}
               />
             )}
@@ -279,13 +279,13 @@ export default function VisitDetailsPage() {
               <ActivityActionCard
                 isPending={false}
                 actionLabel=""
-                respondedLabel={t("service_completed_title", "Visit Completed")}
+                respondedLabel={t("service_completed_title", "Visit Completed!")}
                 respondedDescription={t(
                   "service_completed_msg",
-                  "This site visit has been successfully completed.",
+                  "The site visit or consultation has been successfully finished.",
                 )}
                 backHref="/seller-dashboard/visits"
-                backLabel={t("back_to_visits")}
+                backLabel={t("back_to_visits", "Back to Visits")}
               />
             )}
           </div>

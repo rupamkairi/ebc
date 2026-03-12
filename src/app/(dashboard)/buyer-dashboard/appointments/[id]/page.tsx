@@ -12,6 +12,8 @@ import {
   ReviewForm,
   ReviewSnapshot,
 } from "@/components/shared/reviews";
+import { useAppointmentReviewQuery } from "@/queries/reviewQueries";
+import { useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -37,6 +39,7 @@ export default function BuyerAppointmentDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { t } = useLanguage();
+  const queryClient = useQueryClient();
 
   const { data: appointment, isLoading: loadingAppointment } =
     useAppointmentQuery(id);
@@ -51,6 +54,15 @@ export default function BuyerAppointmentDetailsPage() {
       v.isActive,
   );
   const isCompleted = appointment?.status === "COMPLETED";
+
+  const providerEntityId =
+    confirmedVisit?.createdBy?.staffAtEntityId ||
+    confirmedVisit?.createdBy?.createdEntities?.[0]?.id ||
+    "";
+
+  // Check if buyer already left a review for this specific appointment
+  const existingReview = useAppointmentReviewQuery(providerEntityId, id as string);
+  const hasReviewed = !!existingReview;
 
   const handleAccept = async (visitId: string) => {
     try {
@@ -158,26 +170,41 @@ export default function BuyerAppointmentDetailsPage() {
                 {t("how_was_experience_with")}{" "}
                 <b>
                   {confirmedVisit?.createdBy?.staffAt?.name ||
+                    confirmedVisit?.createdBy?.createdEntities?.[0]?.name ||
                     confirmedVisit?.createdBy?.name}
                 </b>
                 ?
               </p>
             </div>
           </div>
-          <ReviewForm
-            entityId={confirmedVisit?.createdBy?.staffAtEntityId}
-            appointmentId={id}
-            isVerified={true}
-            trigger={
-              <Button
-                size="lg"
-                className="h-16 rounded-full px-10 bg-emerald-500 hover:bg-emerald-600 font-black gap-3 text-lg shadow-xl shadow-emerald-500/20 group"
-              >
-                <Star className="h-6 w-6 fill-current group-hover:rotate-12 transition-transform" />
-                {t("rate_your_experience")}
-              </Button>
-            }
-          />
+          {hasReviewed ? (
+            <div className="flex items-center gap-3 px-8 py-4 rounded-full bg-emerald-500/20 border border-emerald-500/30">
+              <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+              <span className="font-black text-emerald-700 text-sm">
+                {t("review_submitted") || "Review Submitted — Thank you!"}
+              </span>
+            </div>
+          ) : confirmedVisit ? (
+            <ReviewForm
+              entityId={providerEntityId || undefined}
+              appointmentId={id as string}
+              isVerified={true}
+              onSuccess={() => {
+                queryClient.invalidateQueries({
+                  queryKey: ["entity-reviews", providerEntityId],
+                });
+              }}
+              trigger={
+                <Button
+                  size="lg"
+                  className="h-16 rounded-full px-10 bg-emerald-500 hover:bg-emerald-600 font-black gap-3 text-lg shadow-xl shadow-emerald-500/20 group"
+                >
+                  <Star className="h-6 w-6 fill-current group-hover:rotate-12 transition-transform" />
+                  {t("rate_your_experience")}
+                </Button>
+              }
+            />
+          ) : null}
         </div>
       )}
 
@@ -353,7 +380,11 @@ export default function BuyerAppointmentDetailsPage() {
                     {/* Integrated Reputation Section for the Service Provider */}
                     <div className="pt-10 border-t border-dashed">
                       <ReputationSection
-                        entityId={v.createdBy?.staffAtEntityId || ""}
+                        entityId={
+                          v.createdBy?.staffAtEntityId ||
+                          v.createdBy?.createdEntities?.[0]?.id ||
+                          ""
+                        }
                         entityName={v.createdBy?.staffAt?.name || ""}
                         className="scale-95 origin-top"
                       />

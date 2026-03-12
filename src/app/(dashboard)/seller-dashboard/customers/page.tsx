@@ -2,6 +2,7 @@
 
 import { User, Phone, MapPin, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
@@ -294,9 +295,11 @@ export default function CustomersPage() {
             {t("loyalty_score")} : <span className="text-secondary">A+</span>
           </h2>
         </div>
-        <Button className="w-full md:w-auto bg-primary hover:bg-primary/90 text-white font-black px-12 h-16 rounded-2xl shadow-xl shadow-primary/20 text-lg transition-all active:scale-95">
-          {t("view_analytics")}
-        </Button>
+        <Link href="/seller-dashboard/analytics" className="w-full md:w-auto">
+          <Button className="w-full md:w-auto bg-primary hover:bg-primary/90 text-white font-black px-12 h-16 rounded-2xl shadow-xl shadow-primary/20 text-lg transition-all active:scale-95">
+            {t("view_analytics")}
+          </Button>
+        </Link>
       </div>
     </div>
   );

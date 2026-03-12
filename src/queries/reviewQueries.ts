@@ -21,6 +21,12 @@ export const useEnquiryReviewQuery = (entityId: string, enquiryId: string) => {
   return reviews.find((r) => r.enquiryId === enquiryId) ?? null;
 };
 
+/** Returns the existing review for the given appointmentId (if any), derived from the entity's public reviews. */
+export const useAppointmentReviewQuery = (entityId: string, appointmentId: string) => {
+  const { data: reviews = [] } = useEntityReviewsQuery(entityId);
+  return reviews.find((r) => r.appointmentId === appointmentId) ?? null;
+};
+
 export const useEntityReviewsFullQuery = (entityId: string) => {
   return useQuery({
     queryKey: ["entity-reviews-full", entityId],
