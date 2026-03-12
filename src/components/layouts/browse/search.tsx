@@ -9,12 +9,10 @@ import {
 } from "@/components/ui/sheet";
 import { useBrowseParams } from "@/hooks/useBrowseParams";
 import { Facet } from "@/queries/browse.queries";
-import { useEnquiryStore } from "@/store/enquiryStore";
 import { useDebounce } from "@uidotdev/usehooks";
 import { capitalize } from "lodash-es";
-import { ClipboardList, SearchIcon, SlidersHorizontal } from "lucide-react";
+import { SearchIcon, SlidersHorizontal } from "lucide-react";
 import { useEffect, useState } from "react";
-import { InquiryPanel } from "./inquiry-panel";
 import { Sidebar } from "./sidebar";
 
 interface SearchProps {
@@ -29,13 +27,10 @@ export function Search({ categories, facets }: SearchProps) {
   const { params, updateParams } = useBrowseParams();
   const [searchTerm, setSearchTerm] = useState(params.q);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
-  const inquiryCount = useEnquiryStore((state) => state.items.length);
 
   const browseType = ["PRODUCT", "SERVICE"].includes(params.type)
     ? params?.type
     : "";
-  const ifProduct = browseType === "PRODUCT";
-  const ifService = browseType === "SERVICE";
 
   useEffect(() => {
     if (params.q !== searchTerm) {
@@ -100,35 +95,6 @@ export function Search({ categories, facets }: SearchProps) {
               <SelectItem value="newest">Newest Arrivals</SelectItem>
             </SelectContent>
           </Select> */}
-
-          {/* Divider */}
-          <div className="w-px bg-white/10 self-stretch my-2" />
-
-          {/* Inquiry counter */}
-          <Sheet>
-            <SheetTrigger asChild>
-              <button className="flex items-center gap-2.5 px-4 h-full text-white hover:bg-white/10 transition-colors">
-                <ClipboardList className="size-4 text-secondary shrink-0" />
-                <span className="text-[10px] uppercase tracking-widest text-white/50 font-bold hidden xs:inline">
-                  Enquiry
-                </span>
-                <span className="min-w-[20px] h-5 px-1.5 bg-secondary text-white text-xs font-black rounded-full flex items-center justify-center tabular-nums leading-none">
-                  {inquiryCount}
-                </span>
-              </button>
-            </SheetTrigger>
-            <SheetContent
-              side="right"
-              className="p-0 border-none bg-transparent"
-            >
-              <SheetHeader className="sr-only">
-                <SheetTitle>Your Inquiry List</SheetTitle>
-              </SheetHeader>
-              <div className="h-full p-4 pt-12">
-                <InquiryPanel isMobile />
-              </div>
-            </SheetContent>
-          </Sheet>
 
           {/* Divider */}
           <div className="w-px bg-white/10 self-stretch my-2 lg:hidden" />

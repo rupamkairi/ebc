@@ -34,12 +34,14 @@ interface AddToEnquiryModalProps {
   isOpen: boolean;
   onClose: () => void;
   product: Product;
+  onSuccess?: () => void;
 }
 
 export function AddToEnquiryModal({
   isOpen,
   onClose,
   product,
+  onSuccess,
 }: AddToEnquiryModalProps) {
   const [quantity, setQuantity] = useState("1");
   const [remarks, setRemarks] = useState("");
@@ -74,6 +76,7 @@ export function AddToEnquiryModal({
     setQuantity("1");
     setRemarks("");
     setUnitType(UNIT_TYPE.Nos);
+    onSuccess?.();
   };
 
   return (

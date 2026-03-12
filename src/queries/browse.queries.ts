@@ -22,6 +22,11 @@ export interface BrowseItem {
   type: string;
 }
 
+export type Product = BrowseItem & {
+  price?: number;
+  rating?: number;
+};
+
 export interface BrowserCategory {
   id: string;
   name: string;

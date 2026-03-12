@@ -13,7 +13,7 @@ import React, { Suspense, useEffect } from "react";
 import { Header } from "@/components/shared/header";
 import { FooterSection } from "@/components/landing/footer-section";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
-import { FloatingInquiryButton } from "@/components/layouts/browse/floating-inquiry-button";
+
 
 function BrowsePageContent() {
   const { params } = useBrowseParams();
@@ -57,7 +57,7 @@ function BrowsePageContent() {
       </main>
       <FooterSection />
       <WhatsAppButton />
-      <FloatingInquiryButton />
+
     </div>
   );
 }
