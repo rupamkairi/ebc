@@ -10,6 +10,7 @@ import BuyerDashboardHeader from "@/components/layouts/dashboard/buyer-dashboard
 import LayoutProvider from "@/components/layouts/dashboard/layout-provider";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useSessionQuery } from "@/queries/authQueries";
+import { usePincodeRecordsQuery } from "@/queries/regionQueries";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -47,8 +48,19 @@ function ConferenceHallContent() {
   const hasSession = !!session?.user;
   const sessionPincodeId = session?.user?.pincodeId;
 
-  // Determine effective pincode
+  // Resolve applied pincode string to ID for guests
+  const { data: guestPincodeRecords, isLoading: guestPincodeLoading } = usePincodeRecordsQuery(
+    { pincode: appliedPincode },
+    { enabled: !!appliedPincode && !hasSession }
+  );
+
+  const guestPincodeId = guestPincodeRecords?.[0]?.id;
+
+  // Determine effective pincode for conditional rendering
   const effectivePincode = sessionPincodeId || appliedPincode;
+
+  // Determine effective pincode ID for backend queries
+  const effectivePincodeId = hasSession ? sessionPincodeId : guestPincodeId;
 
   const handlePincodeSearch = () => {
     setAppliedPincode(manualPincode.trim());
@@ -127,6 +139,11 @@ function ConferenceHallContent() {
                           "Your Location"}
                       </strong>
                     </span>
+                    {!hasSession && !guestPincodeLoading && !guestPincodeId && (
+                      <span className="ml-2 text-red-500 text-xs">
+                        (Invalid Pincode)
+                      </span>
+                    )}
                   </div>
                   {!hasSession && (
                     <Button
@@ -198,7 +215,18 @@ function ConferenceHallContent() {
                     className="m-0 focus-visible:outline-none"
                   >
                     <div className="p-4 md:p-12">
-                      <EventDiscovery pincodeId={effectivePincode} isPublic={true} />
+                      {guestPincodeLoading && !hasSession ? (
+                        <div className="flex justify-center py-20">
+                          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+                        </div>
+                      ) : !effectivePincodeId ? (
+                        <div className="flex flex-col items-center justify-center py-20 text-muted-foreground italic">
+                          <MapPin className="h-10 w-10 mb-4 opacity-20" />
+                          <p>Please enter a valid pincode to see events in your area.</p>
+                        </div>
+                      ) : (
+                        <EventDiscovery pincodeId={effectivePincodeId} isPublic={true} />
+                      )}
                     </div>
                   </TabsContent>
 
@@ -207,7 +235,18 @@ function ConferenceHallContent() {
                     className="m-0 focus-visible:outline-none"
                   >
                     <div className="p-4 md:p-12">
-                      <OfferDiscovery pincodeId={effectivePincode} isPublic={true} />
+                      {guestPincodeLoading && !hasSession ? (
+                        <div className="flex justify-center py-20">
+                          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+                        </div>
+                      ) : !effectivePincodeId ? (
+                        <div className="flex flex-col items-center justify-center py-20 text-muted-foreground italic">
+                          <Tag className="h-10 w-10 mb-4 opacity-20" />
+                          <p>Please enter a valid pincode to see offers in your area.</p>
+                        </div>
+                      ) : (
+                        <OfferDiscovery pincodeId={effectivePincodeId} isPublic={true} />
+                      )}
                     </div>
                   </TabsContent>
 
@@ -217,10 +256,17 @@ function ConferenceHallContent() {
                   >
                     <div className="p-4 md:p-12">
                       <div className="max-w-4xl mx-auto">
-                        <ForumSection
-                          slug="conference-hall-general"
-                          pincodeId={effectivePincode}
-                        />
+                        {!effectivePincodeId ? (
+                          <div className="flex flex-col items-center justify-center py-20 text-muted-foreground italic">
+                            <Sofa className="h-10 w-10 mb-4 opacity-20" />
+                            <p>Please enter a valid pincode to see the community lounge.</p>
+                          </div>
+                        ) : (
+                          <ForumSection
+                            slug="conference-hall-general"
+                            pincodeId={effectivePincodeId}
+                          />
+                        )}
                       </div>
                     </div>
                   </TabsContent>

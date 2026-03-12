@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Search, ArrowRight, Sparkles, MapPin, Building2, ExternalLink } from "lucide-react";
+import { Calendar, Search, ArrowRight, Sparkles, MapPin, Building2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -42,7 +42,16 @@ export function OfferDiscovery({ pincodeId, isPublic = true }: OfferDiscoveryPro
   });
 
   const activeOffers =
-    offers?.filter((o) => o.isActive && o.offerDetails?.[0]?.publishedAt) || [];
+    offers?.filter((o) => {
+      if (!o.isActive || !o.offerDetails?.[0]?.publishedAt) return false;
+
+      // Filter by pincode on frontend for reliability
+      if (pincodeId && o.targetRegions && o.targetRegions.length > 0) {
+        return o.targetRegions.some((r) => r.pincodeId === pincodeId);
+      }
+
+      return true; // No target regions means Pan India
+    }) || [];
 
   if (isLoading) {
     return (

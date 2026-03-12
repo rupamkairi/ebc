@@ -10,7 +10,9 @@ import {
   MapPin,
   MessageSquare,
   PackageCheck,
+  CheckCircle2,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
@@ -23,7 +25,7 @@ import { BuyerInfoCard } from "@/components/dashboard/seller/activity-shared/buy
 import { ActivityActionCard } from "@/components/dashboard/seller/activity-shared/activity-action-card";
 import { ActivityTipCard } from "@/components/dashboard/seller/activity-shared/activity-tip-card";
 import { PageBackButton } from "@/components/dashboard/seller/activity-shared/page-back-button";
-import { REF_TYPE } from "@/types/activity";
+
 
 export default function AppointmentDetailsPage() {
   const { t } = useLanguage();
@@ -87,6 +89,54 @@ export default function AppointmentDetailsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* ── Left: Details ── */}
         <div className="lg:col-span-2 space-y-5">
+          {/* Confirmed Visit Section */}
+          {hasActiveVisit && existingVisit && (
+            <div className="bg-emerald-50 rounded-2xl border border-emerald-100 p-6 space-y-4 animate-in fade-in slide-in-from-top-4 duration-500">
+              <div className="flex items-center justify-between">
+                <h3 className="font-black text-emerald-900 flex items-center gap-2">
+                  <CheckCircle2 className="h-5 w-5" />
+                  {t("confirmed_visit_details", "Confirmed Service Schedule")}
+                </h3>
+                <Badge className="bg-emerald-500 text-white border-none text-[10px] font-black uppercase tracking-widest px-3">
+                  {t("active_status", "Active")}
+                </Badge>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-white/50 border border-emerald-100">
+                  <Calendar className="h-5 w-5 text-emerald-600" />
+                  <div>
+                    <p className="text-[10px] font-black text-emerald-700/50 uppercase tracking-widest">
+                      {t("date_label")}
+                    </p>
+                    <p className="font-black text-sm text-emerald-900">
+                      {existingVisit.visitSlot
+                        ? format(new Date(existingVisit.visitSlot.fromDateTime), "PPP")
+                        : "N/A"}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-white/50 border border-emerald-100">
+                  <Clock className="h-5 w-5 text-emerald-600" />
+                  <div>
+                    <p className="text-[10px] font-black text-emerald-700/50 uppercase tracking-widest">
+                      {t("time_slot_label")}
+                    </p>
+                    <p className="font-black text-sm text-emerald-900">
+                      {existingVisit.visitSlot ? (
+                        <>
+                          {format(new Date(existingVisit.visitSlot.fromDateTime), "p")} -{" "}
+                          {format(new Date(existingVisit.visitSlot.toDateTime), "p")}
+                        </>
+                      ) : (
+                        "N/A"
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6">
             {/* Title row */}
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
@@ -242,7 +292,7 @@ export default function AppointmentDetailsPage() {
               <ActivityActionCard
                 isPending={true}
                 actionLabel={t("confirm_visit_btn", "Confirm Visit")}
-                actionHref={`/seller-dashboard/visits/create?appointmentId=${appointment.id}`}
+                actionHref={`/seller-dashboard/visits/create?appointmentId=${appointment.id}&slotIdx=${selectedSlotIdx}`}
                 actionIcon={<Calendar className="h-4 w-4" />}
                 actionDescription={t(
                   "manage_onsite_visits",

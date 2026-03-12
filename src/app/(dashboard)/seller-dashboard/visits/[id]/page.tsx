@@ -6,12 +6,14 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import {
   Calendar,
+  Clock,
   Loader2,
   MapPin,
   MessageSquare,
   PackageCheck,
   CheckCircle2,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -128,6 +130,46 @@ export default function VisitDetailsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* ── Left: Requirements ── */}
         <div className="lg:col-span-2 space-y-5">
+          {/* Confirmed Schedule Summary */}
+          {visit.visitSlot && (
+            <div className="bg-emerald-50 rounded-2xl border border-emerald-100 p-6 space-y-4 animate-in fade-in slide-in-from-top-4 duration-500">
+              <div className="flex items-center justify-between">
+                <h3 className="font-black text-emerald-900 flex items-center gap-2">
+                  <CheckCircle2 className="h-5 w-5" />
+                  {t("confirmed_visit_details", "Confirmed Service Schedule")}
+                </h3>
+                <Badge className="bg-emerald-500 text-white border-none text-[10px] font-black uppercase tracking-widest px-3">
+                  {visit.status === "COMPLETED" ? t("completed_status", "Completed") : t("active_status", "Active")}
+                </Badge>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-white/50 border border-emerald-100">
+                  <Calendar className="h-5 w-5 text-emerald-600" />
+                  <div>
+                    <p className="text-[10px] font-black text-emerald-700/50 uppercase tracking-widest">
+                      {t("date_label")}
+                    </p>
+                    <p className="font-black text-sm text-emerald-900">
+                      {format(new Date(visit.visitSlot.fromDateTime), "PPP")}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-white/50 border border-emerald-100">
+                  <Clock className="h-5 w-5 text-emerald-600" />
+                  <div>
+                    <p className="text-[10px] font-black text-emerald-700/50 uppercase tracking-widest">
+                      {t("time_slot_label")}
+                    </p>
+                    <p className="font-black text-sm text-emerald-900">
+                      {format(new Date(visit.visitSlot.fromDateTime), "p")} -{" "}
+                      {format(new Date(visit.visitSlot.toDateTime), "p")}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6">
             {/* Title row */}
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
@@ -205,11 +247,21 @@ export default function VisitDetailsPage() {
               </div>
               <div className="space-y-1.5">
                 <h4 className="text-sm font-black text-primary flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  {t("scheduled_visit_label", "Scheduled Date")}
+                  <Clock className="h-4 w-4" />
+                  {t("scheduled_visit_label", "Confirmed Slot")}
                 </h4>
                 <p className="text-sm text-gray-500 font-medium pl-6">
-                  {format(new Date(visit.createdAt), "dd/MM/yyyy")}
+                  {visit.visitSlot ? (
+                    <>
+                      {format(new Date(visit.visitSlot.fromDateTime), "PPP")}
+                      <br />
+                      <span className="text-xs text-muted-foreground">
+                        {format(new Date(visit.visitSlot.fromDateTime), "p")} - {format(new Date(visit.visitSlot.toDateTime), "p")}
+                      </span>
+                    </>
+                  ) : (
+                    format(new Date(visit.createdAt), "dd/MM/yyyy")
+                  )}
                 </p>
               </div>
             </div>

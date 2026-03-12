@@ -49,10 +49,8 @@ export default function BuyerAppointmentDetailsPage() {
   const acceptMutation = useAcceptVisitMutation();
   const completeMutation = useCompleteAppointmentMutation();
 
-  const confirmedVisit = visits?.find(
-    (v: import("@/types/activity").Visit & { isActive?: boolean }) =>
-      v.isActive,
-  );
+  const activeVisits = visits?.filter((v: any) => v.isActive) || [];
+  const confirmedVisit = activeVisits[0];
   const isCompleted = appointment?.status === "COMPLETED";
 
   const providerEntityId =
@@ -140,18 +138,29 @@ export default function BuyerAppointmentDetailsPage() {
           </div>
 
           {confirmedVisit && !isCompleted && (
-            <Button
-              onClick={handleComplete}
-              disabled={completeMutation.isPending}
-              className="h-14 rounded-3xl bg-blue-600 hover:bg-blue-700 font-black gap-2 px-8 shadow-xl shadow-blue-500/20"
-            >
-              {completeMutation.isPending ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
+            <div className="flex flex-col items-end gap-2">
+              {confirmedVisit.status === "COMPLETED" ? (
+                <Button
+                  onClick={handleComplete}
+                  disabled={completeMutation.isPending}
+                  className="h-14 rounded-3xl bg-blue-600 hover:bg-blue-700 font-black gap-2 px-8 shadow-xl shadow-blue-500/20 animate-in zoom-in duration-300"
+                >
+                  {completeMutation.isPending ? (
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  ) : (
+                    <CheckCircle2 className="h-5 w-5" />
+                  )}
+                  {t("mark_completed_btn")}
+                </Button>
               ) : (
-                <CheckCircle2 className="h-5 w-5" />
+                <div className="flex items-center gap-3 px-6 py-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-700 select-none">
+                  <div className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
+                  <span className="text-xs font-black uppercase tracking-widest">
+                    {t("waiting_service_delivery", "Waiting for service delivery")}
+                  </span>
+                </div>
               )}
-              {t("mark_completed_btn")}
-            </Button>
+            </div>
           )}
         </div>
       </div>
@@ -232,6 +241,35 @@ export default function BuyerAppointmentDetailsPage() {
           </section>
 
           <Separator className="opacity-50" />
+          
+          <section className="space-y-6">
+            <h3 className="text-xl font-black tracking-tight flex items-center gap-2">
+              <Clock className="h-5 w-5 text-primary" />
+              {t("my_requested_slots", "My Requested Slots")}
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {appointment.appointmentSlots.map((slot: any, index: number) => (
+                <div 
+                  key={index} 
+                  className="p-4 rounded-2xl bg-white border shadow-sm space-y-2"
+                >
+                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                    {t("slot_label", "Slot")} {index + 1}
+                  </p>
+                  <div>
+                    <p className="font-black text-sm">
+                      {format(new Date(slot.fromDateTime), "MMM do, yyyy")}
+                    </p>
+                    <p className="text-[10px] text-muted-foreground font-bold">
+                      {format(new Date(slot.fromDateTime), "p")} - {format(new Date(slot.toDateTime), "p")}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <Separator className="opacity-50" />
 
           {/* Visits/Confirmations Section */}
           <section className="space-y-8">
@@ -251,146 +289,137 @@ export default function BuyerAppointmentDetailsPage() {
               </div>
             ) : (
               <div className="space-y-12">
-                {visits.map((v: import("@/types/activity").Visit) => (
-                  <div
-                    key={v.id}
-                    className="space-y-8 p-8 rounded-4xl bg-white border shadow-xl shadow-black/5 relative overflow-hidden group"
-                  >
-                    <div className="absolute top-0 right-0 p-6">
-                      <Badge className="bg-primary/10 text-primary border-primary/20 uppercase text-[10px] font-black tracking-widest">
-                        {t("scheduled_visit_label")}
-                      </Badge>
-                    </div>
+                {(confirmedVisit ? [confirmedVisit] : (visits || [])).map(
+                  (v: import("@/types/activity").Visit) => {
+                  const providerId =
+                    v.createdBy?.staffAtEntityId ||
+                    v.createdBy?.createdEntities?.[0]?.id ||
+                    "";
+                  const providerName =
+                    v.createdBy?.staffAt?.name ||
+                    v.createdBy?.createdEntities?.[0]?.name ||
+                    v.createdBy?.name ||
+                    "";
 
-                    <div className="flex flex-col md:flex-row gap-10">
-                      <div className="flex-1 space-y-6">
-                        <div>
-                          <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">
-                            {t("service_by_text")}
-                          </p>
-                          <h4 className="text-2xl font-black tracking-tight">
-                            {v.createdBy?.staffAt?.name || v.createdBy?.name}
-                          </h4>
-                          <div className="mt-2">
-                            <ReviewSnapshot
-                              entityId={
-                                v.createdBy?.staffAtEntityId ||
-                                v.createdBy?.createdEntities?.[0]?.id ||
-                                ""
-                              }
-                              entityName={
-                                v.createdBy?.staffAt?.name ||
-                                v.createdBy?.createdEntities?.[0]?.name ||
-                                v.createdBy?.name
-                              }
-                              className="scale-90 origin-left"
-                            />
+                  return (
+                    <div
+                      key={v.id}
+                      className="space-y-8 p-8 rounded-4xl bg-white border shadow-xl shadow-black/5 relative overflow-hidden group"
+                    >
+                      <div className="absolute top-0 right-0 p-6">
+                        <Badge className="bg-primary/10 text-primary border-primary/20 uppercase text-[10px] font-black tracking-widest">
+                          {t("scheduled_visit_label")}
+                        </Badge>
+                      </div>
+
+                      <div className="flex flex-col md:flex-row gap-10">
+                        <div className="flex-1 space-y-6">
+                          <div>
+                            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">
+                              {t("service_by_text")}
+                            </p>
+                            <h4 className="text-2xl font-black tracking-tight">
+                              {providerName}
+                            </h4>
+                            <div className="mt-2">
+                              <ReviewSnapshot
+                                entityId={providerId}
+                                entityName={providerName}
+                                className="scale-90 origin-left"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="flex items-center gap-4 p-4 rounded-2xl bg-muted/50 border">
+                              <div className="h-10 w-10 rounded-xl bg-white border flex items-center justify-center">
+                                <Calendar className="h-5 w-5 text-primary" />
+                              </div>
+                              <div>
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase">
+                                  {t("date_label")}
+                                </p>
+                                <p className="font-black text-sm">
+                                  {v.visitSlot
+                                    ? format(
+                                        new Date(v.visitSlot.fromDateTime),
+                                        "PPP",
+                                      )
+                                    : "N/A"}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-4 p-4 rounded-2xl bg-muted/50 border">
+                              <div className="h-10 w-10 rounded-xl bg-white border flex items-center justify-center">
+                                <Clock className="h-5 w-5 text-primary" />
+                              </div>
+                              <div>
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase">
+                                  {t("time_slot_label")}
+                                </p>
+                                <p className="font-black text-sm">
+                                  {v.visitSlot ? (
+                                    <>
+                                      {format(
+                                        new Date(v.visitSlot.fromDateTime),
+                                        "p",
+                                      )}{" "}
+                                      -{" "}
+                                      {format(
+                                        new Date(v.visitSlot.toDateTime),
+                                        "p",
+                                      )}
+                                    </>
+                                  ) : (
+                                    "N/A"
+                                  )}
+                                </p>
+                              </div>
+                            </div>
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div className="flex items-center gap-4 p-4 rounded-2xl bg-muted/50 border">
-                            <div className="h-10 w-10 rounded-xl bg-white border flex items-center justify-center">
-                              <Calendar className="h-5 w-5 text-primary" />
-                            </div>
-                            <div>
-                              <p className="text-[10px] font-bold text-muted-foreground uppercase">
-                                {t("date_label")}
-                              </p>
-                              <p className="font-black text-sm">
-                                {v.visitSlot
-                                  ? format(
-                                      new Date(v.visitSlot.fromDateTime),
-                                      "PPP",
-                                    )
-                                  : "N/A"}
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="flex items-center gap-4 p-4 rounded-2xl bg-muted/50 border">
-                            <div className="h-10 w-10 rounded-xl bg-white border flex items-center justify-center">
-                              <Clock className="h-5 w-5 text-primary" />
-                            </div>
-                            <div>
-                              <p className="text-[10px] font-bold text-muted-foreground uppercase">
-                                {t("time_slot_label")}
-                              </p>
-                              <p className="font-black text-sm">
-                                {v.visitSlot ? (
-                                  <>
-                                    {format(
-                                      new Date(v.visitSlot.fromDateTime),
-                                      "p",
-                                    )}{" "}
-                                    -{" "}
-                                    {format(
-                                      new Date(v.visitSlot.toDateTime),
-                                      "p",
-                                    )}
-                                  </>
-                                ) : (
-                                  "N/A"
-                                )}
-                              </p>
-                            </div>
-                          </div>
+                        <div className="md:w-64 flex flex-col justify-center shrink-0">
+                          {v.isActive ? (
+                            <Button
+                              className="w-full h-14 rounded-3xl bg-emerald-500 hover:bg-emerald-600 font-black gap-2"
+                              disabled
+                            >
+                              <CheckCircle2 className="h-5 w-5" />
+                              {t("confirmed_label")}
+                            </Button>
+                          ) : (
+                            <Button
+                              className="w-full h-14 rounded-3xl font-black shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform"
+                              onClick={() => handleAccept(v.id)}
+                              disabled={acceptMutation.isPending || isCompleted}
+                            >
+                              {acceptMutation.isPending ? (
+                                <Loader2 className="h-5 w-5 animate-spin" />
+                              ) : (
+                                t("confirm_schedule_btn")
+                              )}
+                            </Button>
+                          )}
                         </div>
                       </div>
-
-                      <div className="md:w-64 space-y-4 flex flex-col justify-center shrink-0">
-                        <ReviewSnapshot
-                          entityId={
-                            v.createdBy?.staffAtEntityId ||
-                            v.createdBy?.createdEntities?.[0]?.id ||
-                            ""
-                          }
-                          entityName={
-                            v.createdBy?.staffAt?.name ||
-                            v.createdBy?.createdEntities?.[0]?.name ||
-                            v.createdBy?.name
-                          }
-                          className="w-full justify-center"
-                        />
-
-                        {v.isActive ? (
-                          <Button
-                            className="w-full h-14 rounded-3xl bg-emerald-500 hover:bg-emerald-600 font-black gap-2"
-                            disabled
-                          >
-                            <CheckCircle2 className="h-5 w-5" />
-                            {t("confirmed_label")}
-                          </Button>
-                        ) : (
-                          <Button
-                            className="w-full h-14 rounded-3xl font-black shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform"
-                            onClick={() => handleAccept(v.id)}
-                            disabled={acceptMutation.isPending || isCompleted}
-                          >
-                            {acceptMutation.isPending ? (
-                              <Loader2 className="h-5 w-5 animate-spin" />
-                            ) : (
-                              t("confirm_schedule_btn")
-                            )}
-                          </Button>
-                        )}
-                      </div>
                     </div>
+                  );
+                })}
+              </div>
+            )}
 
-                    {/* Integrated Reputation Section for the Service Provider */}
-                    <div className="pt-10 border-t border-dashed">
-                      <ReputationSection
-                        entityId={
-                          v.createdBy?.staffAtEntityId ||
-                          v.createdBy?.createdEntities?.[0]?.id ||
-                          ""
-                        }
-                        entityName={v.createdBy?.staffAt?.name || ""}
-                        className="scale-95 origin-top"
-                      />
-                    </div>
-                  </div>
-                ))}
+            {/* Detailed reputation for the confirmed provider */}
+            {isCompleted && confirmedVisit && (
+              <div className="mt-16 pt-16 border-t animate-in fade-in slide-in-from-bottom-6 duration-1000">
+                <ReputationSection
+                  entityId={providerEntityId}
+                  entityName={
+                    confirmedVisit.createdBy?.staffAt?.name ||
+                    confirmedVisit.createdBy?.name
+                  }
+                />
               </div>
             )}
           </section>

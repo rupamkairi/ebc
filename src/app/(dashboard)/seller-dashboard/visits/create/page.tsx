@@ -21,14 +21,16 @@ function VisitCreateContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const appointmentId = searchParams.get("appointmentId");
+  const slotIdxParam = searchParams.get("slotIdx");
 
   const { data: appointment, isLoading } = useAppointmentQuery(
     appointmentId || "",
   );
   const { mutate: createVisit, isPending: isCreating } =
     useCreateVisitMutation();
-
-  const [selectedSlotIdx, setSelectedSlotIdx] = useState(0);
+  const [selectedSlotIdx, setSelectedSlotIdx] = useState(
+    slotIdxParam ? parseInt(slotIdxParam) : 0,
+  );
   const [showCoinModal, setShowCoinModal] = useState(false);
 
   if (isLoading) {

@@ -70,7 +70,7 @@ export function EventDiscovery({
   // Fetch all public active events for this pincode
   const { data: events, isLoading } = useEventsQuery({
     search: searchTerm,
-    isPublic: true,
+    isPublic,
     isActive: true,
     targeting: { pincodeId },
   });
@@ -95,6 +95,11 @@ export function EventDiscovery({
       if (timeframe === "PAST") {
         return event.type === "RECORDED";
       }
+      // Pincode filtering on frontend for reliability
+      if (pincodeId && event.targetRegions && event.targetRegions.length > 0) {
+        return event.targetRegions.some((r) => r.pincodeId === pincodeId);
+      }
+
       return true;
     }) || [];
 
