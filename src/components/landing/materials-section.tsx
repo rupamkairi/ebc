@@ -110,7 +110,7 @@ export function MaterialsSection() {
         {/* CTA Button */}
         <div className="flex justify-center mt-20">
           <Button variant="glow" size="action" className="group" asChild>
-            <Link href="/browse">
+            <Link href="/browse?type=PRODUCT">
               Select your Products
               <ChevronRight className="size-6 group-hover:translate-x-1 transition-transform" />
             </Link>

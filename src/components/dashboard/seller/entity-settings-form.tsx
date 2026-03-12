@@ -5,10 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { PincodeSearchAutocomplete } from "@/components/autocompletes/pincode-search-autocomplete";
 import { PincodeRecord } from "@/types/region";
 import {
@@ -25,7 +22,11 @@ import { toast } from "sonner";
 import { Loader2, Save, FileText, X } from "lucide-react";
 import { useEffect } from "react";
 import { UpdateEntityRequest } from "@/types/entity";
-import { ENTITY_TYPE_LABELS, isServiceBusiness, isProductBusiness } from "@/constants/roles";
+import {
+  ENTITY_TYPE_LABELS,
+  isServiceBusiness,
+  isProductBusiness,
+} from "@/constants/roles";
 import { ENTITY_TYPE, VERIFICATION_STATUS } from "@/constants/enums";
 import { useAuthStore } from "@/store/authStore";
 import {
@@ -66,8 +67,12 @@ export function EntitySettingsForm() {
           id: entity.id,
           data: {
             ...value,
-            primaryContactNumber: value.primaryContactNumber ? `+91${value.primaryContactNumber}` : "",
-            secondaryContactNumber: value.secondaryContactNumber ? `+91${value.secondaryContactNumber}` : "",
+            primaryContactNumber: value.primaryContactNumber
+              ? `+91${value.primaryContactNumber}`
+              : "",
+            secondaryContactNumber: value.secondaryContactNumber
+              ? `+91${value.secondaryContactNumber}`
+              : "",
           } as UpdateEntityRequest,
         });
         toast.success("Business profile updated successfully!");
@@ -83,8 +88,14 @@ export function EntitySettingsForm() {
         name: entity.name || "",
         legalName: entity.legalName || "",
         description: entity.description || "",
-        primaryContactNumber: (entity.primaryContactNumber || "").replace(/^\+91/, ""),
-        secondaryContactNumber: (entity.secondaryContactNumber || "").replace(/^\+91/, ""),
+        primaryContactNumber: (entity.primaryContactNumber || "").replace(
+          /^\+91/,
+          "",
+        ),
+        secondaryContactNumber: (entity.secondaryContactNumber || "").replace(
+          /^\+91/,
+          "",
+        ),
         contactEmail: entity.contactEmail || "",
         supportEmail: entity.supportEmail || "",
         addressLine1: entity.addressLine1 || "",
@@ -100,7 +111,8 @@ export function EntitySettingsForm() {
   const userRole = useAuthStore((state) => state.user?.role);
   const isServiceProvider = isServiceBusiness(userRole);
   const isProductSeller = isProductBusiness(userRole);
-  const isApproved = entity?.verificationStatus === VERIFICATION_STATUS.APPROVED;
+  const isApproved =
+    entity?.verificationStatus === VERIFICATION_STATUS.APPROVED;
 
   if (isLoadingEntity) {
     return (
@@ -132,14 +144,21 @@ export function EntitySettingsForm() {
           {/* User Details Section */}
           <div className="space-y-6">
             <div className="border-b-2 border-secondary/30 pb-2 inline-block">
-               <h2 className="text-2xl font-bold text-secondary">User Details</h2>
+              <h2 className="text-2xl font-bold text-secondary">
+                User Details
+              </h2>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
               <form.Field name="name">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label htmlFor={field.name} className="text-primary text-xs font-bold uppercase tracking-wide">Display Name</Label>
+                    <Label
+                      htmlFor={field.name}
+                      className="text-primary text-xs font-bold uppercase tracking-wide"
+                    >
+                      Display Name
+                    </Label>
                     <Input
                       id={field.name}
                       value={field.state.value}
@@ -214,7 +233,12 @@ export function EntitySettingsForm() {
               <form.Field name="legalName">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label htmlFor={field.name} className="text-primary text-xs font-bold uppercase tracking-wide">Legal Business Name</Label>
+                    <Label
+                      htmlFor={field.name}
+                      className="text-primary text-xs font-bold uppercase tracking-wide"
+                    >
+                      Legal Business Name
+                    </Label>
                     <Input
                       id={field.name}
                       value={field.state.value}
@@ -231,7 +255,12 @@ export function EntitySettingsForm() {
                 <form.Field name="description">
                   {(field) => (
                     <div className="space-y-2">
-                      <Label htmlFor={field.name} className="text-primary text-xs font-bold uppercase tracking-wide">Business Description</Label>
+                      <Label
+                        htmlFor={field.name}
+                        className="text-primary text-xs font-bold uppercase tracking-wide"
+                      >
+                        Business Description
+                      </Label>
                       <Textarea
                         id={field.name}
                         value={field.state.value}
@@ -248,7 +277,12 @@ export function EntitySettingsForm() {
               <form.Field name="contactEmail">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label htmlFor={field.name} className="text-primary text-xs font-bold uppercase tracking-wide">Contact E-Mail</Label>
+                    <Label
+                      htmlFor={field.name}
+                      className="text-primary text-xs font-bold uppercase tracking-wide"
+                    >
+                      Contact E-Mail
+                    </Label>
                     <Input
                       id={field.name}
                       type="email"
@@ -265,7 +299,12 @@ export function EntitySettingsForm() {
               <form.Field name="supportEmail">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label htmlFor={field.name} className="text-primary text-xs font-bold uppercase tracking-wide">Support E-Mail</Label>
+                    <Label
+                      htmlFor={field.name}
+                      className="text-primary text-xs font-bold uppercase tracking-wide"
+                    >
+                      Support E-Mail
+                    </Label>
                     <Input
                       id={field.name}
                       type="email"
@@ -282,7 +321,12 @@ export function EntitySettingsForm() {
               <form.Field name="primaryContactNumber">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label htmlFor={field.name} className="text-primary text-xs font-bold uppercase tracking-wide">Phone Number</Label>
+                    <Label
+                      htmlFor={field.name}
+                      className="text-primary text-xs font-bold uppercase tracking-wide"
+                    >
+                      Phone Number
+                    </Label>
                     <div className="flex gap-0 w-full">
                       <span className="flex items-center px-4 rounded-l-md text-sm font-medium border border-r-0 border-primary/30 bg-muted text-muted-foreground shrink-0">
                         +91
@@ -290,9 +334,15 @@ export function EntitySettingsForm() {
                       <Input
                         id={field.name}
                         type="tel"
-                        value={field.state.value.replace(/\D/g, "").slice(0, 10)}
+                        value={field.state.value
+                          .replace(/\D/g, "")
+                          .slice(0, 10)}
                         onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                        onChange={(e) =>
+                          field.handleChange(
+                            e.target.value.replace(/\D/g, "").slice(0, 10),
+                          )
+                        }
                         placeholder="Enter 10-digit mobile number"
                         className="border-primary/30 focus-visible:ring-primary h-12 bg-white rounded-l-none"
                       />
@@ -307,7 +357,12 @@ export function EntitySettingsForm() {
               <form.Field name="secondaryContactNumber">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label htmlFor={field.name} className="text-primary text-xs font-bold uppercase tracking-wide">Secondary Phone Number</Label>
+                    <Label
+                      htmlFor={field.name}
+                      className="text-primary text-xs font-bold uppercase tracking-wide"
+                    >
+                      Secondary Phone Number
+                    </Label>
                     <div className="flex gap-0 w-full">
                       <span className="flex items-center px-4 rounded-l-md text-sm font-medium border border-r-0 border-primary/30 bg-muted text-muted-foreground shrink-0">
                         +91
@@ -315,9 +370,15 @@ export function EntitySettingsForm() {
                       <Input
                         id={field.name}
                         type="tel"
-                        value={field.state.value.replace(/\D/g, "").slice(0, 10)}
+                        value={field.state.value
+                          .replace(/\D/g, "")
+                          .slice(0, 10)}
                         onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                        onChange={(e) =>
+                          field.handleChange(
+                            e.target.value.replace(/\D/g, "").slice(0, 10),
+                          )
+                        }
                         placeholder="Enter 10-digit mobile number"
                         className="border-primary/30 focus-visible:ring-primary h-12 bg-white rounded-l-none"
                       />
@@ -334,14 +395,21 @@ export function EntitySettingsForm() {
           {/* Business Details Section */}
           <div className="space-y-6 pt-4">
             <div className="border-b-2 border-secondary/30 pb-2 inline-block">
-               <h2 className="text-2xl font-bold text-secondary">Business Details</h2>
+              <h2 className="text-2xl font-bold text-secondary">
+                Business Details
+              </h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
               <form.Field name="addressLine1">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label htmlFor={field.name} className="text-primary text-xs font-bold uppercase tracking-wide">Address</Label>
+                    <Label
+                      htmlFor={field.name}
+                      className="text-primary text-xs font-bold uppercase tracking-wide"
+                    >
+                      Address
+                    </Label>
                     <Input
                       id={field.name}
                       value={field.state.value}
@@ -357,7 +425,12 @@ export function EntitySettingsForm() {
               <form.Field name="addressLine2">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label htmlFor={field.name} className="text-primary text-xs font-bold uppercase tracking-wide">Landmark (Line 2)</Label>
+                    <Label
+                      htmlFor={field.name}
+                      className="text-primary text-xs font-bold uppercase tracking-wide"
+                    >
+                      Landmark
+                    </Label>
                     <Input
                       id={field.name}
                       value={field.state.value}
@@ -373,7 +446,12 @@ export function EntitySettingsForm() {
               <form.Field name="city">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label htmlFor={field.name} className="text-primary text-xs font-bold uppercase tracking-wide">City</Label>
+                    <Label
+                      htmlFor={field.name}
+                      className="text-primary text-xs font-bold uppercase tracking-wide"
+                    >
+                      City
+                    </Label>
                     <Input
                       id={field.name}
                       value={field.state.value}
@@ -389,20 +467,25 @@ export function EntitySettingsForm() {
               <form.Field name="pincodeId">
                 {(field) => (
                   <div className="space-y-2 text-left flex flex-col justify-end">
-                    <Label htmlFor={field.name} className="text-primary text-xs font-bold uppercase tracking-wide mb-1">Pincode</Label>
+                    <Label
+                      htmlFor={field.name}
+                      className="text-primary text-xs font-bold uppercase tracking-wide mb-1"
+                    >
+                      Pincode
+                    </Label>
                     <div className="border-primary/30 rounded-md focus-within:ring-2 focus-within:ring-primary bg-white w-full">
-                       <PincodeSearchAutocomplete
-                         value={field.state.value}
-                         initialRecord={entity.pincode as PincodeRecord}
-                         onValueChange={field.handleChange}
-                         placeholder="123456"
-                       />
+                      <PincodeSearchAutocomplete
+                        value={field.state.value}
+                        initialRecord={entity.pincode as PincodeRecord}
+                        onValueChange={field.handleChange}
+                        placeholder="123456"
+                      />
                     </div>
                   </div>
                 )}
               </form.Field>
             </div>
-            
+
             {/* File Uploads inline */}
             <form.Field name="documents">
               {(field) => (
@@ -429,7 +512,10 @@ export function EntitySettingsForm() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {!field.state.value || field.state.value.length === 0 ? (
                       <div className="col-span-full py-12 text-center border-2 border-dashed border-primary/50 rounded-xl bg-white/50 flex flex-col items-center justify-center">
-                        <FileText className="size-10 mx-auto text-primary opacity-80 mb-3" strokeWidth={1.5} />
+                        <FileText
+                          className="size-10 mx-auto text-primary opacity-80 mb-3"
+                          strokeWidth={1.5}
+                        />
                         <p className="text-sm font-semibold text-primary">
                           No Files Uploaded Yet
                         </p>
@@ -446,7 +532,7 @@ export function EntitySettingsForm() {
                               {(() => {
                                 const attachment =
                                   entity.entityAttachments?.find(
-                                    (a) => a.document.id === docId
+                                    (a) => a.document.id === docId,
                                   );
                                 const doc = attachment?.document;
                                 const fileName =
@@ -486,7 +572,7 @@ export function EntitySettingsForm() {
                               onClick={() => {
                                 const attachment =
                                   entity.entityAttachments?.find(
-                                    (a) => a.document.id === docId
+                                    (a) => a.document.id === docId,
                                   );
                                 const downloadUrl =
                                   attachment?.document.url ||
@@ -508,8 +594,8 @@ export function EntitySettingsForm() {
                               onClick={() =>
                                 field.handleChange(
                                   (field.state.value as string[]).filter(
-                                    (id) => id !== docId
-                                  )
+                                    (id) => id !== docId,
+                                  ),
                                 )
                               }
                             >

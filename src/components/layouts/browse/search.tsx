@@ -1,20 +1,5 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useBrowseParams, SortOption } from "@/hooks/useBrowseParams";
-import {
-  ClipboardList,
-  SearchIcon,
-  SlidersHorizontal,
-  ArrowUpDown,
-} from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -22,11 +7,15 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Sidebar } from "./sidebar";
-import { InquiryPanel } from "./inquiry-panel";
+import { useBrowseParams } from "@/hooks/useBrowseParams";
 import { Facet } from "@/queries/browse.queries";
-import { useDebounce } from "@uidotdev/usehooks";
 import { useEnquiryStore } from "@/store/enquiryStore";
+import { useDebounce } from "@uidotdev/usehooks";
+import { capitalize } from "lodash-es";
+import { ClipboardList, SearchIcon, SlidersHorizontal } from "lucide-react";
+import { useEffect, useState } from "react";
+import { InquiryPanel } from "./inquiry-panel";
+import { Sidebar } from "./sidebar";
 
 interface SearchProps {
   categories?: { id: string; name: string }[];
@@ -41,6 +30,12 @@ export function Search({ categories, facets }: SearchProps) {
   const [searchTerm, setSearchTerm] = useState(params.q);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const inquiryCount = useEnquiryStore((state) => state.items.length);
+
+  const browseType = ["PRODUCT", "SERVICE"].includes(params.type)
+    ? params?.type
+    : "";
+  const ifProduct = browseType === "PRODUCT";
+  const ifService = browseType === "SERVICE";
 
   useEffect(() => {
     if (params.q !== searchTerm) {
@@ -60,8 +55,8 @@ export function Search({ categories, facets }: SearchProps) {
       {/* Row 1: Title + Search */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <h1 className="text-3xl md:text-4xl font-black tracking-tight">
-          <span className="text-primary">Construction</span>{" "}
-          <span className="text-secondary">Materials</span>
+          <span className="text-primary">Browse</span>{" "}
+          <span className="text-secondary">{capitalize(browseType)}</span>
         </h1>
 
         <div className="relative w-full md:max-w-md">
@@ -80,19 +75,22 @@ export function Search({ categories, facets }: SearchProps) {
 
       {/* Row 2: Section label + Toolbar */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-        <h2 className="text-2xl font-black text-primary">Categories</h2>
+        <h2 className="text-2xl font-black text-primary">
+          Browse by Categories & SubCategories
+        </h2>
 
         {/* Unified toolbar */}
         <div className="flex items-stretch h-10 rounded-xl overflow-hidden shadow-md border border-white/10 bg-[#1e274f]">
-
-          {/* Sort By — SelectTrigger IS the button */}
-          <Select
+          {/* Sort By — SelectTrigger IS the button - This Does not make sense in this business. */}
+          {/* <Select
             value={params.sort}
             onValueChange={(val) => updateParams({ sort: val as SortOption })}
           >
             <SelectTrigger className="h-full px-4 bg-transparent border-none rounded-none text-white font-semibold text-sm focus:ring-0 shadow-none gap-2.5 hover:bg-white/10 transition-colors [&>span]:flex [&>span]:items-center [&>span]:gap-2">
               <ArrowUpDown className="size-3.5 text-secondary shrink-0" />
-              <span className="text-[10px] uppercase tracking-widest text-white/50 font-bold hidden xs:inline">Sort</span>
+              <span className="text-[10px] uppercase tracking-widest text-white/50 font-bold hidden xs:inline">
+                Sort
+              </span>
               <SelectValue placeholder="Relevance" />
             </SelectTrigger>
             <SelectContent>
@@ -101,7 +99,7 @@ export function Search({ categories, facets }: SearchProps) {
               <SelectItem value="price_desc">Price: High to Low</SelectItem>
               <SelectItem value="newest">Newest Arrivals</SelectItem>
             </SelectContent>
-          </Select>
+          </Select> */}
 
           {/* Divider */}
           <div className="w-px bg-white/10 self-stretch my-2" />
@@ -111,13 +109,18 @@ export function Search({ categories, facets }: SearchProps) {
             <SheetTrigger asChild>
               <button className="flex items-center gap-2.5 px-4 h-full text-white hover:bg-white/10 transition-colors">
                 <ClipboardList className="size-4 text-secondary shrink-0" />
-                <span className="text-[10px] uppercase tracking-widest text-white/50 font-bold hidden xs:inline">Enquiry</span>
+                <span className="text-[10px] uppercase tracking-widest text-white/50 font-bold hidden xs:inline">
+                  Enquiry
+                </span>
                 <span className="min-w-[20px] h-5 px-1.5 bg-secondary text-white text-xs font-black rounded-full flex items-center justify-center tabular-nums leading-none">
                   {inquiryCount}
                 </span>
               </button>
             </SheetTrigger>
-            <SheetContent side="right" className="p-0 border-none bg-transparent">
+            <SheetContent
+              side="right"
+              className="p-0 border-none bg-transparent"
+            >
               <SheetHeader className="sr-only">
                 <SheetTitle>Your Inquiry List</SheetTitle>
               </SheetHeader>
@@ -135,7 +138,9 @@ export function Search({ categories, facets }: SearchProps) {
             <SheetTrigger asChild>
               <button className="flex items-center gap-2 px-4 h-full text-white hover:bg-white/10 transition-colors lg:hidden">
                 <SlidersHorizontal className="size-4 text-secondary" />
-                <span className="text-[10px] uppercase tracking-widest text-white/50 font-bold hidden xs:inline">Filter</span>
+                <span className="text-[10px] uppercase tracking-widest text-white/50 font-bold hidden xs:inline">
+                  Filter
+                </span>
               </button>
             </SheetTrigger>
             <SheetContent side="left" className="w-[300px] sm:w-[350px]">
@@ -147,10 +152,8 @@ export function Search({ categories, facets }: SearchProps) {
               </div>
             </SheetContent>
           </Sheet>
-
         </div>
       </div>
     </div>
   );
 }
-

@@ -6,8 +6,12 @@ import { TypographyH2, TypographyP } from "@/components/ui/typography";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import React from "react";
+import { useLanguage } from "@/hooks/useLanguage";
+import Link from "next/link";
 
 export function HowItWorksSection() {
+  const { t } = useLanguage();
+
   return (
     <section className="py-responsive bg-white">
       <Container size="lg">
@@ -33,14 +37,12 @@ export function HowItWorksSection() {
         </div>
 
         <div className="flex justify-center">
-          <Button
-            variant="glow"
-            size="action"
-            className="group"
-          >
-            Start Your Home Journey
-            <ArrowRight className="size-6 group-hover:translate-x-1 transition-transform" />
-          </Button>
+          <Link href="/auth/register?role=BUYER">
+            <Button variant="glow" size="action" className="group">
+              {t("home_journey_cta")}
+              <ArrowRight className="size-6 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </Link>
         </div>
       </Container>
     </section>

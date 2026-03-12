@@ -1,5 +1,6 @@
 import { catalogService } from "@/services/catalogService";
 import { conferenceHallService } from "@/services/conferenceHallService";
+import { useAuthStore } from "@/store/authStore";
 import {
   BrandListParams,
   CategoryListParams,
@@ -13,6 +14,7 @@ import {
   CreateSpecificationRequest,
   ItemListingListParams,
   ItemListParams,
+  ItemParams,
   ItemRateListParams,
   ItemRegionListParams,
   SpecificationListParams,
@@ -26,10 +28,9 @@ import {
 } from "@/types/catalog";
 import {
   CreateOfferRequest,
-  UpdateOfferRequest,
   OfferListParams,
+  UpdateOfferRequest,
 } from "@/types/conference-hall";
-import { useAuthStore } from "@/store/authStore";
 import {
   keepPreviousData,
   useMutation,
@@ -105,7 +106,7 @@ export function useBrandsQuery(params: BrandListParams = {}) {
     queryKey: catalogKeys.brands(params),
     queryFn: () => catalogService.getBrands(params),
     placeholderData: keepPreviousData,
-    enabled: !!token || (params as any).enabled !== false,
+    enabled: !!token || (params as any).enabled !== false, // Allow public browsing if enabled is not explicitly false
   });
 }
 
@@ -146,7 +147,7 @@ export function useSpecificationsQuery(params: SpecificationListParams = {}) {
     queryKey: catalogKeys.specifications(params),
     queryFn: () => catalogService.getSpecifications(params),
     placeholderData: keepPreviousData,
-    enabled: !!token,
+    enabled: !!token || (params as any).enabled !== false, // Allow public browsing if enabled is not explicitly false
   });
 }
 
@@ -189,16 +190,16 @@ export function useItemsQuery(params: ItemListParams = {}) {
     queryKey: catalogKeys.items(params),
     queryFn: () => catalogService.getItems(params),
     placeholderData: keepPreviousData,
-    enabled: !!token,
+    enabled: !!token || (params as any).enabled !== false, // Allow public browsing if enabled is not explicitly false
   });
 }
 
-export function useItemQuery(id: string) {
+export function useItemQuery(id: string, params: ItemParams = {}) {
   const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: [...catalogKeys.all, "item", id],
     queryFn: () => catalogService.getItem(id),
-    enabled: !!id && !!token,
+    enabled: !!token || (params as any).enabled !== false, // Allow public browsing if enabled is not explicitly false
   });
 }
 

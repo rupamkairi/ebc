@@ -1,11 +1,11 @@
 import { create } from "zustand";
-import { Product, Facet } from "@/queries/browse.queries";
+import { BrowseItem, Facet } from "@/queries/browse.queries";
 
 interface BrowseState {
   // Data from API
-  products: Product[];
-  categories: { id: string; name: string; image: string }[];
-  subCategories: { id: string; name: string; image: string }[];
+  items: BrowseItem[];
+  categories: { id: string; name: string; image?: string }[];
+  subCategories: { id: string; name: string; image?: string }[];
   facets: {
     brands: Facet[];
     specifications: Facet[];
@@ -16,9 +16,9 @@ interface BrowseState {
 
   // Actions
   setBrowseData: (data: {
-    products: Product[];
-    categories?: { id: string; name: string; image: string }[];
-    subCategories?: { id: string; name: string; image: string }[];
+    items: BrowseItem[];
+    categories?: { id: string; name: string; image?: string }[];
+    subCategories?: { id: string; name: string; image?: string }[];
     facets: { brands: Facet[]; specifications: Facet[] };
     total: number;
     page: number;
@@ -27,7 +27,7 @@ interface BrowseState {
 }
 
 export const useBrowseStore = create<BrowseState>((set) => ({
-  products: [],
+  items: [],
   categories: [],
   subCategories: [],
   facets: {

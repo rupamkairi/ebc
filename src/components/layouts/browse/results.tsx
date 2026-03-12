@@ -20,7 +20,7 @@ export function Results({ isLoading }: ResultsProps) {
     useBrowseParams();
 
   // Store for API data only
-  const { products, categories, subCategories, total, page, totalPages } =
+  const { items, categories, subCategories, total, page, totalPages } =
     useBrowseStore();
 
   // Get selection from URL params
@@ -85,14 +85,14 @@ export function Results({ isLoading }: ResultsProps) {
       {/* 5. Results Count */}
       <div className="flex items-center justify-between text-sm text-muted-foreground">
         <p className="font-bold text-slate-500">
-          Showing {products.length} of {total}{" "}
+          Showing {items.length} of {total}{" "}
           {type === "SERVICE" ? "services" : "products"}
         </p>
       </div>
 
       {/* 5. Product Grid or Empty State */}
-      {products.length > 0 ? (
-        <ItemCardGrid products={products} />
+      {items.length > 0 ? (
+        <ItemCardGrid items={items} />
       ) : (
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <h3 className="text-xl font-semibold mb-2">No results found</h3>

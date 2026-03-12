@@ -35,24 +35,28 @@ function CategoryCard({ item, isSelected, onClick }: CategoryCardProps) {
       onClick={onClick}
       className={cn(
         "w-[140px] shrink-0 rounded-lg overflow-hidden transition-all duration-300 flex flex-col items-center p-2 group",
-        isSelected ? "scale-105 shadow-xl ring-2 ring-secondary" : "hover:scale-102",
-        getColor(item.name)
+        isSelected
+          ? "scale-105 shadow-xl ring-2 ring-secondary"
+          : "hover:scale-102",
+        getColor(item.name),
       )}
     >
-      <div className="relative h-[80px] w-full flex items-center justify-center">
-         {/* Subtle overlay for image consistency */}
-         <div className="absolute inset-x-2 inset-y-1 bg-white/20 rounded-md backdrop-blur-[2px]" />
-        <Image
-          src={item.image}
-          alt={item.name}
-          width={60}
-          height={60}
-          className="relative z-10 object-contain drop-shadow-md group-hover:scale-110 transition-transform"
-          unoptimized
-        />
-      </div>
+      {item.image && (
+        <div className="relative h-[80px] w-full flex items-center justify-center">
+          {/* Subtle overlay for image consistency */}
+          <div className="absolute inset-x-2 inset-y-1 bg-white/20 rounded-md backdrop-blur-[2px]" />
+          <Image
+            src={item.image}
+            alt={item.name}
+            width={60}
+            height={60}
+            className="relative z-10 object-contain drop-shadow-md group-hover:scale-110 transition-transform"
+            unoptimized
+          />
+        </div>
+      )}
       <div className="py-2 text-center w-full">
-        <p className="text-[10px] font-black uppercase text-white tracking-widest leading-tight">
+        <p className="text-[10px] font-black uppercase text-white wrap-normal tracking-widest leading-tight">
           {item.name}
         </p>
       </div>
@@ -100,8 +104,8 @@ export function CategoryCarousel({
       <h3 className="font-semibold text-sm tracking-wide uppercase text-muted-foreground">
         {title}
       </h3>
-      <ScrollArea className="w-full whitespace-nowrap">
-        <div className="flex w-max space-x-3 pb-2">
+      <ScrollArea className="w-full ">
+        <div className="flex w-max space-x-3 p-2 pb-4">
           {categories.map((cat) => (
             <CategoryCard
               key={cat.id}

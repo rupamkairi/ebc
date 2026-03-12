@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Product } from "@/queries/browse.queries";
+import { BrowseItem } from "@/queries/browse.queries";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -10,35 +10,33 @@ import { useEnquiryStore } from "@/store/enquiryStore";
 import { toast } from "sonner";
 
 interface ItemCardProps {
-  product: Product;
+  item: BrowseItem;
 }
 
-export function ItemCard({ product }: ItemCardProps) {
+export function ItemCard({ item }: ItemCardProps) {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const addItem = useEnquiryStore((state) => state.addItem);
 
   const handleCardClick = () => {
-    router.push(`/browse/${product.id}`);
+    router.push(`/browse/${item.id}`);
   };
 
   const handleAddInquiry = (e: React.MouseEvent) => {
     e.stopPropagation();
     addItem({
-      itemId: product.id,
-      title: product.title,
-      type: product.type.toUpperCase(),
+      itemId: item.id,
+      title: item.title,
+      type: item.type.toUpperCase(),
       quantity: 1,
       unitType: "Nos",
-      price: product.price,
-      categoryId: product.categoryId,
-      subCategoryId: product.subCategoryId,
-      categoryName: product.categoryName,
-      subCategoryName: product.subCategoryName,
-      image: product.image,
-      brand: product.brand,
+      categoryId: item.categoryId,
+      subCategoryId: item.subCategoryId,
+      categoryName: item.categoryName,
+      subCategoryName: item.subCategoryName,
+      brand: item.brand,
     } as any);
-    toast.success(`${product.title} added to inquiry`);
+    toast.success(`${item.title} added to inquiry`);
   };
 
   return (
@@ -46,21 +44,24 @@ export function ItemCard({ product }: ItemCardProps) {
       className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full cursor-pointer group"
       onClick={handleCardClick}
     >
-      <div className="relative aspect-square w-full p-6 pb-2">
-        <Image
-          src={product.image}
-          alt={product.title}
-          fill
-          className="object-contain p-4 group-hover:scale-110 transition-transform duration-500"
-          unoptimized
-        />
-      </div>
+      {item.image && (
+        <div className="relative aspect-square w-full p-6 pb-2">
+          <Image
+            src={item.image}
+            alt={item.title}
+            fill
+            className="object-contain p-4 group-hover:scale-110 transition-transform duration-500"
+            unoptimized
+          />
+        </div>
+      )}
+      <br />
       <div className="p-4 pt-1 flex flex-col gap-1 items-start">
         <h3 className="text-primary font-black text-lg line-clamp-1 leading-tight group-hover:text-secondary transition-colors">
-          {product.title}
+          {item.title}
         </h3>
         <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">
-          {product.category}
+          {item.category}
         </p>
       </div>
 
@@ -77,21 +78,21 @@ export function ItemCard({ product }: ItemCardProps) {
       <AddToEnquiryModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        product={product}
+        product={item as any}
       />
     </div>
   );
 }
 
 interface ItemCardGridProps {
-  products: Product[];
+  items: BrowseItem[];
 }
 
-export function ItemCardGrid({ products }: ItemCardGridProps) {
+export function ItemCardGrid({ items }: ItemCardGridProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
-      {products.map((product) => (
-        <ItemCard key={product.id} product={product} />
+      {items.map((item) => (
+        <ItemCard key={item.id} item={item} />
       ))}
     </div>
   );

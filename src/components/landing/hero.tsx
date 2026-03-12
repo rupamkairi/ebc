@@ -7,6 +7,7 @@ import { Search, UserRound, Scale, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Link from "next/link";
 
 export function Hero() {
   const { t } = useLanguage();
@@ -54,7 +55,8 @@ export function Hero() {
   const Heading = (
     <div className="w-full text-center max-w-6xl mb-4 md:mb-12 mx-auto px-2">
       <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-primary leading-tight mb-3 md:mb-4 tracking-tight">
-        Build Your <span className="text-secondary">{t("hero_dream_home")}</span>
+        Build Your{" "}
+        <span className="text-secondary">{t("hero_dream_home")}</span>
         <br className="md:hidden" /> {t("hero_build_with")}
       </h1>
       <p className="text-[13px] sm:text-base md:text-lg text-primary/60 md:text-slate-700 font-bold max-w-4xl mx-auto leading-relaxed px-4">
@@ -65,34 +67,34 @@ export function Hero() {
 
   const CTAButtons = (
     <div className="flex flex-col gap-3.5 md:gap-4 w-full md:w-auto">
-      {/* CTA 1: Consult with Expert */}
+      {/* CTA 1: Consult with Expert - Service Browse */}
       <Button
         className="group h-[54px] md:h-[60px] pl-1.5 pr-6 md:pr-8 py-0 bg-primary hover:bg-primary/90 text-white rounded-full flex items-center gap-4 transition-all duration-300 shadow-xl border-none w-full md:w-auto"
         asChild
       >
-        <a href="#consult">
+        <Link href="/browse?type=SERVICE">
           <div className="h-10 w-10 md:h-11 md:w-11 shrink-0 rounded-full bg-secondary flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
             <UserRound className="size-5 md:size-6 text-white" />
           </div>
-            <span className="text-[15px] md:text-lg font-extrabold whitespace-nowrap mx-auto md:mx-0 pr-4 md:pr-0">
+          <span className="text-[15px] md:text-lg font-extrabold whitespace-nowrap mx-auto md:mx-0 pr-4 md:pr-0">
             {t("home_cta_primary")}
-            </span>
-        </a>
+          </span>
+        </Link>
       </Button>
 
-      {/* CTA 2: Compare Material Rate */}
+      {/* CTA 2: Compare Material Rate - Product Browse*/}
       <Button
         className="group h-[54px] md:h-[60px] pl-1.5 pr-6 md:pr-8 py-0 bg-primary hover:bg-primary/90 text-white rounded-full flex items-center gap-4 transition-all duration-300 shadow-xl border-none w-full md:w-auto"
         asChild
       >
-        <a href="#compare">
+        <Link href="/browse?type=PRODUCT">
           <div className="h-10 w-10 md:h-11 md:w-11 shrink-0 rounded-full bg-secondary flex items-center justify-center shadow-lg group-hover:-rotate-12 transition-transform">
             <Scale className="size-5 md:size-6 text-white" />
           </div>
-            <span className="text-[15px] md:text-lg font-extrabold whitespace-nowrap mx-auto md:mx-0 pr-4 md:pr-0">
+          <span className="text-[15px] md:text-lg font-extrabold whitespace-nowrap mx-auto md:mx-0 pr-4 md:pr-0">
             {t("home_cta_secondary")}
-            </span>
-        </a>
+          </span>
+        </Link>
       </Button>
     </div>
   );
