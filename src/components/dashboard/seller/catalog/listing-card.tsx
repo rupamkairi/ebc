@@ -82,11 +82,20 @@ export function ListingCard({ listing, type, view = "list" }: ListingCardProps) 
                 <h3 className="text-base font-black text-primary tracking-tight leading-tight line-clamp-2 min-h-10">
                   {listing.item?.name}
                 </h3>
-                <p className="text-[10px] font-bold text-primary/30 uppercase tracking-wider truncate">
-                  {isProduct
-                    ? listing.item?.brand?.name
-                    : listing.itemRegions?.[0]?.state || "Global"}
-                </p>
+                <div className="flex items-center gap-1.5 text-[10px] font-bold text-primary/30 uppercase tracking-wider truncate">
+                  {isProduct ? (
+                    <>
+                      <span className="truncate">{listing.item?.category?.name}</span>
+                      <span className="opacity-30">•</span>
+                      <span className="truncate">{listing.item?.brand?.name}</span>
+                    </>
+                  ) : (
+                    <div className="flex items-center gap-1">
+                      <MapPin size={10} />
+                      {listing.itemRegions?.[0]?.state || "Global"}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
