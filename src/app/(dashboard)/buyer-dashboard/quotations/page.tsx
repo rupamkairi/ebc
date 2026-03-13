@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Loader2,
   Package,
+  MessageSquare,
 } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -104,6 +105,7 @@ export default function BuyerQuotationsPage() {
             const itemCount = q.quotationLineItems?.length ?? 0;
             const isAccepted = q.status === "ACCEPTED";
             const isEnquiryClosed = q.enquiry?.status === "COMPLETED";
+            const isNegotiable = q.quotationLineItems?.some((li) => li.isNegotiable);
 
             return (
               <Card
@@ -150,6 +152,14 @@ export default function BuyerQuotationsPage() {
                                   ? t("enquiry_closed")
                                   : t("pending_label")}
                             </Badge>
+                            {isNegotiable && (
+                              <Badge
+                                className="text-[10px] font-black uppercase tracking-widest bg-orange-500 hover:bg-orange-600 text-white border-none px-2.5 py-1 gap-1.5 shadow-md shadow-orange-200 animate-pulse"
+                              >
+                                <MessageSquare className="h-2.5 w-2.5 fill-white/20" />
+                                {t("negotiable_price")}
+                              </Badge>
+                            )}
                           </div>
                           <p className="font-black text-sm">
                             {itemCount > 1

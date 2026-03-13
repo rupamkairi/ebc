@@ -21,6 +21,7 @@ import { useEntitiesQuery } from "@/queries/entityQueries";
 import { useState, useEffect, useMemo } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { useItemListingsQuery } from "@/queries/catalogQueries";
 import {
@@ -97,13 +98,16 @@ export function QuotationForm({
       const initialLineItems = enquiry.enquiryLineItems.map((eli) => {
         // Try to pre-select exact item listing
         const exactListing = listings.find((l) => l.itemId === eli.itemId);
+        // Pull default rate and negotiable status if listing exists
+        const defaultRate = exactListing?.itemRates?.[0]?.rate || 0;
+        const defaultNegotiable = exactListing?.itemRates?.[0]?.isNegotiable ?? false;
 
         return {
           itemId: eli.itemId,
           itemListingId: exactListing?.id || "",
-          rate: 0,
-          amount: 0,
-          isNegotiable: true,
+          rate: defaultRate,
+          amount: defaultRate * eli.quantity,
+          isNegotiable: defaultNegotiable,
           remarks: "",
           quantity: eli.quantity,
         };
@@ -332,9 +336,15 @@ export function QuotationForm({
                             placeholder={`Select ${eli.item?.name}...`}
                             onValueChange={(val) => {
                               const selectedListing = listings?.find((l) => l.id === val);
+                              const listingRate = selectedListing?.itemRates?.[0]?.rate || 0;
+                              const listingNegotiable = selectedListing?.itemRates?.[0]?.isNegotiable ?? false;
+                              
                               updateLineItem(index, {
                                 itemListingId: val,
                                 itemId: selectedListing?.itemId || eli.itemId,
+                                rate: listingRate,
+                                amount: listingRate * eli.quantity,
+                                isNegotiable: listingNegotiable,
                               });
                             }}
                             disabled={killSwitchUpdateDisabled && isUpdate}
@@ -385,17 +395,29 @@ export function QuotationForm({
                         </div>
                       </div>
                     </div>
-                    <div className="space-y-1.5">
-                      <Label className="text-[10px] font-black uppercase tracking-widest text-primary/50">
-                        Item Specific Remarks (Optional)
-                      </Label>
-                      <Input
-                        placeholder="e.g. Write Delivery Included, Brand Specifics, etc."
-                        className="border-primary/15 focus:border-primary rounded-xl"
-                        value={currentLineItem?.remarks || ""}
-                        onChange={(e) => updateLineItem(index, { remarks: e.target.value })}
-                        disabled={killSwitchUpdateDisabled && isUpdate}
-                      />
+                    <div className="flex flex-col md:flex-row md:items-center gap-5 justify-between">
+                      <div className="space-y-1.5 flex-1">
+                        <Label className="text-[10px] font-black uppercase tracking-widest text-primary/50">
+                          Item Specific Remarks (Optional)
+                        </Label>
+                        <Input
+                          placeholder="e.g. Write Delivery Included, Brand Specifics, etc."
+                          className="border-primary/15 focus:border-primary rounded-xl"
+                          value={currentLineItem?.remarks || ""}
+                          onChange={(e) => updateLineItem(index, { remarks: e.target.value })}
+                          disabled={killSwitchUpdateDisabled && isUpdate}
+                        />
+                      </div>
+                      <div className="flex items-center gap-3 pt-2 md:pt-5">
+                         <Label className="text-[10px] font-black uppercase tracking-widest text-primary/50">
+                          Negotiable?
+                        </Label>
+                        <Switch 
+                          checked={currentLineItem?.isNegotiable || false}
+                          onCheckedChange={(val) => updateLineItem(index, { isNegotiable: val })}
+                          disabled={killSwitchUpdateDisabled && isUpdate}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -407,7 +429,7 @@ export function QuotationForm({
         {/* Summary sidebar — dark blue gradient */}
         <div className="space-y-4">
           <div
-            className="sticky top-24 rounded-2xl overflow-hidden bg-gradient-to-br from-primary to-primary/80"
+            className="sticky top-24 rounded-2xl overflow-hidden bg-linear-to-br from-primary to-primary/80"
           >
             <div className="px-6 py-5 border-b border-white/10">
               <h3 className="text-white font-black text-lg">Quotation Summary</h3>
@@ -441,7 +463,7 @@ export function QuotationForm({
                 </Label>
                 <Input
                   type="date"
-                  className="bg-white/10 border-white/20 text-white placeholder-white/30 rounded-xl focus:border-secondary focus:ring-secondary/20 [color-scheme:dark]"
+                  className="bg-white/10 border-white/20 text-white placeholder-white/30 rounded-xl focus:border-secondary focus:ring-secondary/20 scheme-dark"
                   value={details.expectedDate ? format(new Date(details.expectedDate), "yyyy-MM-dd") : ""}
                   onChange={(e) => {
                     if (e.target.value) setDetails({ expectedDate: new Date(e.target.value).toISOString() });
