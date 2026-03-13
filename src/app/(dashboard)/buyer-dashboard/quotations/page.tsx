@@ -32,7 +32,7 @@ export default function BuyerQuotationsPage() {
   const filtered = (quotations || []).filter((q) => {
     if (activeFilter === "All") return true;
     if (activeFilter === "Accepted") return q.status === "ACCEPTED";
-    return q.status === "PENDING";
+    return q.status === "PENDING" && q.enquiry?.status !== "COMPLETED";
   });
 
   return (
@@ -103,6 +103,7 @@ export default function BuyerQuotationsPage() {
               q.quotationLineItems?.[0]?.item?.name || t("multiple_items");
             const itemCount = q.quotationLineItems?.length ?? 0;
             const isAccepted = q.status === "ACCEPTED";
+            const isEnquiryClosed = q.enquiry?.status === "COMPLETED";
 
             return (
               <Card
@@ -115,7 +116,11 @@ export default function BuyerQuotationsPage() {
                     <div
                       className={cn(
                         "w-full md:w-1.5 h-1.5 md:h-auto",
-                        isAccepted ? "bg-emerald-500" : "bg-amber-400",
+                        isAccepted
+                          ? "bg-emerald-500"
+                          : isEnquiryClosed
+                            ? "bg-zinc-300"
+                            : "bg-amber-400",
                       )}
                     />
                     <div className="flex-1 p-5 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -134,12 +139,16 @@ export default function BuyerQuotationsPage() {
                                 "text-[10px] font-black uppercase tracking-wide border-none",
                                 isAccepted
                                   ? "bg-emerald-100 text-emerald-700"
-                                  : "bg-amber-100 text-amber-700",
+                                  : isEnquiryClosed
+                                    ? "bg-zinc-100 text-zinc-600"
+                                    : "bg-amber-100 text-amber-700",
                               )}
                             >
                               {isAccepted
                                 ? t("accepted_label")
-                                : t("pending_label")}
+                                : isEnquiryClosed
+                                  ? t("enquiry_closed")
+                                  : t("pending_label")}
                             </Badge>
                           </div>
                           <p className="font-black text-sm">
