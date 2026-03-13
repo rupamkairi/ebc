@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { useEntitiesQuery } from "@/queries/entityQueries";
-import { useAssignmentsQuery } from "@/queries/activityQueries";
+import { useAssignmentsQuery, useQuotationsQuery } from "@/queries/activityQueries";
 import { Input } from "@/components/ui/input";
 import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
 import { ACTIVITY_TYPE } from "@/constants/enums";
@@ -29,12 +29,14 @@ export default function EnquiriesPage() {
   const [showResponded, setShowResponded] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: assignments = [], isLoading: loading } = useAssignmentsQuery({
+  const { data: assignments = [], isLoading: loadingAssignments } = useAssignmentsQuery({
     toEntityId: mainEntity?.id,
     type: ACTIVITY_TYPE.ENQUIRY_ASSIGNMENT,
   });
 
-  if (loading) {
+  const { data: myQuotations = [], isLoading: loadingQuotations } = useQuotationsQuery();
+
+  if (loadingAssignments || loadingQuotations) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -42,12 +44,24 @@ export default function EnquiriesPage() {
     );
   }
 
+  // IDs of enquiries this seller has actually sent a quotation for
+  const myRespondedEnquiryIds = new Set(
+    myQuotations
+      .filter(q => !!mainEntity?.id && (q.createdBy?.staffAtEntityId === mainEntity.id || 
+                   q.createdBy?.createdEntities?.some(e => e.id === mainEntity.id)))
+      .map((q) => q.enquiryId)
+  );
+
   // Split into pending (active) vs responded
   const pendingAssignments = assignments.filter(
-    (a) => !a.enquiry?.status || a.enquiry.status === "PENDING",
+    (a) => 
+      a.enquiry?.id && 
+      !myRespondedEnquiryIds.has(a.enquiry.id) && 
+      (!a.enquiry?.status || (a.enquiry.status !== "ACCEPTED" && a.enquiry.status !== "COMPLETED")),
   );
+  
   const respondedAssignments = assignments.filter(
-    (a) => a.enquiry?.status && a.enquiry.status !== "PENDING",
+    (a) => a.enquiry?.id && myRespondedEnquiryIds.has(a.enquiry.id),
   );
 
   // Apply search to both
@@ -71,9 +85,7 @@ export default function EnquiriesPage() {
   const visibleResponded = filterBySearch(respondedAssignments);
 
   // Set of responded enquiry IDs for notification badge
-  const respondedEnquiryIds = new Set(
-    respondedAssignments.map((a) => a.enquiry!.id),
-  );
+  const respondedEnquiryIds = myRespondedEnquiryIds;
 
   return (
     <div className="flex flex-col gap-6 max-w-5xl mx-auto">

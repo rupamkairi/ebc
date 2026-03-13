@@ -2,8 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { activityService } from "@/services/activityService";
-import { Enquiry } from "@/types/activity";
 import { format } from "date-fns";
 import {
   Calendar,
@@ -16,10 +14,9 @@ import {
 import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useEntitiesQuery } from "@/queries/entityQueries";
-import { useQuotationsQuery } from "@/queries/activityQueries";
+import { useEnquiryQuery, useQuotationsQuery } from "@/queries/activityQueries";
 import { BuyerInfoCard } from "@/components/dashboard/seller/activity-shared/buyer-info-card";
 import { ActivityActionCard } from "@/components/dashboard/seller/activity-shared/activity-action-card";
 import { ActivityTipCard } from "@/components/dashboard/seller/activity-shared/activity-tip-card";
@@ -29,38 +26,25 @@ export default function EnquiryDetailsPage() {
   const { t } = useLanguage();
   const params = useParams();
   const id = params.id as string;
-  const [enquiry, setEnquiry] = useState<Enquiry | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: enquiry, isLoading: loadingEnquiry } = useEnquiryQuery(id);
 
   // Fetch seller entity to identify current seller
-  const { data: entities } = useEntitiesQuery();
+  const { data: entities, isLoading: loadingEntities } = useEntitiesQuery();
   const sellerEntity = entities?.[0];
   const isApproved = sellerEntity?.verificationStatus === "APPROVED";
 
   // Fetch quotations related to this enquiry
-  const { data: quotations } = useQuotationsQuery({ enquiryId: id });
+  const { data: quotations, isLoading: loadingQuotations } = useQuotationsQuery({ enquiryId: id });
 
-  // Check if there's an active quotation from this seller for this enquiry
-  const isActiveQuotation = quotations?.some(
-    (q) => q.enquiryId === id && q.isActive,
+  // Check if there's an active quotation from THIS seller for THIS specific enquiry
+  const isActiveQuotation = !!sellerEntity?.id && (quotations ?? []).some(
+    (q) => q.enquiryId === id && ( // Ensure it belongs to this specific enquiry
+           q.createdBy?.staffAtEntityId === sellerEntity.id || 
+           q.createdBy?.createdEntities?.some(e => e.id === sellerEntity.id)
+    ) && q.isActive
   );
 
-  useEffect(() => {
-    const fetchEnquiry = async () => {
-      try {
-        setLoading(true);
-        const data = await activityService.getEnquiry(id);
-        setEnquiry(data);
-      } catch (error) {
-        console.error("Error fetching enquiry:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    if (id) fetchEnquiry();
-  }, [id]);
-
-  if (loading) {
+  if (loadingEnquiry || loadingEntities || loadingQuotations) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -82,7 +66,19 @@ export default function EnquiryDetailsPage() {
   }
 
   const details = enquiry.enquiryDetails?.[0];
-  const isPending = enquiry.status === "PENDING";
+  
+  // Scoped Responded check: Did WE (this entity) respond to THIS specific enquiry?
+  // We check both the entity ID link AND the current user ID as a fallback/reinforcement.
+  const hasResponded = !!sellerEntity?.id && (quotations ?? []).some(
+    (q) => q.enquiryId === id && (
+           q.createdBy?.staffAtEntityId === sellerEntity.id || 
+           q.createdBy?.createdEntities?.some(e => e.id === sellerEntity.id)
+    )
+  );
+
+  // Global Enqury Status
+  const isClosed = enquiry.status === "ACCEPTED" || enquiry.status === "COMPLETED";
+  const isPendingEnquiry = enquiry.status === "PENDING" || enquiry.status === "RESPONDED";
 
   return (
     <div className="flex flex-col gap-6 max-w-5xl mx-auto">
@@ -94,9 +90,11 @@ export default function EnquiryDetailsPage() {
             {t("active_enquiries")}
           </h1>
           <p className="text-sm text-primary/60 font-medium">
-            {isPending
+            {hasResponded
+              ? t("already_responded_enquiry")
+              : !isClosed
               ? t("manage_respond_enquiries_buyer")
-              : t("already_responded_enquiry")}
+              : t("this_enquiry_is_closed")}
           </p>
         </div>
       </div>
@@ -118,7 +116,7 @@ export default function EnquiryDetailsPage() {
                   </span>
                   <span
                     className={`px-4 py-1 rounded-full text-xs font-black tracking-wide text-white ${
-                      isPending ? "bg-primary" : "bg-green-600"
+                      isPendingEnquiry ? "bg-primary" : "bg-green-600"
                     }`}
                   >
                     {enquiry.status}
@@ -237,13 +235,13 @@ export default function EnquiryDetailsPage() {
 
           {/* Submit Quotation / Responded — action card */}
           <ActivityActionCard
-            isPending={isPending}
+            isPending={!isClosed && !hasResponded}
             actionLabel={t("submit_quotation")}
             actionHref={`/seller-dashboard/quotations/create?enquiryId=${enquiry.id}`}
             actionIcon={<FileText className="h-4 w-4" />}
             actionDescription={t("ready_fulfil_requirement_send_price")}
-            respondedLabel={t("quotation_submitted")}
-            respondedDescription={t("already_responded_enquiry")}
+            respondedLabel={hasResponded ? t("quotation_submitted") : t("enquiry_closed")}
+            respondedDescription={hasResponded ? t("already_responded_enquiry") : t("this_enquiry_is_closed")}
             backHref="/seller-dashboard/enquiries"
             backLabel={t("back_to_enquiries")}
             disabled={!isApproved}

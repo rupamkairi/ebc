@@ -145,7 +145,6 @@ export function useAssignmentsQuery(params: AssignmentListParams = {}) {
   return useQuery({
     queryKey: activityKeys.assignments(params),
     queryFn: () => activityService.getAssignments(params),
-    placeholderData: keepPreviousData,
     enabled: !!token,
   });
 }
@@ -156,7 +155,6 @@ export function useQuotationsQuery(params: QuotationListParams = {}) {
   return useQuery({
     queryKey: activityKeys.quotations(params),
     queryFn: () => activityService.getQuotations(params),
-    placeholderData: keepPreviousData,
     enabled: !!token,
   });
 }

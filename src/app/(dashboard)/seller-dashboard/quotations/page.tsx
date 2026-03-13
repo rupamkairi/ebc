@@ -8,7 +8,6 @@ import {
   ChevronRight,
   Loader2,
   CheckCircle2,
-  Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -64,7 +63,7 @@ export default function QuotationsPage() {
           qut.enquiry?.createdBy?.name ||
           `${t("enquiry_id_label", "Enquiry")} #${qut.enquiryId.slice(0, 8)}`,
         displayDate: format(new Date(qut.createdAt), "dd MMM yyyy"),
-        uiStatus: qut.isActive ? "Accepted" : "Sent",
+        uiStatus: qut.status === "ACCEPTED" ? "Accepted" : "Sent",
       };
     });
   }, [quotations, searchQuery, t]);
@@ -92,30 +91,6 @@ export default function QuotationsPage() {
             )}
           </p>
         </div>
-        <Button
-          asChild={isApproved}
-          disabled={!isApproved}
-          onClick={() => {
-            if (!isApproved) {
-              toast.error(
-                `Your business must be APPROVED to create quotations. Current status: ${sellerEntity?.verificationStatus || "unknown"}`,
-              );
-            }
-          }}
-          className="bg-primary hover:bg-primary/90 text-white rounded-xl font-black text-[11px] tracking-widest uppercase px-5 h-10 shadow-sm transition-all shrink-0 disabled:opacity-50"
-        >
-          {isApproved ? (
-            <Link href="/seller-dashboard/quotations/create">
-              <Plus className="h-4 w-4 mr-2" />
-              {t("create_quotation", "Create Quotation")}
-            </Link>
-          ) : (
-            <div className="flex items-center">
-              <Plus className="h-4 w-4 mr-2" />
-              {t("create_quotation", "Create Quotation")}
-            </div>
-          )}
-        </Button>
       </div>
 
       {/* Search Bar */}
