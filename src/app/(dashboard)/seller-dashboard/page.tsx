@@ -377,8 +377,8 @@ export default function SellerDashboardPage() {
                   className="w-full z-10"
                 >
                   <Button className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-lg h-11 text-sm font-semibold shadow-md active:scale-[0.98] transition-all">
-                    <ChevronRight className="mr-1 h-4 w-4" />{" "}
                     {t("view_all_leads_customers")}
+                    <ChevronRight className="ml-1 h-4 w-4" />
                   </Button>
                 </Link>
               </Card>
