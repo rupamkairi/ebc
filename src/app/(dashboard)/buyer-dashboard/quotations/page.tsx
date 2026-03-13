@@ -186,9 +186,9 @@ export default function BuyerQuotationsPage() {
                           className="border-primary text-primary hover:bg-primary hover:text-white font-black rounded-xl h-10 px-5 transition-all group/btn"
                         >
                           <Link
-                            href={`/buyer-dashboard/enquiries/${q.enquiryId}`}
+                            href={`/buyer-dashboard/quotations/${q.id}`}
                           >
-                            {t("view_label")}
+                            Details
                             <ChevronRight className="ml-1 h-4 w-4 group-hover/btn:translate-x-0.5 transition-transform" />
                           </Link>
                         </Button>
