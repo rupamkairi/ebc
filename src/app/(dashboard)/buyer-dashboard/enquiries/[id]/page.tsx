@@ -196,7 +196,7 @@ export default function BuyerEnquiryDetailsPage() {
             <div className="flex items-center gap-3 px-8 py-4 rounded-full bg-emerald-500/20 border border-emerald-500/30">
               <CheckCircle2 className="h-5 w-5 text-emerald-600" />
               <span className="font-black text-emerald-700 text-sm">
-                {t("review_submitted") || "Review Submitted — Thank you!"}
+                {t("review_submitted")}
               </span>
             </div>
           ) : acceptedQuotation ? (
@@ -255,15 +255,10 @@ export default function BuyerEnquiryDetailsPage() {
 
           {/* Quotations Section */}
           <section className="space-y-8">
-            <div className="flex items-center justify-between">
-              <h3 className="text-2xl font-black tracking-tight flex items-center gap-2">
-                <FileText className="h-6 w-6 text-primary" />
-                {t("seller_quotations")}
-              </h3>
-              <Badge variant="secondary" className="font-bold">
-                {quotations?.length || 0} {t("proposals_count")}
-              </Badge>
-            </div>
+            <h3 className="text-2xl font-black tracking-tight flex items-center gap-2">
+              <FileText className="h-6 w-6 text-primary" />
+              {t("seller_quotations")}
+            </h3>
 
             {!quotations || quotations.length === 0 ? (
               <div className="p-8 md:p-12 text-center bg-muted/20 border border-dashed rounded-2xl md:rounded-3xl">
