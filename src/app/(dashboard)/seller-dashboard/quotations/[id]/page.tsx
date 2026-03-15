@@ -7,7 +7,15 @@ import {
   useEnquiryQuery,
 } from "@/queries/activityQueries";
 import { QuotationForm } from "@/components/dashboard/seller/quotation/quotation-form";
-import { Loader2 } from "lucide-react";
+import { 
+  Loader2, 
+  MessageSquare, 
+  RefreshCw, 
+  TrendingDown, 
+  TrendingUp, 
+  CheckCircle2,
+} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -55,6 +63,7 @@ export default function ViewQuotationPage() {
           );
 
           return {
+            id: item.id,
             itemId: item.itemId,
             itemListingId: matchedListing?.id || "",
             rate: item.rate,
@@ -118,12 +127,75 @@ export default function ViewQuotationPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <PageBackButton
-        href="/seller-dashboard/quotations"
-        variant="link"
-        label={t("back_to_quotation_list")}
-      />
+    <div className="space-y-6 max-w-5xl mx-auto px-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <PageBackButton
+          href="/seller-dashboard/quotations"
+          variant="link"
+          label={t("back_to_quotation_list")}
+        />
+        <div className="flex flex-wrap gap-2 px-4">
+          {quotation.status === "ACCEPTED" && (
+            <Badge className="bg-green-600 text-white font-black uppercase text-[10px] tracking-widest px-3 py-1">
+              <CheckCircle2 className="h-3 w-3 mr-1.5" />
+              Accepted
+            </Badge>
+          )}
+          {quotation.requestedRevision && !quotation.hasBeenRevised && (
+            <Badge className="bg-orange-500 text-white font-black uppercase text-[10px] tracking-widest animate-pulse px-3 py-1">
+              <MessageSquare className="h-3 w-3 mr-1.5" />
+              Action Required: Revision Requested
+            </Badge>
+          )}
+          {quotation.hasBeenRevised && (
+            <Badge className="bg-violet-600 text-white font-black uppercase text-[10px] tracking-widest px-3 py-1 flex items-center">
+              {quotation.priceChangeType === "DECREASED" && <TrendingDown className="h-3 w-3 mr-1.5" />}
+              {quotation.priceChangeType === "INCREASED" && <TrendingUp className="h-3 w-3 mr-1.5" />}
+              {quotation.priceChangeType === "MAINTAINED" && <RefreshCw className="h-3 w-3 mr-1.5" />}
+              Revised
+            </Badge>
+          )}
+        </div>
+      </div>
+
+      {quotation.requestedRevision && !quotation.hasBeenRevised && (
+        <div className="bg-orange-50 border border-orange-200 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm animate-in fade-in slide-in-from-top-4">
+           <div className="flex items-center gap-4">
+              <div className="h-12 w-12 rounded-2xl bg-orange-500 flex items-center justify-center text-white shadow-lg shrink-0">
+                 <MessageSquare className="h-6 w-6" />
+              </div>
+              <div className="space-y-1">
+                 <h4 className="font-black text-orange-900">Buyer Requested Reconsideration</h4>
+                 <p className="text-sm text-orange-700 font-medium italic">
+                    &quot;{quotation.revisionRemarks || "No remarks provided."}&quot;
+                 </p>
+              </div>
+           </div>
+           <Button asChild className="rounded-xl bg-orange-600 hover:bg-orange-700 h-10 px-6 font-black text-xs uppercase tracking-widest">
+              <Link href={`/seller-dashboard/enquiries/${quotation.enquiryId}`}>
+                Review & Respond
+              </Link>
+           </Button>
+        </div>
+      )}
+
+      {quotation.hasBeenRevised && (
+        <div className="bg-violet-50 border border-violet-200 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
+           <div className="flex items-center gap-4">
+              <div className="h-12 w-12 rounded-2xl bg-violet-600 flex items-center justify-center text-white shadow-lg shrink-0">
+                 <RefreshCw className="h-6 w-6" />
+              </div>
+              <div className="space-y-1">
+                 <h4 className="font-black text-violet-900">This Quotation has been Revised</h4>
+                 <p className="text-sm text-violet-700 font-medium">
+                    You have responded to the buyer&apos;s request. 
+                    {quotation.priceChangeType === "DECREASED" && " You provided a price reduction."}
+                    {quotation.priceChangeType === "MAINTAINED" && " You maintained the original pricing."}
+                 </p>
+              </div>
+           </div>
+        </div>
+      )}
       <QuotationForm
         enquiry={enquiry}
         quotation={quotation}

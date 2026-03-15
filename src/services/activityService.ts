@@ -134,7 +134,15 @@ export const activityService = {
     });
   },
 
-  async updateQuotation(id: string, data: Partial<CreateQuotationRequest>) {
+  async updateQuotation(id: string, data: any) {
+    // Map CreateQuotationRequest format back to model format if needed
+    // Many backends expect the actual model field names for PATCH updates
+    const payload = {
+      ...data,
+      ...(data.lineItems && { quotationLineItems: data.lineItems }),
+      ...(data.details && { quotationDetails: [data.details] }),
+    };
+
     return fetchClient<Quotation>(
       `${
         API_ENDPOINTS.ACTIVITY.QUOTATION.UPDATE ||
@@ -142,13 +150,19 @@ export const activityService = {
       }/${id}`,
       {
         method: "PATCH",
-        body: data,
+        body: payload,
       },
     );
   },
 
   async acceptQuotation(id: string) {
     return fetchClient(`${API_ENDPOINTS.ACTIVITY.QUOTATION.ACCEPT}/${id}`, {
+      method: "POST",
+    });
+  },
+
+  async requestRevision(id: string) {
+    return fetchClient(`${API_ENDPOINTS.ACTIVITY.QUOTATION.REQUEST_REVISION}/${id}`, {
       method: "POST",
     });
   },

@@ -152,12 +152,18 @@ export interface CreateQuotationRequest {
   enquiryId: string;
   lineItems: Omit<QuotationLineItem, "id" | "item">[];
   details: QuotationDetails;
+  hasBeenRevised?: boolean;
+  priceChangeType?: "INCREASED" | "DECREASED" | "MAINTAINED";
 }
 
 export interface Quotation {
   id: string;
   enquiryId: string;
   isActive: boolean;
+  requestedRevision: boolean;
+  hasBeenRevised: boolean;
+  priceChangeType?: "INCREASED" | "DECREASED" | "MAINTAINED";
+  revisionRemarks?: string | null;
   quotationLineItems: QuotationLineItem[];
   quotationDetails: QuotationDetails[];
   status: string;

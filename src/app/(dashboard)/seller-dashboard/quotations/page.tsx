@@ -8,6 +8,10 @@ import {
   ChevronRight,
   Loader2,
   CheckCircle2,
+  TrendingDown,
+  TrendingUp,
+  RefreshCw,
+  MessageSquare,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -155,6 +159,20 @@ export default function QuotationsPage() {
                       >
                         {qut.uiStatus}
                       </span>
+                      {qut.requestedRevision && !qut.hasBeenRevised && (
+                        <span className="px-3 py-1 rounded-full text-[9px] font-black tracking-widest bg-orange-500 text-white flex items-center gap-1.5 shadow-sm">
+                          <MessageSquare className="h-2.5 w-2.5" />
+                          REVISION REQUESTED
+                        </span>
+                      )}
+                      {qut.hasBeenRevised && (
+                        <span className="px-3 py-1 rounded-full text-[9px] font-black tracking-widest bg-violet-600 text-white flex items-center gap-1.5 shadow-sm">
+                          {qut.priceChangeType === "DECREASED" && <TrendingDown className="h-2.5 w-2.5" />}
+                          {qut.priceChangeType === "INCREASED" && <TrendingUp className="h-2.5 w-2.5" />}
+                          {qut.priceChangeType === "MAINTAINED" && <RefreshCw className="h-2.5 w-2.5" />}
+                          REVISED
+                        </span>
+                      )}
                     </div>
 
                     {/* Customer Name */}

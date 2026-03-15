@@ -61,7 +61,11 @@ export default function BuyerDashboardPage() {
       ).length || 0;
 
     const pendingQuotations =
-      quotations?.filter((q) => q.status === "PENDING").length || 0;
+      quotations?.filter((q) => 
+        q.status !== "ACCEPTED" && 
+        q.status !== "REJECTED" && 
+        q.enquiry?.status !== "COMPLETED"
+      ).length || 0;
     const acceptedQuotations =
       quotations?.filter((q) => q.status === "ACCEPTED").length || 0;
 

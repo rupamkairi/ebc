@@ -75,18 +75,46 @@ export default function SellerDashboardPage() {
   const pendingVisits = visits.filter((v) => v.status === "PENDING").length;
   const totalVisits = visits.length;
 
+  // IDs of enquiries this seller has actually sent a quotation for
+  const myRespondedEnquiryIds = new Set(
+    quotations
+      .filter(q => !!mainEntity?.id && (q.createdBy?.staffAtEntityId === mainEntity.id || 
+                   q.createdBy?.createdEntities?.some(e => e.id === mainEntity.id)))
+      .map((q) => q.enquiryId)
+  );
+
+  // IDs of enquiries where buyer has requested a revision from this seller
+  const myRevisionRequestedEnquiryIds = new Set(
+    quotations
+      .filter(q => !!mainEntity?.id && (q.createdBy?.staffAtEntityId === mainEntity.id || 
+                   q.createdBy?.createdEntities?.some(e => e.id === mainEntity.id)) && q.requestedRevision)
+      .map((q) => q.enquiryId)
+  );
+
   // Split enquiry assignments into pending vs responded
-  const pendingEnquiryCount = enquiryAssignments.filter(
-    (a) => !a.enquiry?.status || a.enquiry.status === "PENDING",
-  ).length;
-  const respondedEnquiryCount = enquiryAssignments.filter(
-    (a) => a.enquiry?.status && a.enquiry.status !== "PENDING",
-  ).length;
+  const pendingEnquiryCount = enquiryAssignments.filter((a) => {
+    if (!a.enquiry?.id) return false;
+    const isResponded = myRespondedEnquiryIds.has(a.enquiry.id);
+    const revisionRequested = myRevisionRequestedEnquiryIds.has(a.enquiry.id);
+    const isClosed = a.enquiry.status === "ACCEPTED" || a.enquiry.status === "COMPLETED";
+
+    // Pending if NOT responded yet, OR if buyer requested a revision
+    return (!isResponded || revisionRequested) && !isClosed;
+  }).length;
+
+  const respondedEnquiryCount = enquiryAssignments.filter((a) => {
+    if (!a.enquiry?.id) return false;
+    const isResponded = myRespondedEnquiryIds.has(a.enquiry.id);
+    const revisionRequested = myRevisionRequestedEnquiryIds.has(a.enquiry.id);
+    
+    // Responded if responded AND no revision requested
+    return isResponded && !revisionRequested;
+  }).length;
 
   // Build a Set of responded enquiry IDs for the notification inbox badge
   const respondedEnquiryIds = new Set(
     enquiryAssignments
-      .filter((a) => a.enquiry?.status && a.enquiry.status !== "PENDING")
+      .filter((a) => a.enquiry?.id && myRespondedEnquiryIds.has(a.enquiry.id) && !myRevisionRequestedEnquiryIds.has(a.enquiry.id))
       .map((a) => a.enquiry!.id),
   );
 

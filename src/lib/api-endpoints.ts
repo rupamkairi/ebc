@@ -122,6 +122,7 @@ export const API_ENDPOINTS = {
       DELETE: "/activity/quotation", // :id
       LIST: "/activity/quotation/list",
       ACCEPT: "/activity/quotation/accept", // :id
+      REQUEST_REVISION: "/activity/quotation/request-revision", // :id
     },
     VISIT: {
       CREATE: "/activity/visit",

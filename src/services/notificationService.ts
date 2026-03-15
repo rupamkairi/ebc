@@ -23,6 +23,18 @@ export const notificationService = {
     return response;
   },
 
+  async createNotification(data: {
+    type: string;
+    activityId?: string;
+    activityType?: string;
+    metadata?: Record<string, unknown>;
+  }): Promise<Notification> {
+    return fetchClient<Notification>(API_ENDPOINTS.NOTIFICATION.CREATE, {
+      method: "POST",
+      body: data,
+    });
+  },
+
   async markAsRead(id: string): Promise<void> {
     await fetchClient(`${API_ENDPOINTS.NOTIFICATION.MARK_READ}/${id}`, {
       method: "PATCH",

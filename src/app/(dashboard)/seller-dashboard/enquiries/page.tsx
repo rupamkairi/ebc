@@ -52,16 +52,32 @@ export default function EnquiriesPage() {
       .map((q) => q.enquiryId)
   );
 
+  // IDs of enquiries where buyer has requested a revision from this seller, and it has NOT been sent yet
+  const myRevisionRequestedEnquiryIds = new Set(
+    myQuotations
+      .filter(q => !!mainEntity?.id && (q.createdBy?.staffAtEntityId === mainEntity.id || 
+                   q.createdBy?.createdEntities?.some(e => e.id === mainEntity.id)) && q.requestedRevision && !q.hasBeenRevised)
+      .map((q) => q.enquiryId)
+  );
+
+  // IDs of enquiries where this seller has already responded to a revision request
+  const myRevisedEnquiryIds = new Set(
+    myQuotations
+      .filter(q => !!mainEntity?.id && (q.createdBy?.staffAtEntityId === mainEntity.id || 
+                   q.createdBy?.createdEntities?.some(e => e.id === mainEntity.id)) && q.hasBeenRevised)
+      .map((q) => q.enquiryId)
+  );
+
   // Split into pending (active) vs responded
   const pendingAssignments = assignments.filter(
     (a) => 
       a.enquiry?.id && 
-      !myRespondedEnquiryIds.has(a.enquiry.id) && 
+      (!myRespondedEnquiryIds.has(a.enquiry.id) || myRevisionRequestedEnquiryIds.has(a.enquiry.id)) && 
       (!a.enquiry?.status || (a.enquiry.status !== "ACCEPTED" && a.enquiry.status !== "COMPLETED")),
   );
   
   const respondedAssignments = assignments.filter(
-    (a) => a.enquiry?.id && myRespondedEnquiryIds.has(a.enquiry.id),
+    (a) => a.enquiry?.id && myRespondedEnquiryIds.has(a.enquiry.id) && !myRevisionRequestedEnquiryIds.has(a.enquiry.id),
   );
 
   // Apply search to both
@@ -143,6 +159,11 @@ export default function EnquiriesPage() {
                         <div className="px-3 py-1 rounded-full border border-primary/10 text-primary text-[9px] font-black tracking-widest bg-primary/5 uppercase">
                           ID: {enq.id.slice(0, 8)}
                         </div>
+                        {myRevisionRequestedEnquiryIds.has(enq.id) && (
+                          <div className="px-3 py-1 rounded-full bg-orange-500 text-white text-[9px] font-black tracking-widest uppercase">
+                            {t("revision_requested", "Requested Revision")}
+                          </div>
+                        )}
                         <div
                           className={cn(
                             "px-3 py-1 rounded-full text-[9px] font-black tracking-widest uppercase",
@@ -246,7 +267,7 @@ export default function EnquiriesPage() {
               />
             </button>
 
-            {showResponded && (
+            {showResponded &&  (
               <div className="grid gap-4 animate-in fade-in slide-in-from-top-2 duration-300">
                 {visibleResponded.map((assignment) => {
                   const enq = assignment.enquiry;
@@ -256,7 +277,7 @@ export default function EnquiriesPage() {
                   return (
                     <Card
                       key={assignment.id}
-                      className="bg-white/60 border border-green-100 shadow-xs rounded-[20px] overflow-hidden p-5 md:p-7 opacity-80"
+                      className={cn("border-green-100 bg-white/60 border shadow-xs rounded-[20px] overflow-hidden p-5 md:p-7", enq.status === "COMPLETED" ? "opacity-80" : "opacity-100")}
                     >
                       <div className="flex flex-col gap-3">
                         <div className="flex items-center justify-between gap-3">
@@ -264,8 +285,13 @@ export default function EnquiriesPage() {
                             <div className="px-3 py-1 rounded-full border border-primary/10 text-primary text-[9px] font-black tracking-widest bg-primary/5 uppercase">
                               ID: {enq.id.slice(0, 8)}
                             </div>
+                            {myRevisedEnquiryIds.has(enq.id) && (
+                              <div className="px-3 py-1 rounded-full bg-violet-600 text-white text-[9px] font-black tracking-widest uppercase">
+                                {t("revised", "Revised")}
+                              </div>
+                            )}
                           </div>
-                          <div className="px-3 py-1 rounded-lg bg-green-100 text-green-700 font-black text-[9px] tracking-widest uppercase shrink-0 flex items-center gap-1">
+                          <div className={cn("px-3 py-1 rounded-lg  font-black text-[9px] tracking-widest uppercase shrink-0 flex items-center gap-1", enq.status === "COMPLETED" ? "bg-green-100 text-green-700" : "bg-green-100 text-orange-700")}>
                             <CheckCircle2 size={10} />
                             {enq.status}
                           </div>

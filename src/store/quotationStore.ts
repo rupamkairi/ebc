@@ -1,9 +1,9 @@
 import { create } from "zustand";
-import { CreateQuotationRequest, QuotationLineItem } from "@/types/activity";
 
 export interface QuotationState {
   enquiryId: string;
   lineItems: {
+    id?: string;
     itemId: string;
     itemListingId: string; // Internal helper to keep track of selection
     rate: number;

@@ -5,6 +5,7 @@ import {
   useQuotationQuery,
   useAcceptQuotationMutation,
   useCompleteEnquiryMutation,
+  useRequestRevisionMutation,
 } from "@/queries/activityQueries";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,9 @@ import {
   Calendar,
   User,
   ExternalLink,
+  TrendingDown,
+  TrendingUp,
+  RefreshCw,
 } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -34,6 +38,7 @@ export default function QuotationDetailsPage() {
   const { data: q, isLoading } = useQuotationQuery(id);
   const acceptMutation = useAcceptQuotationMutation();
   const completeMutation = useCompleteEnquiryMutation();
+  const requestRevisionMutation = useRequestRevisionMutation(); 
 
   if (isLoading) {
     return (
@@ -54,6 +59,8 @@ export default function QuotationDetailsPage() {
 
   const isAccepted = q.status === "ACCEPTED";
   const isEnquiryCompleted = q.enquiry?.status === "COMPLETED";
+  const isNegotiable = q.quotationLineItems?.some((li) => li.isNegotiable) && !q.hasBeenRevised;
+  const isDiscountRequested = q.requestedRevision;
   
   const totalAmount = q.quotationLineItems?.reduce(
     (sum, li) => sum + (li.amount || 0),
@@ -78,8 +85,53 @@ export default function QuotationDetailsPage() {
     }
   };
 
+  const handleRequestRevisionFlow = async () => {
+    try {
+      // 1. Sent seller / service provider a request for revision
+      await requestRevisionMutation.mutateAsync(q.id);
+
+      toast.success("Revision request sent successfully!");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Something went wrong";
+      toast.error(message);
+    }
+  };
+
   return (
     <div className="max-w-5xl mx-auto py-6 md:py-10 px-4 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      {q.hasBeenRevised && (
+        <div className="bg-violet-50 border border-violet-200 rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
+           <div className="flex items-center gap-4">
+              <div className="h-12 w-12 rounded-2xl bg-violet-600 flex items-center justify-center text-white shadow-lg shrink-0">
+                 <RefreshCw className="h-6 w-6" />
+              </div>
+              <div className="space-y-1">
+                 <h4 className="font-black text-violet-900">Quotation Reconsidered</h4>
+                 <p className="text-sm text-violet-700 font-medium">
+                    The seller has reviewed your revision request and updated the proposal. 
+                    {q.priceChangeType === "DECREASED" && " They have specially reduced the price for you!"}
+                 </p>
+              </div>
+           </div>
+        </div>
+      )}
+
+      {q.requestedRevision && !q.hasBeenRevised && (
+        <div className="bg-orange-50 border border-orange-200 rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm animate-pulse">
+           <div className="flex items-center gap-4">
+              <div className="h-12 w-12 rounded-2xl bg-orange-500 flex items-center justify-center text-white shadow-lg shrink-0">
+                 <RefreshCw className="h-6 w-6" />
+              </div>
+              <div className="space-y-1">
+                 <h4 className="font-black text-orange-900">Revision Pending</h4>
+                 <p className="text-sm text-orange-700 font-medium">
+                    Your request for a price reconsideration has been sent. We are awaiting the seller&apos;s response.
+                 </p>
+              </div>
+           </div>
+        </div>
+      )}
+
       {/* Navigation and Title */}
       <div className="flex flex-col gap-4">
         <button
@@ -98,6 +150,19 @@ export default function QuotationDetailsPage() {
               {isAccepted && (
                 <Badge className="bg-emerald-500 text-white font-black uppercase text-[10px] tracking-widest">
                   Accepted
+                </Badge>
+              )}
+              {q.hasBeenRevised && (
+                <Badge className="bg-violet-600 text-white font-black uppercase text-[10px] tracking-widest flex items-center gap-1.5 px-3">
+                  {q.priceChangeType === "DECREASED" && <TrendingDown className="h-3 w-3" />}
+                  {q.priceChangeType === "INCREASED" && <TrendingUp className="h-3 w-3" />}
+                  {q.priceChangeType === "MAINTAINED" && <RefreshCw className="h-3 w-3" />}
+                  Revised {q.priceChangeType === "DECREASED" ? "(Price Reduced)" : q.priceChangeType === "INCREASED" ? "(Price Updated)" : ""}
+                </Badge>
+              )}
+              {q.requestedRevision && !q.hasBeenRevised && (
+                <Badge className="bg-orange-500 text-white font-black uppercase text-[10px] tracking-widest px-3">
+                  Revision Requested
                 </Badge>
               )}
             </div>
@@ -121,6 +186,15 @@ export default function QuotationDetailsPage() {
                 <CheckCircle2 className="h-6 w-6 text-white" />
               )}
               Accept this Offer
+            </Button>
+          )}
+
+          {!isAccepted && !isEnquiryCompleted && isNegotiable && !isDiscountRequested && (
+            <Button
+              onClick={handleRequestRevisionFlow}
+              className="bg-orange-400 hover:bg-orange-500 text-white font-black px-10 text-lg shadow-xl shadow-orange-400/20 transition-all hover:scale-[1.02] active:scale-95 gap-3"
+            >
+              Ask for Discount
             </Button>
           )}
 
@@ -180,7 +254,7 @@ export default function QuotationDetailsPage() {
                             <span className="text-xs text-muted-foreground font-medium ml-1">/{unitLabel}</span>
                           </div>
                         </div>
-                        {li.isNegotiable && (
+                        {li.isNegotiable && !q.hasBeenRevised && (
                           <Badge variant="outline" className="text-[9px] font-black uppercase text-secondary border-secondary/20 bg-secondary/5">
                             Negotiable
                           </Badge>

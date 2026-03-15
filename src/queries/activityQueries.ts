@@ -216,6 +216,17 @@ export function useAcceptQuotationMutation() {
   });
 }
 
+export function useRequestRevisionMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => activityService.requestRevision(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: activityKeys.all });
+      queryClient.invalidateQueries({ queryKey: walletKeys.all });
+    },
+  });
+}
+
 // Visit Hooks
 export function useVisitsQuery(params: VisitListParams = {}) {
   const token = useAuthStore((state) => state.token);

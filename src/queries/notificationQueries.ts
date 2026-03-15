@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 export const notificationKeys = {
   all: ["notifications"] as const,
-  list: (params?: any) => [...notificationKeys.all, "list", params] as const,
+  list: (params?: unknown) => [...notificationKeys.all, "list", params] as const,
   channels: () => [...notificationKeys.all, "channels"] as const,
 };
 
@@ -19,6 +19,21 @@ export const useNotificationsQuery = (params?: {
     queryKey: notificationKeys.list(params),
     queryFn: () => notificationService.getNotifications(params),
     enabled: !!token,
+  });
+};
+
+export const useCreateNotificationMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: {
+      type: string;
+      activityId?: string;
+      activityType?: string;
+      metadata?: Record<string, unknown>;
+    }) => notificationService.createNotification(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: notificationKeys.all });
+    },
   });
 };
 

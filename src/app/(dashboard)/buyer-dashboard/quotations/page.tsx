@@ -33,7 +33,10 @@ export default function BuyerQuotationsPage() {
   const filtered = (quotations || []).filter((q) => {
     if (activeFilter === "All") return true;
     if (activeFilter === "Accepted") return q.status === "ACCEPTED";
-    return q.status === "PENDING" && q.enquiry?.status !== "COMPLETED";
+    return (q.status === "PENDING" || q.requestedRevision) && 
+           q.status !== "ACCEPTED" && 
+           q.status !== "REJECTED" && 
+           q.enquiry?.status !== "COMPLETED";
   });
 
   return (
@@ -105,7 +108,7 @@ export default function BuyerQuotationsPage() {
             const itemCount = q.quotationLineItems?.length ?? 0;
             const isAccepted = q.status === "ACCEPTED";
             const isEnquiryClosed = q.enquiry?.status === "COMPLETED";
-            const isNegotiable = q.quotationLineItems?.some((li) => li.isNegotiable);
+            const isNegotiable = q.quotationLineItems?.some((li) => li.isNegotiable) && !q.hasBeenRevised;
 
             return (
               <Card
@@ -159,6 +162,13 @@ export default function BuyerQuotationsPage() {
                                 <MessageSquare className="h-2.5 w-2.5 fill-white/20" />
                                 {t("negotiable_price")}
                               </Badge>
+                            )}
+                            {q.requestedRevision && !q.hasBeenRevised && (
+                               <Badge
+                                 className="text-[10px] font-black uppercase tracking-widest bg-violet-600 text-white border-none px-2.5 py-1 shadow-md shadow-violet-200"
+                               >
+                                 {t("revision_requested_label", "Revision Requested")}
+                               </Badge>
                             )}
                           </div>
                           <p className="font-black text-sm">

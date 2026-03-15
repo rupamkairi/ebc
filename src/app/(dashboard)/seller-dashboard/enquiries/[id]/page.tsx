@@ -16,7 +16,8 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useEntitiesQuery } from "@/queries/entityQueries";
-import { useEnquiryQuery, useQuotationsQuery } from "@/queries/activityQueries";
+import { useEnquiryQuery, useQuotationsQuery, useUpdateQuotationMutation } from "@/queries/activityQueries";
+import { toast } from "sonner";
 import { BuyerInfoCard } from "@/components/dashboard/seller/activity-shared/buyer-info-card";
 import { ActivityActionCard } from "@/components/dashboard/seller/activity-shared/activity-action-card";
 import { ActivityTipCard } from "@/components/dashboard/seller/activity-shared/activity-tip-card";
@@ -37,12 +38,17 @@ export default function EnquiryDetailsPage() {
   const { data: quotations, isLoading: loadingQuotations } = useQuotationsQuery({ enquiryId: id });
 
   // Check if there's an active quotation from THIS seller for THIS specific enquiry
-  const isActiveQuotation = !!sellerEntity?.id && (quotations ?? []).some(
+  const myQuotation = (quotations ?? []).find(
     (q) => q.enquiryId === id && ( // Ensure it belongs to this specific enquiry
-           q.createdBy?.staffAtEntityId === sellerEntity.id || 
-           q.createdBy?.createdEntities?.some(e => e.id === sellerEntity.id)
-    ) && q.isActive
+           q.createdBy?.staffAtEntityId === sellerEntity?.id || 
+           q.createdBy?.createdEntities?.some(e => e.id === sellerEntity?.id)
+    )
   );
+  
+  const { mutate: updateQuotation, isPending: isUpdatingQuotation } = useUpdateQuotationMutation();
+
+  const isActiveQuotation = !!myQuotation && myQuotation.status !== "REJECTED" && myQuotation.isActive;
+  const isRevisionRequested = !!myQuotation && myQuotation.requestedRevision && !myQuotation.hasBeenRevised;
 
   if (loadingEnquiry || loadingEntities || loadingQuotations) {
     return (
@@ -76,9 +82,10 @@ export default function EnquiryDetailsPage() {
     )
   );
 
-  // Global Enqury Status
+  // Global Enquiry Status
   const isClosed = enquiry.status === "ACCEPTED" || enquiry.status === "COMPLETED";
   const isPendingEnquiry = enquiry.status === "PENDING" || enquiry.status === "RESPONDED";
+  const hasActionNeeded = (!hasResponded || isRevisionRequested) && !isClosed;
 
   return (
     <div className="flex flex-col gap-6 max-w-5xl mx-auto">
@@ -121,6 +128,11 @@ export default function EnquiryDetailsPage() {
                   >
                     {enquiry.status}
                   </span>
+                  {isRevisionRequested && (
+                    <span className="px-4 py-1 rounded-full text-xs font-black tracking-wide bg-orange-500 text-white animate-pulse">
+                      {t("revision_requested", "Requested Revision")}
+                    </span>
+                  )}
                 </div>
               </div>
               <div className="text-left sm:text-right shrink-0">
@@ -132,6 +144,18 @@ export default function EnquiryDetailsPage() {
                 </p>
               </div>
             </div>
+
+            {isRevisionRequested && myQuotation?.revisionRemarks && (
+              <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 space-y-2">
+                <h4 className="text-xs font-black text-orange-800 uppercase tracking-widest flex items-center gap-2">
+                  <MessageSquare className="h-3 w-3" />
+                  {t("buyer_feedback", "Buyer Feedback")}
+                </h4>
+                <p className="text-sm text-orange-900 font-medium italic">
+                   &quot;{myQuotation.revisionRemarks}&quot;
+                </p>
+              </div>
+            )}
 
             <Separator />
 
@@ -234,18 +258,80 @@ export default function EnquiryDetailsPage() {
           />
 
           {/* Submit Quotation / Responded — action card */}
-          <ActivityActionCard
-            isPending={!isClosed && !hasResponded}
-            actionLabel={t("submit_quotation")}
-            actionHref={`/seller-dashboard/quotations/create?enquiryId=${enquiry.id}`}
-            actionIcon={<FileText className="h-4 w-4" />}
-            actionDescription={t("ready_fulfil_requirement_send_price")}
-            respondedLabel={hasResponded ? t("quotation_submitted") : t("enquiry_closed")}
-            respondedDescription={hasResponded ? t("already_responded_enquiry") : t("this_enquiry_is_closed")}
-            backHref="/seller-dashboard/enquiries"
-            backLabel={t("back_to_enquiries")}
-            disabled={!isApproved}
-          />
+          {isRevisionRequested ? (
+            <div className="rounded-2xl p-5 space-y-4 bg-linear-to-br from-violet-600 to-violet-800 text-white shadow-lg">
+              <div>
+                <h3 className="font-black text-lg">{t("action_required", "Action Required")}</h3>
+                <p className="text-white/70 text-xs font-medium mt-1">
+                  {t("buyer_requested_revision_desc", "Buyer has requested a price reconsideration. You can update your rates or maintain current pricing.")}
+                </p>
+              </div>
+              
+              <div className="flex flex-col gap-2">
+                <Button 
+                  asChild
+                  className="w-full bg-white text-violet-700 hover:bg-gray-100 font-black text-xs rounded-xl h-11 border-0"
+                >
+                  <Link href={`/seller-dashboard/quotations/create?enquiryId=${enquiry.id}&revisionId=${myQuotation.id}`}>
+                    <FileText className="h-4 w-4 mr-2" />
+                    {t("update_quotation", "Update Quotation")}
+                  </Link>
+                </Button>
+
+                <Button 
+                  variant="outline"
+                  className="w-full bg-violet-700/30 border-white/20 text-white hover:bg-violet-700/50 font-black text-xs rounded-xl h-11"
+                  disabled={isUpdatingQuotation}
+                  onClick={async () => {
+                    const originalData = {
+                      lineItems: myQuotation.quotationLineItems.map(li => ({
+                        id: li.id,
+                        itemId: li.itemId,
+                        rate: li.rate || 0,
+                        amount: li.amount || 0,
+                        isNegotiable: li.isNegotiable,
+                      })),
+                      details: {
+                        expectedDate: myQuotation.quotationDetails?.[0]?.expectedDate || undefined,
+                        remarks: myQuotation.quotationDetails?.[0]?.remarks || undefined,
+                      }
+                    };
+
+                    updateQuotation({ 
+                      id: myQuotation.id, 
+                      data: { 
+                        ...originalData,
+                        hasBeenRevised: true,
+                        priceChangeType: "MAINTAINED"
+                      } 
+                    }, {
+                      onSuccess: () => {
+                        toast.success(t("price_maintained_success", "Price maintained. Revision request resolved."));
+                      },
+                      onError: (err) => {
+                        toast.error(err.message || t("failed_to_maintain_price", "Failed to maintain price."));
+                      }
+                    });
+                  }}
+                >
+                  {isUpdatingQuotation ? <Loader2 className="h-4 w-4 animate-spin" /> : t("maintain_price", "Maintain Original Price")}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <ActivityActionCard
+              isPending={hasActionNeeded}
+              actionLabel={t("submit_quotation")}
+              actionHref={`/seller-dashboard/quotations/create?enquiryId=${enquiry.id}`}
+              actionIcon={<FileText className="h-4 w-4" />}
+              actionDescription={t("ready_fulfil_requirement_send_price")}
+              respondedLabel={hasResponded ? t("quotation_submitted") : t("enquiry_closed")}
+              respondedDescription={hasResponded ? t("already_responded_enquiry") : t("this_enquiry_is_closed")}
+              backHref="/seller-dashboard/enquiries"
+              backLabel={t("back_to_enquiries")}
+              disabled={!isApproved}
+            />
+          )}
 
           {/* Tip card */}
           <ActivityTipCard tipText={t("tip_providing_quick_response")} />
