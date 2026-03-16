@@ -264,12 +264,34 @@ export function QuotationForm({
                 </div>
               </div>
               {/* Location */}
-              <div className="space-y-1.5 md:col-span-2">
+              <div className="space-y-1.5">
                 <span className="text-[10px] font-black uppercase tracking-widest text-primary/50">Location</span>
                 <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4 text-primary" />
                   <span className="font-medium text-sm text-primary line-clamp-1">
                     {enquiry.enquiryDetails?.[0]?.address || "N/A"}
+                  </span>
+                </div>
+              </div>
+              {/* Expected Delivery Date */}
+              <div className="space-y-1.5">
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary/50">Expected Delivery</span>
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-primary" />
+                  <span className="font-semibold text-sm text-primary">
+                    {enquiry.enquiryDetails?.[0]?.expectedDate 
+                      ? format(new Date(enquiry.enquiryDetails[0].expectedDate), "dd MMM yyyy") 
+                      : "Not Specified"}
+                  </span>
+                </div>
+              </div>
+              {/* Remarks */}
+              <div className="space-y-1.5">
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary/50">Remarks</span>
+                <div className="flex items-center gap-2">
+                  <MessageSquare className="h-4 w-4 text-primary" />
+                  <span className="font-medium text-sm text-primary line-clamp-1">
+                    {enquiry.enquiryDetails?.[0]?.remarks || "N/A"}
                   </span>
                 </div>
               </div>
@@ -479,7 +501,7 @@ export function QuotationForm({
                 </Label>
                 <Textarea
                   placeholder="Write Something..."
-                  className="bg-white border-0 rounded-xl placeholder:text-gray-300 text-primary min-h-[100px] resize-none focus:ring-0"
+                  className="bg-white/10 border-white/20 text-white placeholder:text-white/30 rounded-xl min-h-[100px] resize-none focus:ring-secondary/20 focus:border-secondary"
                   value={details.remarks || ""}
                   onChange={(e) => setDetails({ remarks: e.target.value })}
                   disabled={killSwitchUpdateDisabled && isUpdate}

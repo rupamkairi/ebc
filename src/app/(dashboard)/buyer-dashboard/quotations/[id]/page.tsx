@@ -254,7 +254,7 @@ export default function QuotationDetailsPage() {
                             <span className="text-xs text-muted-foreground font-medium ml-1">/{unitLabel}</span>
                           </div>
                         </div>
-                        {li.isNegotiable && !q.hasBeenRevised && (
+                        {li.isNegotiable && !q.hasBeenRevised && !isAccepted && !isEnquiryCompleted && (
                           <Badge variant="outline" className="text-[9px] font-black uppercase text-secondary border-secondary/20 bg-secondary/5">
                             Negotiable
                           </Badge>
@@ -278,6 +278,44 @@ export default function QuotationDetailsPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Seller's Commitment */}
+          {(q.quotationDetails?.[0]?.expectedDate || q.quotationDetails?.[0]?.remarks) && (
+            <Card className="rounded-3xl border-none shadow-xl shadow-black/5 bg-white overflow-hidden">
+              <CardHeader className="border-b bg-muted/30">
+                <CardTitle className="text-xl font-black flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-primary" />
+                  Seller&apos;s Commitment
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 md:p-8 space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {q.quotationDetails[0].expectedDate && (
+                    <div className="space-y-2">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Expected Delivery</p>
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-xl bg-primary/5 flex items-center justify-center shrink-0">
+                          <Calendar className="h-5 w-5 text-primary" />
+                        </div>
+                        <p className="font-black text-primary">
+                          {format(new Date(q.quotationDetails[0].expectedDate), "PPP")}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {q.quotationDetails[0].remarks && (
+                  <div className="space-y-2">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Seller Remarks</p>
+                    <div className="p-5 rounded-2xl bg-primary/5 border border-primary/10 text-sm font-medium text-primary italic leading-relaxed">
+                      &quot;{q.quotationDetails[0].remarks}&quot;
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
 
           {/* Seller Information */}
           <div className="space-y-4">

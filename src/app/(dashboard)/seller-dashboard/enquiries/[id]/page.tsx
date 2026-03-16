@@ -213,7 +213,7 @@ export default function EnquiryDetailsPage() {
                   <MapPin className="h-4 w-4" />
                   {t("delivery_location")}
                 </h4>
-                <p className="text-sm text-gray-500 font-medium pl-6">
+                <p className="text-sm text-gray-500 font-medium pl-6 break-all">
                   {details?.address || t("not_specified")}
                 </p>
               </div>
@@ -224,7 +224,7 @@ export default function EnquiryDetailsPage() {
                 </h4>
                 <p className="text-sm text-gray-500 font-medium pl-6">
                   {details?.expectedDate
-                    ? `${t("not_specified")} / ${format(new Date(details.expectedDate), "dd/MM/yyyy")}`
+                    ? format(new Date(details.expectedDate), "dd/MM/yyyy")
                     : t("not_specified")}
                 </p>
               </div>

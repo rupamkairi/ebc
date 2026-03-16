@@ -155,7 +155,7 @@ export default function BuyerQuotationsPage() {
                                   ? t("enquiry_closed")
                                   : t("pending_label")}
                             </Badge>
-                            {isNegotiable && (
+                            {isNegotiable && !isAccepted && !isEnquiryClosed && (
                               <Badge
                                 className="text-[10px] font-black uppercase tracking-widest bg-orange-500 hover:bg-orange-600 text-white border-none px-2.5 py-1 gap-1.5 shadow-md shadow-orange-200 animate-pulse"
                               >

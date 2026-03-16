@@ -281,21 +281,39 @@ export default function BuyerEnquiryDetailsPage() {
               </div>
 
               <div className="flex items-start gap-3">
-                <Calendar className="h-5 w-5 text-primary mt-1" />
+                <Calendar className={cn("h-5 w-5 mt-1", (isCompleted && acceptedQuotation) ? "text-emerald-600" : "text-primary")} />
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                    {t("expected_date_field")}
+                    {(isCompleted && acceptedQuotation) ? "Promised Delivery" : t("expected_date_field")}
                   </p>
-                  <p className="font-bold text-sm">
-                    {enquiry.enquiryDetails?.[0]?.expectedDate
-                      ? format(
-                          new Date(enquiry.enquiryDetails[0].expectedDate),
-                          "PPP",
-                        )
-                      : t("flexible_date")}
+                  <p className={cn("font-bold text-sm", (isCompleted && acceptedQuotation) ? "text-emerald-600" : "text-foreground")}>
+                    {(isCompleted && acceptedQuotation)
+                      ? acceptedQuotation.quotationDetails?.[0]?.expectedDate
+                        ? format(new Date(acceptedQuotation.quotationDetails[0].expectedDate), "PPP")
+                        : "Not Specified"
+                      : enquiry.enquiryDetails?.[0]?.expectedDate
+                        ? format(
+                            new Date(enquiry.enquiryDetails[0].expectedDate),
+                            "PPP",
+                          )
+                        : t("flexible_date")}
                   </p>
                 </div>
               </div>
+
+              {isCompleted && acceptedQuotation?.quotationDetails?.[0]?.remarks && (
+                <div className="flex items-start gap-3 pt-4 border-t border-emerald-100/50">
+                  <FileText className="h-5 w-5 text-emerald-600 mt-1" />
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-emerald-600/60">
+                      Seller Remarks
+                    </p>
+                    <p className="text-xs font-medium text-emerald-800 leading-relaxed italic">
+                      &quot;{acceptedQuotation.quotationDetails[0].remarks}&quot;
+                    </p>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
