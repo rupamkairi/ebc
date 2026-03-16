@@ -32,7 +32,6 @@ const buyerDetailsSchema = z.object({
     .string()
     .min(1, { message: "Pincode selection is required." }),
   description: z.string().optional(),
-  purpose: z.string().optional(),
   expectedDate: z.string().optional(),
 });
 
@@ -62,7 +61,6 @@ export function BuyerDetailsForm({
       pincode: "",
       pincodeDirectoryId: "",
       description: "",
-      purpose: "",
       expectedDate: "",
     },
   });
@@ -299,30 +297,11 @@ export function BuyerDetailsForm({
               )}
               <FormField
                 control={form.control}
-                name="purpose"
-                render={({ field }) => (
-                  <FormItem className="space-y-1">
-                    <FormLabel className={labelClass}>
-                      Purpose (Optional)
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g., Construction, Resale"
-                        {...field}
-                        className={inputClass}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
                 name="description"
                 render={({ field }) => (
                   <FormItem className="space-y-1">
                     <FormLabel className={labelClass}>
-                      Additional Requirements (Optional)
+                      Remarks (Optional)
                     </FormLabel>
                     <FormControl>
                       <Input

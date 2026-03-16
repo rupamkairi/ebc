@@ -26,7 +26,6 @@ export interface BuyerDetails {
   pincode: string;
   pincodeDirectoryId: string;
   description?: string;
-  purpose?: string;
   expectedDate?: string;
 }
 

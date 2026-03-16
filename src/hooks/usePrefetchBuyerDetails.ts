@@ -52,7 +52,6 @@ export function usePrefetchBuyerDetails(
         pincode: "",
         pincodeDirectoryId: "",
         description: "",
-        purpose: "",
       });
       hasPrefetched.current = true;
     }
