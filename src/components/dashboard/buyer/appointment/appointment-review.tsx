@@ -13,6 +13,7 @@ import {
   User,
   Clock,
   ArrowRight,
+  FileText,
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -95,6 +96,22 @@ export function AppointmentReview({
           </div>
 
           <Separator className="bg-primary/10" />
+
+          {/* Remarks */}
+          {buyerDetails.description && (
+            <>
+              <div className="space-y-4">
+                <h3 className="text-xs font-semibold text-primary/60 flex items-center gap-2">
+                  <FileText className="w-4 h-4" />
+                  Additional Remarks
+                </h3>
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 italic text-primary/70 text-sm leading-relaxed">
+                  &quot;{buyerDetails.description}&quot;
+                </div>
+              </div>
+              <Separator className="bg-primary/10" />
+            </>
+          )}
 
           {/* Time Slots */}
           <div className="space-y-4">
