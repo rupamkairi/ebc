@@ -70,6 +70,13 @@ export function EnquiryReview({ onSubmit, isSubmitting }: EnquiryReviewProps) {
             </div>
           </div>
 
+          <div className="space-y-3">
+            <h3 className="font-semibold text-sm text-muted-foreground">
+              Remarks
+            </h3>
+            <p>{buyerDetails.description}</p> 
+          </div>
+
           <Separator />
 
           <div className="space-y-4">
