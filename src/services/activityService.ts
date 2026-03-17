@@ -104,6 +104,21 @@ export const activityService = {
     );
   },
 
+  async createAssignment(data: {
+    type: string;
+    enquiryId?: string;
+    appointmentId?: string;
+    toEntityId: string;
+  }) {
+    return fetchClient<ActivityAssignment>(
+      API_ENDPOINTS.ACTIVITY.ASSIGNMENT.CREATE,
+      {
+        method: "POST",
+        body: data as Record<string, string | number | boolean>,
+      },
+    );
+  },
+
   // Quotation
   async createQuotation(data: CreateQuotationRequest) {
     return fetchClient<Quotation>(API_ENDPOINTS.ACTIVITY.QUOTATION.CREATE, {

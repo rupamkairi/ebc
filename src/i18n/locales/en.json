@@ -872,6 +872,7 @@
   "no_quotations_msg": "No quotations found.",
   "accepted_label": "Accepted",
   "pending_label": "Pending",
+  "completed_label": "Completed",
   "total_label": "Total",
   "view_label": "View",
   "multiple_items": "Multiple Items",

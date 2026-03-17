@@ -854,6 +854,7 @@
   "no_quotations_msg": "Koi quotations nahi mili.",
   "accepted_label": "Accepted",
   "pending_label": "Pending",
+  "completed_label": "Completed",
   "total_label": "Total",
   "view_label": "Dekhein",
   "multiple_items": "Multiple Items",
