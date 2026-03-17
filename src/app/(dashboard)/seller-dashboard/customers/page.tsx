@@ -1,6 +1,6 @@
 "use client";
 
-import { User, Phone, MapPin, Star } from "lucide-react";
+import { User, Phone, MapPin, Loader2, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,9 +14,10 @@ import {
 } from "@/queries/activityQueries";
 import { useSessionQuery } from "@/queries/authQueries";
 import { useMemo, useState } from "react";
-import { Loader2 } from "lucide-react";
 import { Enquiry, Appointment } from "@/types/activity";
 import { useLanguage } from "@/hooks/useLanguage";
+import { CustomerPurchaseModal } from "@/components/dashboard/seller/customer-purchase-modal";
+import { format } from "date-fns";
 
 export default function CustomersPage() {
   const { t } = useLanguage();
@@ -75,48 +76,24 @@ export default function CustomersPage() {
       const cus = customerMap.get(buyer.id);
       cus.activities.push(activity);
 
-      // Update last activity if newer
       if (new Date(activity.createdAt) > new Date(cus.lastActivityDate)) {
         cus.lastActivityDate = activity.createdAt;
-        const lineItems =
-          "enquiryLineItems" in activity
-            ? activity.enquiryLineItems
-            : "appointmentLineItems" in activity
-              ? activity.appointmentLineItems
-              : [];
-
-        if (lineItems && lineItems.length > 0) {
-          const firstItem = (lineItems[0] as any).item?.name || "Item";
-          cus.lastEnquiry = `${firstItem}${lineItems.length > 1 ? ` (+${lineItems.length - 1} more)` : ""}`;
-        }
       }
     });
 
-    // Link quotations to calculate value and order count
     quotations.forEach((q) => {
       const buyerId = q.enquiry?.createdById;
       if (buyerId && customerMap.has(buyerId)) {
         const cus = customerMap.get(buyerId);
         if (q.status === "ACCEPTED") {
           cus.orders += 1;
-          const totalAmount =
-            q.quotationLineItems?.reduce(
-              (sum, item) => sum + (item.amount || 0),
-              0,
-            ) || 0;
-          cus.totalValue += totalAmount;
         }
       }
     });
 
     return Array.from(customerMap.values()).map((cus) => ({
       ...cus,
-      status:
-        cus.orders === 0
-          ? "Lead"
-          : cus.orders > 2
-            ? "Repeat Buyer"
-            : "Active Buyer",
+      status: cus.orders === 0 ? "Lead" : "Active",
     }));
   }, [assignments, quotations]);
 
@@ -136,144 +113,121 @@ export default function CustomersPage() {
       </div>
     );
   }
+
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-8 max-w-6xl mx-auto p-4 md:p-8">
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <h1 className="text-2xl md:text-3xl font-bold text-primary tracking-tight">
-          {t("my_customers")}
-        </h1>
-      </div>
+      <h1 className="text-3xl font-black text-primary tracking-tight">
+        {t("my_customers", "My Customers")}
+      </h1>
 
       {/* Customers Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
         {filteredCustomers.length === 0 ? (
-          <div className="col-span-full py-24 text-center bg-white rounded-3xl border border-dashed text-slate-400 font-bold">
-            {t("no_active_customers")}
+          <div className="col-span-full py-24 text-center bg-white rounded-[32px] border border-dashed border-slate-200 text-slate-400 font-bold">
+            {t("no_active_customers", "No active customers found.")}
           </div>
         ) : (
           filteredCustomers.map((cus) => (
             <Card
               key={cus.id}
-              className="bg-primary border-none shadow-xl rounded-[24px] overflow-hidden"
+              className="bg-[#4155a0] border-none shadow-2xl rounded-[32px] overflow-hidden w-full max-w-[540px]"
             >
-              <CardContent className="p-6 space-y-5">
+              <CardContent className="p-8 md:p-10 space-y-8">
                 {/* Header Section */}
-                <div className="flex items-start gap-5">
-                  <div className="h-20 w-20 rounded-xl bg-white flex items-center justify-center shrink-0">
-                    <User size={40} className="text-primary" />
+                <div className="flex items-start gap-6">
+                  <div className="h-20 w-20 md:h-24 md:w-24 rounded-[28px] bg-white flex items-center justify-center shrink-0">
+                    <User size={48} className="text-slate-700" title="User" />
                   </div>
-                  <div className="flex-1 space-y-2">
-                    <h3 className="text-2xl font-bold text-white">
+                  <div className="flex-1 space-y-3">
+                    <h3 className="text-3xl md:text-4xl font-black text-white tracking-tight leading-none">
                       {cus.name}
                     </h3>
-                    <div className="flex flex-wrap gap-2">
-                      <Badge
-                        className={`uppercase text-[10px] font-bold rounded px-3 py-0.5 ${
-                          cus.status === "Lead"
-                            ? "bg-yellow-100 text-yellow-700"
-                            : "bg-secondary text-white"
-                        }`}
-                      >
-                        {cus.status}
+                    <div className="flex flex-wrap items-center gap-3">
+                      <Badge className="bg-[#f2f48f] text-[#865d21] uppercase text-[10px] font-black rounded px-3 py-1 hover:bg-[#f2f48f]">
+                        {cus.status.toUpperCase()}
                       </Badge>
-                      <Badge className="bg-primary/50 text-white/80 uppercase text-[10px] font-bold rounded px-3 py-0.5 border-none">
-                        ID: {cus.id.substring(0, 8)}
-                      </Badge>
+                      <span className="text-white/60 text-[11px] font-bold tracking-wider">
+                        ID: {cus.id.substring(0, 8).toUpperCase()}
+                      </span>
                     </div>
-                    <Button className="w-full mt-2 bg-secondary hover:bg-secondary/90 text-white font-bold h-10 rounded-lg text-sm transition-all shadow-md">
-                      {t("view_profile")}
-                    </Button>
                   </div>
                 </div>
 
+                {/* View Profile Button - Orange style */}
+                <CustomerPurchaseModal
+                  customer={cus}
+                  trigger={
+                    <Button className="w-full bg-[#fca211] hover:bg-[#e89410] text-white font-black h-14 rounded-2xl text-lg shadow-lg active:scale-[0.98] transition-all">
+                      {t("view_profile", "View Profile")}
+                    </Button>
+                  }
+                />
+
                 {/* Location & Contact */}
-                <div className="bg-primary/30 rounded-2xl p-4 space-y-2">
-                  <div className="flex items-center gap-3 text-white/90 text-[13px] font-medium italic">
-                    <MapPin size={16} className="shrink-0" />
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 text-white/90 text-[15px] font-bold italic">
+                    <MapPin size={18} className="shrink-0 text-white/70" />
                     {cus.location}
                   </div>
-                  <div className="flex items-center gap-3 text-white/90 text-[13px] font-medium italic">
-                    <Phone size={16} className="shrink-0" />
+                  <div className="flex items-center gap-3 text-white/90 text-[15px] font-bold italic">
+                    <Phone size={18} className="shrink-0 text-white/70" />
                     {cus.phone}
                   </div>
                 </div>
 
-                {/* Stats & Purchase Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
-                  {/* Total Orders Box */}
-                  <div className="md:col-span-4 rounded-xl overflow-hidden border border-white/10">
-                    <div className="bg-primary py-1.5 px-3 text-white text-[11px] font-bold">
-                      {t("total_orders")}
-                    </div>
-                    <div className="bg-white p-3 flex flex-col items-center justify-center gap-2">
-                      <div className="flex justify-between w-full text-[9px] font-black uppercase text-primary/40">
-                        <span>{t("orders_delivered")}</span>
-                        <span>{t("total_order_value")}</span>
-                      </div>
-                      <div className="flex justify-between w-full">
-                        <span className="text-xl font-black text-secondary">
-                          {cus.orders}
-                        </span>
-                        <span className="text-xl font-black text-secondary">
-                          ₹{cus.totalValue.toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
+                {/* Recent Purchases Activity Table */}
+                <div className="rounded-3xl overflow-hidden border border-white/10">
+                  <div className="bg-[#5164b4] py-3 px-6 text-white text-[12px] font-black uppercase tracking-widest">
+                    {t("recent_product_purchases", "Recent Product Purchases")}
                   </div>
-
-                  {/* Recent Product Purchases Box */}
-                  <div className="md:col-span-8 rounded-xl overflow-hidden border border-white/10">
-                    <div className="bg-primary py-1.5 px-4 text-white text-[11px] font-bold">
-                      {t("recent_product_purchases")}
-                    </div>
-                    <div className="bg-white p-0">
-                      <table className="w-full text-[9px] font-medium">
-                        <thead className="bg-primary/5 text-primary/50 border-b border-slate-100">
+                  <div className="bg-white p-0">
+                    <table className="w-full text-[10px] md:text-[11px] font-bold border-collapse">
+                      <thead className="bg-[#f8faff] text-[#5164b4] border-b border-slate-100">
+                        <tr>
+                          <th className="py-3 px-4 text-left">ID Unit</th>
+                          <th className="py-3 px-4 text-left">Product Name</th>
+                          <th className="py-3 px-4 text-left text-center">Qty</th>
+                          <th className="py-3 px-4 text-left text-center">Date</th>
+                          <th className="py-3 px-4 text-left text-center">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-50 text-slate-600 font-bold">
+                        {cus.activities.length === 0 ? (
                           <tr>
-                            <th className="py-1.5 px-3 text-left">ID Unit</th>
-                            <th className="py-1.5 px-3 text-left">
-                              Product Name
-                            </th>
-                            <th className="py-1.5 px-3 text-left">Qty</th>
-                            <th className="py-1.5 px-3 text-left">Date</th>
-                            <th className="py-1.5 px-3 text-left">Status</th>
+                            <td colSpan={5} className="py-6 text-center text-[9px] font-black text-slate-300 uppercase tracking-widest italic">
+                              {t("no_recent_activity", "No Recent Activity")}
+                            </td>
                           </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100">
-                          {cus.activities
+                        ) : (
+                          cus.activities
+                            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                             .slice(0, 2)
                             .map((act: Enquiry | Appointment, idx: number) => {
-                              const items =
-                                "enquiryLineItems" in act
-                                  ? act.enquiryLineItems
-                                  : "appointmentLineItems" in act
-                                    ? act.appointmentLineItems
-                                    : [];
+                              const isEnq = "enquiryLineItems" in act;
+                              const items = isEnq ? act.enquiryLineItems : act.appointmentLineItems;
                               const item = items?.[0] as any;
                               return (
-                                <tr key={idx} className="text-primary/80">
-                                  <td className="py-2 px-3">U-#{idx + 1}</td>
-                                  <td className="py-2 px-3 font-bold truncate max-w-[80px]">
-                                    {item?.item?.name || "Service"}
+                                <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                                  <td className="py-3 px-4 text-[#5164b4]">U-#{idx + 1}</td>
+                                  <td className="py-3 px-4 text-slate-800">
+                                    {item?.item?.name || "Service Item"}
                                   </td>
-                                  <td className="py-2 px-3">
-                                    {item?.quantity || "1"}
+                                  <td className="py-3 px-4 text-center">
+                                    {isEnq ? (item?.quantity || 1) : 1}
                                   </td>
-                                  <td className="py-2 px-3">
-                                    {new Date(
-                                      act.createdAt,
-                                    ).toLocaleDateString()}
+                                  <td className="py-3 px-4 text-center text-slate-400">
+                                    {format(new Date(act.createdAt), "M/d/yyyy")}
                                   </td>
-                                  <td className="py-2 px-3 text-emerald-600 font-bold uppercase text-[8px]">
-                                    Regular
+                                  <td className="py-3 px-4 text-center">
+                                    <span className="text-[#008767] font-black uppercase text-[9px] tracking-widest">REGULAR</span>
                                   </td>
                                 </tr>
                               );
-                            })}
-                        </tbody>
-                      </table>
-                    </div>
+                            })
+                        )}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </CardContent>
