@@ -34,7 +34,7 @@ export default function AppointmentReviewSubmitPage() {
         },
       ],
       details: {
-        remarks: t("web_appointment_request"),
+        remarks: buyerDetails.description || t("web_appointment_request"),
         address: buyerDetails.address,
         pincodeDirectoryId: buyerDetails.pincodeDirectoryId,
       },

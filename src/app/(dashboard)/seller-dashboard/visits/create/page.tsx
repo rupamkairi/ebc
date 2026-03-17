@@ -7,7 +7,7 @@ import {
 } from "@/queries/activityQueries";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, Suspense } from "react";
-import { Loader2, Calendar, Clock, MapPin, PackageCheck } from "lucide-react";
+import { Loader2, Calendar, Clock, MapPin, PackageCheck, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { PageBackButton } from "@/components/dashboard/seller/activity-shared/page-back-button";
@@ -179,6 +179,20 @@ function VisitCreateContent() {
             ))}
           </div>
         </div>
+
+        {details?.remarks && (
+          <div className="space-y-4 pt-2">
+            <h3 className="font-black text-primary flex items-center gap-2 text-base">
+              <MessageSquare className="h-5 w-5 text-primary" />
+              {t("additional_remarks")}
+            </h3>
+            <div className="rounded-xl border border-gray-100 bg-gray-50/50 px-4 py-3">
+              <p className="text-sm text-gray-600 font-medium italic">
+                &quot;{details.remarks}&quot;
+              </p>
+            </div>
+          </div>
+        )}
 
         <Separator />
 

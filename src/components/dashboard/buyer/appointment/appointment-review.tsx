@@ -101,7 +101,7 @@ export function AppointmentReview({
           {buyerDetails.description && (
             <>
               <div className="space-y-4">
-                <h3 className="text-xs font-semibold text-primary/60 flex items-center gap-2">
+                <h3 className="text-xs font-medium text-primary/60 flex items-center gap-2">
                   <FileText className="w-4 h-4" />
                   Additional Remarks
                 </h3>
