@@ -24,6 +24,8 @@ import {
   TrendingDown,
   TrendingUp,
   RefreshCw,
+  FileText as FileTextIcon,
+  Download,
 } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -241,6 +243,41 @@ export default function QuotationDetailsPage() {
                         {li.remarks && (
                           <div className="ml-13 p-3 rounded-xl bg-amber-50 text-[11px] font-medium text-amber-800 border border-amber-200/50">
                             <b>Note:</b> {li.remarks}
+                          </div>
+                        )}
+
+                        {li.itemListing?.attachments && li.itemListing.attachments.length > 0 && (
+                          <div className="ml-13 mt-4 space-y-3">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-primary/50">Attached Media & Documents</p>
+                            <div className="flex flex-wrap gap-3">
+                              {li.itemListing.attachments.map((att: { id: string; media?: { url: string }; document?: { url: string; name?: string; fileType?: string } }) => {
+                                if (att.media) {
+                                  return (
+                                    <a key={att.id} href={att.media.url} target="_blank" rel="noreferrer" className="group relative h-16 w-16 rounded-xl overflow-hidden border border-border flex items-center justify-center bg-muted/30">
+                                      <img src={att.media.url} alt="Attachment" className="h-full w-full object-cover transition-transform group-hover:scale-110" />
+                                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <ExternalLink className="h-4 w-4 text-white" />
+                                      </div>
+                                    </a>
+                                  );
+                                }
+                                if (att.document) {
+                                  return (
+                                    <a key={att.id} href={att.document.url} target="_blank" rel="noreferrer" className="flex items-center gap-2 max-w-[200px] p-2 pr-4 rounded-xl border border-border hover:bg-muted/30 transition-colors">
+                                      <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                                        <FileTextIcon className="h-4 w-4 text-primary" />
+                                      </div>
+                                      <div className="truncate flex-1">
+                                        <p className="text-xs font-bold text-primary truncate" title={att.document.name || "Document"}>{att.document.name || "Document"}</p>
+                                        <p className="text-[9px] font-bold text-muted-foreground uppercase">{att.document.fileType || "PDF"}</p>
+                                      </div>
+                                      <Download className="h-3 w-3 text-muted-foreground shrink-0" />
+                                    </a>
+                                  );
+                                }
+                                return null;
+                              })}
+                            </div>
                           </div>
                         )}
                       </div>

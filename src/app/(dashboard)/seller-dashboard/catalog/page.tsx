@@ -38,7 +38,6 @@ export default function CatalogPage() {
   );
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("list");
 
   const { data: listings, isLoading: isLoadingListings } = useItemListingsQuery(
     {
@@ -90,8 +89,6 @@ export default function CatalogPage() {
             onSearchChange={setSearchQuery}
             isServiceBusiness={isService}
             isProductBusiness={isProduct}
-            viewMode={viewMode}
-            onViewModeChange={setViewMode}
           />
 
           {isLoading ? (
@@ -114,20 +111,13 @@ export default function CatalogPage() {
                   value="products"
                   className="mt-0 space-y-4 outline-none"
                 >
-                  <div
-                    className={
-                      viewMode === "grid"
-                        ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-                        : "grid gap-4"
-                    }
-                  >
+                  <div className="grid gap-4">
                     {filteredProducts.length > 0 ? (
                       filteredProducts.map((listing) => (
                         <ListingCard
                           key={listing.id}
                           listing={listing}
                           type={ITEM_TYPE.PRODUCT}
-                          view={viewMode}
                         />
                       ))
                     ) : (
@@ -152,20 +142,13 @@ export default function CatalogPage() {
                   value="services"
                   className="mt-0 space-y-4 outline-none"
                 >
-                  <div
-                    className={
-                      viewMode === "grid"
-                        ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-                        : "grid gap-4"
-                    }
-                  >
+                  <div className="grid gap-4">
                     {filteredServices.length > 0 ? (
                       filteredServices.map((listing) => (
                         <ListingCard
                           key={listing.id}
                           listing={listing}
                           type={ITEM_TYPE.SERVICE}
-                          view={viewMode}
                         />
                       ))
                     ) : (

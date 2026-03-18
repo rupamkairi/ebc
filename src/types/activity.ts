@@ -1,6 +1,6 @@
 import { REF_TYPE, ACTIVITY_TYPE } from "@/constants/enums";
 import { UnitType } from "@/constants/quantities";
-import { Item } from "./catalog";
+import { Item, ItemListing } from "./catalog";
 
 // Shared definitions
 export { REF_TYPE };
@@ -8,8 +8,10 @@ export { REF_TYPE };
 export interface LineItem {
   id?: string;
   itemId: string;
+  itemListingId?: string | null;
   remarks?: string | null;
   item?: Item;
+  itemListing?: ItemListing;
 }
 
 // Shared User Interface for Activity Creators

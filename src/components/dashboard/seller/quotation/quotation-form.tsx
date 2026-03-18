@@ -140,11 +140,9 @@ export function QuotationForm({
 
     onSubmit({
       enquiryId: enquiry.id,
-      lineItems: lineItems.map(({ itemListingId, quantity, ...rest }) => ({
+      lineItems: lineItems.map(({ quantity: _q, ...rest }) => ({
         ...rest,
-        // The API expects itemId. Since we select itemListingId,
-        // we should ensure itemId is correctly set in the line item.
-        // In our store, itemId is already there and updated when listing changes.
+        // Send itemListingId to link the selected listing with the quotation item
       })),
       details,
     });

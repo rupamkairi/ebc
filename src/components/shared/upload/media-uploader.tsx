@@ -209,13 +209,51 @@ export function FileUploader({
           if (xhr.status >= 200 && xhr.status < 300) {
             try {
               const res = JSON.parse(xhr.responseText);
-              // Handle different response structures gracefully
-              const data =
-                res.data ||
-                res.media ||
-                res.document ||
-                (Array.isArray(res) ? res : [res]);
-              resolve(Array.isArray(data) ? data : [data]);
+              let data: FileUploadResponse[];
+              
+              if (type === "document") {
+                if (Array.isArray(res.documents)) {
+                  data = res.documents.map((d: any) => ({
+                    id: d.id,
+                    url: d.url,
+                    name: d.name || d.key?.split("/").pop() || "Document",
+                    mimeType: d.mimeType || "",
+                    size: Number(d.sizeBytes) || 0,
+                  }));
+                } else if (res.document) {
+                  data = [{
+                    id: res.document.id,
+                    url: res.document.url,
+                    name: res.document.name || res.document.key?.split("/").pop() || "Document",
+                    mimeType: res.document.mimeType || "",
+                    size: Number(res.document.sizeBytes) || 0,
+                  }];
+                } else {
+                  data = [];
+                }
+              } else {
+                if (Array.isArray(res.media)) {
+                  data = res.media.map((m: any) => ({
+                    id: m.id,
+                    url: m.url,
+                    name: m.name || m.key?.split("/").pop() || "Media",
+                    mimeType: m.mimeType || "",
+                    size: Number(m.sizeBytes) || 0,
+                  }));
+                } else if (res.media) {
+                  data = [{
+                    id: res.media.id,
+                    url: res.media.url,
+                    name: res.media.name || res.media.key?.split("/").pop() || "Media",
+                    mimeType: res.media.mimeType || "",
+                    size: Number(res.media.sizeBytes) || 0,
+                  }];
+                } else {
+                  data = [];
+                }
+              }
+              
+              resolve(data);
             } catch {
               reject(new Error("Invalid response from server"));
             }

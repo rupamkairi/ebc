@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
+import { TFunction } from "i18next";
 import {
   useAppointmentQuery,
   useVisitsQuery,
@@ -49,7 +50,8 @@ export default function BuyerAppointmentDetailsPage() {
   const acceptMutation = useAcceptVisitMutation();
   const completeMutation = useCompleteAppointmentMutation();
 
-  const activeVisits = visits?.filter((v: any) => v.isActive) || [];
+  const activeVisits =
+    visits?.filter((v: import("@/types/activity").Visit) => v.isActive) || [];
   const confirmedVisit = activeVisits[0];
   const isCompleted = appointment?.status === "COMPLETED";
 
@@ -248,7 +250,8 @@ export default function BuyerAppointmentDetailsPage() {
               {t("my_requested_slots", "My Requested Slots")}
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {appointment.appointmentSlots.map((slot: any, index: number) => (
+              {appointment.appointmentSlots.map(
+                (slot: import("@/types/activity").AppointmentSlot, index: number) => (
                 <div 
                   key={index} 
                   className="p-4 rounded-2xl bg-white border shadow-sm space-y-2"
@@ -280,135 +283,34 @@ export default function BuyerAppointmentDetailsPage() {
               </h3>
             </div>
 
-            {!visits || visits.length === 0 ? (
-              <div className="p-12 text-center bg-muted/20 border border-dashed rounded-3xl">
-                <Calendar className="h-10 w-10 text-muted-foreground mx-auto mb-4 opacity-20" />
-                <p className="text-muted-foreground font-medium">
-                  {t("waiting_provider_slot")}
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-12">
-                {(confirmedVisit ? [confirmedVisit] : (visits || [])).map(
-                  (v: import("@/types/activity").Visit) => {
-                  const providerId =
-                    v.createdBy?.staffAtEntityId ||
-                    v.createdBy?.createdEntities?.[0]?.id ||
-                    "";
-                  const providerName =
-                    v.createdBy?.staffAt?.name ||
-                    v.createdBy?.createdEntities?.[0]?.name ||
-                    v.createdBy?.name ||
-                    "";
-
-                  return (
-                    <div
+            <div className="space-y-8">
+              {!visits || visits.length === 0 ? (
+                <div className="p-12 text-center bg-muted/20 border border-dashed rounded-3xl">
+                  <Calendar className="h-10 w-10 text-muted-foreground mx-auto mb-4 opacity-20" />
+                  <p className="text-muted-foreground font-medium">
+                    {t("waiting_provider_slot")}
+                  </p>
+                </div>
+              ) : (
+                <div className="grid gap-6">
+                  {(isCompleted
+                    ? confirmedVisit
+                      ? [confirmedVisit]
+                      : []
+                    : visits || []
+                  ).map((v: import("@/types/activity").Visit) => (
+                    <VisitListItem
                       key={v.id}
-                      className="space-y-8 p-8 rounded-4xl bg-white border shadow-xl shadow-black/5 relative overflow-hidden group"
-                    >
-                      <div className="absolute top-0 right-0 p-6">
-                        <Badge className="bg-primary/10 text-primary border-primary/20 uppercase text-[10px] font-black tracking-widest">
-                          {t("scheduled_visit_label")}
-                        </Badge>
-                      </div>
-
-                      <div className="flex flex-col md:flex-row gap-10">
-                        <div className="flex-1 space-y-6">
-                          <div>
-                            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">
-                              {t("service_by_text")}
-                            </p>
-                            <h4 className="text-2xl font-black tracking-tight">
-                              {providerName}
-                            </h4>
-                            <div className="mt-2">
-                              <ReviewSnapshot
-                                entityId={providerId}
-                                entityName={providerName}
-                                className="scale-90 origin-left"
-                              />
-                            </div>
-                          </div>
-
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="flex items-center gap-4 p-4 rounded-2xl bg-muted/50 border">
-                              <div className="h-10 w-10 rounded-xl bg-white border flex items-center justify-center">
-                                <Calendar className="h-5 w-5 text-primary" />
-                              </div>
-                              <div>
-                                <p className="text-[10px] font-bold text-muted-foreground uppercase">
-                                  {t("date_label")}
-                                </p>
-                                <p className="font-black text-sm">
-                                  {v.visitSlot
-                                    ? format(
-                                        new Date(v.visitSlot.fromDateTime),
-                                        "PPP",
-                                      )
-                                    : "N/A"}
-                                </p>
-                              </div>
-                            </div>
-
-                            <div className="flex items-center gap-4 p-4 rounded-2xl bg-muted/50 border">
-                              <div className="h-10 w-10 rounded-xl bg-white border flex items-center justify-center">
-                                <Clock className="h-5 w-5 text-primary" />
-                              </div>
-                              <div>
-                                <p className="text-[10px] font-bold text-muted-foreground uppercase">
-                                  {t("time_slot_label")}
-                                </p>
-                                <p className="font-black text-sm">
-                                  {v.visitSlot ? (
-                                    <>
-                                      {format(
-                                        new Date(v.visitSlot.fromDateTime),
-                                        "p",
-                                      )}{" "}
-                                      -{" "}
-                                      {format(
-                                        new Date(v.visitSlot.toDateTime),
-                                        "p",
-                                      )}
-                                    </>
-                                  ) : (
-                                    "N/A"
-                                  )}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="md:w-64 flex flex-col justify-center shrink-0">
-                          {v.isActive ? (
-                            <Button
-                              className="w-full h-14 rounded-3xl bg-emerald-500 hover:bg-emerald-600 font-black gap-2"
-                              disabled
-                            >
-                              <CheckCircle2 className="h-5 w-5" />
-                              {t("confirmed_label")}
-                            </Button>
-                          ) : (
-                            <Button
-                              className="w-full h-14 rounded-3xl font-black shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform"
-                              onClick={() => handleAccept(v.id)}
-                              disabled={acceptMutation.isPending || isCompleted}
-                            >
-                              {acceptMutation.isPending ? (
-                                <Loader2 className="h-5 w-5 animate-spin" />
-                              ) : (
-                                t("confirm_schedule_btn")
-                              )}
-                            </Button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+                      v={v}
+                      t={t}
+                      onAccept={handleAccept}
+                      isAccepting={acceptMutation.isPending}
+                      isAppointmentClosed={isCompleted}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
 
             {/* Detailed reputation for the confirmed provider */}
             {isCompleted && confirmedVisit && (
@@ -450,6 +352,125 @@ export default function BuyerAppointmentDetailsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function VisitListItem({
+  v,
+  t,
+  onAccept,
+  isAccepting,
+  isAppointmentClosed,
+}: {
+  v: import("@/types/activity").Visit;
+  t: TFunction;
+  onAccept: (visitId: string) => void;
+  isAccepting: boolean;
+  isAppointmentClosed: boolean;
+}) {
+  const providerId =
+    v.createdBy?.staffAtEntityId ||
+    v.createdBy?.createdEntities?.[0]?.id ||
+    "";
+  const providerName =
+    v.createdBy?.staffAt?.name ||
+    v.createdBy?.createdEntities?.[0]?.name ||
+    v.createdBy?.name ||
+    "";
+
+  return (
+    <Card className="rounded-4xl bg-white border shadow-xl shadow-black/5 relative overflow-hidden group">
+      <CardContent className="p-8 space-y-8">
+        <div className="absolute top-0 right-0 p-6">
+          <Badge className="bg-primary/10 text-primary border-primary/20 uppercase text-[10px] font-black tracking-widest">
+            {v.isActive ? t("confirmed_visit_label", "Confirmed Visit") : t("scheduled_visit_label")}
+          </Badge>
+        </div>
+
+        <div className="flex flex-col md:flex-row gap-10">
+          <div className="flex-1 space-y-6">
+            <div>
+              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">
+                {t("service_by_text")}
+              </p>
+              <h4 className="text-2xl font-black tracking-tight">
+                {providerName}
+              </h4>
+              <div className="mt-2">
+                <ReviewSnapshot
+                  entityId={providerId}
+                  entityName={providerName}
+                  className="scale-90 origin-left"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex items-center gap-4 p-4 rounded-2xl bg-muted/50 border">
+                <div className="h-10 w-10 rounded-xl bg-white border flex items-center justify-center">
+                  <Calendar className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase">
+                    {t("date_label")}
+                  </p>
+                  <p className="font-black text-sm">
+                    {v.visitSlot
+                      ? format(new Date(v.visitSlot.fromDateTime), "PPP")
+                      : "N/A"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 p-4 rounded-2xl bg-muted/50 border">
+                <div className="h-10 w-10 rounded-xl bg-white border flex items-center justify-center">
+                  <Clock className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase">
+                    {t("time_slot_label")}
+                  </p>
+                  <p className="font-black text-sm">
+                    {v.visitSlot ? (
+                      <>
+                        {format(new Date(v.visitSlot.fromDateTime), "p")} -{" "}
+                        {format(new Date(v.visitSlot.toDateTime), "p")}
+                      </>
+                    ) : (
+                      "N/A"
+                    )}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="md:w-64 flex flex-col justify-center shrink-0">
+            {v.isActive ? (
+              <Button
+                className="w-full h-14 rounded-3xl bg-emerald-500 hover:bg-emerald-600 font-black gap-2"
+                disabled
+              >
+                <CheckCircle2 className="h-5 w-5" />
+                {t("confirmed_label")}
+              </Button>
+            ) : (
+              <Button
+                className="w-full h-14 rounded-3xl font-black shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform"
+                onClick={() => onAccept(v.id)}
+                disabled={isAccepting || isAppointmentClosed}
+              >
+                {isAccepting ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  t("confirm_schedule_btn")
+                )}
+              </Button>
+            )}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 

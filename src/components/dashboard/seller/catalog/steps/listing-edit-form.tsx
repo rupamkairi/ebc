@@ -79,6 +79,47 @@ interface ListingEditFormProps {
   onSuccess?: () => void;
 }
 
+interface AttachmentWithMedia {
+  id: string;
+  mediaId?: string | null;
+  documentId?: string | null;
+  media?: { id: string; url: string } | null;
+  document?: { id: string; url: string } | null;
+}
+
+const getAttachmentIds = (listing: ItemListing): { mediaIds: string[]; documentIds: string[] } => {
+  const mediaIds: string[] = [];
+  const documentIds: string[] = [];
+  
+  if (listing.attachments && listing.attachments.length > 0) {
+    listing.attachments.forEach((att: AttachmentWithMedia) => {
+      if (att.mediaId && !mediaIds.includes(att.mediaId)) {
+        mediaIds.push(att.mediaId);
+      }
+      if (att.documentId && !documentIds.includes(att.documentId)) {
+        documentIds.push(att.documentId);
+      }
+    });
+  }
+  
+  return { mediaIds, documentIds };
+};
+
+const getInitialFormValues = (listing: ItemListing) => {
+  const rate = listing.itemRates?.[0];
+  const { mediaIds, documentIds } = getAttachmentIds(listing);
+  
+  return {
+    isActive: listing.isActive,
+    unitType: (rate?.unitType as UnitType) || "Nos",
+    minQuantity: rate?.minQuantity || 1,
+    rate: rate?.rate || 0,
+    isNegotiable: rate?.isNegotiable || false,
+    mediaIds,
+    documentIds,
+  };
+};
+
 export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
   const updateListingMutation = useUpdateItemListingMutation();
   const updateRateMutation = useUpdateItemRateMutation();
@@ -121,15 +162,7 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
 
   const form = useForm<ListingEditFormValues>({
     resolver: zodResolver(listingEditSchema),
-    defaultValues: {
-      isActive: listing.isActive,
-      unitType: (listing.itemRates?.[0]?.unitType as UnitType) || "Nos",
-      minQuantity: listing.itemRates?.[0]?.minQuantity || 1,
-      rate: listing.itemRates?.[0]?.rate || 0,
-      isNegotiable: listing.itemRates?.[0]?.isNegotiable || false,
-      mediaIds: listing.mediaIds || [],
-      documentIds: listing.documentIds || [],
-    },
+    defaultValues: getInitialFormValues(listing),
   });
 
   useEffect(() => {
@@ -137,17 +170,7 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
 
     lastInitializedId.current = listing.id;
 
-    const rate = listing.itemRates?.[0];
-
-    form.reset({
-      isActive: listing.isActive,
-      unitType: (rate?.unitType as UnitType) || "Nos",
-      minQuantity: rate?.minQuantity || 1,
-      rate: rate?.rate || 0,
-      isNegotiable: rate?.isNegotiable || false,
-      mediaIds: listing.mediaIds || [],
-      documentIds: listing.documentIds || [],
-    });
+    form.reset(getInitialFormValues(listing));
 
     if (listing.itemRegions) {
       setSelectedRegions(

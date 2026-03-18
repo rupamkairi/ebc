@@ -22,7 +22,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ArrowLeft, Edit } from "lucide-react";
+import {
+  ArrowLeft,
+  Edit,
+  ExternalLink,
+  FileText as FileTextIcon,
+  Download,
+} from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 
 export interface OfferListParams {
@@ -137,6 +143,43 @@ export default function ListingDetailsPage() {
               </>
             )}
           </div>
+
+          {listing.attachments && listing.attachments.length > 0 && (
+            <div className="mt-8 space-y-4">
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2">
+                {t("attached_media_documents", "Attached Media & Documents")}
+              </h3>
+              <div className="flex flex-wrap gap-4">
+                {listing.attachments.map((att: any) => {
+                  if (att.media) {
+                    return (
+                      <a key={att.id} href={att.media.url} target="_blank" rel="noreferrer" className="group relative h-24 w-24 rounded-xl overflow-hidden border border-border flex items-center justify-center bg-muted/30">
+                        <img src={att.media.url} alt="Attachment" className="h-full w-full object-cover transition-transform group-hover:scale-110" />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <ExternalLink className="h-5 w-5 text-white" />
+                        </div>
+                      </a>
+                    );
+                  }
+                  if (att.document) {
+                    return (
+                      <a key={att.id} href={att.document.url} target="_blank" rel="noreferrer" className="flex items-center gap-3 w-[250px] p-3 rounded-xl border border-border hover:bg-muted/30 transition-colors">
+                        <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                          <FileTextIcon className="h-5 w-5 text-primary" />
+                        </div>
+                        <div className="truncate flex-1">
+                          <p className="text-sm font-bold text-primary truncate" title={att.document.name || "Document"}>{att.document.name || "Document"}</p>
+                          <p className="text-[10px] font-bold text-muted-foreground uppercase">{att.document.fileType || "PDF"}</p>
+                        </div>
+                        <Download className="h-4 w-4 text-muted-foreground shrink-0" />
+                      </a>
+                    );
+                  }
+                  return null;
+                })}
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

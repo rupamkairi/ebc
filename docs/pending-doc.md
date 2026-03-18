@@ -26,8 +26,8 @@ Blocked Buyers - (BlackListing Buyers) - (Eq. Fake Enquiry)
 ItemListing Details
 
 - For Product/Service -
-  - Upload **media & documents** as brochures, flyers, poster, banners ... (same content as Content)
-  - Show these at Along with Quotation or Requested Visits.
+  - Upload **media & documents** as brochures, flyers, poster, banners ... (same content as Content) -already have attachment in schema.
+  - Show these at Quotation or Visits alonh with Item Listing
 - Item Request from Seller/Buyer to Admin.
 
 ---

@@ -208,6 +208,7 @@ export interface ItemListing {
   updatedAt: string;
   mediaIds?: string[];
   documentIds?: string[];
+  attachments?: any[];
 }
 
 export interface CreateItemListingRequest {
