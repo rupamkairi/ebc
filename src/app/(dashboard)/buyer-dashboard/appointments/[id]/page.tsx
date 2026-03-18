@@ -109,16 +109,17 @@ export default function BuyerAppointmentDetailsPage() {
   const firstItem = appointment.appointmentLineItems?.[0];
 
   return (
-    <div className="max-w-7xl mx-auto py-10 px-4 space-y-12">
+    <div className="max-w-5xl mx-auto py-6 md:py-10 px-4 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Header */}
       <div className="flex flex-col gap-4">
-        <Link
-          href="/buyer-dashboard/appointments"
-          className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors text-sm font-bold"
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors text-sm font-bold w-fit"
         >
           <ArrowLeft className="h-4 w-4" />
           {t("back_to_appointments_link")}
-        </Link>
+        </button>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
             <div className="flex items-center gap-3 mb-2">
@@ -229,7 +230,7 @@ export default function BuyerAppointmentDetailsPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Side: Appointment Info */}
         <div className="lg:col-span-2 space-y-10">
           <section className="space-y-6">
@@ -266,7 +267,7 @@ export default function BuyerAppointmentDetailsPage() {
                   index: number,
                 ) => (
                   <div
-                    key={index}
+                    key={slot.id || index}
                     className="p-4 rounded-2xl bg-white border shadow-sm space-y-2"
                   >
                     <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">

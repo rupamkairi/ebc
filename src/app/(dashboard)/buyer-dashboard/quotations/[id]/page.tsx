@@ -137,6 +137,7 @@ export default function QuotationDetailsPage() {
       {/* Navigation and Title */}
       <div className="flex flex-col gap-4">
         <button
+          type="button"
           onClick={() => router.back()}
           className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors text-sm font-bold w-fit"
         >
