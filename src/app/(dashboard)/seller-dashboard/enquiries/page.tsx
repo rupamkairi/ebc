@@ -12,6 +12,7 @@ import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { useEntitiesQuery } from "@/queries/entityQueries";
 import { useAssignmentsQuery, useQuotationsQuery } from "@/queries/activityQueries";
+import { useItemListingsQuery } from "@/queries/catalogQueries";
 import { Input } from "@/components/ui/input";
 import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
 import { ACTIVITY_TYPE } from "@/constants/enums";
@@ -19,7 +20,7 @@ import { cn } from "@/lib/utils";
 import { getTimeBadge } from "@/lib/activity-utils";
 import { NotificationInbox } from "@/components/dashboard/notifications/notification-inbox";
 import { Bell } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 
 export default function EnquiriesPage() {
@@ -35,6 +36,32 @@ export default function EnquiriesPage() {
   });
 
   const { data: myQuotations = [], isLoading: loadingQuotations } = useQuotationsQuery();
+
+  // Fetch seller's own item listings to filter assignments by category match
+  const { data: myListings = [] } = useItemListingsQuery({
+    entityId: mainEntity?.id,
+  });
+
+  // Build a Set of category IDs the seller actually serves
+  const myCategoryIds = useMemo(() => {
+    const ids = new Set<string>();
+    myListings.forEach((listing) => {
+      if (listing.item?.categoryId) ids.add(listing.item.categoryId);
+    });
+    return ids;
+  }, [myListings]);
+
+  // Filter: only show assignments whose enquiry item category matches the seller's catalog
+  const relevantAssignments = useMemo(() => {
+    if (myCategoryIds.size === 0) return assignments; // no listings yet → show all (don't block new sellers)
+    return assignments.filter((a) => {
+      const enquiryItems = a.enquiry?.enquiryLineItems;
+      if (!enquiryItems || enquiryItems.length === 0) return true; // edge case: show if no item info
+      return enquiryItems.some(
+        (li) => li.item?.categoryId && myCategoryIds.has(li.item.categoryId)
+      );
+    });
+  }, [assignments, myCategoryIds]);
 
   if (loadingAssignments || loadingQuotations) {
     return (
@@ -69,14 +96,14 @@ export default function EnquiriesPage() {
   );
 
   // Split into pending (active) vs responded
-  const pendingAssignments = assignments.filter(
+  const pendingAssignments = relevantAssignments.filter(
     (a) => 
       a.enquiry?.id && 
       (!myRespondedEnquiryIds.has(a.enquiry.id) || myRevisionRequestedEnquiryIds.has(a.enquiry.id)) && 
       (!a.enquiry?.status || (a.enquiry.status !== "ACCEPTED" && a.enquiry.status !== "COMPLETED")),
   );
   
-  const respondedAssignments = assignments.filter(
+  const respondedAssignments = relevantAssignments.filter(
     (a) => a.enquiry?.id && myRespondedEnquiryIds.has(a.enquiry.id) && !myRevisionRequestedEnquiryIds.has(a.enquiry.id),
   );
 

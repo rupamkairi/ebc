@@ -52,8 +52,8 @@ export default function BuyerDashboardPage() {
       enquiries?.filter((e) => e.status === "APPROVED").length || 0;
 
     const upcomingAppointments =
-      appointments?.filter(
-        (a) => a.status === "PENDING" || a.status === "APPROVED",
+      appointments?.filter((a) =>
+        ["PENDING", "APPROVED", "CONFIRMED"].includes(a.status),
       ).length || 0;
     const pastAppointments =
       appointments?.filter((a) =>
@@ -70,7 +70,8 @@ export default function BuyerDashboardPage() {
       quotations?.filter((q) => q.status === "ACCEPTED").length || 0;
 
     const scheduledVisits =
-      visits?.filter((v) => v.status === "PENDING").length || 0;
+      visits?.filter((v) => ["ACCEPTED", "SCHEDULED"].includes(v.status))
+        .length || 0;
     const completedVisits =
       visits?.filter((v) => v.status === "COMPLETED").length || 0;
 

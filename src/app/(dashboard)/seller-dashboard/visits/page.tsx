@@ -39,12 +39,16 @@ export default function VisitsPage() {
   // Split into active (pending/accepted) vs completed/cancelled
   const activeVisits = visits.filter(
     (v) =>
-      v.status === "PENDING" ||
-      v.status === "ACCEPTED" ||
-      v.status === "SCHEDULED",
+      v.appointment?.status !== "COMPLETED" &&
+      (v.status === "PENDING" ||
+        v.status === "ACCEPTED" ||
+        v.status === "SCHEDULED"),
   );
   const completedVisits = visits.filter(
-    (v) => v.status === "COMPLETED" || v.status === "CANCELLED",
+    (v) =>
+      v.appointment?.status === "COMPLETED" ||
+      v.status === "COMPLETED" ||
+      v.status === "CANCELLED",
   );
 
   // Filter by search
@@ -236,16 +240,27 @@ export default function VisitsPage() {
                           >
                             {badge.label}
                           </span>
-                          <span
-                            className={cn(
-                              "px-3 py-1 rounded-full text-[9px] font-black tracking-widest uppercase",
-                              visit.status === "COMPLETED"
-                                ? "bg-green-600 text-white"
-                                : "bg-gray-400 text-white",
-                            )}
-                          >
-                            {visit.status}
-                          </span>
+                          {visit.appointment?.status === "COMPLETED" && visit.status !== "COMPLETED" ? (
+                            <span className="px-3 py-1 rounded-full bg-blue-500 text-white text-[9px] font-black tracking-widest uppercase">
+                              {t("closed_by_buyer", "Closed by Buyer")}
+                            </span>
+                          ) : (
+                            <span
+                              className={cn(
+                                "px-3 py-1 rounded-full text-[9px] font-black tracking-widest uppercase",
+                                visit.status === "COMPLETED"
+                                  ? "bg-green-600 text-white"
+                                  : "bg-gray-400 text-white",
+                              )}
+                            >
+                              {visit.status}
+                            </span>
+                          )}
+                          {visit.appointment?.status === "COMPLETED" && visit.status === "COMPLETED" && (
+                            <span className="px-3 py-1 rounded-full bg-blue-500 text-white text-[9px] font-black tracking-widest uppercase">
+                              {t("closed_by_buyer", "Closed by Buyer")}
+                            </span>
+                          )}
                         </div>
                         <h3 className="font-black text-secondary/70 text-base">
                           {firstItem?.item?.name || t("site_visit")}

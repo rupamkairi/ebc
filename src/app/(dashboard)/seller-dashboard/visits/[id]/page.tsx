@@ -70,10 +70,14 @@ export default function VisitDetailsPage() {
 
   const details = appointment.appointmentDetails?.[0];
   const firstItem = appointment.appointmentLineItems?.[0];
-  const isPending = visit.status === "PENDING";
-  const isAccepted =
-    visit.status === "ACCEPTED" || visit.status === "SCHEDULED";
+  
+  // NOTE: isActive means they've paid the lead cost and responded.
+  // isAccepted means the buyer has picked them as one of the 3 visits.
+  const isPaidResponse = visit.isActive;
+  const isAcceptedByBuyer = visit.isAccepted || visit.status === "ACCEPTED";
   const isCompleted = visit.status === "COMPLETED";
+  const isPending = !isPaidResponse && visit.status === "PENDING";
+  const isAppointmentCompleted = appointment?.status === "COMPLETED";
 
   const handleComplete = () => {
     completeVisit(id, {
@@ -130,8 +134,8 @@ export default function VisitDetailsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* ── Left: Requirements ── */}
         <div className="lg:col-span-2 space-y-5">
-          {/* Confirmed Schedule Summary */}
-          {visit.visitSlot && (
+          {/* Confirmed Schedule Summary - ONLY show if buyer has accepted! */}
+          {visit.visitSlot && isAcceptedByBuyer && (
             <div className="bg-emerald-50 rounded-2xl border border-emerald-100 p-6 space-y-4 animate-in fade-in slide-in-from-top-4 duration-500">
               <div className="flex items-center justify-between">
                 <h3 className="font-black text-emerald-900 flex items-center gap-2">
@@ -139,7 +143,7 @@ export default function VisitDetailsPage() {
                   {t("confirmed_visit_details", "Confirmed Service Schedule")}
                 </h3>
                 <Badge className="bg-emerald-500 text-white border-none text-[10px] font-black uppercase tracking-widest px-3">
-                  {visit.status === "COMPLETED" ? t("completed_status", "Completed") : t("active_status", "Active")}
+                  {visit.status === "COMPLETED" ? t("completed_status", "Completed") : t("active_status", "Confirmed")}
                 </Badge>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -170,6 +174,19 @@ export default function VisitDetailsPage() {
             </div>
           )}
 
+          {/* If Paid Response but NOT yet accepted by buyer, show status card */}
+          {visit.visitSlot && isPaidResponse && !isAcceptedByBuyer && !isCompleted && (
+            <div className="bg-amber-50 rounded-2xl border border-amber-100 p-6 space-y-3">
+              <div className="flex items-center gap-2 text-amber-900 font-black">
+                <Clock className="h-4 w-4" />
+                {t("awaiting_acceptance_title", "Response Sent - Awaiting Buyer Selection")}
+              </div>
+              <p className="text-sm text-amber-700 font-medium">
+                {t("awaiting_acceptance_msg", "You've successfully responded with a proposed schedule. The buyer can accept up to 3 service providers for this appointment. You'll be notified if you're selected.")}
+              </p>
+            </div>
+          )}
+
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6">
             {/* Title row */}
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
@@ -184,10 +201,19 @@ export default function VisitDetailsPage() {
                   <span
                     className={cn(
                       "px-4 py-1 rounded-full text-xs font-black tracking-wide text-white",
-                      isCompleted ? "bg-green-600" : "bg-primary",
+                      isAppointmentCompleted ? "bg-blue-600" : isCompleted ? "bg-green-600" : isAcceptedByBuyer ? "bg-emerald-600" : "bg-primary",
                     )}
                   >
-                    {visit.status}
+                    {isAppointmentCompleted
+                        ? t("closed_by_buyer_label", "Closed by Buyer")
+                        : isCompleted 
+                            ? t("completed_label") 
+                            : isAcceptedByBuyer 
+                                ? t("confirmed_label") 
+                                : isPaidResponse 
+                                    ? t("response_sent_badge", "Response Sent") 
+                                    : t("pending_label")
+                    }
                   </span>
                 </div>
               </div>
@@ -248,7 +274,10 @@ export default function VisitDetailsPage() {
               <div className="space-y-1.5">
                 <h4 className="text-sm font-black text-primary flex items-center gap-2">
                   <Clock className="h-4 w-4" />
-                  {t("scheduled_visit_label", "Confirmed Slot")}
+                  {isAcceptedByBuyer 
+                    ? t("confirmed_visit_label", "Confirmed Slot")
+                    : t("proposed_slot_label", "Proposed Slot")
+                  }
                 </h4>
                 <p className="text-sm text-gray-500 font-medium pl-6">
                   {visit.visitSlot ? (
@@ -294,12 +323,12 @@ export default function VisitDetailsPage() {
             {isPending && (
               <ActivityActionCard
                 isPending={true}
-                actionLabel={t("accept_visit_btn", "Accept Visit")}
+                actionLabel={t("pay_and_respond_btn", "Pay and Respond")}
                 onAction={handleAccept}
                 actionIcon={<CheckCircle2 className="h-4 w-4" />}
                 actionDescription={t(
-                  "waiting_provider_confirm",
-                  "Confirm you're ready for this visit.",
+                  "pay_lead_cost_to_respond",
+                  "Pay the lead cost to provide your availability to the buyer.",
                 )}
                 respondedLabel=""
                 respondedDescription=""
@@ -309,21 +338,42 @@ export default function VisitDetailsPage() {
               />
             )}
 
-            {(isPending || isAccepted) && (
+            {isPaidResponse && !isAcceptedByBuyer && !isCompleted && (
+              <div className="p-5 bg-white rounded-2xl border border-dashed border-primary/20 flex flex-col items-center text-center gap-4">
+                <div className="h-12 w-12 rounded-full bg-primary/5 flex items-center justify-center">
+                  <Clock className={cn("h-6 w-6 text-primary/40", !isAppointmentCompleted && "animate-pulse")} />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-black text-primary uppercase tracking-tight">
+                    {isAppointmentCompleted ? t("closed_by_buyer", "Closed by Buyer") : t("waiting_for_buyer", "Awaiting Buyer")}
+                  </p>
+                  <p className="text-[10px] text-primary/60 font-bold leading-relaxed px-2">
+                    {isAppointmentCompleted 
+                      ? t("closed_by_buyer_msg_unpicked", "The buyer has completed this appointment with another provider. This request is now closed.")
+                      : t("buyer_selection_pending", "Your response is with the buyer. You will be able to complete this service once they officially accept your visit.")}
+                  </p>
+                </div>
+                <Button asChild variant="secondary" className="w-full rounded-xl font-black h-10 text-[10px] uppercase tracking-widest">
+                    <Link href="/seller-dashboard/visits">{t("back_to_list", "Back to List")}</Link>
+                </Button>
+              </div>
+            )}
+
+            {isAcceptedByBuyer && !isCompleted && (
               <ActivityActionCard
-                isPending={true}
-                actionLabel={t("complete_visit_btn", "Mark as Completed")}
-                onAction={handleComplete}
-                actionIcon={<PackageCheck className="h-4 w-4" />}
-                actionDescription={t(
-                  "mark_as_completed_btn",
-                  "Mark this visit as finished after the onsite consultation.",
-                )}
-                respondedLabel=""
-                respondedDescription=""
+                isPending={!isAppointmentCompleted}
+                actionLabel={isAppointmentCompleted ? "" : t("complete_visit_btn", "Mark as Completed")}
+                onAction={isAppointmentCompleted ? () => {} : handleComplete}
+                actionIcon={isAppointmentCompleted ? <PackageCheck className="h-4 w-4" /> : <PackageCheck className="h-4 w-4" />}
+                actionDescription={isAppointmentCompleted 
+                  ? t("closed_by_buyer_msg", "The buyer has marked the entire appointment as complete. This visit is now closed.")
+                  : t("mark_as_completed_btn", "Mark this visit as finished after the onsite consultation.")}
+                respondedLabel={isAppointmentCompleted ? t("closed_by_buyer", "Closed by Buyer") : ""}
+                respondedDescription={isAppointmentCompleted ? t("closed_by_buyer_msg", "The buyer has marked the entire appointment as complete. This visit is now closed.") : ""}
                 backHref="/seller-dashboard/visits"
                 backLabel={t("back_to_visits", "Back to Visits")}
                 isProcessing={isCompleting}
+                variant={isAppointmentCompleted ? "gray" : "green"}
               />
             )}
 

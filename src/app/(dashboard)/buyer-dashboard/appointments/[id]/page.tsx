@@ -9,7 +9,6 @@ import {
   useCompleteAppointmentMutation,
 } from "@/queries/activityQueries";
 import {
-  ReputationSection,
   ReviewForm,
   ReviewSnapshot,
 } from "@/components/shared/reviews";
@@ -27,7 +26,6 @@ import {
   CheckCircle2,
   User,
   Bell,
-  PartyPopper,
   Star,
   ExternalLink,
   FileText as FileTextIcon,
@@ -44,8 +42,6 @@ export default function BuyerAppointmentDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { t } = useLanguage();
-  const queryClient = useQueryClient();
-
   const { data: appointment, isLoading: loadingAppointment } =
     useAppointmentQuery(id);
   const { data: visits, isLoading: loadingVisits } = useVisitsQuery({
@@ -54,22 +50,10 @@ export default function BuyerAppointmentDetailsPage() {
   const acceptMutation = useAcceptVisitMutation();
   const completeMutation = useCompleteAppointmentMutation();
 
-  const activeVisits =
-    visits?.filter((v: import("@/types/activity").Visit) => v.isActive) || [];
-  const confirmedVisit = activeVisits[0];
+  const acceptedVisits =
+    visits?.filter((v: import("@/types/activity").Visit) => v.isAccepted) || [];
+  const confirmedVisit = acceptedVisits[0]; 
   const isCompleted = appointment?.status === "COMPLETED";
-
-  const providerEntityId =
-    confirmedVisit?.createdBy?.staffAtEntityId ||
-    confirmedVisit?.createdBy?.createdEntities?.[0]?.id ||
-    "";
-
-  // Check if buyer already left a review for this specific appointment
-  const existingReview = useAppointmentReviewQuery(
-    providerEntityId,
-    id as string,
-  );
-  const hasReviewed = !!existingReview;
 
   const handleAccept = async (visitId: string) => {
     try {
@@ -146,88 +130,30 @@ export default function BuyerAppointmentDetailsPage() {
             </h1>
           </div>
 
-          {confirmedVisit && !isCompleted && (
+          {!isCompleted && acceptedVisits.length > 0 && (
             <div className="flex flex-col items-end gap-2">
-              {confirmedVisit.status === "COMPLETED" ? (
-                <Button
-                  onClick={handleComplete}
-                  disabled={completeMutation.isPending}
-                  className="h-14 rounded-3xl bg-blue-600 hover:bg-blue-700 font-black gap-2 px-8 shadow-xl shadow-blue-500/20 animate-in zoom-in duration-300"
-                >
-                  {completeMutation.isPending ? (
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                  ) : (
-                    <CheckCircle2 className="h-5 w-5" />
-                  )}
-                  {t("mark_completed_btn")}
-                </Button>
-              ) : (
-                <div className="flex items-center gap-3 px-6 py-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-700 select-none">
-                  <div className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
-                  <span className="text-xs font-black uppercase tracking-widest">
-                    {t(
-                      "waiting_service_delivery",
-                      "Waiting for service delivery",
-                    )}
-                  </span>
-                </div>
+              <Button
+                onClick={handleComplete}
+                disabled={completeMutation.isPending}
+                className="h-14 rounded-3xl bg-blue-600 hover:bg-blue-700 font-black gap-2 px-8 shadow-xl shadow-blue-500/20 animate-in zoom-in duration-300"
+              >
+                {completeMutation.isPending ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  <CheckCircle2 className="h-5 w-5" />
+                )}
+                {t("finish_appointment_btn", "Finish Appointment")}
+              </Button>
+              {confirmedVisit && confirmedVisit.status !== "COMPLETED" && (
+                <span className="text-[10px] font-black uppercase text-amber-600 tracking-tighter bg-amber-50 px-3 py-1 rounded-full border border-amber-200 animate-pulse">
+                  {t("waiting_service_delivery", "Waiting for service delivery")}
+                </span>
               )}
             </div>
           )}
         </div>
       </div>
 
-      {isCompleted && (
-        <div className="p-8 rounded-4xl bg-linear-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border border-emerald-500/20 flex flex-col md:flex-row items-center justify-between gap-8 animate-in fade-in slide-in-from-top-4 duration-700">
-          <div className="flex items-center gap-6 text-center md:text-left">
-            <div className="h-20 w-20 rounded-3xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
-              <PartyPopper className="h-10 w-10" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-black tracking-tight">
-                {t("service_completed_title")}
-              </h2>
-              <p className="text-muted-foreground font-medium max-w-sm">
-                {t("how_was_experience_with")}{" "}
-                <b>
-                  {confirmedVisit?.createdBy?.staffAt?.name ||
-                    confirmedVisit?.createdBy?.createdEntities?.[0]?.name ||
-                    confirmedVisit?.createdBy?.name}
-                </b>
-                ?
-              </p>
-            </div>
-          </div>
-          {hasReviewed ? (
-            <div className="flex items-center gap-3 px-8 py-4 rounded-full bg-emerald-500/20 border border-emerald-500/30">
-              <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-              <span className="font-black text-emerald-700 text-sm">
-                {t("review_submitted") || "Review Submitted — Thank you!"}
-              </span>
-            </div>
-          ) : confirmedVisit ? (
-            <ReviewForm
-              entityId={providerEntityId || undefined}
-              appointmentId={id as string}
-              isVerified={true}
-              onSuccess={() => {
-                queryClient.invalidateQueries({
-                  queryKey: ["entity-reviews", providerEntityId],
-                });
-              }}
-              trigger={
-                <Button
-                  size="lg"
-                  className="h-16 rounded-full px-10 bg-emerald-500 hover:bg-emerald-600 font-black gap-3 text-lg shadow-xl shadow-emerald-500/20 group"
-                >
-                  <Star className="h-6 w-6 fill-current group-hover:rotate-12 transition-transform" />
-                  {t("rate_your_experience")}
-                </Button>
-              }
-            />
-          ) : null}
-        </div>
-      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         {/* Left Side: Appointment Info */}
@@ -307,10 +233,10 @@ export default function BuyerAppointmentDetailsPage() {
                   </p>
                 </div>
               ) : (
-                <div className="grid gap-6">
+                  <div className="grid gap-6">
                   {(isCompleted
-                    ? confirmedVisit
-                      ? [confirmedVisit]
+                    ? acceptedVisits
+                      ? acceptedVisits
                       : []
                     : visits || []
                   ).map((v: import("@/types/activity").Visit) => (
@@ -321,24 +247,13 @@ export default function BuyerAppointmentDetailsPage() {
                       onAccept={handleAccept}
                       isAccepting={acceptMutation.isPending}
                       isAppointmentClosed={isCompleted}
+                      canAcceptMore={acceptedVisits.length < 3}
+                      appointmentId={id as string}
                     />
                   ))}
                 </div>
               )}
             </div>
-
-            {/* Detailed reputation for the confirmed provider */}
-            {isCompleted && confirmedVisit && (
-              <div className="mt-16 pt-16 border-t animate-in fade-in slide-in-from-bottom-6 duration-1000">
-                <ReputationSection
-                  entityId={providerEntityId}
-                  entityName={
-                    confirmedVisit.createdBy?.staffAt?.name ||
-                    confirmedVisit.createdBy?.name
-                  }
-                />
-              </div>
-            )}
           </section>
         </div>
 
@@ -376,13 +291,18 @@ function VisitListItem({
   onAccept,
   isAccepting,
   isAppointmentClosed,
+  canAcceptMore,
+  appointmentId,
 }: {
   v: import("@/types/activity").Visit;
   t: TFunction;
   onAccept: (visitId: string) => void;
   isAccepting: boolean;
   isAppointmentClosed: boolean;
+  canAcceptMore: boolean;
+  appointmentId: string;
 }) {
+  const queryClient = useQueryClient();
   const providerId =
     v.createdBy?.staffAtEntityId || v.createdBy?.createdEntities?.[0]?.id || "";
   const providerName =
@@ -391,14 +311,26 @@ function VisitListItem({
     v.createdBy?.name ||
     "";
 
+  const existingReview = useAppointmentReviewQuery(
+    providerId,
+    appointmentId,
+  );
+  const hasReviewed = !!existingReview;
+  const isVisitCompleted = v.status === "COMPLETED";
+
   const firstItem = v.appointment?.appointmentLineItems?.[0];
 
   return (
     <Card className="rounded-4xl bg-white border shadow-xl shadow-black/5 relative overflow-hidden group">
       <CardContent className="p-8 space-y-8">
         <div className="flex items-center justify-between">
-          <Badge className="bg-primary/10 text-primary border-primary/20 uppercase text-[10px] font-black tracking-widest">
-            {v.isActive
+          <Badge className={cn(
+            "uppercase text-[10px] font-black tracking-widest",
+            v.isAccepted 
+              ? "bg-emerald-500 text-white" 
+              : "bg-primary/10 text-primary border-primary/20"
+          )}>
+            {v.isAccepted
               ? t("confirmed_visit_label", "Confirmed Visit")
               : t("scheduled_visit_label")}
           </Badge>
@@ -529,9 +461,38 @@ function VisitListItem({
           </div>
 
           <div className="md:w-64 flex flex-col justify-center shrink-0">
-            {v.isActive ? (
+            {isVisitCompleted ? (
+              hasReviewed ? (
+                <div className="flex flex-col items-center gap-2 p-4 rounded-3xl bg-emerald-50 border border-emerald-100 italic font-black text-emerald-700 text-[10px] text-center uppercase tracking-widest">
+                  <CheckCircle2 className="h-4 w-4" />
+                  {t("review_submitted")}
+                </div>
+              ) : (
+                <ReviewForm
+                  entityId={providerId || undefined}
+                  appointmentId={appointmentId}
+                  isVerified={true}
+                  onSuccess={() => {
+                    queryClient.invalidateQueries({
+                      queryKey: ["entity-reviews", providerId],
+                    });
+                    queryClient.invalidateQueries({
+                      queryKey: ["review", providerId, appointmentId],
+                    });
+                  }}
+                  trigger={
+                    <Button
+                      className="w-full h-14 rounded-3xl bg-emerald-500 hover:bg-emerald-600 font-black gap-2 shadow-lg shadow-emerald-500/20"
+                    >
+                      <Star className="h-5 w-5 fill-current" />
+                      {t("rate_experience_btn", "Rate Experience")}
+                    </Button>
+                  }
+                />
+              )
+            ) : v.isAccepted ? (
               <Button
-                className="w-full h-14 rounded-3xl bg-emerald-500 hover:bg-emerald-600 font-black gap-2"
+                className="w-full h-14 rounded-3xl bg-emerald-500/10 text-emerald-600 border border-emerald-200 font-black gap-2"
                 disabled
               >
                 <CheckCircle2 className="h-5 w-5" />
@@ -541,10 +502,12 @@ function VisitListItem({
               <Button
                 className="w-full h-14 rounded-3xl font-black shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform"
                 onClick={() => onAccept(v.id)}
-                disabled={isAccepting || isAppointmentClosed}
+                disabled={isAccepting || isAppointmentClosed || !canAcceptMore}
               >
                 {isAccepting ? (
                   <Loader2 className="h-5 w-5 animate-spin" />
+                ) : !canAcceptMore ? (
+                  t("limit_reached", "Limit Reached")
                 ) : (
                   t("confirm_schedule_btn")
                 )}

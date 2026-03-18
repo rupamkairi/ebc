@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { PackageCheck } from "lucide-react";
 import Link from "next/link";
@@ -28,6 +29,8 @@ interface ActivityActionCardProps {
   isProcessing?: boolean;
   /** Whether the action should be disabled (e.g. business not approved) */
   disabled?: boolean;
+  /** Color theme for the responded state */
+  variant?: "green" | "gray";
 }
 
 export function ActivityActionCard({
@@ -43,6 +46,7 @@ export function ActivityActionCard({
   backLabel,
   isProcessing = false,
   disabled = false,
+  variant = "green",
 }: ActivityActionCardProps) {
   if (isPending) {
     return (
@@ -92,15 +96,20 @@ export function ActivityActionCard({
     );
   }
 
+  const isGray = variant === "gray";
+
   return (
-    <div className="rounded-2xl p-5 space-y-4 bg-green-50 border border-green-200">
+    <div className={cn(
+      "rounded-2xl p-5 space-y-4",
+      isGray ? "bg-gray-100/80 border border-gray-200" : "bg-green-50 border border-green-200"
+    )}>
       <div className="flex items-center gap-3">
-        <PackageCheck className="h-6 w-6 text-green-600 shrink-0" />
+        <PackageCheck className={cn("h-6 w-6 shrink-0", isGray ? "text-gray-400" : "text-green-600")} />
         <div>
-          <h3 className="text-green-800 font-black text-base leading-tight">
+          <h3 className={cn("font-black text-base leading-tight", isGray ? "text-gray-700" : "text-green-800")}>
             {respondedLabel}
           </h3>
-          <p className="text-green-700/70 text-xs font-medium mt-0.5">
+          <p className={cn("text-xs font-medium mt-0.5", isGray ? "text-gray-500/70" : "text-green-700/70")}>
             {respondedDescription}
           </p>
         </div>

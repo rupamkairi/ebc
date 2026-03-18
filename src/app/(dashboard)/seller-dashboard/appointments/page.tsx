@@ -13,11 +13,12 @@ import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { useEntitiesQuery } from "@/queries/entityQueries";
 import { useAssignmentsQuery } from "@/queries/activityQueries";
+import { useItemListingsQuery } from "@/queries/catalogQueries";
 import { Input } from "@/components/ui/input";
 import { ACTIVITY_TYPE } from "@/constants/enums";
 import { cn } from "@/lib/utils";
 import { getTimeBadge } from "@/lib/activity-utils";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { format } from "date-fns";
 
@@ -33,6 +34,32 @@ export default function AppointmentsPage() {
     type: ACTIVITY_TYPE.APPOINTMENT_ASSIGNMENT,
   });
 
+  // Fetch seller's own item listings to filter assignments by category match
+  const { data: myListings = [] } = useItemListingsQuery({
+    entityId: mainEntity?.id,
+  });
+
+  // Build a Set of category IDs the seller actually serves
+  const myCategoryIds = useMemo(() => {
+    const ids = new Set<string>();
+    myListings.forEach((listing) => {
+      if (listing.item?.categoryId) ids.add(listing.item.categoryId);
+    });
+    return ids;
+  }, [myListings]);
+
+  // Filter: only show assignments whose appointment item category matches the seller's catalog
+  const relevantAssignments = useMemo(() => {
+    if (myCategoryIds.size === 0) return assignments; // no listings yet → show all (don't block new sellers)
+    return assignments.filter((a) => {
+      const appointmentItems = a.appointment?.appointmentLineItems;
+      if (!appointmentItems || appointmentItems.length === 0) return true; // edge case: show if no item info
+      return appointmentItems.some(
+        (li) => li.item?.categoryId && myCategoryIds.has(li.item.categoryId)
+      );
+    });
+  }, [assignments, myCategoryIds]);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -42,11 +69,11 @@ export default function AppointmentsPage() {
   }
 
   // Split into pending (active) vs confirmed/completed
-  const pendingAssignments = assignments.filter(
-    (a) => !a.appointment?.status || a.appointment.status === "PENDING",
+  const pendingAssignments = relevantAssignments.filter(
+    (a) => !a.appointment?.status || a.appointment.status === "PENDING" || a.appointment.status === "APPROVED",
   );
-  const confirmedAssignments = assignments.filter(
-    (a) => a.appointment?.status && a.appointment.status !== "PENDING",
+  const confirmedAssignments = relevantAssignments.filter(
+    (a) => a.appointment?.status && (a.appointment.status === "CONFIRMED" || a.appointment.status === "COMPLETED"),
   );
 
   // Filter by search
@@ -163,10 +190,10 @@ export default function AppointmentsPage() {
                       </p>
                     )}
 
-                    {/* Location */}
-                    {details?.address && (
+                    {/* Location (pincode only — full address is shown after payment) */}
+                    {details?.pincode && (
                       <p className="text-xs text-primary/40 font-medium truncate max-w-md">
-                        📍 {details.address}
+                        📍 {details.pincode.pincode} · {details.pincode.district}, {details.pincode.state}
                       </p>
                     )}
                   </div>

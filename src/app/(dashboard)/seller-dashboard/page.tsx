@@ -72,7 +72,13 @@ export default function SellerDashboardPage() {
 
   // Visits for Service Providers
   const { data: visits = [] } = useVisitsQuery();
-  const pendingVisits = visits.filter((v) => v.status === "PENDING").length;
+  const pendingVisits = visits.filter(
+    (v) =>
+      v.appointment?.status !== "COMPLETED" &&
+      (v.status === "PENDING" ||
+        v.status === "ACCEPTED" ||
+        v.status === "SCHEDULED"),
+  ).length;
   const totalVisits = visits.length;
 
   // IDs of enquiries this seller has actually sent a quotation for
@@ -333,7 +339,7 @@ export default function SellerDashboardPage() {
                         {t("site_visit_requests")}
                       </span>
                       <span className="text-3xl sm:text-4xl font-bold text-secondary">
-                        {appointmentAssignments.length}
+                        {appointmentAssignments.filter((a) => a.appointment?.status !== "COMPLETED").length}
                       </span>
                     </div>
                   </Card>
@@ -386,7 +392,7 @@ export default function SellerDashboardPage() {
                   </div>
                   <span className="text-4xl sm:text-5xl font-bold text-secondary drop-shadow-md mt-2">
                     {isService
-                      ? appointmentAssignments.length
+                      ? appointmentAssignments.filter((a) => a.appointment?.status !== "COMPLETED").length
                       : pendingEnquiryCount}
                   </span>
                 </div>

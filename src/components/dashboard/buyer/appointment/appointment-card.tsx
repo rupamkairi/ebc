@@ -13,9 +13,7 @@ import {
   FileText,
 } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
-import { useVisitsQuery } from "@/queries/activityQueries";
 import Link from "next/link";
-import { Visit } from "@/types/activity";
 
 interface AppointmentCardProps {
   appointment: Appointment;
@@ -26,9 +24,6 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
   const firstItem = appointment.appointmentLineItems?.[0];
   const details = appointment.appointmentDetails?.[0];
   const slots = appointment.appointmentSlots || [];
-
-  const { data: visits } = useVisitsQuery({ appointmentId: appointment.id });
-  const confirmedSlotId = visits?.find((v: Visit) => v.isActive)?.visitSlot?.id;
 
   const getStatusColor = (status: string) => {
     switch (status.toUpperCase()) {
@@ -106,23 +101,13 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
               <div className="flex flex-wrap gap-3">
                 {slots.map((slot, index) => {
                   const parsed = parseSlot(slot.remarks || "");
-                  const isChosen = slot.id === confirmedSlotId;
                   return (
                     <div
                       key={slot.id || index}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-2xl border transition-all duration-300 relative ${
-                        isChosen
-                          ? "bg-primary/5 border-primary shadow-sm ring-1 ring-primary/20"
-                          : "bg-slate-50 border-slate-100 hover:border-primary/20"
-                      }`}
+                      className="flex items-center gap-3 px-4 py-3 rounded-2xl border transition-all duration-300 relative bg-slate-50 border-slate-100 hover:border-primary/20"
                     >
-                      {isChosen && (
-                        <div className="absolute -top-2 -right-2 bg-primary text-white text-[8px] font-black px-2 py-0.5 rounded-full shadow-sm z-10">
-                          {t("chosen_slot", "CHOSEN")}
-                        </div>
-                      )}
                       <div className="h-9 w-9 rounded-xl bg-white flex items-center justify-center shadow-sm border border-slate-50">
-                        <CalendarDays className={`h-4 w-4 ${isChosen ? "text-primary" : "text-primary/40"}`} />
+                        <CalendarDays className="h-4 w-4 text-primary/40" />
                       </div>
                       <div className="text-xs">
                         <p className="font-black text-primary">

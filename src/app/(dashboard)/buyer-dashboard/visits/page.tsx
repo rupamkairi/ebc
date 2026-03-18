@@ -32,9 +32,9 @@ export default function BuyerVisitsPage() {
   const filtered = (visits || []).filter((v: Visit) => {
     if (activeFilter === "All") return true;
     if (activeFilter === "Accepted")
-      return v.status === "ACCEPTED" || v.isActive;
+      return v.isAccepted || v.status === "ACCEPTED";
     if (activeFilter === "Completed") return v.status === "COMPLETED";
-    return v.status === "PENDING" && !v.isActive;
+    return v.status === "PENDING" || (v.isActive && !v.isAccepted);
   });
 
   return (
@@ -101,7 +101,7 @@ export default function BuyerVisitsPage() {
             const appointmentRef =
               v.appointment?.appointmentLineItems?.[0]?.item?.name ||
               "Service Item";
-            const isAccepted = v.isActive || v.status === "ACCEPTED";
+            const isAccepted = v.isAccepted || v.status === "ACCEPTED";
             const isCompleted = v.status === "COMPLETED";
 
             let statusColor = "bg-amber-100 text-amber-700";

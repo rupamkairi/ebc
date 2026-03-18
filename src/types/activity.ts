@@ -79,6 +79,12 @@ export interface AppointmentDetails {
   remarks?: string;
   address?: string;
   pincodeDirectoryId?: string;
+  pincode?: {
+    id: string;
+    pincode: string;
+    district: string;
+    state: string;
+  } | null;
 }
 
 export interface AppointmentSlot {
@@ -192,6 +198,8 @@ export interface Visit {
   updatedAt: string;
   createdById: string;
   isActive?: boolean;
+  isAccepted?: boolean;
+  isCompleted?: boolean;
   visitSlot?: {
     id: string;
     fromDateTime: string;

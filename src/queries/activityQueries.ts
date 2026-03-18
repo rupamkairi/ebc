@@ -1,5 +1,4 @@
 import { activityService } from "@/services/activityService";
-import { catalogService } from "@/services/catalogService";
 import { walletKeys } from "./walletQueries";
 import {
   AppointmentListParams,
@@ -60,64 +59,8 @@ export function useEnquiryQuery(id: string) {
 export function useCreateEnquiryMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (data: CreateEnquiryRequest) => {
-      const enquiry = await activityService.createEnquiry(data);
-
-      try {
-        // --- SMART ASSIGNMENT LOGIC ---
-        const firstItem = data.lineItems[0];
-        if (firstItem) {
-          console.log(`[SmartAssign] Processing enquiry ${enquiry.id} for item ${firstItem.itemId}`);
-          
-          // 1. Get Category ID for the item
-          const itemDetails = await catalogService.getItem(firstItem.itemId);
-          const categoryId = itemDetails.categoryId;
-
-          if (categoryId) {
-            // 2. Try to find entities with this category in the target pincode
-            // we use categoryId array as per types/catalog.ts
-            console.log(`[SmartAssign] Searching local providers in pincode ${data.details.pincodeDirectoryId} for category ${categoryId}`);
-            let listings = await catalogService.getItemListings({
-              categoryId: [categoryId],
-              pincodeId: data.details.pincodeDirectoryId,
-            } as any);
-
-            // 3. FALLBACK: If no results in pincode, find by category globally
-            if (!listings || listings.length === 0) {
-              console.log("[SmartAssign] No local providers found. Falling back to global sub-category assignment.");
-              listings = await catalogService.getItemListings({ 
-                categoryId: [categoryId] 
-              } as any);
-            }
-
-            // 4. Assign to found entities
-            if (listings && listings.length > 0) {
-              // Extract unique entity IDs
-              const entityIds = Array.from(new Set(listings.map((l: any) => l.entityId)));
-              console.log(`[SmartAssign] Found ${entityIds.length} unique providers for assignment.`);
-              
-              // Assign to all identified providers (Broadcast)
-              await Promise.allSettled(
-                entityIds.map(entityId => 
-                  activityService.createAssignment({
-                    type: "ENQUIRY_ASSIGNMENT",
-                    enquiryId: enquiry.id,
-                    toEntityId: entityId
-                  })
-                )
-              );
-              console.log("[SmartAssign] Assignment process complete.");
-            } else {
-              console.log("[SmartAssign] No providers found even in global fallback.");
-            }
-          }
-        }
-      } catch (error) {
-        console.error("[SmartAssign] Auto-assignment failed:", error);
-      }
-
-      return enquiry;
-    },
+    mutationFn: (data: CreateEnquiryRequest) =>
+      activityService.createEnquiry(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: activityKeys.all });
     },
@@ -156,63 +99,8 @@ export function useAppointmentQuery(id: string) {
 export function useCreateAppointmentMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (data: CreateAppointmentRequest) => {
-      const appointment = await activityService.createAppointment(data);
-
-      try {
-        // --- SMART ASSIGNMENT LOGIC ---
-        const firstItem = data.lineItems[0];
-        if (firstItem) {
-          console.log(`[SmartAssign] Processing appointment ${appointment.id} for item ${firstItem.itemId}`);
-          
-          // 1. Get Category ID for the item
-          const itemDetails = await catalogService.getItem(firstItem.itemId);
-          const categoryId = itemDetails.categoryId;
-
-          if (categoryId) {
-            // 2. Try to find entities with this category in the target pincode
-            console.log(`[SmartAssign] Searching local providers in pincode ${data.details.pincodeDirectoryId} for category ${categoryId}`);
-            let listings = await catalogService.getItemListings({
-              categoryId: [categoryId],
-              pincodeId: data.details.pincodeDirectoryId,
-            } as any);
-
-            // 3. FALLBACK: If no results in pincode, find by category globally
-            if (!listings || listings.length === 0) {
-              console.log("[SmartAssign] No local providers found. Falling back to global sub-category assignment.");
-              listings = await catalogService.getItemListings({ 
-                categoryId: [categoryId] 
-              } as any);
-            }
-
-            // 4. Assign to found entities
-            if (listings && listings.length > 0) {
-              // Extract unique entity IDs
-              const entityIds = Array.from(new Set(listings.map((l: any) => l.entityId)));
-              console.log(`[SmartAssign] Found ${entityIds.length} unique providers for assignment.`);
-              
-              // Assign to all identified providers (Broadcast)
-              await Promise.allSettled(
-                entityIds.map(entityId => 
-                  activityService.createAssignment({
-                    type: "APPOINTMENT_ASSIGNMENT",
-                    appointmentId: appointment.id,
-                    toEntityId: entityId
-                  })
-                )
-              );
-              console.log("[SmartAssign] Assignment process complete.");
-            } else {
-              console.log("[SmartAssign] No providers found even in global fallback.");
-            }
-          }
-        }
-      } catch (error) {
-        console.error("[SmartAssign] Auto-assignment failed:", error);
-      }
-
-      return appointment;
-    },
+    mutationFn: (data: CreateAppointmentRequest) =>
+      activityService.createAppointment(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: activityKeys.all });
     },

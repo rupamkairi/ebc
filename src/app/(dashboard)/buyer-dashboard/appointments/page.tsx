@@ -26,8 +26,12 @@ export default function AppointmentsPage() {
   });
 
   const filteredAppointments = (appointments || []).filter((a) => {
+    const status = (a.status || "").toUpperCase();
     if (activeFilter === "All") return true;
-    return (a.status || "").toUpperCase() === activeFilter.toUpperCase();
+    if (activeFilter.toUpperCase() === "UPCOMING") {
+      return ["PENDING", "APPROVED", "CONFIRMED"].includes(status);
+    }
+    return status === activeFilter.toUpperCase();
   });
 
   return (
