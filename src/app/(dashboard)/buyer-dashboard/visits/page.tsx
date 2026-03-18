@@ -207,9 +207,9 @@ export default function BuyerVisitsPage() {
                           className="border-primary text-primary hover:bg-primary hover:text-white font-black rounded-xl h-10 px-5 transition-all group/btn w-full md:w-auto"
                         >
                           <Link
-                            href={`/buyer-dashboard/appointments/${v.appointmentId}`}
+                            href={`/buyer-dashboard/visits/${v.id}`}
                           >
-                            {t("view_label") || "VIEW"}
+                            Details
                             <ChevronRight className="ml-1 h-4 w-4 group-hover/btn:translate-x-0.5 transition-transform" />
                           </Link>
                         </Button>

@@ -29,6 +29,10 @@ import {
   Bell,
   PartyPopper,
   Star,
+  ExternalLink,
+  FileText as FileTextIcon,
+  Download,
+  ChevronRight,
 } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -61,7 +65,10 @@ export default function BuyerAppointmentDetailsPage() {
     "";
 
   // Check if buyer already left a review for this specific appointment
-  const existingReview = useAppointmentReviewQuery(providerEntityId, id as string);
+  const existingReview = useAppointmentReviewQuery(
+    providerEntityId,
+    id as string,
+  );
   const hasReviewed = !!existingReview;
 
   const handleAccept = async (visitId: string) => {
@@ -158,7 +165,10 @@ export default function BuyerAppointmentDetailsPage() {
                 <div className="flex items-center gap-3 px-6 py-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-700 select-none">
                   <div className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
                   <span className="text-xs font-black uppercase tracking-widest">
-                    {t("waiting_service_delivery", "Waiting for service delivery")}
+                    {t(
+                      "waiting_service_delivery",
+                      "Waiting for service delivery",
+                    )}
                   </span>
                 </div>
               )}
@@ -243,7 +253,7 @@ export default function BuyerAppointmentDetailsPage() {
           </section>
 
           <Separator className="opacity-50" />
-          
+
           <section className="space-y-6">
             <h3 className="text-xl font-black tracking-tight flex items-center gap-2">
               <Clock className="h-5 w-5 text-primary" />
@@ -251,24 +261,29 @@ export default function BuyerAppointmentDetailsPage() {
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {appointment.appointmentSlots.map(
-                (slot: import("@/types/activity").AppointmentSlot, index: number) => (
-                <div 
-                  key={index} 
-                  className="p-4 rounded-2xl bg-white border shadow-sm space-y-2"
-                >
-                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                    {t("slot_label", "Slot")} {index + 1}
-                  </p>
-                  <div>
-                    <p className="font-black text-sm">
-                      {format(new Date(slot.fromDateTime), "MMM do, yyyy")}
+                (
+                  slot: import("@/types/activity").AppointmentSlot,
+                  index: number,
+                ) => (
+                  <div
+                    key={index}
+                    className="p-4 rounded-2xl bg-white border shadow-sm space-y-2"
+                  >
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                      {t("slot_label", "Slot")} {index + 1}
                     </p>
-                    <p className="text-[10px] text-muted-foreground font-bold">
-                      {format(new Date(slot.fromDateTime), "p")} - {format(new Date(slot.toDateTime), "p")}
-                    </p>
+                    <div>
+                      <p className="font-black text-sm">
+                        {format(new Date(slot.fromDateTime), "MMM do, yyyy")}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground font-bold">
+                        {format(new Date(slot.fromDateTime), "p")} -{" "}
+                        {format(new Date(slot.toDateTime), "p")}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ),
+              )}
             </div>
           </section>
 
@@ -369,22 +384,34 @@ function VisitListItem({
   isAppointmentClosed: boolean;
 }) {
   const providerId =
-    v.createdBy?.staffAtEntityId ||
-    v.createdBy?.createdEntities?.[0]?.id ||
-    "";
+    v.createdBy?.staffAtEntityId || v.createdBy?.createdEntities?.[0]?.id || "";
   const providerName =
     v.createdBy?.staffAt?.name ||
     v.createdBy?.createdEntities?.[0]?.name ||
     v.createdBy?.name ||
     "";
 
+  const firstItem = v.appointment?.appointmentLineItems?.[0];
+
   return (
     <Card className="rounded-4xl bg-white border shadow-xl shadow-black/5 relative overflow-hidden group">
       <CardContent className="p-8 space-y-8">
-        <div className="absolute top-0 right-0 p-6">
+        <div className="flex items-center justify-between">
           <Badge className="bg-primary/10 text-primary border-primary/20 uppercase text-[10px] font-black tracking-widest">
-            {v.isActive ? t("confirmed_visit_label", "Confirmed Visit") : t("scheduled_visit_label")}
+            {v.isActive
+              ? t("confirmed_visit_label", "Confirmed Visit")
+              : t("scheduled_visit_label")}
           </Badge>
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            className="text-primary font-black text-xs"
+          >
+            <Link href={`/buyer-dashboard/visits/${v.id}`}>
+              View Details <ChevronRight className="h-3 w-3 ml-1" />
+            </Link>
+          </Button>
         </div>
 
         <div className="flex flex-col md:flex-row gap-10">
@@ -443,6 +470,62 @@ function VisitListItem({
                 </div>
               </div>
             </div>
+
+            {/* Attachments / Images */}
+            {firstItem?.itemListing?.attachments &&
+              firstItem.itemListing.attachments.length > 0 && (
+                <div className="space-y-3">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                    Service Images & Documents
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    {firstItem.itemListing.attachments.map((att: any) => {
+                      if (att.media) {
+                        return (
+                          <a
+                            key={att.id}
+                            href={att.media.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="group/image relative h-12 w-12 rounded-lg overflow-hidden border border-border flex items-center justify-center bg-muted/30"
+                          >
+                            <img
+                              src={att.media.url}
+                              alt="Attachment"
+                              className="h-full w-full object-cover transition-transform group-hover/image:scale-110"
+                            />
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/image:opacity-100 transition-opacity flex items-center justify-center">
+                              <ExternalLink className="h-3 w-3 text-white" />
+                            </div>
+                          </a>
+                        );
+                      }
+                      if (att.document) {
+                        return (
+                          <a
+                            key={att.id}
+                            href={att.document.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex items-center gap-2 max-w-[160px] p-2 rounded-lg border border-border hover:bg-muted/30 transition-colors"
+                          >
+                            <div className="h-6 w-6 rounded bg-primary/10 flex items-center justify-center shrink-0">
+                              <FileTextIcon className="h-3 w-3 text-primary" />
+                            </div>
+                            <div className="truncate flex-1">
+                              <p className="text-[10px] font-bold text-primary truncate">
+                                {att.document.name || "Document"}
+                              </p>
+                            </div>
+                            <Download className="h-3 w-3 text-muted-foreground shrink-0" />
+                          </a>
+                        );
+                      }
+                      return null;
+                    })}
+                  </div>
+                </div>
+              )}
           </div>
 
           <div className="md:w-64 flex flex-col justify-center shrink-0">
