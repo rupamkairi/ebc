@@ -53,7 +53,7 @@ export function Results({ isLoading }: ResultsProps) {
     <div className="space-y-6">
       {/* 1. Parent Categories Carousel */}
       <CategoryCarousel
-        categories={categories}
+        categories={categories as any}
         selectedId={parentCategory}
         onSelect={setParentCategory}
         title={pageTitle}
@@ -62,7 +62,7 @@ export function Results({ isLoading }: ResultsProps) {
       {/* 2. Subcategories Carousel (only if category selected) */}
       {parentCategory && subCategories.length > 0 && (
         <SubCategoryCardContainer
-          items={subCategories}
+          items={subCategories as any}
           selectedIds={subCategory}
           onToggle={toggleSubCategory}
           title="Sub-Categories"

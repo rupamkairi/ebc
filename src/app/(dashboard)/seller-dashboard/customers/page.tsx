@@ -53,12 +53,12 @@ export default function CustomersPage() {
       if (!buyer) return;
 
       if (!customerMap.has(buyer.id)) {
-        const address =
-          "enquiryDetails" in activity
-            ? activity.enquiryDetails?.[0]?.address
-            : "appointmentDetails" in activity
-              ? activity.appointmentDetails?.[0]?.address
-              : "Location N/A";
+        let address = "Location N/A";
+        if (assignment.enquiry) {
+          address = assignment.enquiry.enquiryDetails?.[0]?.address || "Location N/A";
+        } else if (assignment.appointment) {
+          address = assignment.appointment.appointmentDetails?.[0]?.address || "Location N/A";
+        }
 
         customerMap.set(buyer.id, {
           id: buyer.id,
@@ -137,7 +137,7 @@ export default function CustomersPage() {
                 {/* Header Section */}
                 <div className="flex items-start gap-6">
                   <div className="h-20 w-20 md:h-24 md:w-24 rounded-[28px] bg-white flex items-center justify-center shrink-0">
-                    <User size={48} className="text-slate-700" title="User" />
+                    <User size={48} className="text-slate-700" />
                   </div>
                   <div className="flex-1 space-y-3">
                     <h3 className="text-3xl md:text-4xl font-black text-white tracking-tight leading-none">
@@ -201,11 +201,11 @@ export default function CustomersPage() {
                           </tr>
                         ) : (
                           cus.activities
-                            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                            .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                             .slice(0, 2)
                             .map((act: Enquiry | Appointment, idx: number) => {
                               const isEnq = "enquiryLineItems" in act;
-                              const items = isEnq ? act.enquiryLineItems : act.appointmentLineItems;
+                              const items = isEnq ? (act as Enquiry).enquiryLineItems : (act as Appointment).appointmentLineItems;
                               const item = items?.[0] as any;
                               return (
                                 <tr key={idx} className="hover:bg-slate-50 transition-colors">

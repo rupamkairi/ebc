@@ -46,21 +46,23 @@ export function PincodeSearchAutocomplete({
 
   const options = React.useMemo(() => {
     const baseOptions = (data || [])
-      .filter((record) => record.pincode && record.pincode.trim() !== "")
-      .map((record) => ({
+      .filter((record: PincodeRecord) => record.pincode && record.pincode.trim() !== "")
+      .map((record: PincodeRecord) => ({
         label: `${record.pincode} - ${record.district}, ${record.state}`,
         value: record.id,
       }));
 
     if (
       initialRecord &&
-      typeof initialRecord !== "string" &&
-      !baseOptions.find((o) => o.value === (initialRecord as PincodeRecord).id)
+      typeof initialRecord !== "string"
     ) {
-      baseOptions.unshift({
-        label: `${initialRecord.pincode} - ${initialRecord.district}, ${initialRecord.state}`,
-        value: initialRecord.id,
-      });
+      const record = initialRecord as PincodeRecord;
+      if (!baseOptions.find((o) => o.value === record.id)) {
+        baseOptions.unshift({
+          label: `${record.pincode} - ${record.district}, ${record.state}`,
+          value: record.id,
+        });
+      }
     }
 
     return baseOptions;
