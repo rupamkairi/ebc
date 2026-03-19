@@ -66,7 +66,7 @@ export default function SellerDashboardPage() {
   });
 
   const pendingQuotations = quotations.filter(
-    (q) => q.status === "PENDING",
+    (q) => q.status === "PENDING" || q.status === "REVISE_REQUESTED" || q.quotationDetails?.[0]?.requestedRevision,
   ).length;
   const sentQuotations = quotations.length;
 
@@ -93,7 +93,7 @@ export default function SellerDashboardPage() {
   const myRevisionRequestedEnquiryIds = new Set(
     quotations
       .filter(q => !!mainEntity?.id && (q.createdBy?.staffAtEntityId === mainEntity.id || 
-                   q.createdBy?.createdEntities?.some(e => e.id === mainEntity.id)) && q.requestedRevision)
+                   q.createdBy?.createdEntities?.some(e => e.id === mainEntity.id)) && (q.status === "REVISE_REQUESTED" || q.quotationDetails?.[0]?.requestedRevision))
       .map((q) => q.enquiryId)
   );
 

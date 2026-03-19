@@ -197,6 +197,19 @@ export function NotificationInbox({
                           (() => {
                             const enquiryId = notification.metadata
                               ?.enquiryId as string | undefined;
+                            
+                            // 1. Explicitly check for revision requests
+                            if (notification.type === "ENQUIRY_REVISE_REQUEST") {
+                                return (
+                                  <div className="mt-2 flex items-center gap-2">
+                                     <span className="text-[10px] px-1.5 py-0.5 bg-orange-100 text-orange-700 rounded font-medium flex items-center gap-1">
+                                      <CheckCircle2 size={10} /> Revision Requested
+                                    </span>
+                                  </div>
+                                );
+                            }
+
+                            // 2. Otherwise fallback to responded/new
                             const isResponded =
                               enquiryId && respondedEnquiryIds?.has(enquiryId);
                             return (

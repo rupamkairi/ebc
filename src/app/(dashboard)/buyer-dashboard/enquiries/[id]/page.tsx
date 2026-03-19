@@ -1,4 +1,5 @@
 "use client";
+import { ENQUIRY_STATUS, QUOTATION_STATUS } from "@/constants/enums";
 
 import { useParams, useRouter } from "next/navigation";
 import { TFunction } from "i18next";
@@ -52,7 +53,7 @@ export default function BuyerEnquiryDetailsPage() {
   // Sort by updatedAt desc — when a quotation is accepted, updatedAt changes,
   // so the highest updatedAt among ACCEPTED quotations = buyer's last acceptance action.
   const acceptedQuotations = (quotations ?? []).filter(
-    (q: Quotation) => q.status === "ACCEPTED",
+    (q: Quotation) => q.status === QUOTATION_STATUS.ACCEPTED,
   );
   const acceptedQuotation =
     acceptedQuotations.length > 0
@@ -61,7 +62,7 @@ export default function BuyerEnquiryDetailsPage() {
             new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
         )[0]
       : null;
-  const isCompleted = enquiry?.status === "COMPLETED";
+  const isCompleted = enquiry?.status === ENQUIRY_STATUS.COMPLETED;
 
   const acceptedEntityId =
     acceptedQuotation?.createdBy?.staffAtEntityId ||
@@ -118,9 +119,9 @@ export default function BuyerEnquiryDetailsPage() {
               <Badge
                 className={cn(
                   "uppercase text-[10px] font-black tracking-widest",
-                  enquiry.status === "Approved"
+                  enquiry.status === ENQUIRY_STATUS.APPROVED
                     ? "bg-emerald-500"
-                    : enquiry.status === "COMPLETED"
+                    : enquiry.status === ENQUIRY_STATUS.COMPLETED
                       ? "bg-blue-600"
                       : "bg-amber-500",
                 )}
@@ -179,7 +180,7 @@ export default function BuyerEnquiryDetailsPage() {
             <div className="flex items-center justify-between px-2 pt-4">
               <h3 className="text-xl font-black flex items-center gap-2">
                 <CheckCircle2 className="h-5 w-5 text-primary" />
-                {enquiry.status === "COMPLETED"
+                {enquiry.status === ENQUIRY_STATUS.COMPLETED
                   ? "Successful Deal"
                   : "Quotations Received"}
               </h3>
@@ -412,9 +413,9 @@ function QuotationListItem({
     q.quotationLineItems?.reduce((sum, li) => sum + (li.amount || 0), 0) ?? 0;
   const mainItem = q.quotationLineItems?.[0]?.item?.name || t("multiple_items");
   const itemCount = q.quotationLineItems?.length ?? 0;
-  const isAccepted = q.status === "ACCEPTED";
+  const isAccepted = q.status === QUOTATION_STATUS.ACCEPTED;
   const isNegotiable =
-    q.quotationLineItems?.some((li) => li.isNegotiable) && !q.hasBeenRevised;
+    q.quotationLineItems?.some((li) => li.isNegotiable) && !q.quotationDetails?.[0]?.hasBeenRevised;
 
   return (
     <Card className="overflow-hidden border border-primary/5 shadow-sm hover:shadow-md transition-all bg-white rounded-2xl">
@@ -462,7 +463,7 @@ function QuotationListItem({
                       {t("negotiable_price")}
                     </Badge>
                   )}
-                  {q.requestedRevision && !q.hasBeenRevised && (
+                  {q.quotationDetails?.[0]?.requestedRevision && !q.quotationDetails?.[0]?.hasBeenRevised && (
                     <Badge className="text-[10px] font-black uppercase tracking-widest bg-violet-600 text-white border-none px-2.5 py-1 shadow-md shadow-violet-200">
                       {t("revision_requested_label", "Revision Requested")}
                     </Badge>

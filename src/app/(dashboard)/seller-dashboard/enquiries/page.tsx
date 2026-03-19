@@ -15,11 +15,9 @@ import { useAssignmentsQuery, useQuotationsQuery } from "@/queries/activityQueri
 import { useItemListingsQuery } from "@/queries/catalogQueries";
 import { Input } from "@/components/ui/input";
 import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
-import { ACTIVITY_TYPE } from "@/constants/enums";
+import { ACTIVITY_TYPE, ENQUIRY_STATUS } from "@/constants/enums";
 import { cn } from "@/lib/utils";
 import { getTimeBadge } from "@/lib/activity-utils";
-import { NotificationInbox } from "@/components/dashboard/notifications/notification-inbox";
-import { Bell } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 
@@ -83,7 +81,7 @@ export default function EnquiriesPage() {
   const myRevisionRequestedEnquiryIds = new Set(
     myQuotations
       .filter(q => !!mainEntity?.id && (q.createdBy?.staffAtEntityId === mainEntity.id || 
-                   q.createdBy?.createdEntities?.some(e => e.id === mainEntity.id)) && q.requestedRevision && !q.hasBeenRevised)
+                   q.createdBy?.createdEntities?.some(e => e.id === mainEntity.id)) && q.quotationDetails?.[0]?.requestedRevision && !q.quotationDetails?.[0]?.hasBeenRevised)
       .map((q) => q.enquiryId)
   );
 
@@ -91,7 +89,7 @@ export default function EnquiriesPage() {
   const myRevisedEnquiryIds = new Set(
     myQuotations
       .filter(q => !!mainEntity?.id && (q.createdBy?.staffAtEntityId === mainEntity.id || 
-                   q.createdBy?.createdEntities?.some(e => e.id === mainEntity.id)) && q.hasBeenRevised)
+                   q.createdBy?.createdEntities?.some(e => e.id === mainEntity.id)) && q.quotationDetails?.[0]?.hasBeenRevised)
       .map((q) => q.enquiryId)
   );
 
@@ -100,7 +98,7 @@ export default function EnquiriesPage() {
     (a) => 
       a.enquiry?.id && 
       (!myRespondedEnquiryIds.has(a.enquiry.id) || myRevisionRequestedEnquiryIds.has(a.enquiry.id)) && 
-      (!a.enquiry?.status || (a.enquiry.status !== "ACCEPTED" && a.enquiry.status !== "COMPLETED")),
+      (!a.enquiry?.status || (a.enquiry.status !== ENQUIRY_STATUS.APPROVED && a.enquiry.status !== ENQUIRY_STATUS.COMPLETED)),
   );
   
   const respondedAssignments = relevantAssignments.filter(
@@ -127,8 +125,7 @@ export default function EnquiriesPage() {
   const visiblePending = filterBySearch(pendingAssignments);
   const visibleResponded = filterBySearch(respondedAssignments);
 
-  // Set of responded enquiry IDs for notification badge
-  const respondedEnquiryIds = myRespondedEnquiryIds;
+  // Visible lists
 
   return (
     <div className="flex flex-col gap-6 max-w-5xl mx-auto">
@@ -201,7 +198,7 @@ export default function EnquiriesPage() {
                         </div>
                       </div>
                       <div className="px-3 py-1 rounded-lg bg-secondary/10 text-secondary font-black text-[9px] tracking-widest uppercase shrink-0">
-                        {enq.status || "Pending"}
+                        {enq.status === ENQUIRY_STATUS.PENDING ? "Pending" : enq.status}
                       </div>
                     </div>
 
@@ -255,7 +252,7 @@ export default function EnquiriesPage() {
                           href={`/seller-dashboard/enquiries/${enq.id}`}
                           className="flex items-center justify-center gap-2"
                         >
-                          {enq.status === "PENDING"
+                          {enq.status === ENQUIRY_STATUS.PENDING
                             ? t("respond")
                             : t("details")}
                           <ChevronRight size={14} strokeWidth={3} />
@@ -318,7 +315,7 @@ export default function EnquiriesPage() {
                               </div>
                             )}
                           </div>
-                          <div className={cn("px-3 py-1 rounded-lg  font-black text-[9px] tracking-widest uppercase shrink-0 flex items-center gap-1", enq.status === "COMPLETED" ? "bg-green-100 text-green-700" : "bg-green-100 text-orange-700")}>
+                          <div className={cn("px-3 py-1 rounded-lg  font-black text-[9px] tracking-widest uppercase shrink-0 flex items-center gap-1", enq.status === ENQUIRY_STATUS.COMPLETED ? "bg-green-100 text-green-700" : "bg-green-100 text-orange-700")}>
                             <CheckCircle2 size={10} />
                             {enq.status}
                           </div>

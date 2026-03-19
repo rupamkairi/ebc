@@ -1,4 +1,4 @@
-import { REF_TYPE, ACTIVITY_TYPE } from "@/constants/enums";
+import { REF_TYPE, ACTIVITY_TYPE, ENQUIRY_STATUS, QUOTATION_STATUS } from "@/constants/enums";
 import { UnitType } from "@/constants/quantities";
 import { Item, ItemListing } from "./catalog";
 
@@ -55,7 +55,7 @@ export interface Enquiry {
   id: string;
   enquiryLineItems: EnquiryLineItem[];
   enquiryDetails: EnquiryDetails[];
-  status: string; // "PENDING", "APPROVED", "REJECTED" etc.
+  status: ENQUIRY_STATUS;
   createdAt: string;
   updatedAt: string;
   createdById: string;
@@ -154,6 +154,9 @@ export interface QuotationDetails {
   expectedDate?: string;
   remarks?: string;
   attachmentIds?: string[];
+  requestedRevision?: boolean;
+  hasBeenRevised?: boolean;
+  revisionRemarks?: string | null;
 }
 
 export interface CreateQuotationRequest {
@@ -168,13 +171,10 @@ export interface Quotation {
   id: string;
   enquiryId: string;
   isActive: boolean;
-  requestedRevision: boolean;
-  hasBeenRevised: boolean;
   priceChangeType?: "INCREASED" | "DECREASED" | "MAINTAINED";
-  revisionRemarks?: string | null;
   quotationLineItems: QuotationLineItem[];
   quotationDetails: QuotationDetails[];
-  status: string;
+  status: QUOTATION_STATUS;
   createdAt: string;
   updatedAt: string;
   createdById: string;

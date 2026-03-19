@@ -7,6 +7,7 @@ import {
   useCompleteEnquiryMutation,
   useRequestRevisionMutation,
 } from "@/queries/activityQueries";
+import { QUOTATION_STATUS, ENQUIRY_STATUS } from "@/constants/enums";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -59,10 +60,10 @@ export default function QuotationDetailsPage() {
     );
   }
 
-  const isAccepted = q.status === "ACCEPTED";
-  const isEnquiryCompleted = q.enquiry?.status === "COMPLETED";
-  const isNegotiable = q.quotationLineItems?.some((li) => li.isNegotiable) && !q.hasBeenRevised;
-  const isDiscountRequested = q.requestedRevision;
+  const isAccepted = q.status === QUOTATION_STATUS.ACCEPTED;
+  const isEnquiryCompleted = q.enquiry?.status === ENQUIRY_STATUS.COMPLETED;
+  const isNegotiable = q.quotationLineItems?.some((li) => li.isNegotiable) && !q.quotationDetails?.[0]?.hasBeenRevised;
+  const isDiscountRequested = !!q.quotationDetails?.[0]?.requestedRevision;
   
   const totalAmount = q.quotationLineItems?.reduce(
     (sum, li) => sum + (li.amount || 0),
@@ -101,7 +102,7 @@ export default function QuotationDetailsPage() {
 
   return (
     <div className="max-w-5xl mx-auto py-6 md:py-10 px-4 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      {q.hasBeenRevised && (
+      {q.quotationDetails?.[0]?.hasBeenRevised && (
         <div className="bg-violet-50 border border-violet-200 rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
            <div className="flex items-center gap-4">
               <div className="h-12 w-12 rounded-2xl bg-violet-600 flex items-center justify-center text-white shadow-lg shrink-0">
@@ -118,7 +119,7 @@ export default function QuotationDetailsPage() {
         </div>
       )}
 
-      {q.requestedRevision && !q.hasBeenRevised && (
+      {q.quotationDetails?.[0]?.requestedRevision && !q.quotationDetails?.[0]?.hasBeenRevised && (
         <div className="bg-orange-50 border border-orange-200 rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm animate-pulse">
            <div className="flex items-center gap-4">
               <div className="h-12 w-12 rounded-2xl bg-orange-500 flex items-center justify-center text-white shadow-lg shrink-0">
@@ -155,7 +156,7 @@ export default function QuotationDetailsPage() {
                   Accepted
                 </Badge>
               )}
-              {q.hasBeenRevised && (
+              {q.quotationDetails?.[0]?.hasBeenRevised && (
                 <Badge className="bg-violet-600 text-white font-black uppercase text-[10px] tracking-widest flex items-center gap-1.5 px-3">
                   {q.priceChangeType === "DECREASED" && <TrendingDown className="h-3 w-3" />}
                   {q.priceChangeType === "INCREASED" && <TrendingUp className="h-3 w-3" />}
@@ -163,7 +164,7 @@ export default function QuotationDetailsPage() {
                   Revised {q.priceChangeType === "DECREASED" ? "(Price Reduced)" : q.priceChangeType === "INCREASED" ? "(Price Updated)" : ""}
                 </Badge>
               )}
-              {q.requestedRevision && !q.hasBeenRevised && (
+              {q.quotationDetails?.[0]?.requestedRevision && !q.quotationDetails?.[0]?.hasBeenRevised && (
                 <Badge className="bg-orange-500 text-white font-black uppercase text-[10px] tracking-widest px-3">
                   Revision Requested
                 </Badge>
@@ -292,7 +293,7 @@ export default function QuotationDetailsPage() {
                             <span className="text-xs text-muted-foreground font-medium ml-1">/{unitLabel}</span>
                           </div>
                         </div>
-                        {li.isNegotiable && !q.hasBeenRevised && !isAccepted && !isEnquiryCompleted && (
+                        {li.isNegotiable && !q.quotationDetails?.[0]?.hasBeenRevised && !isAccepted && !isEnquiryCompleted && (
                           <Badge variant="outline" className="text-[9px] font-black uppercase text-secondary border-secondary/20 bg-secondary/5">
                             Negotiable
                           </Badge>

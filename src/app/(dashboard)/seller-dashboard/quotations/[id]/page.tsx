@@ -1,4 +1,5 @@
 "use client";
+import { QUOTATION_STATUS } from "@/constants/enums";
 
 import { useParams, useRouter } from "next/navigation";
 import {
@@ -135,19 +136,19 @@ export default function ViewQuotationPage() {
           label={t("back_to_quotation_list")}
         />
         <div className="flex flex-wrap gap-2 px-4">
-          {quotation.status === "ACCEPTED" && (
+          {quotation.status === QUOTATION_STATUS.ACCEPTED && (
             <Badge className="bg-green-600 text-white font-black uppercase text-[10px] tracking-widest px-3 py-1">
               <CheckCircle2 className="h-3 w-3 mr-1.5" />
               Accepted
             </Badge>
           )}
-          {quotation.requestedRevision && !quotation.hasBeenRevised && (
+          {quotation.quotationDetails?.[0]?.requestedRevision && !quotation.quotationDetails?.[0]?.hasBeenRevised && (
             <Badge className="bg-orange-500 text-white font-black uppercase text-[10px] tracking-widest animate-pulse px-3 py-1">
               <MessageSquare className="h-3 w-3 mr-1.5" />
               Action Required: Revision Requested
             </Badge>
           )}
-          {quotation.hasBeenRevised && (
+          {quotation.quotationDetails?.[0]?.hasBeenRevised && (
             <Badge className="bg-violet-600 text-white font-black uppercase text-[10px] tracking-widest px-3 py-1 flex items-center">
               {quotation.priceChangeType === "DECREASED" && <TrendingDown className="h-3 w-3 mr-1.5" />}
               {quotation.priceChangeType === "INCREASED" && <TrendingUp className="h-3 w-3 mr-1.5" />}
@@ -158,7 +159,7 @@ export default function ViewQuotationPage() {
         </div>
       </div>
 
-      {quotation.requestedRevision && !quotation.hasBeenRevised && (
+      {quotation.quotationDetails?.[0]?.requestedRevision && !quotation.quotationDetails?.[0]?.hasBeenRevised && (
         <div className="bg-orange-50 border border-orange-200 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm animate-in fade-in slide-in-from-top-4">
            <div className="flex items-center gap-4">
               <div className="h-12 w-12 rounded-2xl bg-orange-500 flex items-center justify-center text-white shadow-lg shrink-0">
@@ -167,7 +168,7 @@ export default function ViewQuotationPage() {
               <div className="space-y-1">
                  <h4 className="font-black text-orange-900">Buyer Requested Reconsideration</h4>
                  <p className="text-sm text-orange-700 font-medium italic">
-                    &quot;{quotation.revisionRemarks || "No remarks provided."}&quot;
+                    &quot;{quotation.quotationDetails?.[0]?.revisionRemarks || "No remarks provided."}&quot;
                  </p>
               </div>
            </div>
@@ -179,7 +180,7 @@ export default function ViewQuotationPage() {
         </div>
       )}
 
-      {quotation.hasBeenRevised && (
+      {quotation.quotationDetails?.[0]?.hasBeenRevised && (
         <div className="bg-violet-50 border border-violet-200 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
            <div className="flex items-center gap-4">
               <div className="h-12 w-12 rounded-2xl bg-violet-600 flex items-center justify-center text-white shadow-lg shrink-0">

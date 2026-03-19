@@ -5,6 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 import {
   Calendar,
+  CheckCircle2,
   FileText,
   Loader2,
   MapPin,
@@ -15,6 +16,7 @@ import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useLanguage } from "@/hooks/useLanguage";
+import { ENQUIRY_STATUS, QUOTATION_STATUS, ENQUIRY_STATUS_LABELS } from "@/constants/enums";
 import { useEntitiesQuery } from "@/queries/entityQueries";
 import { useEnquiryQuery, useQuotationsQuery, useUpdateQuotationMutation } from "@/queries/activityQueries";
 import { toast } from "sonner";
@@ -47,8 +49,8 @@ export default function EnquiryDetailsPage() {
   
   const { mutate: updateQuotation, isPending: isUpdatingQuotation } = useUpdateQuotationMutation();
 
-  const isActiveQuotation = !!myQuotation && myQuotation.status !== "REJECTED" && myQuotation.isActive;
-  const isRevisionRequested = !!myQuotation && myQuotation.requestedRevision && !myQuotation.hasBeenRevised;
+  const isActiveQuotation = !!myQuotation && myQuotation.status !== QUOTATION_STATUS.REJECTED && myQuotation.isActive;
+  const isRevisionRequested = !!myQuotation && !!myQuotation.quotationDetails?.[0]?.requestedRevision && !myQuotation.quotationDetails?.[0]?.hasBeenRevised;
 
   if (loadingEnquiry || loadingEntities || loadingQuotations) {
     return (
@@ -83,9 +85,9 @@ export default function EnquiryDetailsPage() {
   );
 
   // Global Enquiry Status
-  const isClosed = enquiry.status === "ACCEPTED" || enquiry.status === "COMPLETED";
-  const isPendingEnquiry = enquiry.status === "PENDING" || enquiry.status === "RESPONDED";
-  const hasActionNeeded = (!hasResponded || isRevisionRequested) && !isClosed;
+  const isClosed = enquiry.status === ENQUIRY_STATUS.COMPLETED;
+  const isAcceptedLocally = !!myQuotation && myQuotation.status === QUOTATION_STATUS.ACCEPTED;
+  const hasActionNeeded = (!hasResponded || isRevisionRequested) && !isClosed && enquiry.status !== ENQUIRY_STATUS.APPROVED;
 
   return (
     <div className="flex flex-col gap-6 max-w-5xl mx-auto">
@@ -123,11 +125,23 @@ export default function EnquiryDetailsPage() {
                   </span>
                   <span
                     className={`px-4 py-1 rounded-full text-xs font-black tracking-wide text-white ${
-                      isPendingEnquiry ? "bg-primary" : "bg-green-600"
+                      enquiry.status === ENQUIRY_STATUS.PENDING
+                        ? "bg-amber-500"
+                        : enquiry.status === ENQUIRY_STATUS.APPROVED
+                        ? "bg-emerald-500"
+                        : enquiry.status === ENQUIRY_STATUS.COMPLETED
+                        ? "bg-blue-600"
+                        : "bg-gray-400"
                     }`}
                   >
-                    {enquiry.status}
+                    {ENQUIRY_STATUS_LABELS[enquiry.status as ENQUIRY_STATUS] || enquiry.status}
                   </span>
+                  {isAcceptedLocally && (
+                    <span className="px-4 py-1 rounded-full text-xs font-black tracking-wide bg-emerald-600 text-white flex items-center gap-1.5">
+                      <CheckCircle2 className="h-3 w-3" />
+                      {t("offer_accepted", "Offer Accepted")}
+                    </span>
+                  )}
                   {isRevisionRequested && (
                     <span className="px-4 py-1 rounded-full text-xs font-black tracking-wide bg-orange-500 text-white animate-pulse">
                       {t("revision_requested", "Requested Revision")}
@@ -145,14 +159,14 @@ export default function EnquiryDetailsPage() {
               </div>
             </div>
 
-            {isRevisionRequested && myQuotation?.revisionRemarks && (
+            {isRevisionRequested && myQuotation?.quotationDetails?.[0]?.revisionRemarks && (
               <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 space-y-2">
                 <h4 className="text-xs font-black text-orange-800 uppercase tracking-widest flex items-center gap-2">
                   <MessageSquare className="h-3 w-3" />
                   {t("buyer_feedback", "Buyer Feedback")}
                 </h4>
                 <p className="text-sm text-orange-900 font-medium italic">
-                   &quot;{myQuotation.revisionRemarks}&quot;
+                   &quot;{myQuotation.quotationDetails[0].revisionRemarks}&quot;
                 </p>
               </div>
             )}
@@ -301,7 +315,10 @@ export default function EnquiryDetailsPage() {
                       id: myQuotation.id, 
                       data: { 
                         ...originalData,
-                        hasBeenRevised: true,
+                        details: {
+                          ...originalData.details,
+                          hasBeenRevised: true,
+                        },
                         priceChangeType: "MAINTAINED"
                       } 
                     }, {
@@ -325,8 +342,8 @@ export default function EnquiryDetailsPage() {
               actionHref={`/seller-dashboard/quotations/create?enquiryId=${enquiry.id}`}
               actionIcon={<FileText className="h-4 w-4" />}
               actionDescription={t("ready_fulfil_requirement_send_price")}
-              respondedLabel={hasResponded ? t("quotation_submitted") : t("enquiry_closed")}
-              respondedDescription={hasResponded ? t("already_responded_enquiry") : t("this_enquiry_is_closed")}
+              respondedLabel={isAcceptedLocally ? t("offer_accepted", "Offer Accepted") : hasResponded ? t("quotation_submitted") : t("enquiry_closed")}
+              respondedDescription={isAcceptedLocally ? t("congratulations_offer_accepted", "Congratulations! Your offer has been accepted by the buyer.") : hasResponded ? t("already_responded_enquiry") : t("this_enquiry_is_closed")}
               backHref="/seller-dashboard/enquiries"
               backLabel={t("back_to_enquiries")}
               disabled={!isApproved}

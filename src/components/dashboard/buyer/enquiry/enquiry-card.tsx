@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Enquiry } from "@/types/activity";
 import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
-import { VERIFICATION_STATUS } from "@/constants/enums";
+import { ENQUIRY_STATUS } from "@/constants/enums";
 import { format } from "date-fns";
 import { Package, MapPin, Calendar, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -20,16 +20,18 @@ export function EnquiryCard({ enquiry }: EnquiryCardProps) {
   const items = enquiry.enquiryLineItems || [];
   const details = enquiry.enquiryDetails?.[0];
 
-  const getStatusColor = (status: string) => {
-    switch (status.toUpperCase()) {
-      case VERIFICATION_STATUS.APPROVED:
+  const getStatusColor = (status: ENQUIRY_STATUS) => {
+    switch (status) {
+      case ENQUIRY_STATUS.APPROVED:
         return "bg-green-100 text-green-700 hover:bg-green-100 border-green-200";
-      case VERIFICATION_STATUS.REJECTED:
+      case ENQUIRY_STATUS.REJECTED:
         return "bg-red-100 text-red-700 hover:bg-red-100 border-red-200";
-      case VERIFICATION_STATUS.PENDING:
+      case ENQUIRY_STATUS.PENDING:
         return "bg-amber-100 text-amber-700 hover:bg-amber-100 border-amber-200";
-      default:
+      case ENQUIRY_STATUS.COMPLETED:
         return "bg-blue-100 text-blue-700 hover:bg-blue-100 border-blue-200";
+      default:
+        return "bg-slate-100 text-slate-700 hover:bg-slate-100 border-slate-200";
     }
   };
 
@@ -47,7 +49,7 @@ export function EnquiryCard({ enquiry }: EnquiryCardProps) {
           </div>
           <Badge
             variant="outline"
-            className={`${getStatusColor(enquiry.status || "PENDING")} font-bold text-[10px] uppercase px-3 py-1 rounded-full border shadow-xs`}
+            className={`${getStatusColor(enquiry.status || ENQUIRY_STATUS.PENDING)} font-bold text-[10px] uppercase px-3 py-1 rounded-full border shadow-xs`}
           >
             {enquiry.status || "Pending"}
           </Badge>

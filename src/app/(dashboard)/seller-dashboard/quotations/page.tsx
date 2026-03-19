@@ -16,23 +16,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useQuotationsQuery } from "@/queries/activityQueries";
-import { useEntitiesQuery } from "@/queries/entityQueries";
-import { toast } from "sonner";
 import { format } from "date-fns";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { QUOTATION_STATUS, ENQUIRY_STATUS } from "@/constants/enums";
 import { getTimeBadge } from "@/lib/activity-utils";
 
 export default function QuotationsPage() {
   const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
-
-  const { data: entities } = useEntitiesQuery();
-  const sellerEntity = entities?.[0];
-  const isApproved = sellerEntity?.verificationStatus === "APPROVED";
 
   const { data: quotations, isLoading } = useQuotationsQuery();
 
@@ -67,7 +62,12 @@ export default function QuotationsPage() {
           qut.enquiry?.createdBy?.name ||
           `${t("enquiry_id_label", "Enquiry")} #${qut.enquiryId.slice(0, 8)}`,
         displayDate: format(new Date(qut.createdAt), "dd MMM yyyy"),
-        uiStatus: qut.status === "ACCEPTED" ? "Accepted" : "Sent",
+        isEnquiryClosed: qut.enquiry?.status === ENQUIRY_STATUS.COMPLETED,
+        uiStatus: qut.status === QUOTATION_STATUS.ACCEPTED 
+          ? "Accepted" 
+          : qut.enquiry?.status === ENQUIRY_STATUS.COMPLETED
+          ? "Closed"
+          : "Sent",
       };
     });
   }, [quotations, searchQuery, t]);
@@ -132,7 +132,10 @@ export default function QuotationsPage() {
             return (
               <Card
                 key={qut.id}
-                className="bg-white border border-primary/10 rounded-[20px] p-5 md:p-7 shadow-none hover:shadow-md hover:border-primary/25 transition-all group"
+                className={cn(
+                  "bg-white border border-primary/10 rounded-[20px] p-5 md:p-7 shadow-none hover:shadow-md hover:border-primary/25 transition-all group",
+                  qut.uiStatus === "Closed" && "opacity-60 grayscale-[0.5] hover:opacity-100 hover:grayscale-0",
+                )}
               >
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                   <div className="flex-1 space-y-3">
@@ -151,21 +154,23 @@ export default function QuotationsPage() {
                       </span>
                       <span
                         className={cn(
-                          "px-3 py-1 rounded-full text-[9px] font-black tracking-widest uppercase",
+                          "px-3 py-1 rounded-full text-[9px] font-black tracking-widest uppercase shadow-sm",
                           qut.uiStatus === "Accepted"
-                            ? "bg-green-600 text-white"
+                            ? "bg-emerald-600 text-white"
+                            : qut.uiStatus === "Closed"
+                            ? "bg-gray-500 text-white"
                             : "bg-primary text-white",
                         )}
                       >
                         {qut.uiStatus}
                       </span>
-                      {qut.requestedRevision && !qut.hasBeenRevised && (
+                      {qut.quotationDetails?.[0]?.requestedRevision && !qut.quotationDetails?.[0]?.hasBeenRevised && (
                         <span className="px-3 py-1 rounded-full text-[9px] font-black tracking-widest bg-orange-500 text-white flex items-center gap-1.5 shadow-sm">
                           <MessageSquare className="h-2.5 w-2.5" />
                           REVISION REQUESTED
                         </span>
                       )}
-                      {qut.hasBeenRevised && (
+                      {qut.quotationDetails?.[0]?.hasBeenRevised && (
                         <span className="px-3 py-1 rounded-full text-[9px] font-black tracking-widest bg-violet-600 text-white flex items-center gap-1.5 shadow-sm">
                           {qut.priceChangeType === "DECREASED" && <TrendingDown className="h-2.5 w-2.5" />}
                           {qut.priceChangeType === "INCREASED" && <TrendingUp className="h-2.5 w-2.5" />}
