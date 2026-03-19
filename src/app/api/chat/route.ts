@@ -84,7 +84,7 @@ export async function POST(req: Request) {
     );
 
     const result = streamText({
-      model: openrouter("openai/gpt-oss-20b:free"),
+      model: openrouter("openrouter/free"),
       messages: coreMessages,
       // You can add additional system messages or configurations here
       onFinish: async (event) => {

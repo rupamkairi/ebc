@@ -1,4 +1,4 @@
-import { useChat } from "@ai-sdk/react";
+import { useChat, type UIMessage } from "@ai-sdk/react";
 import { useState, useEffect, useCallback } from "react";
 import { useAuthStore } from "@/store/authStore";
 import fetchClient from "@/lib/api-client";
@@ -19,6 +19,57 @@ export interface ChatMessage {
   sessionId?: string;
 }
 
+const getTextFromParts = (parts?: UIMessage["parts"]) => {
+  if (!parts || !Array.isArray(parts)) return "";
+  return parts
+    .filter((part) => part.type === "text")
+    .map((part) => part.text)
+    .join("");
+};
+
+const toUiMessage = (message: ChatMessage): UIMessage => ({
+  id: message.id,
+  role:
+    message.role === "assistant" ||
+    message.role === "user" ||
+    message.role === "system"
+      ? message.role
+      : "assistant",
+  parts: message.content
+    ? [
+        {
+          type: "text",
+          text: message.content,
+        },
+      ]
+    : [],
+});
+
+const toSyncMessage = (message: UIMessage) => ({
+  id: message.id,
+  role: message.role,
+  content: getTextFromParts(message.parts),
+});
+
+const getLastUserAssistantPair = (messages: UIMessage[]) => {
+  let assistant: UIMessage | undefined;
+  let user: UIMessage | undefined;
+
+  for (let i = messages.length - 1; i >= 0; i -= 1) {
+    const msg = messages[i];
+    if (!assistant && msg.role === "assistant") {
+      assistant = msg;
+      continue;
+    }
+    if (assistant && msg.role === "user") {
+      user = msg;
+      break;
+    }
+  }
+
+  return { user, assistant };
+};
+
 export function useAiCalculator(initialSessionId?: string) {
   const { token } = useAuthStore();
   const [sessionId, setSessionId] = useState<string | undefined>(
@@ -38,12 +89,7 @@ export function useAiCalculator(initialSessionId?: string) {
       const messages = await fetchClient<ChatMessage[]>(
         `/ai-chat/sessions/${id}`,
       );
-      return messages.map((m) => ({
-        id: m.id,
-        role: m.role,
-        content: m.content,
-        createdAt: new Date(m.createdAt || new Date()),
-      }));
+      return messages.map(toUiMessage);
     } catch (error) {
       console.error("Failed to fetch session messages:", error);
       return [];
@@ -51,8 +97,6 @@ export function useAiCalculator(initialSessionId?: string) {
       setIsLoadingHistory(false);
     }
   }, []);
-
-  const { messages, setMessages, status, sendMessage } = useChat({});
 
   const fetchRecentSessions = useCallback(async () => {
     if (!token) return;
@@ -66,55 +110,69 @@ export function useAiCalculator(initialSessionId?: string) {
     }
   }, [token]);
 
-  // Sync to backend when a chat completes
-  useEffect(() => {
-    if (
-      !token ||
-      status === "streaming" ||
-      status === "submitted" ||
-      messages.length === 0
-    ) {
-      return;
-    }
+  const handleFinish = useCallback(
+    (event: {
+      message: UIMessage;
+      messages: UIMessage[];
+      isAbort: boolean;
+      isDisconnect: boolean;
+      isError: boolean;
+    }) => {
+      if (!token || event.isAbort || event.isError || event.isDisconnect) {
+        return;
+      }
 
-    const lastMessage = messages[messages.length - 1];
-    if (
-      lastMessage.role === "assistant" &&
-      lastMessage.id !== lastSyncedMessageId
-    ) {
-      setLastSyncedMessageId(lastMessage.id);
+      if (event.message.role !== "assistant") {
+        return;
+      }
 
-      const payload = {
-        sessionId,
-        messages,
-      };
+      if (event.message.id === lastSyncedMessageId) {
+        return;
+      }
+
+      setLastSyncedMessageId(event.message.id);
+
+      const { user, assistant } = getLastUserAssistantPair(event.messages);
+      const syncMessages = [user, assistant]
+        .filter(Boolean)
+        .map((msg) => toSyncMessage(msg as UIMessage))
+        .filter((msg) => msg.content.trim().length > 0);
+
+      if (syncMessages.length === 0) {
+        return;
+      }
+
+      const payload = { sessionId, messages: syncMessages };
 
       fetchClient<{ sessionId: string; success: boolean; guest?: boolean }>(
         API_ENDPOINTS.AI_CHAT.SYNC,
         {
           method: "POST",
-          body: JSON.stringify(payload),
+          body: payload,
         },
       )
         .then((res) => {
           if (!res.guest && res.sessionId && res.sessionId !== sessionId) {
             setSessionId(res.sessionId);
-            // Refresh list to show new session
             fetchRecentSessions();
           } else if (!res.guest) {
             fetchRecentSessions();
           }
         })
         .catch((err) => console.error("Failed to sync chat:", err));
-    }
-  }, [
-    messages,
-    status,
-    sessionId,
-    token,
-    lastSyncedMessageId,
-    fetchRecentSessions,
-  ]);
+    },
+    [
+      token,
+      sessionId,
+      lastSyncedMessageId,
+      fetchRecentSessions,
+      setSessionId,
+    ],
+  );
+
+  const { messages, setMessages, status, sendMessage } = useChat({
+    onFinish: handleFinish,
+  });
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -149,7 +207,7 @@ export function useAiCalculator(initialSessionId?: string) {
   useEffect(() => {
     if (sessionId) {
       fetchSessionMessages(sessionId).then((msgs) => {
-        setMessages(msgs as unknown as Parameters<typeof setMessages>[0]);
+        setMessages(msgs);
       });
     } else {
       setMessages([]);
