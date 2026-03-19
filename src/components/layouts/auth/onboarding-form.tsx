@@ -312,7 +312,7 @@ export function OnboardingForm() {
                     <FieldLabel>{t("area_pincode")} *</FieldLabel>
                     <PincodeSearchAutocomplete
                       value={field.state.value}
-                      initialRecord={user?.pincode || undefined}
+                      initialRecord={(user as any)?.pincode || undefined}
                       onValueChange={(val) => field.handleChange(val as string)}
                     />
                     <FieldError

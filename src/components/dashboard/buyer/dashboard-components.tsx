@@ -131,7 +131,7 @@ export function BuyerProfileCard({
                 </SheetTitle>
               </SheetHeader>
               <div className="p-4 overflow-y-auto h-[calc(100vh-80px)]">
-                <NotificationInbox userType="BUYER" hideHeader />
+                <NotificationInbox userType="BUYER" />
               </div>
             </SheetContent>
           </Sheet>

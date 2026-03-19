@@ -200,7 +200,9 @@ export function UnifiedRegionSelector({
                 >
                   <div className="flex items-center gap-3 text-sm">
                     {/* Wrap checkbox to stop bubble and prevent double toggle with div onClick */}
-                    <div onClick={(e) => e.stopPropagation()} className="flex items-center">
+                    <div onClick={(e) => {
+                      e.stopPropagation();
+                    }} className="flex items-center">
                       <Checkbox 
                         checked={isSelected}
                         onCheckedChange={() => toggleRegion(r)}

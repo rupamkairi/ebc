@@ -53,12 +53,15 @@ export default function CustomersPage() {
       if (!buyer) return;
 
       if (!customerMap.has(buyer.id)) {
-        const address =
-          "enquiryDetails" in activity
-            ? activity.enquiryDetails?.[0]?.address
-            : "appointmentDetails" in activity
-              ? activity.appointmentDetails?.[0]?.address
-              : "Location N/A";
+        let address = "Location N/A";
+        if (assignment.enquiry) {
+          address =
+            assignment.enquiry.enquiryDetails?.[0]?.address || "Location N/A";
+        } else if (assignment.appointment) {
+          address =
+            assignment.appointment.appointmentDetails?.[0]?.address ||
+            "Location N/A";
+        }
 
         customerMap.set(buyer.id, {
           id: buyer.id,
@@ -187,40 +190,68 @@ export default function CustomersPage() {
                         <tr>
                           <th className="py-3 px-4 text-left">ID Unit</th>
                           <th className="py-3 px-4 text-left">Product Name</th>
-                          <th className="py-3 px-4 text-left text-center">Qty</th>
-                          <th className="py-3 px-4 text-left text-center">Date</th>
-                          <th className="py-3 px-4 text-left text-center">Status</th>
+                          <th className="py-3 px-4 text-left text-center">
+                            Qty
+                          </th>
+                          <th className="py-3 px-4 text-left text-center">
+                            Date
+                          </th>
+                          <th className="py-3 px-4 text-left text-center">
+                            Status
+                          </th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-50 text-slate-600 font-bold">
                         {cus.activities.length === 0 ? (
                           <tr>
-                            <td colSpan={5} className="py-6 text-center text-[9px] font-black text-slate-300 uppercase tracking-widest italic">
+                            <td
+                              colSpan={5}
+                              className="py-6 text-center text-[9px] font-black text-slate-300 uppercase tracking-widest italic"
+                            >
                               {t("no_recent_activity", "No Recent Activity")}
                             </td>
                           </tr>
                         ) : (
                           cus.activities
-                            .sort((a: Enquiry | Appointment, b: Enquiry | Appointment) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                            .sort(
+                              (
+                                a: Enquiry | Appointment,
+                                b: Enquiry | Appointment,
+                              ) =>
+                                new Date(b.createdAt).getTime() -
+                                new Date(a.createdAt).getTime(),
+                            )
                             .slice(0, 2)
                             .map((act: Enquiry | Appointment, idx: number) => {
                               const isEnq = "enquiryLineItems" in act;
-                              const items = isEnq ? act.enquiryLineItems : act.appointmentLineItems;
+                              const items = isEnq
+                                ? (act as Enquiry).enquiryLineItems
+                                : (act as Appointment).appointmentLineItems;
                               const item = items?.[0] as any;
                               return (
-                                <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                                  <td className="py-3 px-4 text-[#5164b4]">U-#{idx + 1}</td>
+                                <tr
+                                  key={idx}
+                                  className="hover:bg-slate-50 transition-colors"
+                                >
+                                  <td className="py-3 px-4 text-[#5164b4]">
+                                    U-#{idx + 1}
+                                  </td>
                                   <td className="py-3 px-4 text-slate-800">
                                     {item?.item?.name || "Service Item"}
                                   </td>
                                   <td className="py-3 px-4 text-center">
-                                    {isEnq ? (item?.quantity || 1) : 1}
+                                    {isEnq ? item?.quantity || 1 : 1}
                                   </td>
                                   <td className="py-3 px-4 text-center text-slate-400">
-                                    {format(new Date(act.createdAt), "M/d/yyyy")}
+                                    {format(
+                                      new Date(act.createdAt),
+                                      "M/d/yyyy",
+                                    )}
                                   </td>
                                   <td className="py-3 px-4 text-center">
-                                    <span className="text-[#008767] font-black uppercase text-[9px] tracking-widest">REGULAR</span>
+                                    <span className="text-[#008767] font-black uppercase text-[9px] tracking-widest">
+                                      REGULAR
+                                    </span>
                                   </td>
                                 </tr>
                               );

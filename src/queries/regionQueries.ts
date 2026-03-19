@@ -1,4 +1,8 @@
-import { useQuery, UseQueryOptions, keepPreviousData } from "@tanstack/react-query";
+import {
+  useQuery,
+  UseQueryOptions,
+  keepPreviousData,
+} from "@tanstack/react-query";
 import { locationService } from "@/services/locationService";
 import { PincodeRecord, PincodeListParams } from "@/types/region";
 

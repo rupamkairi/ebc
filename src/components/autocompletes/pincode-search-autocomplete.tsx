@@ -49,20 +49,28 @@ export function PincodeSearchAutocomplete({
 
   const options = React.useMemo(() => {
     const baseOptions = (data || [])
-      .filter((record) => record.pincode && record.pincode.trim() !== "")
-      .map((record) => ({
+      .filter(
+        (record: PincodeRecord) =>
+          record.pincode && record.pincode.trim() !== "",
+      )
+      .map((record: PincodeRecord) => ({
         label: `${record.pincode} - ${record.district}, ${record.state}`,
         value: record.id,
       }));
 
-    if (
-      initialRecord &&
-      typeof initialRecord !== "string" &&
-      !baseOptions.find((o) => o.value === (initialRecord as PincodeRecord).id)
-    ) {
-      const pincode = (initialRecord as PincodeRecord).pincode ?? (initialRecord as PincodeDirectory).pincode ?? "";
-      const district = (initialRecord as PincodeRecord).district ?? (initialRecord as PincodeDirectory).district ?? "";
-      const state = (initialRecord as PincodeRecord).state ?? (initialRecord as PincodeDirectory).state ?? "";
+    if (initialRecord && typeof initialRecord !== "string") {
+      const pincode =
+        (initialRecord as PincodeRecord).pincode ??
+        (initialRecord as PincodeDirectory).pincode ??
+        "";
+      const district =
+        (initialRecord as PincodeRecord).district ??
+        (initialRecord as PincodeDirectory).district ??
+        "";
+      const state =
+        (initialRecord as PincodeRecord).state ??
+        (initialRecord as PincodeDirectory).state ??
+        "";
       baseOptions.unshift({
         label: `${pincode} - ${district}, ${state}`,
         value: initialRecord.id,
