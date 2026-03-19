@@ -22,7 +22,7 @@ export function CalculatorChat() {
   } = useAiCalculator();
 
   return (
-    <div className="flex h-[calc(100vh-64px)] w-full overflow-hidden bg-background">
+    <div className="flex h-[calc(100vh-96px)] w-full overflow-hidden bg-background">
       {/* History Sidebar */}
       <HistorySidebar
         history={history}
@@ -39,10 +39,13 @@ export function CalculatorChat() {
             <div className="mb-6 rounded-full bg-primary/10 p-6 text-primary">
               <IconRobot size={48} />
             </div>
-            <h1 className="mb-2 text-2xl font-bold text-primary">AI Calculator</h1>
+            <h1 className="mb-2 text-2xl font-bold text-primary">
+              AI Calculator
+            </h1>
             <p className="max-w-md text-muted-foreground">
-              Hello! I'm your AI Calculator assistant. I can help you with precast system estimations, 
-              cost calculations, and technical advice. How can I assist you today?
+              Hello! I&apos;m your AI Calculator assistant. I can help you with
+              precast system estimations, cost calculations, and technical
+              advice. How can I assist you today?
             </p>
           </div>
         ) : (

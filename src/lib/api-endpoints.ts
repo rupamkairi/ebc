@@ -184,4 +184,10 @@ export const API_ENDPOINTS = {
       GET_URL: "/attachment/document/url", // :id
     },
   },
+  AI_CHAT: {
+    SESSION: "/ai-chat/sessions",
+    SESSION_BY_ID: "/ai-chat/sessions/:id",
+    SYNC: "/ai-chat/sync",
+  },
+  NEXT_API: {},
 } as const;
