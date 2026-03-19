@@ -253,7 +253,7 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
     }
   };
 
-  const onInvalid = (errors: any) => {
+  const onInvalid = (errors: unknown) => {
     console.error("Form Validation Errors:", errors);
     toast.error("Please fill all required fields correctly.");
   };

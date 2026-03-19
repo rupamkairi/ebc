@@ -36,8 +36,8 @@ export default function AdminSupportInbox() {
   const { data: queries, isLoading } = useSupportQueriesQuery(statusFilter);
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
 
-  const selectedTicket = ((queries as any)?.data || (queries as any))?.find?.(
-    (q: any) => q.id === selectedTicketId,
+  const selectedTicket = queries?.find(
+    (q) => q.id === selectedTicketId,
   );
   const updateMutation = useUpdateSupportQueryMutation(selectedTicketId || "");
 
@@ -93,8 +93,8 @@ export default function AdminSupportInbox() {
               </p>
             </div>
           ) : (
-            ((queries as any)?.data || (queries as any))?.map?.(
-              (query: any) => (
+            queries?.map?.(
+              (query) => (
                 <Card
                   key={query.id}
                   onClick={() => setSelectedTicketId(query.id)}

@@ -10,7 +10,7 @@ import { Check } from "lucide-react";
 interface SubCategory {
   id: string;
   name: string;
-  image: string;
+  image?: string;
 }
 
 interface SubCategoryCardProps {

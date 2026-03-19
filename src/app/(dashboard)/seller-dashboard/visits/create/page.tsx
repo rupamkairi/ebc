@@ -70,7 +70,7 @@ function VisitCreateContent() {
           toast.success(t("coins_deducted_appointment_confirmed"));
           router.push("/seller-dashboard/visits");
         },
-        onError: (err: any) => {
+        onError: (err: Error) => {
           toast.error(err.message || t("failed_confirm_appointment"));
           setShowCoinModal(false);
         },

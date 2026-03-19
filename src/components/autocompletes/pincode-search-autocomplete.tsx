@@ -4,10 +4,13 @@ import * as React from "react";
 import { Combobox } from "@/components/ui/combobox";
 import { usePincodeRecordsQuery } from "@/queries/regionQueries";
 import { PincodeRecord } from "@/types/region";
+import { PincodeDirectory } from "@/types/auth";
+
+type InitialRecord = PincodeRecord | PincodeDirectory | string;
 
 interface PincodeSearchAutocompleteProps {
   value?: string; // This will be the pincode directory ID
-  initialRecord?: PincodeRecord | string;
+  initialRecord?: InitialRecord;
   onRecordSelect?: (record: PincodeRecord) => void;
   onValueChange?: (value: string) => void;
   placeholder?: string;
@@ -57,8 +60,11 @@ export function PincodeSearchAutocomplete({
       typeof initialRecord !== "string" &&
       !baseOptions.find((o) => o.value === (initialRecord as PincodeRecord).id)
     ) {
+      const pincode = (initialRecord as PincodeRecord).pincode ?? (initialRecord as PincodeDirectory).pincode ?? "";
+      const district = (initialRecord as PincodeRecord).district ?? (initialRecord as PincodeDirectory).district ?? "";
+      const state = (initialRecord as PincodeRecord).state ?? (initialRecord as PincodeDirectory).state ?? "";
       baseOptions.unshift({
-        label: `${initialRecord.pincode} - ${initialRecord.district}, ${initialRecord.state}`,
+        label: `${pincode} - ${district}, ${state}`,
         value: initialRecord.id,
       });
     }

@@ -102,7 +102,7 @@ export default function SellerDashboardPage() {
     if (!a.enquiry?.id) return false;
     const isResponded = myRespondedEnquiryIds.has(a.enquiry.id);
     const revisionRequested = myRevisionRequestedEnquiryIds.has(a.enquiry.id);
-    const isClosed = a.enquiry.status === "ACCEPTED" || a.enquiry.status === "COMPLETED";
+    const isClosed = a.enquiry.status === "APPROVED" || a.enquiry.status === "COMPLETED";
 
     // Pending if NOT responded yet, OR if buyer requested a revision
     return (!isResponded || revisionRequested) && !isClosed;

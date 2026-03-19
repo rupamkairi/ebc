@@ -7,6 +7,13 @@ This application is a Next.js App Router based marketplace platform serving mult
 Read `Context.md` in this directory to understand the file structure, route architecture, and data fetching paradigms.
 Read `../CodeMap.md` to understand how this frontend connects to the `ebc-server`.
 
+## Type Safety Guidelines
+- **NEVER use the `any` type** - Always use proper TypeScript types
+- Use types from `src/types/` that map to the Prisma schema models
+- If a type doesn't exist, create it based on the API response and schema.prisma
+- When the backend returns a type, ensure frontend types match exactly
+- Use strict typing for all function parameters, return values, and state
+
 ## Workflow Priorities
 1. **Consistency**: Always align your generated React code with the existing styling conventions (Tailwind). Utilize existing UI components from `src/components/ui`.
 2. **Layer Separation**: Maintain clean separation. 

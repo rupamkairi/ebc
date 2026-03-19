@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import { getTimeBadge } from "@/lib/activity-utils";
 import { useMemo, useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
+import { EnquiryLineItem } from "@/types/activity";
 
 export default function EnquiriesPage() {
   const { t } = useLanguage();
@@ -56,7 +57,7 @@ export default function EnquiriesPage() {
       const enquiryItems = a.enquiry?.enquiryLineItems;
       if (!enquiryItems || enquiryItems.length === 0) return true; // edge case: show if no item info
       return enquiryItems.some(
-        (li) => li.item?.categoryId && myCategoryIds.has(li.item.categoryId)
+        (li: EnquiryLineItem) => li.item?.categoryId && myCategoryIds.has(li.item.categoryId)
       );
     });
   }, [assignments, myCategoryIds]);
@@ -115,7 +116,7 @@ export default function EnquiriesPage() {
           return (
             enq.id.toLowerCase().includes(q) ||
             enq.createdBy?.name?.toLowerCase().includes(q) ||
-            enq.enquiryLineItems.some((li) =>
+            enq.enquiryLineItems.some((li: EnquiryLineItem) =>
               li.item?.name?.toLowerCase().includes(q),
             )
           );

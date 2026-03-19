@@ -8,7 +8,7 @@ import Image from "next/image";
 interface Category {
   id: string;
   name: string;
-  image: string;
+  image?: string;
 }
 
 interface CategoryCardProps {

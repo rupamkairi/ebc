@@ -25,6 +25,7 @@ interface NotificationInboxProps {
   userType: "ADMIN" | "SELLER" | "BUYER";
   className?: string;
   limit?: number;
+  hideHeader?: boolean;
   /** Set of enquiry IDs that have already been responded to — used to update the badge label */
   respondedEnquiryIds?: Set<string>;
 }
@@ -33,6 +34,7 @@ export function NotificationInbox({
   userType,
   className,
   limit,
+  hideHeader,
   respondedEnquiryIds,
 }: NotificationInboxProps) {
   const { data: notifications = [], isLoading } = useNotificationsQuery();

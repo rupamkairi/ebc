@@ -21,6 +21,7 @@ import { getTimeBadge } from "@/lib/activity-utils";
 import { useMemo, useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { format } from "date-fns";
+import { AppointmentLineItem } from "@/types/activity";
 
 export default function AppointmentsPage() {
   const { t } = useLanguage();
@@ -55,7 +56,7 @@ export default function AppointmentsPage() {
       const appointmentItems = a.appointment?.appointmentLineItems;
       if (!appointmentItems || appointmentItems.length === 0) return true; // edge case: show if no item info
       return appointmentItems.some(
-        (li) => li.item?.categoryId && myCategoryIds.has(li.item.categoryId)
+        (li: AppointmentLineItem) => li.item?.categoryId && myCategoryIds.has(li.item.categoryId)
       );
     });
   }, [assignments, myCategoryIds]);

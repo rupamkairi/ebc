@@ -1,12 +1,12 @@
 export interface TargetRegion {
-  id: string;
+  id?: string;
   pincodeId: string;
   pincode?: PincodeRecord;
 }
 
 export interface PincodeRecord {
   id: string;
-  pincode: string;
+  pincode?: string | null;
   district: string;
   state: string;
   createdAt?: string;

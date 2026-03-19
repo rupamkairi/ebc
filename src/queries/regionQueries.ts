@@ -1,6 +1,6 @@
 import { useQuery, UseQueryOptions, keepPreviousData } from "@tanstack/react-query";
 import { locationService } from "@/services/locationService";
-import { PincodeListParams } from "@/types/region";
+import { PincodeRecord, PincodeListParams } from "@/types/region";
 
 export const regionKeys = {
   all: ["region"] as const,
@@ -10,12 +10,12 @@ export const regionKeys = {
 
 export function usePincodeRecordsQuery(
   params: PincodeListParams = {},
-  options?: Partial<UseQueryOptions<any, any, any, any>>,
+  options?: Partial<UseQueryOptions<PincodeRecord[], Error>>,
 ) {
   return useQuery({
     queryKey: regionKeys.pincodes(params),
     queryFn: () => locationService.getPincodeRecords(params),
     placeholderData: keepPreviousData,
     ...options,
-  } as any);
+  });
 }

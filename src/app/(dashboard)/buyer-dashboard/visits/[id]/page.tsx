@@ -184,7 +184,7 @@ export default function BuyerVisitDetailsPage() {
                         <div className="ml-13 mt-4 space-y-3">
                           <p className="text-[10px] font-black uppercase tracking-widest text-primary/50">Attached Media & Documents</p>
                           <div className="flex flex-wrap gap-3">
-                            {li.itemListing.attachments.map((att: any) => {
+                            {li.itemListing.attachments.map((att: import("@/types/catalog").Attachment) => {
                               if (att.media) {
                                 return (
                                   <a key={att.id} href={att.media.url} target="_blank" rel="noreferrer" className="group/image relative h-16 w-16 rounded-xl overflow-hidden border border-border flex items-center justify-center bg-muted/30">

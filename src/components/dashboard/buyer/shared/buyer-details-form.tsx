@@ -231,7 +231,7 @@ export function BuyerDetailsForm({
                           value={field.value}
                           onRecordSelect={(record) => {
                             field.onChange(record.id);
-                            form.setValue("pincode", record.pincode);
+                            form.setValue("pincode", record.pincode ?? "");
                           }}
                           className={cn(
                             inputClass,

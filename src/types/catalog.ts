@@ -10,6 +10,23 @@ export interface Media {
   size: number;
 }
 
+export interface Document {
+  id: string;
+  url: string;
+  name: string;
+  mimeType?: string;
+  sizeBytes?: number;
+  fileType?: string;
+}
+
+export interface Attachment {
+  id: string;
+  mediaId?: string;
+  documentId?: string;
+  media?: Media;
+  document?: Document;
+}
+
 export interface Category {
   id: string;
   name: string;
@@ -21,6 +38,7 @@ export interface Category {
   subCategories?: Category[];
   categoryIconId?: string | null;
   categoryIcon?: Media;
+  image?: string;
 }
 
 export interface Brand {
@@ -208,7 +226,7 @@ export interface ItemListing {
   updatedAt: string;
   mediaIds?: string[];
   documentIds?: string[];
-  attachments?: any[];
+  attachments?: Attachment[];
 }
 
 export interface CreateItemListingRequest {

@@ -167,6 +167,15 @@ export interface CreateQuotationRequest {
   priceChangeType?: "INCREASED" | "DECREASED" | "MAINTAINED";
 }
 
+export interface UpdateQuotationRequest {
+  id?: string;
+  lineItems?: Omit<QuotationLineItem, "id" | "item">[];
+  details?: QuotationDetails;
+  hasBeenRevised?: boolean;
+  priceChangeType?: "INCREASED" | "DECREASED" | "MAINTAINED";
+  isActive?: boolean;
+}
+
 export interface Quotation {
   id: string;
   enquiryId: string;
@@ -180,6 +189,8 @@ export interface Quotation {
   createdById: string;
   createdBy?: ActivityUser;
   enquiry?: Enquiry;
+  requestedRevision?: boolean;
+  hasBeenRevised?: boolean;
 }
 
 export interface QuotationListParams {

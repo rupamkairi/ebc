@@ -137,7 +137,7 @@ export default function CustomersPage() {
                 {/* Header Section */}
                 <div className="flex items-start gap-6">
                   <div className="h-20 w-20 md:h-24 md:w-24 rounded-[28px] bg-white flex items-center justify-center shrink-0">
-                    <User size={48} className="text-slate-700" title="User" />
+                    <User size={48} className="text-slate-700" />
                   </div>
                   <div className="flex-1 space-y-3">
                     <h3 className="text-3xl md:text-4xl font-black text-white tracking-tight leading-none">
@@ -201,7 +201,7 @@ export default function CustomersPage() {
                           </tr>
                         ) : (
                           cus.activities
-                            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                            .sort((a: Enquiry | Appointment, b: Enquiry | Appointment) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                             .slice(0, 2)
                             .map((act: Enquiry | Appointment, idx: number) => {
                               const isEnq = "enquiryLineItems" in act;

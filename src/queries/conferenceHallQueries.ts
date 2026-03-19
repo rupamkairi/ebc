@@ -184,12 +184,14 @@ export function useJoinEventMutation() {
   return useMutation({
     mutationFn: ({ id, entityId }: { id: string; entityId?: string }) =>
       conferenceHallService.joinEvent(id, entityId),
-    onSuccess: (data: any) => {
+    onSuccess: (data: { eventId?: string }) => {
       queryClient.invalidateQueries({ queryKey: conferenceHallKeys.all });
       queryClient.invalidateQueries({ queryKey: walletKeys.all });
-      queryClient.invalidateQueries({
-        queryKey: conferenceHallKeys.event(data.eventId),
-      });
+      if (data?.eventId) {
+        queryClient.invalidateQueries({
+          queryKey: conferenceHallKeys.event(data.eventId),
+        });
+      }
     },
   });
 }

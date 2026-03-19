@@ -125,7 +125,7 @@ export const conferenceHallService = {
   },
 
   joinEvent: (id: string, entityId?: string) => {
-    return fetchClient(
+    return fetchClient<{ eventId?: string }>(
       `${API_ENDPOINTS.CONFERENCE_HALL.EVENT.JOIN.replace("/join", "")}/${id}/join`,
       {
         method: "POST",
