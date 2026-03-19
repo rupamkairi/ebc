@@ -873,6 +873,8 @@
   "accepted_label": "Accepted",
   "pending_label": "Pending",
   "completed_label": "Completed",
+  "revised_label": "Revised",
+  "revision_requested_label": "Revision Requested",
   "flexible_brands": "Flexible Brands",
   "total_label": "Total",
   "view_label": "View",

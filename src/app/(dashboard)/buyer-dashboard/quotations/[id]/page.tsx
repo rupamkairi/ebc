@@ -112,7 +112,14 @@ export default function QuotationDetailsPage() {
                  <h4 className="font-black text-violet-900">Quotation Reconsidered</h4>
                  <p className="text-sm text-violet-700 font-medium">
                     The seller has reviewed your revision request and updated the proposal. 
-                    {q.priceChangeType === "DECREASED" && " They have specially reduced the price for you!"}
+                    {q.priceChangeType === "DECREASED" && q.priceDifference && (
+                       ` They have specially reduced the price by ₹${Math.abs(q.priceDifference).toLocaleString()} for you!`
+                    )}
+                    {q.priceChangeType === "DECREASED" && !q.priceDifference && " They have specially reduced the price for you!"}
+                    {q.priceChangeType === "INCREASED" && q.priceDifference && (
+                       ` The price has been updated with an increase of ₹${q.priceDifference.toLocaleString()}.`
+                    )}
+                    {q.priceChangeType === "MAINTAINED" && " The original pricing has been maintained."}
                  </p>
               </div>
            </div>
@@ -310,9 +317,22 @@ export default function QuotationDetailsPage() {
                   <p className="text-sm font-black uppercase tracking-widest text-primary/60">Total Quotation Value</p>
                   <p className="text-xs text-muted-foreground font-medium">Inclusive of basic charges</p>
                 </div>
-                <div className="flex items-center text-3xl font-black text-primary tracking-tighter">
-                  <IndianRupee className="h-6 w-6" />
-                  {totalAmount.toLocaleString()}
+                <div className="text-right">
+                  <div className="flex items-center justify-end text-3xl font-black text-primary tracking-tighter">
+                    <IndianRupee className="h-6 w-6" />
+                    {totalAmount.toLocaleString()}
+                  </div>
+                  {q.originalTotalAmount && q.originalTotalAmount !== totalAmount && (
+                    <p className="text-[11px] font-bold text-muted-foreground mt-1">
+                      Original: ₹{q.originalTotalAmount.toLocaleString()} | 
+                      <span className={cn(
+                        "ml-1",
+                        q.priceChangeType === "DECREASED" ? "text-teal-600" : "text-amber-600"
+                      )}>
+                        {q.priceChangeType === "DECREASED" ? "Saved" : "Changed by"} ₹{Math.abs(q.priceDifference || 0).toLocaleString()}
+                      </span>
+                    </p>
+                  )}
                 </div>
               </div>
             </CardContent>

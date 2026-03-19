@@ -127,6 +127,8 @@ export default function ViewQuotationPage() {
     );
   };
 
+  const isRevisionRequested = !!quotation.quotationDetails?.[0]?.requestedRevision && !quotation.quotationDetails?.[0]?.hasBeenRevised;
+  
   return (
     <div className="space-y-6 max-w-5xl mx-auto px-4">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -142,7 +144,7 @@ export default function ViewQuotationPage() {
               Accepted
             </Badge>
           )}
-          {quotation.quotationDetails?.[0]?.requestedRevision && !quotation.quotationDetails?.[0]?.hasBeenRevised && (
+          {isRevisionRequested && (
             <Badge className="bg-orange-500 text-white font-black uppercase text-[10px] tracking-widest animate-pulse px-3 py-1">
               <MessageSquare className="h-3 w-3 mr-1.5" />
               Action Required: Revision Requested
@@ -159,7 +161,7 @@ export default function ViewQuotationPage() {
         </div>
       </div>
 
-      {quotation.quotationDetails?.[0]?.requestedRevision && !quotation.quotationDetails?.[0]?.hasBeenRevised && (
+      {isRevisionRequested && (
         <div className="bg-orange-50 border border-orange-200 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm animate-in fade-in slide-in-from-top-4">
            <div className="flex items-center gap-4">
               <div className="h-12 w-12 rounded-2xl bg-orange-500 flex items-center justify-center text-white shadow-lg shrink-0">
@@ -203,6 +205,7 @@ export default function ViewQuotationPage() {
         onSubmit={handleSubmit}
         isLoading={isUpdating}
         isUpdate={true}
+        disabled={isRevisionRequested}
         killSwitchUpdateDisabled={killSwitchUpdateDisabled}
         initialData={initialData}
       />

@@ -98,7 +98,7 @@ export default function EnquiriesPage() {
     (a) => 
       a.enquiry?.id && 
       (!myRespondedEnquiryIds.has(a.enquiry.id) || myRevisionRequestedEnquiryIds.has(a.enquiry.id)) && 
-      (!a.enquiry?.status || (a.enquiry.status !== ENQUIRY_STATUS.APPROVED && a.enquiry.status !== ENQUIRY_STATUS.COMPLETED)),
+      (!a.enquiry?.status || (a.enquiry.status !== ENQUIRY_STATUS.COMPLETED && a.enquiry.status !== ENQUIRY_STATUS.CANCELLED)),
   );
   
   const respondedAssignments = relevantAssignments.filter(
@@ -197,8 +197,20 @@ export default function EnquiriesPage() {
                           {badge.label}
                         </div>
                       </div>
-                      <div className="px-3 py-1 rounded-lg bg-secondary/10 text-secondary font-black text-[9px] tracking-widest uppercase shrink-0">
-                        {enq.status === ENQUIRY_STATUS.PENDING ? "Pending" : enq.status}
+                      <div
+                        className={cn(
+                          "px-3 py-1 rounded-lg font-black text-[9px] tracking-widest uppercase shrink-0",
+                          enq.status === ENQUIRY_STATUS.PENDING && "bg-amber-100 text-amber-700",
+                          enq.status === ENQUIRY_STATUS.APPROVED && "bg-sky-100 text-sky-700",
+                          enq.status === ENQUIRY_STATUS.COMPLETED && "bg-emerald-100 text-emerald-700",
+                          (enq.status === ENQUIRY_STATUS.CANCELLED || enq.status === ENQUIRY_STATUS.REJECTED) && "bg-gray-100 text-gray-700",
+                        )}
+                      >
+                        {enq.status === ENQUIRY_STATUS.APPROVED
+                          ? t("active_status_label", "Active")
+                          : enq.status === ENQUIRY_STATUS.PENDING
+                            ? "Pending"
+                            : enq.status}
                       </div>
                     </div>
 

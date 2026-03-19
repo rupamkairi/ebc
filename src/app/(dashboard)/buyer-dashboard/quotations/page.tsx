@@ -31,9 +31,10 @@ export default function BuyerQuotationsPage() {
   const { t } = useLanguage();
 
   const filtered = (quotations || []).filter((q) => {
+    const details = q.quotationDetails?.[0];
     if (activeFilter === "All") return true;
     if (activeFilter === "Accepted") return q.status === "ACCEPTED";
-    return (q.status === "PENDING" || q.requestedRevision) && 
+    return (q.status === "PENDING" || details?.requestedRevision) && 
            q.status !== "ACCEPTED" && 
            q.status !== "REJECTED" && 
            q.enquiry?.status !== "COMPLETED";
@@ -108,7 +109,8 @@ export default function BuyerQuotationsPage() {
             const itemCount = q.quotationLineItems?.length ?? 0;
             const isAccepted = q.status === "ACCEPTED";
             const isEnquiryClosed = q.enquiry?.status === "COMPLETED";
-            const isNegotiable = q.quotationLineItems?.some((li) => li.isNegotiable) && !q.hasBeenRevised;
+            const details = q.quotationDetails?.[0];
+            const isNegotiable = q.quotationLineItems?.some((li) => li.isNegotiable) && !details?.hasBeenRevised;
 
             return (
               <Card
@@ -163,11 +165,18 @@ export default function BuyerQuotationsPage() {
                                 {t("negotiable_price")}
                               </Badge>
                             )}
-                            {q.requestedRevision && !q.hasBeenRevised && (
+                            {details?.requestedRevision && !details?.hasBeenRevised && (
                                <Badge
                                  className="text-[10px] font-black uppercase tracking-widest bg-violet-600 text-white border-none px-2.5 py-1 shadow-md shadow-violet-200"
                                >
                                  {t("revision_requested_label", "Revision Requested")}
+                               </Badge>
+                            )}
+                            {details?.hasBeenRevised && (
+                               <Badge
+                                 className="text-[10px] font-black uppercase tracking-widest bg-teal-600 text-white border-none px-2.5 py-1 shadow-md shadow-teal-200"
+                               >
+                                 {t("revised_label", "Revised")}
                                </Badge>
                             )}
                           </div>
@@ -208,6 +217,14 @@ export default function BuyerQuotationsPage() {
                             <IndianRupee className="h-4 w-4" />
                             {total.toLocaleString("en-IN")}
                           </div>
+                          {q.priceDifference && q.priceDifference !== 0 && (
+                            <p className={cn(
+                              "text-[10px] font-bold mt-0.5",
+                              q.priceChangeType === "DECREASED" ? "text-teal-600" : "text-amber-600"
+                            )}>
+                              {q.priceChangeType === "DECREASED" ? "-" : "+"}₹{Math.abs(q.priceDifference).toLocaleString()}
+                            </p>
+                          )}
                         </div>
                         <Button
                           asChild

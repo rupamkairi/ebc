@@ -50,9 +50,10 @@ interface QuotationFormProps {
   enquiry: Enquiry;
   quotation?: Quotation;
   isUpdate?: boolean;
+  isLoading?: boolean;
+  disabled?: boolean;
   killSwitchUpdateDisabled?: boolean;
   onSubmit: (data: CreateQuotationRequest) => void;
-  isLoading?: boolean;
   initialData?: Pick<QuotationState, "lineItems" | "details"> | null;
 }
 
@@ -63,6 +64,7 @@ export function QuotationForm({
   killSwitchUpdateDisabled = false,
   onSubmit,
   isLoading,
+  disabled = false,
   initialData,
 }: QuotationFormProps) {
   const [isRechargeModalOpen, setIsRechargeModalOpen] = useState(false);
@@ -129,7 +131,7 @@ export function QuotationForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (killSwitchUpdateDisabled && isUpdate) return;
+    if ((killSwitchUpdateDisabled && isUpdate) || disabled) return;
 
     // Validate that all items have a listing selected
     const missingListing = lineItems.some((item) => !item.itemListingId);
@@ -367,7 +369,7 @@ export function QuotationForm({
                                 isNegotiable: listingNegotiable,
                               });
                             }}
-                            disabled={killSwitchUpdateDisabled && isUpdate}
+                            disabled={(killSwitchUpdateDisabled && isUpdate) || disabled}
                           />
                         ) : (
                           <div className="p-4 bg-red-50 border border-red-200 text-red-600 rounded-xl text-sm flex flex-col gap-2">
@@ -395,7 +397,7 @@ export function QuotationForm({
                               placeholder=""
                               value={currentLineItem?.rate || ""}
                               onChange={(e) => updateLineItem(index, { rate: parseFloat(e.target.value) || 0 })}
-                              disabled={killSwitchUpdateDisabled && isUpdate}
+                              disabled={(killSwitchUpdateDisabled && isUpdate) || disabled}
                             />
                           </div>
                         </div>
@@ -425,7 +427,7 @@ export function QuotationForm({
                           className="border-primary/15 focus:border-primary rounded-xl"
                           value={currentLineItem?.remarks || ""}
                           onChange={(e) => updateLineItem(index, { remarks: e.target.value })}
-                          disabled={killSwitchUpdateDisabled && isUpdate}
+                          disabled={(killSwitchUpdateDisabled && isUpdate) || disabled}
                         />
                       </div>
                       <div className="flex items-center gap-3 pt-2 md:pt-5">
@@ -435,7 +437,7 @@ export function QuotationForm({
                         <Switch 
                           checked={currentLineItem?.isNegotiable || false}
                           onCheckedChange={(val) => updateLineItem(index, { isNegotiable: val })}
-                          disabled={killSwitchUpdateDisabled && isUpdate}
+                          disabled={(killSwitchUpdateDisabled && isUpdate) || disabled}
                         />
                       </div>
                     </div>
@@ -488,7 +490,7 @@ export function QuotationForm({
                   onChange={(e) => {
                     if (e.target.value) setDetails({ expectedDate: new Date(e.target.value).toISOString() });
                   }}
-                  disabled={killSwitchUpdateDisabled && isUpdate}
+                  disabled={(killSwitchUpdateDisabled && isUpdate) || disabled}
                 />
               </div>
 
@@ -502,12 +504,19 @@ export function QuotationForm({
                   className="bg-white/10 border-white/20 text-white placeholder:text-white/30 rounded-xl min-h-[100px] resize-none focus:ring-secondary/20 focus:border-secondary"
                   value={details.remarks || ""}
                   onChange={(e) => setDetails({ remarks: e.target.value })}
-                  disabled={killSwitchUpdateDisabled && isUpdate}
+                  disabled={(killSwitchUpdateDisabled && isUpdate) || disabled}
                 />
               </div>
 
               {/* Submit / Kill switch */}
-              {killSwitchUpdateDisabled && isUpdate ? (
+              {disabled ? (
+                <div className="p-4 bg-orange-500/20 border border-orange-400/30 rounded-xl flex items-start gap-3">
+                  <MessageSquare className="h-5 w-5 text-orange-300 shrink-0 mt-0.5" />
+                  <p className="text-xs text-orange-200">
+                    <strong>Revision Requested:</strong> This quotation can only be updated via the &apos;Review & Respond&apos; flow.
+                  </p>
+                </div>
+              ) : killSwitchUpdateDisabled && isUpdate ? (
                 <div className="p-4 bg-yellow-500/20 border border-yellow-400/30 rounded-xl flex items-start gap-3">
                   <AlertCircle className="h-5 w-5 text-yellow-300 shrink-0 mt-0.5" />
                   <p className="text-xs text-yellow-200">

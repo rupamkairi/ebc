@@ -171,6 +171,8 @@ export interface Quotation {
   id: string;
   enquiryId: string;
   isActive: boolean;
+  originalTotalAmount?: number;
+  priceDifference?: number;
   priceChangeType?: "INCREASED" | "DECREASED" | "MAINTAINED";
   quotationLineItems: QuotationLineItem[];
   quotationDetails: QuotationDetails[];

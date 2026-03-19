@@ -24,6 +24,7 @@ import { BuyerInfoCard } from "@/components/dashboard/seller/activity-shared/buy
 import { ActivityActionCard } from "@/components/dashboard/seller/activity-shared/activity-action-card";
 import { ActivityTipCard } from "@/components/dashboard/seller/activity-shared/activity-tip-card";
 import { PageBackButton } from "@/components/dashboard/seller/activity-shared/page-back-button";
+import { cn } from "@/lib/utils";
 
 export default function EnquiryDetailsPage() {
   const { t } = useLanguage();
@@ -51,6 +52,7 @@ export default function EnquiryDetailsPage() {
 
   const isActiveQuotation = !!myQuotation && myQuotation.status !== QUOTATION_STATUS.REJECTED && myQuotation.isActive;
   const isRevisionRequested = !!myQuotation && !!myQuotation.quotationDetails?.[0]?.requestedRevision && !myQuotation.quotationDetails?.[0]?.hasBeenRevised;
+  const isRevised = !!myQuotation && !!myQuotation.quotationDetails?.[0]?.hasBeenRevised;
 
   if (loadingEnquiry || loadingEntities || loadingQuotations) {
     return (
@@ -85,9 +87,9 @@ export default function EnquiryDetailsPage() {
   );
 
   // Global Enquiry Status
-  const isClosed = enquiry.status === ENQUIRY_STATUS.COMPLETED;
+  const isClosed = enquiry.status === ENQUIRY_STATUS.COMPLETED || enquiry.status === ENQUIRY_STATUS.CANCELLED;
   const isAcceptedLocally = !!myQuotation && myQuotation.status === QUOTATION_STATUS.ACCEPTED;
-  const hasActionNeeded = (!hasResponded || isRevisionRequested) && !isClosed && enquiry.status !== ENQUIRY_STATUS.APPROVED;
+  const hasActionNeeded = (!hasResponded || isRevisionRequested) && !isClosed;
 
   return (
     <div className="flex flex-col gap-6 max-w-5xl mx-auto">
@@ -124,17 +126,19 @@ export default function EnquiryDetailsPage() {
                     ID: {enquiry.id.slice(0, 8)}
                   </span>
                   <span
-                    className={`px-4 py-1 rounded-full text-xs font-black tracking-wide text-white ${
-                      enquiry.status === ENQUIRY_STATUS.PENDING
-                        ? "bg-amber-500"
-                        : enquiry.status === ENQUIRY_STATUS.APPROVED
-                        ? "bg-emerald-500"
-                        : enquiry.status === ENQUIRY_STATUS.COMPLETED
-                        ? "bg-blue-600"
-                        : "bg-gray-400"
-                    }`}
+                    className={cn(
+                      "px-4 py-1 rounded-full text-[10px] font-black tracking-widest uppercase text-white",
+                      enquiry.status === ENQUIRY_STATUS.PENDING && "bg-amber-500",
+                      enquiry.status === ENQUIRY_STATUS.APPROVED && "bg-sky-500 shadow-sm shadow-sky-200",
+                      enquiry.status === ENQUIRY_STATUS.COMPLETED && "bg-emerald-600",
+                      enquiry.status === ENQUIRY_STATUS.CANCELLED && "bg-gray-500",
+                      enquiry.status === ENQUIRY_STATUS.REJECTED && "bg-red-500",
+                    )}
                   >
-                    {ENQUIRY_STATUS_LABELS[enquiry.status as ENQUIRY_STATUS] || enquiry.status}
+                    {enquiry.status === ENQUIRY_STATUS.APPROVED
+                      ? t("active_status_label", "Active")
+                      : ENQUIRY_STATUS_LABELS[enquiry.status as ENQUIRY_STATUS] ||
+                        enquiry.status}
                   </span>
                   {isAcceptedLocally && (
                     <span className="px-4 py-1 rounded-full text-xs font-black tracking-wide bg-emerald-600 text-white flex items-center gap-1.5">
@@ -146,6 +150,18 @@ export default function EnquiryDetailsPage() {
                     <span className="px-4 py-1 rounded-full text-xs font-black tracking-wide bg-orange-500 text-white animate-pulse">
                       {t("revision_requested", "Requested Revision")}
                     </span>
+                  )}
+                  {isRevised && (
+                    <div className="flex flex-col gap-1">
+                      <span className="px-4 py-1 rounded-full text-xs font-black tracking-wide bg-violet-600 text-white w-fit">
+                        {t("revised", "Revised")}
+                      </span>
+                      {myQuotation.priceChangeType && (
+                        <p className="text-[11px] font-bold text-violet-700 ml-1">
+                          {myQuotation.priceChangeType === "DECREASED" ? "Price Reduced by" : "Price Changed by"} ₹{Math.abs(myQuotation.priceDifference || 0).toLocaleString()}
+                        </p>
+                      )}
+                    </div>
                   )}
                 </div>
               </div>
