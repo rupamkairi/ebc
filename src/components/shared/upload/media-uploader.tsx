@@ -42,6 +42,31 @@ export interface FileUploadResponse {
   size: number;
 }
 
+interface RawDocumentResponse {
+  id: string;
+  url: string;
+  name?: string;
+  key?: string;
+  mimeType?: string;
+  sizeBytes?: number;
+}
+
+interface RawMediaResponse {
+  id: string;
+  url: string;
+  name?: string;
+  key?: string;
+  mimeType?: string;
+  sizeBytes?: number;
+}
+
+interface UploadApiResponse {
+  documents?: RawDocumentResponse[];
+  document?: RawDocumentResponse;
+  media?: RawMediaResponse[];
+  mediaItem?: RawMediaResponse;
+}
+
 interface FileUploaderProps {
   onUploadSuccess?: (files: FileUploadResponse[]) => void;
   maxFiles?: number;
@@ -213,7 +238,7 @@ export function FileUploader({
               
               if (type === "document") {
                 if (Array.isArray(res.documents)) {
-                  data = res.documents.map((d: any) => ({
+                  data = res.documents.map((d: RawDocumentResponse) => ({
                     id: d.id,
                     url: d.url,
                     name: d.name || d.key?.split("/").pop() || "Document",
@@ -233,7 +258,7 @@ export function FileUploader({
                 }
               } else {
                 if (Array.isArray(res.media)) {
-                  data = res.media.map((m: any) => ({
+                  data = res.media.map((m: RawMediaResponse) => ({
                     id: m.id,
                     url: m.url,
                     name: m.name || m.key?.split("/").pop() || "Media",

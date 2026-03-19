@@ -37,6 +37,10 @@ export interface Review {
   createdById: string;
   createdBy: ReviewUser;
   entityId?: string;
+  entity?: {
+    id: string;
+    name: string;
+  };
   itemListingId?: string;
   enquiryId?: string;
   appointmentId?: string;

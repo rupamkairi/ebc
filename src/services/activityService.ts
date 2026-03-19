@@ -1,19 +1,20 @@
 import fetchClient from "@/lib/api-client";
 import { API_ENDPOINTS } from "@/lib/api-endpoints";
-import {
-  Appointment,
-  AppointmentListParams,
-  CreateAppointmentRequest,
-  CreateEnquiryRequest,
-  Enquiry,
-  EnquiryListParams,
-  ActivityAssignment,
-  AssignmentListParams,
-  Quotation,
+import { 
+  Enquiry, 
+  Appointment, 
+  Quotation, 
+  Visit, 
+  EnquiryListParams, 
+  AppointmentListParams, 
   QuotationListParams,
-  CreateQuotationRequest,
-  Visit,
   VisitListParams,
+  CreateEnquiryRequest,
+  CreateAppointmentRequest,
+  CreateQuotationRequest,
+  UpdateQuotationRequest,
+  AssignmentListParams,
+  ActivityAssignment
 } from "@/types/activity";
 
 export const activityService = {
@@ -149,7 +150,7 @@ export const activityService = {
     });
   },
 
-  async updateQuotation(id: string, data: any) {
+  async updateQuotation(id: string, data: UpdateQuotationRequest) {
     // Map CreateQuotationRequest format back to model format if needed
     // Many backends expect the actual model field names for PATCH updates
     const payload = {

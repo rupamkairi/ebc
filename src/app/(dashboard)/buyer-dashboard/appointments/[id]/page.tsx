@@ -412,7 +412,7 @@ function VisitListItem({
                     Service Images & Documents
                   </p>
                   <div className="flex flex-wrap gap-3">
-                    {firstItem.itemListing.attachments.map((att: any) => {
+                    {firstItem.itemListing.attachments.map((att: import("@/types/catalog").Attachment) => {
                       if (att.media) {
                         return (
                           <a

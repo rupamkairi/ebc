@@ -8,6 +8,7 @@ import {
   AssignmentListParams,
   QuotationListParams,
   CreateQuotationRequest,
+  UpdateQuotationRequest,
   VisitListParams,
 } from "@/types/activity";
 import { useAuthStore } from "@/store/authStore";
@@ -187,7 +188,7 @@ export function useUpdateQuotationMutation() {
       data,
     }: {
       id: string;
-      data: Partial<CreateQuotationRequest>;
+      data: UpdateQuotationRequest;
     }) => activityService.updateQuotation(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: activityKeys.all });

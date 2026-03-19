@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Review } from "@/types/review";
 
 export default function AdminReviewAuditPage() {
   const { data: hiddenReviews, isLoading } = useAdminHiddenReviewsQuery();
@@ -15,7 +16,7 @@ export default function AdminReviewAuditPage() {
 
   const filteredReviews = useMemo(() => {
     if (!hiddenReviews) return [];
-    return (hiddenReviews as any).filter((r: any) => 
+    return hiddenReviews.filter((r: Review) => 
       r.title?.toLowerCase().includes(search.toLowerCase()) ||
       r.description?.toLowerCase().includes(search.toLowerCase()) ||
       r.entity?.name?.toLowerCase().includes(search.toLowerCase())
@@ -69,7 +70,7 @@ export default function AdminReviewAuditPage() {
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {filteredReviews.map((review: any) => (
+          {filteredReviews.map((review: Review) => (
             <div key={review.id} className="relative group">
               <ReviewCard review={review} />
               <div className="mt-4 flex gap-2">

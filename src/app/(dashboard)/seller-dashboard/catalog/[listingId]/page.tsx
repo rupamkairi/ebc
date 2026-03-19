@@ -150,7 +150,7 @@ export default function ListingDetailsPage() {
                 {t("attached_media_documents", "Attached Media & Documents")}
               </h3>
               <div className="flex flex-wrap gap-4">
-                {listing.attachments.map((att: any) => {
+                {listing.attachments.map((att: import("@/types/catalog").Attachment) => {
                   if (att.media) {
                     return (
                       <a key={att.id} href={att.media.url} target="_blank" rel="noreferrer" className="group relative h-24 w-24 rounded-xl overflow-hidden border border-border flex items-center justify-center bg-muted/30">

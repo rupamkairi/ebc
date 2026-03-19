@@ -42,6 +42,11 @@ export interface SupportQuery {
     id: string;
     name: string;
   };
+  createdBy?: {
+    id: string;
+    name: string;
+    phone?: string;
+  };
   conversations?: SupportMessage[];
 }
 

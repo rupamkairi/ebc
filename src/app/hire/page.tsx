@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 interface CategoryItem {
   id: string;
   name: string;
-  image: string;
+  image?: string;
 }
 
 interface ServiceCategoryGridProps {

@@ -190,8 +190,12 @@ const offerSchema = z.object({
       relationId: z.string(),
     }),
   ),
-  pincodeIds: z.any().optional(), // Old field, kept for safety but not used in new logic
-  targetRegions: z.array(z.any()),
+  pincodeIds: z.any().optional(),
+  targetRegions: z.array(z.object({
+    pincodeId: z.string(),
+    state: z.string().optional(),
+    district: z.string().optional(),
+  })),
 });
 
 type OfferFormValues = z.infer<typeof offerSchema>;
@@ -396,7 +400,7 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
       itemListingIds: values.relations
         .filter((r) => r.relationType === "ITEM_LISTING")
         .map((r) => r.relationId),
-      targetRegions: values.targetRegions.map((r: any) => ({
+      targetRegions: values.targetRegions.map((r) => ({
         pincodeId: r.pincodeId,
       })),
       attachmentIds: [

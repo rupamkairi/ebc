@@ -107,7 +107,7 @@ export const useToggleHideReviewMutation = () => {
       isHidden,
     }: {
       reviewId: string;
-      entityId: string;
+      entityId?: string;
       isHidden: boolean;
     }) => {
       return fetchClient(`${REVIEW_API}/${reviewId}/hide`, {
@@ -116,19 +116,21 @@ export const useToggleHideReviewMutation = () => {
       });
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: ["entity-reviews-full", variables.entityId],
-      });
+      if (variables.entityId) {
+        queryClient.invalidateQueries({
+          queryKey: ["entity-reviews-full", variables.entityId],
+        });
+      }
       queryClient.invalidateQueries({ queryKey: ["admin-hidden-reviews"] });
     },
   });
 };
 
 export const useAdminHiddenReviewsQuery = () => {
-  return useQuery({
+  return useQuery<Review[]>({
     queryKey: ["admin-hidden-reviews"],
     queryFn: async () => {
-      return fetchClient(`${REVIEW_API}/admin/hidden`);
+      return fetchClient<Review[]>(`${REVIEW_API}/admin/hidden`);
     },
   });
 };
