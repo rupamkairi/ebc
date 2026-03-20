@@ -7,6 +7,7 @@ import {
   Quotation,
   REF_TYPE,
 } from "@/types/activity";
+import { QUOTATION_STATUS } from "@/constants/enums";
 import { ItemListingAutocomplete } from "./item-listing-autocomplete";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -510,10 +511,16 @@ export function QuotationForm({
 
               {/* Submit / Kill switch */}
               {disabled ? (
-                <div className="p-4 bg-orange-500/20 border border-orange-400/30 rounded-xl flex items-start gap-3">
-                  <MessageSquare className="h-5 w-5 text-orange-300 shrink-0 mt-0.5" />
-                  <p className="text-xs text-orange-200">
-                    <strong>Revision Requested:</strong> This quotation can only be updated via the &apos;Review & Respond&apos; flow.
+                <div className="p-4 bg-white/10 border border-white/20 rounded-xl flex items-start gap-3">
+                  <Lock className="h-5 w-5 text-white shrink-0 mt-0.5" />
+                  <p className="text-xs text-white/80">
+                    <strong className="text-white block mb-1 uppercase tracking-widest text-[10px]">Editing Not Allowed</strong>
+                    {quotation?.status === QUOTATION_STATUS.REVISED && "This quotation has already been revised. You cannot edit it again unless the buyer requests another revision."}
+                    {quotation?.status === QUOTATION_STATUS.ACCEPTED && "This quotation has been accepted by the buyer and is now locked for processing."}
+                    {quotation?.status === QUOTATION_STATUS.REJECTED && "This quotation was rejected by the buyer."}
+                    {quotation?.status === QUOTATION_STATUS.CANCELLED && "This quotation or its associated enquiry has been cancelled."}
+                    {quotation?.status === QUOTATION_STATUS.EXPIRED && "This quotation has expired and can no longer be updated."}
+                    {!!quotation?.quotationDetails?.[0]?.requestedRevision && !quotation?.quotationDetails?.[0]?.hasBeenRevised && "A revision has been requested. Use the 'Review & Respond' flow on the Enquiry page to submit your update."}
                   </p>
                 </div>
               ) : killSwitchUpdateDisabled && isUpdate ? (

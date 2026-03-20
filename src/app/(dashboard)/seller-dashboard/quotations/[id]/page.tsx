@@ -82,6 +82,36 @@ export default function ViewQuotationPage() {
       };
     }, [quotation, listings, enquiry]);
 
+  const isRevisionRequested =
+    !!quotation?.quotationDetails?.[0]?.requestedRevision &&
+    !quotation?.quotationDetails?.[0]?.hasBeenRevised;
+
+  const isFormDisabled = useMemo(() => {
+    if (!quotation || !enquiry) return false;
+
+    // 1. Revision is requested but hasn't been done yet (must go through enquiry flow)
+    if (isRevisionRequested) return true;
+
+    // 2. Statuses that represent final or "already updated" states
+    const finalStatuses = [
+      QUOTATION_STATUS.REVISED,
+      QUOTATION_STATUS.ACCEPTED,
+      QUOTATION_STATUS.REJECTED,
+      QUOTATION_STATUS.CANCELLED,
+      QUOTATION_STATUS.EXPIRED,
+    ];
+    if (
+      finalStatuses.includes(quotation.status as QUOTATION_STATUS)
+    )
+      return true;
+
+    // 3. Enquiry level final states
+    if (enquiry.status === "COMPLETED" || enquiry.status === "CANCELLED")
+      return true;
+
+    return false;
+  }, [isRevisionRequested, quotation, enquiry]);
+
   if (isQuotationLoading || (quotation && (isEnquiryLoading || !listings))) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -127,7 +157,6 @@ export default function ViewQuotationPage() {
     );
   };
 
-  const isRevisionRequested = !!quotation.quotationDetails?.[0]?.requestedRevision && !quotation.quotationDetails?.[0]?.hasBeenRevised;
   
   return (
     <div className="space-y-6 max-w-5xl mx-auto px-4">
@@ -205,7 +234,7 @@ export default function ViewQuotationPage() {
         onSubmit={handleSubmit}
         isLoading={isUpdating}
         isUpdate={true}
-        disabled={isRevisionRequested}
+        disabled={isFormDisabled}
         killSwitchUpdateDisabled={killSwitchUpdateDisabled}
         initialData={initialData}
       />
