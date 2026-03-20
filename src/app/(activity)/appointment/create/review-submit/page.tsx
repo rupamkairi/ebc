@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import { AppointmentReview } from "@/components/dashboard/buyer/appointment/appointment-review";
 import { toast } from "sonner";
 import { useLanguage } from "@/hooks/useLanguage";
+import { ArrowLeft } from "lucide-react";
 
 export default function AppointmentReviewSubmitPage() {
   const router = useRouter();
@@ -72,6 +73,14 @@ export default function AppointmentReviewSubmitPage() {
 
   return (
     <div className="max-w-3xl mx-auto py-10 px-4 sm:px-6 space-y-8 animate-in fade-in duration-700">
+      <button
+        onClick={() => router.back()}
+        className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors text-sm font-bold w-fit"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        {t("back")}
+      </button>
+
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight text-primary">
           {t("review_appointment")}
