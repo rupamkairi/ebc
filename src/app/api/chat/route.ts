@@ -4,7 +4,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 const openrouter = createOpenRouter({
-  apiKey: process.env.OPENROUTE_API_KEY,
+  apiKey: process.env.OPENROUTER_API_KEY,
 });
 
 export const runtime = "nodejs";
