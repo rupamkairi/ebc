@@ -8,6 +8,7 @@ export interface AuthResponse {
   token: string; // jwt-token-string
   userId: string; // user-uuid
   expiresAt: string;
+  user?: AdminUser; // Optional user object
 }
 
 export interface CreateAdminRequest {

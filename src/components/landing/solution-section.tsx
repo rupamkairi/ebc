@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 
 import { Play, MapPin, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
+import { useMounted } from "@/hooks/useMounted";
 
 interface ModalPoint {
   title: string;
@@ -36,44 +37,54 @@ function SolutionCard({
   modalHeading,
   modalPoints,
 }: SolutionCardProps) {
+  const mounted = useMounted();
+
+  const triggerButton = (
+    <button className="bg-white rounded-xl overflow-hidden shadow-2xl flex flex-col h-full group transition-all duration-300 hover:-translate-y-1 text-left cursor-pointer w-full border-none outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+      {/* Upper White Section */}
+      <div className="p-4 flex items-center gap-4 bg-white border-b border-slate-100 min-h-[80px] w-full">
+        <div className="relative size-12 shrink-0 p-1 bg-slate-50 rounded-lg group-hover:scale-110 transition-transform duration-300">
+          <Image
+            src={icon}
+            alt={title}
+            fill
+            className="object-contain p-1"
+            sizes="48px"
+            unoptimized
+          />
+        </div>
+        <h3 className="text-primary font-black text-xl tracking-tight leading-tight">
+          {title}
+        </h3>
+      </div>
+
+      {/* Bottom Blue Section */}
+      <div className="bg-primary p-5 grow flex flex-col justify-center w-full relative overflow-hidden">
+        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-125 transition-transform duration-500">
+          <Play className="size-16 fill-white text-white" />
+        </div>
+        <ul className="space-y-3 relative z-10">
+          {points.map((point, index) => (
+            <li key={index} className="flex items-start gap-3 text-white">
+              <Play className="size-3 fill-secondary text-secondary mt-1 shrink-0" />
+              <span className="text-sm font-medium leading-snug">
+                {point}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </button>
+  );
+
+  if (!mounted) {
+    return triggerButton;
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="bg-white rounded-xl overflow-hidden shadow-2xl flex flex-col h-full group transition-all duration-300 hover:-translate-y-1 text-left cursor-pointer w-full border-none outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
-          {/* Upper White Section */}
-          <div className="p-4 flex items-center gap-4 bg-white border-b border-slate-100 min-h-[80px] w-full">
-            <div className="relative size-12 shrink-0 p-1 bg-slate-50 rounded-lg group-hover:scale-110 transition-transform duration-300">
-              <Image
-                src={icon}
-                alt={title}
-                fill
-                className="object-contain p-1"
-                sizes="48px"
-                unoptimized
-              />
-            </div>
-            <h3 className="text-primary font-black text-xl tracking-tight leading-tight">
-              {title}
-            </h3>
-          </div>
-
-          {/* Bottom Blue Section */}
-          <div className="bg-primary p-5 grow flex flex-col justify-center w-full relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-125 transition-transform duration-500">
-              <Play className="size-16 fill-white text-white" />
-            </div>
-            <ul className="space-y-3 relative z-10">
-              {points.map((point, index) => (
-                <li key={index} className="flex items-start gap-3 text-white">
-                  <Play className="size-3 fill-secondary text-secondary mt-1 shrink-0" />
-                  <span className="text-sm font-medium leading-snug">
-                    {point}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </button>
+        {triggerButton}
       </DialogTrigger>
 
       <DialogContent className="max-w-2xl p-0 border-none bg-white rounded-2xl shadow-2xl overflow-hidden">

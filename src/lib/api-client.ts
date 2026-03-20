@@ -78,7 +78,10 @@ async function fetchClient<T>(
 
     if (!response.ok) {
       if (response.status === 401 && headers["Authorization"]) {
+        console.warn("[API] 401 Unauthorized for request with token. Logging out...", url);
         useAuthStore.getState().logout();
+      } else if (response.status === 401) {
+        console.debug("[API] 401 Unauthorized (no token).", url);
       }
       // Try to parse error message from server
       let errorMessage = `HTTP error! status: ${response.status}`;

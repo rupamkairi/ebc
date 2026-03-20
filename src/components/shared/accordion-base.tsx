@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/typography";
 
 import { ReactNode } from "react";
+import { useMounted } from "@/hooks/useMounted";
 
 type AccordionItemData = {
   question: string;
@@ -22,6 +23,22 @@ interface AccordionBaseProps {
 }
 
 export function AccordionBase({ items, className }: AccordionBaseProps) {
+  const mounted = useMounted();
+
+  if (!mounted) {
+    return (
+      <div className={`w-full border rounded-2xl bg-white overflow-hidden ${className}`}>
+        {items.map((item, index) => (
+          <div key={index} className="w-full inner-p text-left border-b last:border-b-0">
+            <TypographyResponsiveSmall>
+              {item.question}
+            </TypographyResponsiveSmall>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <Accordion
       type="single"

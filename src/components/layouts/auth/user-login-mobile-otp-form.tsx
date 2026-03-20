@@ -102,27 +102,31 @@ export function UserLoginMobileOtpForm({
     setIsLoading(true);
     try {
       const phone = `+91${mobile}`;
-      const { token } = await authService.verifyOtp({ phone, otp });
+      const { token, user } = await authService.verifyOtp({
+        phone,
+        otp,
+      });
       setToken(token);
+      if (user) {
+        setUser(user);
 
-      // Fetch session to get user role
-      const { user } = await authService.getSession();
-      setUser(user);
+        toast.success("Login successful");
 
-      toast.success("Login successful");
-
-      // Redirection logic
-      const role = user.role?.toUpperCase() || "";
-      if (
-        role === USER_ROLE.UNASSIGNED ||
-        role.includes("SELLER") ||
-        role.includes("SERVICE")
-      ) {
-        router.push("/seller-dashboard");
-      } else if (role.includes("ADMIN") && !role.startsWith("USER_")) {
-        router.push("/admin-dashboard");
+        // Redirection logic
+        const role = user.role?.toUpperCase() || "";
+        if (
+          role === USER_ROLE.UNASSIGNED ||
+          role.includes("SELLER") ||
+          role.includes("SERVICE")
+        ) {
+          router.push("/seller-dashboard");
+        } else if (role.includes("ADMIN") && !role.startsWith("USER_")) {
+          router.push("/admin-dashboard");
+        } else {
+          router.push("/buyer-dashboard");
+        }
       } else {
-        router.push("/buyer-dashboard");
+        throw new Error("User data not found");
       }
     } catch (error) {
       const errorMessage =

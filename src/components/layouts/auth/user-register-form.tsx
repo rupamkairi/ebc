@@ -35,7 +35,7 @@ import { authService } from "@/services/authService";
 import { useAuthStore } from "@/store/authStore";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { USER_ROLE, ITEM_TYPE } from "@/constants/enums";
+import { USER_ROLE } from "@/constants/enums";
 
 import { PincodeSearchAutocomplete } from "@/components/autocompletes/pincode-search-autocomplete";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -131,28 +131,30 @@ export function UserRegisterForm({
     setIsLoading(true);
     try {
       const phone = `+91${mobile}`;
-      const { token } = await authService.verifyOtp({ phone, otp });
+      const { token, user } = await authService.verifyOtp({ phone, otp });
       setToken(token);
+      if (user) {
+        setUser(user);
 
-      const { user } = await authService.getSession();
-      setUser(user);
+        toast.success("Registration successful");
 
-      toast.success("Registration successful");
-
-      // Redirection logic
-      const role = user.role?.toUpperCase() || "";
-      if (isNewUser && (role.includes("SELLER") || role.includes("SERVICE"))) {
-        router.push("/auth/register/onboarding");
-      } else if (
-        role === USER_ROLE.UNASSIGNED ||
-        role.includes("SELLER") ||
-        role.includes("SERVICE")
-      ) {
-        router.push("/seller-dashboard");
-      } else if (role.includes("ADMIN") && !role.startsWith("USER_")) {
-        router.push("/admin-dashboard");
+        // Redirection logic
+        const role = user.role?.toUpperCase() || "";
+        if (isNewUser && (role.includes("SELLER") || role.includes("SERVICE"))) {
+          router.push("/auth/register/onboarding");
+        } else if (
+          role === USER_ROLE.UNASSIGNED ||
+          role.includes("SELLER") ||
+          role.includes("SERVICE")
+        ) {
+          router.push("/seller-dashboard");
+        } else if (role.includes("ADMIN") && !role.startsWith("USER_")) {
+          router.push("/admin-dashboard");
+        } else {
+          router.push("/buyer-dashboard");
+        }
       } else {
-        router.push("/buyer-dashboard");
+        throw new Error("User data not found");
       }
     } catch (error) {
       const errorMessage =
