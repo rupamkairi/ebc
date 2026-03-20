@@ -14,6 +14,9 @@ import {
   Loader2,
   Package,
   MessageSquare,
+  TrendingDown,
+  TrendingUp,
+  RefreshCw,
 } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -167,16 +170,19 @@ export default function BuyerQuotationsPage() {
                             )}
                             {details?.requestedRevision && !details?.hasBeenRevised && (
                                <Badge
-                                 className="text-[10px] font-black uppercase tracking-widest bg-violet-600 text-white border-none px-2.5 py-1 shadow-md shadow-violet-200"
+                                 className="text-[10px] font-black uppercase tracking-widest bg-orange-500 text-white border-none px-2.5 py-1 shadow-md shadow-orange-200 animate-pulse"
                                >
                                  {t("revision_requested_label", "Revision Requested")}
                                </Badge>
                             )}
                             {details?.hasBeenRevised && (
                                <Badge
-                                 className="text-[10px] font-black uppercase tracking-widest bg-teal-600 text-white border-none px-2.5 py-1 shadow-md shadow-teal-200"
+                                 className="text-[10px] font-black uppercase tracking-widest bg-violet-600 text-white border-none px-2.5 py-1 shadow-md shadow-violet-200 flex items-center gap-1.5"
                                >
-                                 {t("revised_label", "Revised")}
+                                 {q.priceChangeType === "DECREASED" && <TrendingDown className="h-3 w-3" />}
+                                 {q.priceChangeType === "INCREASED" && <TrendingUp className="h-3 w-3" />}
+                                 {q.priceChangeType === "MAINTAINED" && <RefreshCw className="h-3 w-3" />}
+                                 {t("revised_label", "Revised")} {q.priceChangeType === "DECREASED" ? "(Price Reduced)" : q.priceChangeType === "INCREASED" ? "(Price Updated)" : ""}
                                </Badge>
                             )}
                           </div>
