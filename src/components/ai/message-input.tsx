@@ -31,7 +31,10 @@ export function MessageInput({ input, handleInputChange, handleSubmit, isLoading
   };
 
   return (
-    <form onSubmit={handleSubmit} className="border-t border-border bg-background p-4">
+    <form
+      onSubmit={handleSubmit}
+      className="sticky bottom-0 z-10 border-t border-border bg-background/95 p-4 backdrop-blur"
+    >
       <div className="relative flex items-end gap-2 max-w-4xl mx-auto">
         <Textarea
           value={input}

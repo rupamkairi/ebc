@@ -3,6 +3,7 @@ import { I18nProvider } from "@/components/providers/I18nProvider";
 import QueryClientProvider from "@/queries/QueryClientProvider";
 import { Poppins, Open_Sans } from "next/font/google";
 import "./globals.css";
+import "katex/dist/katex.min.css";
 
 const poppins = Poppins({
   variable: "--font-poppins",

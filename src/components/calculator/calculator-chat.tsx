@@ -33,7 +33,7 @@ export function CalculatorChat() {
       />
 
       {/* Main Chat Area */}
-      <div className="flex flex-1 flex-col relative">
+      <div className="flex flex-1 min-h-0 flex-col relative overflow-hidden">
         {messages.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center p-8 text-center">
             <div className="mb-6 rounded-full bg-primary/10 p-6 text-primary">
