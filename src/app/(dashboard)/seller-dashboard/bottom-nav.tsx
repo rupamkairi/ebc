@@ -7,6 +7,7 @@ import {
   Headphones,
   Wallet,
   CalendarDays,
+  BarChart3,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -43,6 +44,11 @@ export function BottomNav() {
       icon: Wallet,
       label: t("wallet", "Wallet"),
       href: "/seller-dashboard/wallet",
+    },
+    {
+      icon: BarChart3,
+      label: t("reports", "Reports"),
+      href: "/seller-dashboard/reports",
     },
     {
       icon: Headphones,
