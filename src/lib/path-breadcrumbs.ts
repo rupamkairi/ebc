@@ -23,5 +23,6 @@ export const PATH_BREADCRUMBS: Record<string, string> = {
   "ai": "AI",
   "conference-hall": "Conference Hall",
   "calculators": "Calculators",
+  "calculator": "Calculator",
   "settings": "Settings",
 };

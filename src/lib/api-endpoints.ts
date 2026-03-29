@@ -189,5 +189,10 @@ export const API_ENDPOINTS = {
     SESSION_BY_ID: "/ai-chat/sessions/:id",
     SYNC: "/ai-chat/sync",
   },
+  AI_KNOWLEDGE: {
+    SOURCES: "/ai-knowledge/sources",
+    REINDEX: "/ai-knowledge/sources/:id/reindex",
+    DELETE: "/ai-knowledge/sources/:id",
+  },
   NEXT_API: {},
 } as const;
