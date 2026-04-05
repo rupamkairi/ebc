@@ -16,7 +16,7 @@ const SERVER_API_BASE_RAW =
   "http://localhost:10000/api";
 const SERVER_API_BASE = SERVER_API_BASE_RAW.endsWith("/api")
   ? SERVER_API_BASE_RAW
-  : `${SERVER_API_BASE_RAW.replace(/\\/$/, "")}/api`;
+  : `${SERVER_API_BASE_RAW.replace(/\/$/, "")}/api`;
 
 function truncate(text: string, max = 2000) {
   if (text.length <= max) return text;
