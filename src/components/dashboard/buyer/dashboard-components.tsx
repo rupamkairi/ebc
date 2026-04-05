@@ -35,10 +35,14 @@ export function BuyerProfileCard({
   name,
   role,
   avatarUrl,
+  settingsHref = "/buyer-dashboard/settings",
+  notificationUserType = "BUYER",
 }: {
   name: string;
   role: string;
   avatarUrl?: string;
+  settingsHref?: string;
+  notificationUserType?: "BUYER" | "SELLER" | "ADMIN";
 }) {
   const { data: notifications = [] } = useNotificationsQuery();
   const unreadCount = notifications.filter((n) => !n.isRead).length;
@@ -88,7 +92,7 @@ export function BuyerProfileCard({
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild className="cursor-pointer">
                 <Link
-                  href="/buyer-dashboard/settings"
+                  href={settingsHref}
                   className="flex items-center w-full"
                 >
                   <User className="mr-2 h-4 w-4" />
@@ -131,7 +135,7 @@ export function BuyerProfileCard({
                 </SheetTitle>
               </SheetHeader>
               <div className="p-4 overflow-y-auto h-[calc(100vh-80px)]">
-                <NotificationInbox userType="BUYER" />
+                <NotificationInbox userType={notificationUserType} />
               </div>
             </SheetContent>
           </Sheet>

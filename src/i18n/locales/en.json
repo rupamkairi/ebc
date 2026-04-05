@@ -923,5 +923,13 @@
   "customer": "Customer",
   "total_value": "Total Value",
   "last_active": "Last Active",
-  "review_submitted": "Review Submitted — Thank you!"
+  "review_submitted": "Review Submitted — Thank you!",
+  "received_quotations_title": "Received Quotations",
+  "received_quotations_subtitle": "Manage quotations received for your enquiries",
+  "back_to_my_enquiries": "BACK TO MY ENQUIRIES",
+  "my_enquiries_title": "My Enquiries",
+  "ask_for_discount": "Ask for Discount",
+  "offer_accepted": "Offer Accepted",
+  "accept_offer": "Accept this Offer",
+  "view_full_enquiry": "View Full Enquiry"
 }

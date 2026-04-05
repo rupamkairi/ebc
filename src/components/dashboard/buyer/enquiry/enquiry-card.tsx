@@ -13,9 +13,10 @@ import Link from "next/link";
 
 interface EnquiryCardProps {
   enquiry: Enquiry;
+  detailsHref?: string;
 }
 
-export function EnquiryCard({ enquiry }: EnquiryCardProps) {
+export function EnquiryCard({ enquiry, detailsHref }: EnquiryCardProps) {
   const { t } = useLanguage();
   const items = enquiry.enquiryLineItems || [];
   const details = enquiry.enquiryDetails?.[0];
@@ -127,7 +128,7 @@ export function EnquiryCard({ enquiry }: EnquiryCardProps) {
           asChild
           className="w-full bg-white border-primary/20 text-primary font-black text-xs h-12 rounded-xl hover:bg-primary hover:text-white transition-all shadow-sm flex items-center justify-center gap-2 uppercase tracking-widest group"
         >
-          <Link href={`/buyer-dashboard/enquiries/${enquiry.id}`}>
+          <Link href={detailsHref || `/buyer-dashboard/enquiries/${enquiry.id}`}>
             {t("view_details")}
             <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
           </Link>
