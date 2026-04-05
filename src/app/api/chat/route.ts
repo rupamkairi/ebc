@@ -10,6 +10,13 @@ const openrouter = createOpenRouter({
 export const runtime = "nodejs";
 
 const LOG_PATH = path.join(process.cwd(), ".logs", "ai-chat.log");
+const SERVER_API_BASE_RAW =
+  process.env.EBC_SERVER_API_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://localhost:10000/api";
+const SERVER_API_BASE = SERVER_API_BASE_RAW.endsWith("/api")
+  ? SERVER_API_BASE_RAW
+  : `${SERVER_API_BASE_RAW.replace(/\\/$/, "")}/api`;
 
 function truncate(text: string, max = 2000) {
   if (text.length <= max) return text;
@@ -35,6 +42,76 @@ function serializeError(error: unknown) {
   }
   return { message: String(error) };
 }
+
+type RetrievalItem = {
+  chunkId: string;
+  sourceId: string;
+  content: string;
+  chunkIndex: number;
+  tokenCount: number;
+  score: number;
+  documentId?: string | null;
+  mediaId?: string | null;
+  sourceMimeType?: string | null;
+};
+
+const buildRagSystemPrompt = (items: RetrievalItem[]) => {
+  const context = items
+    .slice(0, 8)
+    .map((item, index) => {
+      const sourceLabel = item.documentId
+        ? `document:${item.documentId}`
+        : item.mediaId
+          ? `media:${item.mediaId}`
+          : `source:${item.sourceId}`;
+      return `[#${index + 1} ${sourceLabel}] ${truncate(item.content, 1200)}`;
+    })
+    .join("\n\n");
+
+  return [
+    "You are EBC AI Calculator assistant.",
+    "Use the knowledge context below when it is relevant.",
+    "If context is insufficient, clearly say you do not have enough information and continue with best-effort general guidance.",
+    "When using context facts, end with a single line `Sources: [#n, #m]` using the same source numbers.",
+    "",
+    "Knowledge Context:",
+    context,
+  ].join("\n");
+};
+
+const fetchKnowledgeContext = async (query: string) => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 2500);
+
+  try {
+    const response = await fetch(`${SERVER_API_BASE}/ai-knowledge/retrieve`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+      signal: controller.signal,
+      body: JSON.stringify({
+        query,
+        topK: 6,
+      }),
+    });
+
+    if (!response.ok) {
+      return [];
+    }
+
+    const payload = (await response.json().catch(() => ({}))) as {
+      items?: RetrievalItem[];
+    };
+
+    return Array.isArray(payload.items) ? payload.items : [];
+  } catch {
+    return [];
+  } finally {
+    clearTimeout(timeout);
+  }
+};
 
 export async function POST(req: Request) {
   const requestId =
@@ -82,6 +159,30 @@ export async function POST(req: Request) {
           (msg.parts ? msg.parts.map((p) => p.text).join("") : ""),
       }),
     );
+
+    const latestUserQuery = [...coreMessages]
+      .reverse()
+      .find((msg) => msg.role === "user")?.content;
+
+    const retrievalItems =
+      typeof latestUserQuery === "string" && latestUserQuery.trim()
+        ? await fetchKnowledgeContext(latestUserQuery)
+        : [];
+
+    if (retrievalItems.length > 0) {
+      coreMessages.unshift({
+        role: "system",
+        content: buildRagSystemPrompt(retrievalItems),
+      });
+    }
+
+    await appendLog({
+      requestId,
+      event: "retrieval",
+      queryLength:
+        typeof latestUserQuery === "string" ? latestUserQuery.length : 0,
+      contextCount: retrievalItems.length,
+    });
 
     const result = streamText({
       model: openrouter("openrouter/free"),

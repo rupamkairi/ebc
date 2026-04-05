@@ -131,7 +131,7 @@ const data = {
       color: "text-foreground",
       items: [
         { title: "Conference Hall", url: "#" },
-        { title: "Calculators", url: "#" },
+        { title: "Calculators", url: "/admin-dashboard/ai/calculator" },
       ],
     },
     {
