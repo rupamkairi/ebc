@@ -899,5 +899,19 @@
   "learning_events_tab_new": "Learning Events",
   "promotions_offers_tab_new": "Promotions & Offers",
   "community_lounge_tab_new": "Community Lounge",
-  "review_submitted": "Review Submit Ho Gaya — Dhanyavaad!"
+  "review_submitted": "Review Submit Ho Gaya — Dhanyavaad!",
+  "received_quotations_title": "Mili Hui Quotations",
+  "received_quotations_subtitle": "Apni inquiries ke liye mili quotations manage karein",
+  "back_to_my_enquiries": "MERE ENQUIRIES PAR WAPAS",
+  "my_enquiries_title": "Mere Enquiries",
+  "ask_for_discount": "Discount ke liye poochein",
+  "offer_accepted": "Offer Maan Liya Gaya",
+  "accept_offer": "Is Offer ko Maanein",
+  "view_full_enquiry": "Poori Enquiry Dekhein",
+  "b2b_sourcing": "B2B Sourcing",
+  "b2b_sourcing_desc": "Manufacturer aur wholesalers se apni sourcing activities manage karein.",
+  "my_enquiries_card_desc": "Enquiries jo aapne doosre sellers ke paas bheji hai sourcing ke liye.",
+  "received_quotes_card_desc": "Quotations jo aapko apni enquiries ke liye doosre sellers se mili hain.",
+  "reports": "Reports",
+  "reports_card_desc": "Enquiries, quotes, aur wallet transactions ke liye CSV reports generate karein."
 }

@@ -55,28 +55,6 @@ export function SellerDashboardHeader() {
       >
         {middleNavLink.label}
       </Link>
-      {!isServiceProvider && (
-        <>
-          <Link
-            href="/seller-dashboard/my-enquiries"
-            className="text-sm font-medium text-slate-500 transition-colors hover:text-primary flex items-center gap-2"
-          >
-            {t("my_enquiries", "My Enquiries")}
-          </Link>
-          <Link
-            href="/seller-dashboard/received-quotations"
-            className="text-sm font-medium text-slate-500 transition-colors hover:text-primary flex items-center gap-2"
-          >
-            {t("received_quotes", "Received Quotes")}
-          </Link>
-        </>
-      )}
-      <Link
-        href="/seller-dashboard/reports"
-        className="text-sm font-medium text-slate-500 transition-colors hover:text-primary flex items-center gap-2"
-      >
-        {t("reports", "Reports")}
-      </Link>
       <Link
         href="/seller-dashboard/wallet"
         className="text-sm font-medium text-slate-500 transition-colors hover:text-primary flex items-center gap-2"
@@ -144,33 +122,6 @@ export function SellerDashboardHeader() {
                 <FileText className="h-5 w-5" />
               )}
               {middleNavLink.label}
-            </Link>
-            {!isServiceProvider && (
-              <>
-                <Link
-                  href="/seller-dashboard/my-enquiries"
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 transition-colors font-medium text-gray-700 hover:text-primary"
-                >
-                  <FileText className="h-5 w-5" />
-                  {t("my_enquiries", "My Enquiries")}
-                </Link>
-                <Link
-                  href="/seller-dashboard/received-quotations"
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 transition-colors font-medium text-gray-700 hover:text-primary"
-                >
-                  <FileText className="h-5 w-5" />
-                  {t("received_quotes", "Received Quotes")}
-                </Link>
-              </>
-            )}
-            <Link
-              href="/seller-dashboard/reports"
-              onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 transition-colors font-medium text-gray-700 hover:text-primary"
-            >
-              <FileText className="h-5 w-5" /> {t("reports", "Reports")}
             </Link>
             <Link
               href="/seller-dashboard/wallet"

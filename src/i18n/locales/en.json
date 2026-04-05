@@ -931,5 +931,11 @@
   "ask_for_discount": "Ask for Discount",
   "offer_accepted": "Offer Accepted",
   "accept_offer": "Accept this Offer",
-  "view_full_enquiry": "View Full Enquiry"
+  "view_full_enquiry": "View Full Enquiry",
+  "b2b_sourcing": "B2B Sourcing",
+  "b2b_sourcing_desc": "Manage your sourcing activities from other manufacturers and wholesalers.",
+  "my_enquiries_card_desc": "Enquiries you've sent to other sellers to source products.",
+  "received_quotes_card_desc": "Quotations you've received from other sellers for your enquiries.",
+  "reports": "Reports",
+  "reports_card_desc": "Generate and download CSV reports for your enquiries, quotes, and wallet transactions."
 }

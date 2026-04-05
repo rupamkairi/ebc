@@ -23,6 +23,8 @@ import {
   ChevronRight,
   CheckCircle2,
   Map,
+  ShoppingBag,
+  FilePieChart,
 } from "lucide-react";
 import Link from "next/link";
 import { useEntitiesQuery } from "@/queries/entityQueries";
@@ -170,16 +172,17 @@ export default function SellerDashboardPage() {
         <div className="lg:col-span-3 flex flex-col gap-8">
           {/* 1. Active Business */}
           <section>
-            <div className="flex items-center gap-2 mb-4 text-primary">
-              <Bell className="h-5 w-5" />
-              <h2 className="text-xl font-bold tracking-tight">
+            <div className="flex items-center gap-2 mb-6 text-primary/40">
+              <Bell className="h-4 w-4" strokeWidth={3} />
+              <h2 className="text-[11px] font-black uppercase tracking-[0.25em]">
                 {t("active_business")}
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-6">
               {/* Product / Service Catalogue — dynamic based on seller type */}
-              <Card className="bg-gradient-to-r from-primary to-primary/80 text-white p-5 rounded-2xl shadow-sm flex flex-col justify-between col-span-1 border-0 overflow-hidden">
+              <Card className="bg-primary text-white p-6 rounded-[20px] shadow-lg shadow-primary/20 flex flex-col justify-between col-span-1 border-0 overflow-hidden relative group">
+                <div className="absolute -right-6 -top-6 h-28 w-28 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-all duration-500" />
                 <div className="flex flex-col items-center gap-3 mb-4 text-center">
                   <div className="bg-white/10 p-2 rounded-lg w-fit">
                     {isService ? (
@@ -264,8 +267,8 @@ export default function SellerDashboardPage() {
                   href="/seller-dashboard/enquiries"
                   className="h-full block"
                 >
-                  <Card className="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col h-full border-0 group relative hover:shadow-md transition-shadow">
-                    <div className="bg-gradient-to-r from-primary to-primary/80 text-white py-3 px-4 flex items-center justify-center gap-2 -mt-[25px]">
+                  <Card className="bg-white rounded-[20px] border border-primary/5 shadow-xs overflow-hidden flex flex-col h-full group relative hover:shadow-md transition-all duration-300">
+                    <div className="bg-primary text-white py-3.5 px-4 flex items-center justify-center gap-2 -mt-[25px] transition-transform group-hover:-translate-y-1">
                       <Users className="h-5 w-5" />
                       <span className="font-semibold text-lg">
                         {t("new_enquirers")}
@@ -291,8 +294,8 @@ export default function SellerDashboardPage() {
                   href="/seller-dashboard/quotations"
                   className="block h-full"
                 >
-                  <Card className="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col h-full border border-orange-100 hover:shadow-md transition-shadow">
-                    <div className="bg-secondary text-white h-[54px] shrink-0 px-4 flex items-center justify-center gap-2 -mt-[25px] whitespace-nowrap">
+                  <Card className="bg-white rounded-[20px] border border-primary/5 shadow-xs overflow-hidden flex flex-col h-full group hover:shadow-md transition-all duration-300">
+                    <div className="bg-secondary text-white h-[54px] shrink-0 px-4 flex items-center justify-center gap-2 -mt-[25px] transition-transform group-hover:-translate-y-1">
                       <FileText className="h-5 w-5" />
                       <span className="font-semibold text-lg">
                         {t("your_quotations")}
@@ -332,7 +335,7 @@ export default function SellerDashboardPage() {
                       <span className="font-semibold text-lg">
                         {t("your_appointments")}
                       </span>
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full"></div>
+                      <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full"></div>
                     </div>
                     <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 bg-white">
                       <span className="text-[11px] sm:text-[13px] uppercase tracking-wider text-muted-foreground font-semibold mb-1 sm:mb-2 text-center">
@@ -379,8 +382,8 @@ export default function SellerDashboardPage() {
               )}
 
               {/* Active Leads & Customers Combined */}
-              <Card className="bg-primary text-white p-5 rounded-2xl shadow-sm flex flex-col justify-between h-full border-0 relative overflow-hidden">
-                <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-500 rounded-full blur-3xl opacity-20 pointer-events-none"></div>
+              <Card className="bg-primary text-white p-6 rounded-[20px] shadow-lg shadow-primary/20 flex flex-col justify-between h-full border-0 relative overflow-hidden group">
+                <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl opacity-20 pointer-events-none group-hover:scale-125 transition-transform duration-500" />
                 <div className="flex flex-col items-center mb-4 z-10">
                   <div className="flex items-center gap-2">
                     <div className="bg-white/10 p-2 rounded-lg">
@@ -419,16 +422,74 @@ export default function SellerDashboardPage() {
             </div>
           </section>
 
+          {/* B2B Sourcing (Visible for Product Sellers) */}
+          {isProduct && (
+            <section className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <div className="flex items-center gap-2 mb-6 text-primary/40">
+                <ShoppingBag className="h-4 w-4" strokeWidth={3} />
+                <h2 className="text-[11px] font-black uppercase tracking-[0.25em]">
+                  {t("b2b_sourcing")}
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card className="p-7 flex flex-col justify-between border border-primary/5 shadow-xs bg-white hover:shadow-md transition-all rounded-3xl relative overflow-hidden group">
+                  <div className="absolute -right-6 -top-6 h-28 w-28 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors" />
+                  <div className="space-y-5 relative z-10">
+                    <div className="h-14 w-14 rounded-2xl bg-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                      <FileText className="h-7 w-7" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-black text-primary uppercase tracking-tight italic mb-1">
+                        {t("my_enquiries_title")}
+                      </h3>
+                      <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+                        {t("my_enquiries_card_desc")}
+                      </p>
+                    </div>
+                    <Link href="/seller-dashboard/b2b-enquiries">
+                      <Button className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl h-14 font-black uppercase tracking-widest mt-4 shadow-lg shadow-primary/20">
+                        {t("manage_enquiries", "Manage Enquiries")}
+                      </Button>
+                    </Link>
+                  </div>
+                </Card>
+
+                <Card className="p-7 flex flex-col justify-between border border-primary/5 shadow-xs bg-white hover:shadow-md transition-all rounded-3xl relative overflow-hidden group">
+                   <div className="absolute -right-6 -top-6 h-28 w-28 bg-secondary/5 rounded-full blur-2xl group-hover:bg-secondary/10 transition-colors" />
+                  <div className="space-y-5 relative z-10">
+                    <div className="h-14 w-14 rounded-2xl bg-secondary/5 flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
+                      <FileText className="h-7 w-7" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-black text-secondary uppercase tracking-tight italic mb-1">
+                        {t("received_quotations_title")}
+                      </h3>
+                      <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+                        {t("received_quotes_card_desc")}
+                      </p>
+                    </div>
+                    <Link href="/seller-dashboard/b2b-quotations">
+                      <Button className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-xl h-14 font-black uppercase tracking-widest mt-4 shadow-lg shadow-secondary/20">
+                        {t("review_quotes", "Review Quotes")}
+                      </Button>
+                    </Link>
+                  </div>
+                </Card>
+              </div>
+            </section>
+          )}
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* 2. Finance */}
             <section className="h-full">
-              <div className="flex items-center gap-2 mb-4 text-primary">
-                <Wallet className="h-5 w-5" />
-                <h2 className="text-xl font-bold tracking-tight">
+              <div className="flex items-center gap-2 mb-6 text-primary/40">
+                <Wallet className="h-4 w-4" strokeWidth={3} />
+                <h2 className="text-[11px] font-black uppercase tracking-[0.25em]">
                   {t("finance")}
                 </h2>
               </div>
-              <Card className="bg-secondary text-white p-6 rounded-2xl shadow-sm flex flex-col justify-between border-0 gap-6 h-[calc(100%-2.5rem)]">
+                <Card className="bg-secondary text-white p-7 rounded-[20px] shadow-lg shadow-secondary/20 flex flex-col justify-between border-0 gap-6 h-[calc(100%-2.5rem)] relative group overflow-hidden">
+                  <div className="absolute -right-6 -top-6 h-32 w-32 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-all duration-500" />
                 <div className="flex items-center gap-4">
                   <div className="bg-white/20 p-3 rounded-xl backdrop-blur-md shadow-inner">
                     <Wallet className="h-6 w-6 text-white" />
@@ -472,43 +533,64 @@ export default function SellerDashboardPage() {
 
             {/* 3. Operations */}
             <section className="h-full">
-              <div className="flex items-center gap-2 mb-4 text-primary">
-                <Settings className="h-5 w-5" />
-                <h2 className="text-xl font-bold tracking-tight">
+              <div className="flex items-center gap-2 mb-6 text-primary/40">
+                <Settings className="h-4 w-4" strokeWidth={3} />
+                <h2 className="text-[11px] font-black uppercase tracking-[0.25em]">
                   {t("operations")}
                 </h2>
               </div>
-              <Card className="bg-white p-6 rounded-2xl shadow-sm flex flex-col justify-between border border-gray-100 hover:border-orange-200 transition-colors h-[calc(100%-2.5rem)]">
-                <div className="mb-6">
-                  <div className="flex items-center gap-3 text-primary mb-3">
-                    <div className="bg-blue-50 p-2 rounded-lg">
-                      <Store className="h-6 w-6" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-[calc(100%-2.5rem)]">
+                <Card className="bg-white p-6 md:p-8 rounded-[20px] border border-primary/5 shadow-xs flex flex-col justify-between hover:shadow-md transition-all duration-300 group">
+                  <div className="mb-6">
+                    <div className="flex items-center gap-3 text-primary mb-3">
+                      <div className="bg-blue-50 p-2 rounded-lg">
+                        <Store className="h-6 w-6" />
+                      </div>
+                      <h3 className="font-bold text-lg">{t("store_setting")}</h3>
                     </div>
-                    <h3 className="font-bold text-lg">{t("store_setting")}</h3>
+                    <p className="text-sm text-gray-500 font-medium leading-relaxed">
+                      {t("store_setting_desc")}
+                    </p>
                   </div>
-                  <p className="text-sm text-gray-500 font-medium leading-relaxed">
-                    {t("store_setting_desc")}
-                  </p>
-                </div>
-                <Link href="/seller-dashboard/settings" className="w-full">
-                  <Button className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-lg h-11 font-medium shadow-sm active:scale-95 transition-all">
-                    {t("manage_store_settings")}
-                  </Button>
-                </Link>
-              </Card>
+                  <Link href="/seller-dashboard/settings" className="w-full">
+                    <Button className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-lg h-11 font-medium shadow-sm active:scale-95 transition-all">
+                      {t("manage_store_settings")}
+                    </Button>
+                  </Link>
+                </Card>
+
+                <Card className="bg-white p-6 md:p-8 rounded-[20px] border border-primary/5 shadow-xs flex flex-col justify-between hover:shadow-md transition-all duration-300 group">
+                  <div className="mb-6">
+                    <div className="flex items-center gap-3 text-primary mb-3">
+                      <div className="bg-orange-50 p-2 rounded-lg">
+                        <FilePieChart className="h-6 w-6" />
+                      </div>
+                      <h3 className="font-bold text-lg">{t("reports")}</h3>
+                    </div>
+                    <p className="text-sm text-gray-500 font-medium leading-relaxed">
+                      {t("reports_card_desc")}
+                    </p>
+                  </div>
+                  <Link href="/seller-dashboard/reports" className="w-full">
+                    <Button className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-lg h-11 font-medium shadow-sm active:scale-95 transition-all">
+                      {t("generate_reports", "Generate Reports")}
+                    </Button>
+                  </Link>
+                </Card>
+              </div>
             </section>
           </div>
 
           {/* 4. Relations */}
           <section>
-            <div className="flex items-center gap-2 mb-4 text-primary">
-              <MessageSquare className="h-5 w-5" />
-              <h2 className="text-xl font-bold tracking-tight">
+            <div className="flex items-center gap-2 mb-6 text-primary/40">
+              <MessageSquare className="h-4 w-4" strokeWidth={3} />
+              <h2 className="text-[11px] font-black uppercase tracking-[0.25em]">
                 {t("relations")}
               </h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card className="bg-gradient-to-b from-primary to-primary/60 text-white p-6 rounded-2xl shadow-sm flex flex-col justify-between h-full border-0 relative overflow-hidden group">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card className="bg-primary text-white p-8 rounded-[20px] shadow-lg shadow-primary/20 flex flex-col justify-between h-full border-0 relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                   <Users className="w-16 h-16" />
                 </div>
@@ -528,7 +610,7 @@ export default function SellerDashboardPage() {
                 </Link>
               </Card>
 
-              <Card className="bg-gradient-to-b from-primary to-primary/60 text-white p-6 rounded-2xl shadow-sm flex flex-col justify-between h-full border-0 relative overflow-hidden group">
+              <Card className="bg-primary text-white p-8 rounded-[20px] shadow-lg shadow-primary/20 flex flex-col justify-between h-full border-0 relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                   <Star className="w-16 h-16" />
                 </div>
@@ -548,7 +630,7 @@ export default function SellerDashboardPage() {
                 </Link>
               </Card>
 
-              <Card className="bg-gradient-to-b from-primary to-primary/60 text-white p-6 rounded-2xl shadow-sm flex flex-col justify-between h-full border-0 relative overflow-hidden group">
+              <Card className="bg-primary text-white p-8 rounded-[20px] shadow-lg shadow-primary/20 flex flex-col justify-between h-full border-0 relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                   <Headphones className="w-16 h-16" />
                 </div>
@@ -575,14 +657,14 @@ export default function SellerDashboardPage() {
           </section>
 
           {/* Conference Hall (Kept as requested) */}
-          <section className="mt-8 border-t pt-8">
-            <div className="flex items-center gap-2 mb-4 text-muted-foreground">
-              <h2 className="text-xl font-bold tracking-tight text-foreground">
+          <section className="mt-8 border-t border-primary/5 pt-8">
+            <div className="flex items-center gap-2 mb-6 text-primary/40">
+              <h2 className="text-[11px] font-black uppercase tracking-[0.25em]">
                 {t("conference_hall")}
               </h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Card className="p-5 flex flex-col gap-4 border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Card className="p-6 flex flex-col gap-5 border border-primary/5 rounded-[20px] shadow-xs hover:shadow-md transition-all duration-300 bg-white group">
                 <div className="flex items-center gap-3">
                   <MessageSquare className="h-5 w-5 text-primary" />
                   <div>
@@ -612,7 +694,7 @@ export default function SellerDashboardPage() {
                 </div>
               </Card>
 
-              <Card className="p-5 flex flex-col gap-4 border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+              <Card className="p-6 flex flex-col gap-5 border border-primary/5 rounded-[20px] shadow-xs hover:shadow-md transition-all duration-300 bg-white group">
                 <div className="flex items-center gap-3">
                   <FileText className="h-5 w-5 text-primary" />
                   <div>
@@ -642,7 +724,7 @@ export default function SellerDashboardPage() {
                 </div>
               </Card>
 
-              <Card className="p-5 flex flex-col gap-4 border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+              <Card className="p-6 flex flex-col gap-5 border border-primary/5 rounded-[20px] shadow-xs hover:shadow-md transition-all duration-300 bg-white group">
                 <div className="flex items-center gap-3">
                   <CalendarDays className="h-5 w-5 text-primary" />
                   <div>
@@ -672,7 +754,7 @@ export default function SellerDashboardPage() {
                 </div>
               </Card>
 
-              <Card className="p-5 flex flex-col gap-4 border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+              <Card className="p-6 flex flex-col gap-5 border border-primary/5 rounded-[20px] shadow-xs hover:shadow-md transition-all duration-300 bg-white group">
                 <div className="flex items-center gap-3">
                   <Users className="h-5 w-5 text-primary" />
                   <div>
@@ -708,9 +790,9 @@ export default function SellerDashboardPage() {
         {/* Sidebar Column (Notifications) */}
         <div className="flex flex-col space-y-8 h-full">
           <div className="sticky top-24 pt-4 lg:pt-0">
-            <div className="flex items-center gap-2 mb-4">
-              <Bell className="h-5 w-5 text-primary" />
-              <h2 className="text-xl font-bold text-primary tracking-tight">
+            <div className="flex items-center gap-2 mb-6 text-primary/40">
+              <Bell className="h-4 w-4" strokeWidth={3} />
+              <h2 className="text-[11px] font-black uppercase tracking-[0.25em]">
                 {t("notifications")}
               </h2>
             </div>

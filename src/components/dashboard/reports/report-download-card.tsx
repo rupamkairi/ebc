@@ -16,6 +16,7 @@ export function ReportDownloadCard({
   onDownload,
 }: ReportDownloadCardProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [startDate, setStartDate] = useState<string>(
     new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]
   );
@@ -26,10 +27,12 @@ export function ReportDownloadCard({
   const handleDownload = async () => {
     try {
       setIsLoading(true);
+      setError(null);
       await onDownload(new Date(startDate), new Date(endDate));
-    } catch (error) {
-      console.error("Failed to download report", error);
-      // Optional: Add toast notification mechanism here
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to download report. Please try again.";
+      console.error("Failed to download report", err);
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -90,6 +93,11 @@ export function ReportDownloadCard({
             </>
           )}
         </Button>
+        {error && (
+          <p className="text-xs text-destructive font-medium mt-1 animate-in fade-in slide-in-from-top-1">
+            {error}
+          </p>
+        )}
       </div>
     </div>
   );

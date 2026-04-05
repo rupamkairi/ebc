@@ -3,6 +3,7 @@
 import { ReactNode } from "react";
 import { LucideIcon } from "lucide-react";
 import { IconWrapper } from "./icon-wrapper";
+import { cn } from "@/lib/utils";
 
 interface DashboardCardProps {
   title: string;
@@ -23,23 +24,33 @@ export function DashboardCard({
 }: DashboardCardProps) {
   return (
     <div
-      className={`flex flex-col overflow-hidden rounded-xl border border-border bg-white shadow-sm ${className}`}
+      className={cn(
+        "flex flex-col overflow-hidden rounded-[20px] border border-primary/5 bg-white shadow-xs hover:shadow-md transition-all duration-300",
+        className
+      )}
     >
       <div
-        className={`flex items-center gap-3 bg-primary px-4 py-3 text-white ${headerClassName}`}
+        className={cn(
+          "flex items-center gap-3 bg-primary px-5 py-4 text-white",
+          headerClassName
+        )}
       >
         <IconWrapper
           icon={icon}
-          size={18}
+          size={16}
           bgColor="bg-white/10"
           iconColor="text-white"
-          className="p-1.5"
+          className="p-2 rounded-xl"
         />
-        <h3 className="text-lg font-bold leading-none">{title}</h3>
+        <h3 className="text-[13px] font-black leading-none uppercase tracking-widest">
+          {title}
+        </h3>
       </div>
-      <div className="flex-1 p-4">{children}</div>
+      <div className="flex-1 p-5 md:p-6">{children}</div>
       {footer && (
-        <div className="border-t border-border bg-muted/30 p-4">{footer}</div>
+        <div className="border-t border-primary/5 bg-primary/5 p-4 sm:p-5">
+          {footer}
+        </div>
       )}
     </div>
   );

@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Loader2,
-  ArrowLeft,
   CheckCircle2,
   IndianRupee,
   Clock,
@@ -21,9 +20,6 @@ import {
   MapPin,
   Calendar,
   User,
-  RefreshCw,
-  TrendingDown,
-  TrendingUp,
   ExternalLink,
   FileText as FileTextIcon,
   Download,
@@ -35,6 +31,8 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/hooks/useLanguage";
 import { ReviewSnapshot } from "@/components/shared/reviews";
+
+import { PageBackButton } from "@/components/dashboard/seller/activity-shared/page-back-button";
 
 export default function SellerQuotationDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -48,7 +46,7 @@ export default function SellerQuotationDetailsPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="flex items-center justify-center min-h-screen">
         <Loader2 className="h-10 w-10 animate-spin text-primary" />
       </div>
     );
@@ -56,9 +54,9 @@ export default function SellerQuotationDetailsPage() {
 
   if (!q) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <p className="text-xl font-bold">Quotation not found</p>
-        <Button onClick={() => router.back()}>Go Back</Button>
+      <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+        <p className="text-xl font-bold">{t("quotation_not_found", "Quotation not found")}</p>
+        <Button onClick={() => router.back()}>{t("go_back", "Go Back")}</Button>
       </div>
     );
   }
@@ -75,16 +73,12 @@ export default function SellerQuotationDetailsPage() {
 
   const handleAcceptFlow = async () => {
     try {
-      // 1. Accept Quotation
       await acceptMutation.mutateAsync(q.id);
-      
-      // 2. Mark Enquiry as Complete (as requested by user)
       if (q.enquiryId) {
         await completeMutation.mutateAsync(q.enquiryId);
       }
-      
       toast.success("Quotation accepted and enquiry marked as complete!");
-      router.push(`/seller-dashboard/my-enquiries/${q.enquiryId}`);
+      router.push(`/seller-dashboard/b2b-enquiries/${q.enquiryId}`);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Something went wrong";
       toast.error(message);
@@ -93,9 +87,7 @@ export default function SellerQuotationDetailsPage() {
 
   const handleRequestRevisionFlow = async () => {
     try {
-      // 1. Sent seller / service provider a request for revision
       await requestRevisionMutation.mutateAsync(q.id);
-
       toast.success("Revision request sent successfully!");
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Something went wrong";
@@ -104,128 +96,80 @@ export default function SellerQuotationDetailsPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto py-6 md:py-10 px-4 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      {q.quotationDetails?.[0]?.hasBeenRevised && (
-        <div className="bg-violet-50 border border-violet-200 rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
-           <div className="flex items-center gap-4">
-              <div className="h-12 w-12 rounded-2xl bg-violet-600 flex items-center justify-center text-white shadow-lg shrink-0">
-                 <RefreshCw className="h-6 w-6" />
-              </div>
-              <div className="space-y-1">
-                 <h4 className="font-black text-violet-900">Quotation Reconsidered</h4>
-                 <p className="text-sm text-violet-700 font-medium">
-                    The seller has reviewed your revision request and updated the proposal. 
-                    {q.priceChangeType === "DECREASED" && q.priceDifference && (
-                       ` They have specially reduced the price by ₹${Math.abs(q.priceDifference).toLocaleString()} for you!`
-                    )}
-                    {q.priceChangeType === "DECREASED" && !q.priceDifference && " They have specially reduced the price for you!"}
-                    {q.priceChangeType === "INCREASED" && q.priceDifference && (
-                       ` The price has been updated with an increase of ₹${q.priceDifference.toLocaleString()}.`
-                    )}
-                    {q.priceChangeType === "MAINTAINED" && " The original pricing has been maintained."}
-                 </p>
-              </div>
-           </div>
+    <div className="flex flex-col gap-6 max-w-5xl mx-auto">
+      {/* ── Page Header ─────────────────────────────────────────────── */}
+      <div className="flex flex-col gap-6">
+        <div className="flex items-center gap-4">
+          <PageBackButton href="/seller-dashboard/b2b-quotations" />
+          <div>
+            <h1 className="text-2xl font-black text-primary tracking-tight">
+              {t("quotation_details")}
+            </h1>
+            <p className="text-sm text-primary/60 font-medium lowercase">
+              {`Submitted by ${q.createdBy?.staffAt?.name || q.createdBy?.name}`}
+            </p>
+          </div>
         </div>
-      )}
 
-      {q.quotationDetails?.[0]?.requestedRevision && !q.quotationDetails?.[0]?.hasBeenRevised && (
-        <div className="bg-orange-50 border border-orange-200 rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm animate-pulse">
-           <div className="flex items-center gap-4">
-              <div className="h-12 w-12 rounded-2xl bg-orange-500 flex items-center justify-center text-white shadow-lg shrink-0">
-                 <RefreshCw className="h-6 w-6" />
-              </div>
-              <div className="space-y-1">
-                 <h4 className="font-black text-orange-900">Revision Pending</h4>
-                 <p className="text-sm text-orange-700 font-medium">
-                    Your request for a price reconsideration has been sent. We are awaiting the response.
-                 </p>
-              </div>
-           </div>
-        </div>
-      )}
-
-      {/* Navigation and Title */}
-      <div className="flex flex-col gap-4">
-        <Link
-          href="/seller-dashboard/received-quotations"
-          className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors text-sm font-bold w-fit"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          {t("back_to_my_enquiries")}
-        </Link>
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-1">
-            <div className="flex items-center gap-3">
-              <Badge variant="outline" className="font-mono text-[10px] tracking-widest bg-muted uppercase">
+        <div className="flex flex-wrap items-center gap-4 justify-between bg-white p-6 rounded-2xl border border-primary/5 shadow-xs">
+          <div className="flex items-center gap-3">
+             <Badge variant="outline" className="font-mono text-[10px] tracking-widest bg-muted uppercase">
                 QUO#{q.id.slice(-8).toUpperCase()}
               </Badge>
               {isAccepted && (
-                <Badge className="bg-emerald-500 text-white font-black uppercase text-[10px] tracking-widest">
+                <Badge className="bg-emerald-500 text-white font-black uppercase text-[10px] tracking-widest px-3">
                   Accepted
                 </Badge>
               )}
               {q.quotationDetails?.[0]?.hasBeenRevised && (
                 <Badge className="bg-violet-600 text-white font-black uppercase text-[10px] tracking-widest flex items-center gap-1.5 px-3">
-                  {q.priceChangeType === "DECREASED" && <TrendingDown className="h-3 w-3" />}
-                  {q.priceChangeType === "INCREASED" && <TrendingUp className="h-3 w-3" />}
-                  {q.priceChangeType === "MAINTAINED" && <RefreshCw className="h-3 w-3" />}
-                  Revised {q.priceChangeType === "DECREASED" ? "(Price Reduced)" : q.priceChangeType === "INCREASED" ? "(Price Updated)" : ""}
+                  Revised 
                 </Badge>
               )}
-              {q.quotationDetails?.[0]?.requestedRevision && !q.quotationDetails?.[0]?.hasBeenRevised && (
-                <Badge className="bg-orange-500 text-white font-black uppercase text-[10px] tracking-widest px-3">
-                  Revision Requested
-                </Badge>
-              )}
-            </div>
-            <h1 className="text-3xl md:text-4xl font-black tracking-tight text-primary">
-              {t("quotation_details")}
-            </h1>
-            <p className="text-muted-foreground font-medium">
-              Submitted by <span className="text-foreground font-bold">{q.createdBy?.staffAt?.name || q.createdBy?.name}</span>
-            </p>
           </div>
 
-          {!isAccepted && !isEnquiryCompleted && (
-            <Button
-              onClick={handleAcceptFlow}
-              disabled={acceptMutation.isPending || completeMutation.isPending}
-              className="h-14 rounded-2xl bg-primary hover:bg-primary/90 text-white font-black px-10 text-lg shadow-xl shadow-primary/20 transition-all hover:scale-[1.02] active:scale-95 gap-3"
-            >
-              {acceptMutation.isPending || completeMutation.isPending ? (
-                <Loader2 className="h-6 w-6 animate-spin text-white" />
-              ) : (
-                <CheckCircle2 className="h-6 w-6 text-white" />
-              )}
-              {t("accept_offer")}
-            </Button>
-          )}
+          <div className="flex items-center gap-3">
+            {!isAccepted && !isEnquiryCompleted && (
+              <Button
+                onClick={handleAcceptFlow}
+                disabled={acceptMutation.isPending || completeMutation.isPending}
+                className="bg-primary hover:bg-primary/90 text-white font-black px-8 h-11 rounded-xl shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-95"
+              >
+                {acceptMutation.isPending || completeMutation.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                ) : (
+                  <CheckCircle2 className="h-4 w-4 mr-2" />
+                )}
+                {t("accept_offer")}
+              </Button>
+            )}
 
-          {!isAccepted && !isEnquiryCompleted && isNegotiable && !isDiscountRequested && (
-            <Button
-              onClick={handleRequestRevisionFlow}
-              className="bg-orange-400 hover:bg-orange-500 text-white font-black px-10 text-lg shadow-xl shadow-orange-400/20 transition-all hover:scale-[1.02] active:scale-95 gap-3"
-            >
-              {t("ask_for_discount")}
-            </Button>
-          )}
+            {!isAccepted && !isEnquiryCompleted && isNegotiable && !isDiscountRequested && (
+              <Button
+                onClick={handleRequestRevisionFlow}
+                variant="outline"
+                className="border-orange-400 text-orange-600 hover:bg-orange-50 font-black px-8 h-11 rounded-xl"
+              >
+                {t("ask_for_discount")}
+              </Button>
+            )}
 
-          {(isAccepted || isEnquiryCompleted) && (
-            <div className={cn(
-              "flex items-center gap-3 px-8 py-4 rounded-2xl border",
-              isAccepted 
-                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-700" 
-                : "bg-amber-500/10 border-amber-500/30 text-amber-700"
-            )}>
-              {isAccepted ? <CheckCircle2 className="h-6 w-6" /> : <Clock className="h-6 w-6" />}
-              <span className="font-black">{isAccepted ? t("offer_accepted") : t("enquiry_closed")}</span>
-            </div>
-          )}
+            {(isAccepted || isEnquiryCompleted) && (
+              <div className={cn(
+                "flex items-center gap-3 px-6 h-11 rounded-xl border font-black text-xs uppercase tracking-widest",
+                isAccepted 
+                  ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-700" 
+                  : "bg-amber-500/10 border-amber-500/30 text-amber-700"
+              )}>
+                {isAccepted ? <CheckCircle2 className="h-4 w-4" /> : <Clock className="h-4 w-4" />}
+                <span>{isAccepted ? t("offer_accepted") : t("enquiry_closed")}</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content: Quotation Items */}
         <div className="lg:col-span-2 space-y-8">
           <Card className="rounded-3xl border-none shadow-xl shadow-black/5 bg-white overflow-hidden">
@@ -476,7 +420,7 @@ export default function SellerQuotationDetailsPage() {
                   </div>
 
                   <Button asChild variant="outline" className="w-full h-12 rounded-xl mt-4 font-bold border-primary text-primary hover:bg-primary hover:text-white transition-all">
-                    <Link href={`/seller-dashboard/my-enquiries/${q.enquiryId}`}>
+                    <Link href={`/seller-dashboard/b2b-enquiries/${q.enquiryId}`}>
                       {t("view_full_enquiry")}
                     </Link>
                   </Button>

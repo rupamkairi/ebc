@@ -21,7 +21,6 @@ import {
   Package,
   MapPin,
   Calendar,
-  ArrowLeft,
   ArrowRight,
   CheckCircle2,
   FileText,
@@ -31,7 +30,9 @@ import {
   ChevronRight,
   MessageSquare,
 } from "lucide-react";
+import { PageBackButton } from "@/components/dashboard/seller/activity-shared/page-back-button";
 import { format } from "date-fns";
+import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { toast } from "sonner";
 import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
@@ -88,46 +89,23 @@ export default function SellerEnquiryDetailsPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto py-6 md:py-10 px-4 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      {/* Header */}
-      <div className="flex flex-col gap-4">
-        <Link
-          href="/seller-dashboard/my-enquiries"
-          className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors text-sm font-bold w-fit"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          {t("back_to_my_enquiries")}
-        </Link>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 md:gap-6">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <Badge
-                variant="outline"
-                className="font-mono text-[10px] tracking-widest bg-muted uppercase"
-              >
-                ID: {enquiry.id.slice(0, 8)}
-              </Badge>
-              <Badge
-                className={cn(
-                  "uppercase text-[10px] font-black tracking-widest",
-                   enquiry.status === ENQUIRY_STATUS.APPROVED
-                    ? "bg-emerald-500"
-                    : enquiry.status === ENQUIRY_STATUS.COMPLETED
-                      ? "bg-blue-600"
-                      : "bg-amber-500",
-                )}
-              >
-                {enquiry.status}
-              </Badge>
-            </div>
-            <h1 className="text-4xl font-black tracking-tighter">
-              {t("enquiry_details")}
-            </h1>
-          </div>
+    <div className="flex flex-col gap-6 max-w-5xl mx-auto">
+      {/* ── Page Header ─────────────────────────────────────────────── */}
+      <div className="flex items-center gap-4">
+        <PageBackButton href="/seller-dashboard/b2b-enquiries" />
+        <div>
+          <h1 className="text-2xl font-black text-primary tracking-tight">
+            {t("enquiry_details")}
+          </h1>
+          <p className="text-sm text-primary/60 font-medium">
+            {enquiry.status === ENQUIRY_STATUS.APPROVED
+              ? t("manage_track_enquiries_subtitle")
+              : t("this_enquiry_is_closed")}
+          </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Side: Enquiry Info */}
         <div className="lg:col-span-2 space-y-10">
           <section className="space-y-4 md:space-y-6">
@@ -181,7 +159,7 @@ export default function SellerEnquiryDetailsPage() {
                 className="text-primary font-black group/link h-9 px-4 rounded-xl border border-primary/10 hover:bg-primary/5"
               >
                 <Link
-                  href="/seller-dashboard/received-quotations"
+                  href="/seller-dashboard/b2b-quotations"
                   className="flex items-center gap-2"
                 >
                   View All Quotations
@@ -252,7 +230,7 @@ export default function SellerEnquiryDetailsPage() {
                       variant="outline"
                       className="border-primary text-primary hover:bg-primary hover:text-white font-black rounded-xl px-8 h-11 transition-all"
                     >
-                      <Link href="/seller-dashboard/received-quotations">
+                      <Link href="/seller-dashboard/b2b-quotations">
                         Check Received Quotations
                       </Link>
                     </Button>
@@ -502,7 +480,7 @@ function QuotationListItem({
                 variant="outline"
                 className="border-primary text-primary hover:bg-primary hover:text-white font-black rounded-xl h-10 px-5 transition-all group/btn"
               >
-                <Link href={`/seller-dashboard/received-quotations/${q.id}`}>
+                <Link href={`/seller-dashboard/b2b-quotations/${q.id}`}>
                   Details
                   <ChevronRight className="ml-1 h-4 w-4 group-hover/btn:translate-x-0.5 transition-transform" />
                 </Link>
@@ -515,6 +493,3 @@ function QuotationListItem({
   );
 }
 
-function Separator({ className }: { className?: string }) {
-  return <div className={cn("h-px bg-border w-full", className)} />;
-}

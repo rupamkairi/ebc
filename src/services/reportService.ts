@@ -17,7 +17,15 @@ const downloadCSV = async (endpoint: string, params: Record<string, string>, fil
     });
 
     if (!response.ok) {
-        throw new Error("Failed to download report");
+      let errorMessage = "Failed to download report";
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.error || errorData.message || errorMessage;
+      } catch {
+        // Fallback to status text
+        errorMessage = `Error ${response.status}: ${response.statusText}`;
+      }
+      throw new Error(errorMessage);
     }
 
     const blob = await response.blob();
