@@ -13,7 +13,7 @@ import { useWalletDetails } from "@/queries/walletQueries";
 import { useEntitiesQuery } from "@/queries/entityQueries";
 import { IndianRupee, AlertCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { REF_TYPE } from "@/types/activity";
+import { REF_TYPE } from "@/constants/enums";
 import { useLeadPricing } from "@/queries/pricingQueries";
 
 interface CoinDeductionModalProps {

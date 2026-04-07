@@ -5,9 +5,8 @@ import {
   CreateQuotationRequest,
   Enquiry,
   Quotation,
-  REF_TYPE,
 } from "@/types/activity";
-import { QUOTATION_STATUS } from "@/constants/enums";
+import { QUOTATION_STATUS, REF_TYPE } from "@/constants/enums";
 import { ItemListingAutocomplete } from "./item-listing-autocomplete";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";

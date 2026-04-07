@@ -1,9 +1,9 @@
-import { REF_TYPE, ACTIVITY_TYPE, ENQUIRY_STATUS, QUOTATION_STATUS } from "@/constants/enums";
+import { ACTIVITY_TYPE, ENQUIRY_STATUS, QUOTATION_STATUS } from "@/constants/enums";
 import { UnitType } from "@/constants/quantities";
 import { Item, ItemListing } from "./catalog";
 
 // Shared definitions
-export { REF_TYPE };
+export { REF_TYPE } from "@/constants/enums";
 
 export interface LineItem {
   id?: string;

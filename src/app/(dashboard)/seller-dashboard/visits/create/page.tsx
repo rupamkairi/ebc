@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { PageBackButton } from "@/components/dashboard/seller/activity-shared/page-back-button";
 import { CoinDeductionModal } from "@/components/dashboard/seller/coin-deduction-modal";
-import { REF_TYPE } from "@/types/activity";
+import { REF_TYPE } from "@/constants/enums";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
