@@ -1,6 +1,7 @@
 "use client";
 
 import { useEnquiriesQuery } from "@/queries/activityQueries";
+import { useEntitiesQuery } from "@/queries/entityQueries";
 import { Button } from "@/components/ui/button";
 import { useState, useMemo } from "react";
 import Link from "next/link";
@@ -20,7 +21,10 @@ export default function EnquiriesPage() {
   const [activeFilter, setActiveFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const { data: enquiries, isLoading } = useEnquiriesQuery({});
+  const { data: entities = [] } = useEntitiesQuery();
   const { t } = useLanguage();
+  const mainEntity = entities[0];
+  const isManufacturer = mainEntity?.type === "MANUFACTURER";
 
   const filteredEnquiries = useMemo(() => {
     let result = enquiries || [];
@@ -66,12 +70,14 @@ export default function EnquiriesPage() {
               {t("manage_track_enquiries_subtitle")}
             </p>
           </div>
-          <Link href="/enquiry/create">
-            <Button className="bg-secondary hover:bg-secondary/90 text-white px-6 rounded-xl font-black text-[11px] tracking-widest uppercase h-11 shadow-lg shadow-secondary/20 transition-all active:scale-95 border-none">
-              <Plus className="h-4 w-4 mr-2" strokeWidth={3} />
-              {t("create_enquiry_btn")}
-            </Button>
-          </Link>
+          {!isManufacturer && (
+            <Link href="/enquiry/create">
+              <Button className="bg-secondary hover:bg-secondary/90 text-white px-6 rounded-xl font-black text-[11px] tracking-widest uppercase h-11 shadow-lg shadow-secondary/20 transition-all active:scale-95 border-none">
+                <Plus className="h-4 w-4 mr-2" strokeWidth={3} />
+                {t("create_enquiry_btn")}
+              </Button>
+            </Link>
+          )}
         </div>
 
         {/* Search and Filters */}

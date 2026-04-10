@@ -48,6 +48,7 @@ export default function SellerDashboardPage() {
   const status = mainEntity?.verificationStatus;
   const isService = isServiceBusiness(user?.user?.role);
   const isProduct = isProductBusiness(user?.user?.role);
+  const isManufacturer = mainEntity?.type === "MANUFACTURER";
   const { data: wallet, isLoading: isWalletLoading } = useWalletDetails(
     mainEntity?.id,
   );
@@ -422,8 +423,8 @@ export default function SellerDashboardPage() {
             </div>
           </section>
 
-          {/* B2B Sourcing (Visible for Product Sellers) */}
-          {isProduct && (
+          {/* B2B Sourcing (Visible for Non-Manufacturer Product Sellers) */}
+          {isProduct && !isManufacturer && (
             <section className="animate-in fade-in slide-in-from-bottom-4 duration-700">
               <div className="flex items-center gap-2 mb-6 text-primary/40">
                 <ShoppingBag className="h-4 w-4" strokeWidth={3} />

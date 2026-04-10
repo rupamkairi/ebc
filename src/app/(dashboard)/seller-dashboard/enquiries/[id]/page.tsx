@@ -19,6 +19,8 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { ENQUIRY_STATUS, QUOTATION_STATUS, ENQUIRY_STATUS_LABELS } from "@/constants/enums";
 import { useEntitiesQuery } from "@/queries/entityQueries";
 import { useEnquiryQuery, useQuotationsQuery, useUpdateQuotationMutation } from "@/queries/activityQueries";
+import { useSessionQuery } from "@/queries/authQueries";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { BuyerInfoCard } from "@/components/dashboard/seller/activity-shared/buyer-info-card";
 import { ActivityActionCard } from "@/components/dashboard/seller/activity-shared/activity-action-card";
@@ -49,6 +51,18 @@ export default function EnquiryDetailsPage() {
   );
   
   const { mutate: updateQuotation, isPending: isUpdatingQuotation } = useUpdateQuotationMutation();
+  const router = useRouter();
+  const { data: session } = useSessionQuery();
+
+  // Redirect if this is the seller's own enquiry (B2B Sourcing)
+  // They should be in /seller-dashboard/b2b-enquiries/[id] instead
+  React.useEffect(() => {
+    if (enquiry && sellerEntity && 
+        (enquiry.createdBy?.staffAtEntityId === sellerEntity.id || 
+         enquiry.createdById === session?.user?.id)) {
+      router.replace(`/seller-dashboard/b2b-enquiries/${enquiry.id}`);
+    }
+  }, [enquiry, sellerEntity, router, session]);
 
   const isActiveQuotation = !!myQuotation && myQuotation.status !== QUOTATION_STATUS.REJECTED && myQuotation.isActive;
   const isRevisionRequested = !!myQuotation && !!myQuotation.quotationDetails?.[0]?.requestedRevision && !myQuotation.quotationDetails?.[0]?.hasBeenRevised;
