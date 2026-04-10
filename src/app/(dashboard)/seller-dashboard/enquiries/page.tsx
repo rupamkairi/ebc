@@ -98,12 +98,19 @@ export default function EnquiriesPage() {
   const pendingAssignments = relevantAssignments.filter(
     (a) => 
       a.enquiry?.id && 
+      // Filter out self-created enquiries (B2B Sourcing)
+      a.enquiry.createdBy?.staffAtEntityId !== mainEntity?.id &&
       (!myRespondedEnquiryIds.has(a.enquiry.id) || myRevisionRequestedEnquiryIds.has(a.enquiry.id)) && 
       (!a.enquiry?.status || (a.enquiry.status !== ENQUIRY_STATUS.COMPLETED && a.enquiry.status !== ENQUIRY_STATUS.CANCELLED)),
   );
   
   const respondedAssignments = relevantAssignments.filter(
-    (a) => a.enquiry?.id && myRespondedEnquiryIds.has(a.enquiry.id) && !myRevisionRequestedEnquiryIds.has(a.enquiry.id),
+    (a) => 
+      a.enquiry?.id && 
+      // Filter out self-created enquiries (B2B Sourcing)
+      a.enquiry.createdBy?.staffAtEntityId !== mainEntity?.id &&
+      myRespondedEnquiryIds.has(a.enquiry.id) && 
+      !myRevisionRequestedEnquiryIds.has(a.enquiry.id),
   );
 
   // Apply search to both

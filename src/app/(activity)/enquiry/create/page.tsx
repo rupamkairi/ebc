@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
 import { useSessionQuery, useSendOtpMutation } from "@/queries/authQueries";
+import { useEntitiesQuery } from "@/queries/entityQueries";
 import { BuyerProfileCard } from "@/components/dashboard/buyer/dashboard-components";
 import { AddToEnquiryModal } from "@/components/browse/add-to-enquiry-modal";
 import { usePrefetchBuyerDetails } from "@/hooks/usePrefetchBuyerDetails";
@@ -22,6 +23,7 @@ export default function CreateEnquiryPage() {
   const router = useRouter();
   const { items, buyerDetails, setBuyerDetails } = useEnquiryStore();
   const { data: session } = useSessionQuery();
+  const { data: entities = [] } = useEntitiesQuery();
   const sendOtp = useSendOtpMutation();
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -98,6 +100,13 @@ export default function CreateEnquiryPage() {
         toast.error(t("failed_send_code"));
         console.error(error);
       }
+      return;
+    }
+
+    // Bug Fix: Block Manufacturers from posting enquiries
+    const isManufacturer = entities?.some(e => e.type === "MANUFACTURER");
+    if (isManufacturer) {
+      toast.error(t("manufacturers_cannot_post_enquiries", "Manufacturers are not allowed to post sourcing enquiries."));
       return;
     }
 
