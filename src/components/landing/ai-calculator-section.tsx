@@ -93,7 +93,7 @@ export function AiCalculatorSection() {
         <div className="flex justify-center">
           <Button variant="glow" size="action" asChild>
             <a
-              href="#calculator"
+              href="/calculator"
               className="flex items-center justify-center gap-3"
             >
               Use AI Calculator
