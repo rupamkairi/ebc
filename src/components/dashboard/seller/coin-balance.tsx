@@ -46,13 +46,12 @@ export function CoinBalance({
 
       {showAddButton && (
         <Link href="/seller-dashboard/wallet">
-          <Button
+            <Button
             size="icon"
-            variant="outline"
-className="h-9 w-9 rounded-full bg-green-500 border-green-500 text-white"
+            className="h-9 w-9 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white border-none shadow-lg shadow-emerald-200/50 transition-all duration-300 hover:scale-110 active:scale-95 flex items-center justify-center"
             title="Add Coins"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-5 w-5 stroke-[3px]" />
           </Button>
         </Link>
       )}
