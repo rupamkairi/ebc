@@ -532,7 +532,7 @@ export function EntitySettingsForm() {
                               {(() => {
                                 const attachment =
                                   entity.entityAttachments?.find(
-                                    (a) => a.document.id === docId,
+                                    (a) => a.documentId === docId || a.document?.id === docId,
                                   );
                                 const doc = attachment?.document;
                                 const fileName =
@@ -572,10 +572,10 @@ export function EntitySettingsForm() {
                               onClick={() => {
                                 const attachment =
                                   entity.entityAttachments?.find(
-                                    (a) => a.document.id === docId,
+                                    (a) => a.documentId === docId || a.document?.id === docId,
                                   );
                                 const downloadUrl =
-                                  attachment?.document.url ||
+                                  attachment?.document?.url ||
                                   `${
                                     process.env.NEXT_PUBLIC_API_URL ||
                                     "http://localhost:10000/api"

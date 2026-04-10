@@ -227,46 +227,49 @@ export function UserDetailsModal({
                     </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {entity.entityAttachments &&
-                      entity.entityAttachments.length > 0 ? (
-                        entity.entityAttachments.map((attachment, idx) => {
-                          const doc = attachment.document;
-                          const fileName =
-                            doc.name ||
-                            doc.key
-                              .split("/")
-                              .pop()
-                              ?.split("-")
-                              .slice(2)
-                              .join("-") ||
-                            doc.key.split("/").pop() ||
-                            `Document ${idx + 1}`;
-                          const sizeInKb = (
-                            parseInt(doc.sizeBytes) / 1024
-                          ).toFixed(1);
+                      entity.entityAttachments.filter((a) => a.document)
+                        .length > 0 ? (
+                        entity.entityAttachments
+                          .filter((a) => a.document)
+                          .map((attachment, idx) => {
+                            const doc = attachment.document;
+                            const fileName =
+                              doc.name ||
+                              doc.key
+                                .split("/")
+                                .pop()
+                                ?.split("-")
+                                .slice(2)
+                                .join("-") ||
+                              doc.key.split("/").pop() ||
+                              `Document ${idx + 1}`;
+                            const sizeInKb = (
+                              parseInt(doc.sizeBytes) / 1024
+                            ).toFixed(1);
 
-                          return (
-                            <a
-                              key={attachment.id}
-                              href={doc.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors group"
-                            >
-                              <div className="flex items-center gap-2 overflow-hidden">
-                                <FileText className="size-4 text-primary shrink-0" />
-                                <div className="flex flex-col">
-                                  <span className="text-xs font-medium truncate max-w-[180px]">
-                                    {decodeURIComponent(fileName)}
-                                  </span>
-                                  <span className="text-[10px] text-muted-foreground">
-                                    {sizeInKb} KB
-                                  </span>
+                            return (
+                              <a
+                                key={attachment.id}
+                                href={doc.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors group"
+                              >
+                                <div className="flex items-center gap-2 overflow-hidden">
+                                  <FileText className="size-4 text-primary shrink-0" />
+                                  <div className="flex flex-col">
+                                    <span className="text-xs font-medium truncate max-w-[180px]">
+                                      {decodeURIComponent(fileName)}
+                                    </span>
+                                    <span className="text-[10px] text-muted-foreground">
+                                      {sizeInKb} KB
+                                    </span>
+                                  </div>
                                 </div>
-                              </div>
-                              <ExternalLink className="size-3 text-muted-foreground group-hover:text-primary" />
-                            </a>
-                          );
-                        })
+                                <ExternalLink className="size-3 text-muted-foreground group-hover:text-primary" />
+                              </a>
+                            );
+                          })
                       ) : (
                         <div className="col-span-full p-4 text-center border border-dashed rounded-lg bg-muted/20">
                           <p className="text-xs text-muted-foreground italic">
