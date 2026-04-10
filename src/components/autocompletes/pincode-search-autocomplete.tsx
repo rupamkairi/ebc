@@ -59,22 +59,25 @@ export function PincodeSearchAutocomplete({
       }));
 
     if (initialRecord && typeof initialRecord !== "string") {
-      const pincode =
-        (initialRecord as PincodeRecord).pincode ??
-        (initialRecord as PincodeDirectory).pincode ??
-        "";
-      const district =
-        (initialRecord as PincodeRecord).district ??
-        (initialRecord as PincodeDirectory).district ??
-        "";
-      const state =
-        (initialRecord as PincodeRecord).state ??
-        (initialRecord as PincodeDirectory).state ??
-        "";
-      baseOptions.unshift({
-        label: `${pincode} - ${district}, ${state}`,
-        value: initialRecord.id,
-      });
+      const exists = baseOptions.some((opt) => opt.value === initialRecord.id);
+      if (!exists) {
+        const pincode =
+          (initialRecord as PincodeRecord).pincode ??
+          (initialRecord as PincodeDirectory).pincode ??
+          "";
+        const district =
+          (initialRecord as PincodeRecord).district ??
+          (initialRecord as PincodeDirectory).district ??
+          "";
+        const state =
+          (initialRecord as PincodeRecord).state ??
+          (initialRecord as PincodeDirectory).state ??
+          "";
+        baseOptions.unshift({
+          label: `${pincode} - ${district}, ${state}`,
+          value: initialRecord.id,
+        });
+      }
     }
 
     return baseOptions;
