@@ -185,7 +185,8 @@ export function CreateListingModal({
           return;
         }
       }
-      toast.error("Failed to create listing.");
+      const message = err instanceof ApiError ? err.message : "Failed to create listing.";
+      toast.error(message);
     }
   };
 
