@@ -4,11 +4,13 @@ import { initReactI18next } from "react-i18next";
 
 import en from "./locales/en.json";
 import hn from "./locales/hn.json";
+import bn from "./locales/bn.json";
 
 const i18nConfig = {
   resources: {
     "en-IN": { translation: en },
     "hn-IN": { translation: hn },
+    "bn-IN": { translation: bn },
   },
   fallbackLng: "en-IN",
   interpolation: {

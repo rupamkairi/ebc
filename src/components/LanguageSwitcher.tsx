@@ -33,6 +33,7 @@ export const LanguageSwitcher = ({
   const languages = [
     { code: "en-IN", name: t("english") },
     { code: "hn-IN", name: t("hinglish") },
+    { code: "bn-IN", name: t("bengali") },
   ];
 
   const isFooter = variant === "footer";
