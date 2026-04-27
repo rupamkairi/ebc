@@ -10,6 +10,7 @@ interface HistorySidebarProps {
   onSelectSession: (id: string) => void;
   onNewChat: () => void;
   isLoading?: boolean;
+  className?: string;
 }
 
 export function HistorySidebar({
@@ -17,10 +18,11 @@ export function HistorySidebar({
   currentSessionId,
   onSelectSession,
   onNewChat,
-  isLoading
+  isLoading,
+  className
 }: HistorySidebarProps) {
   return (
-    <div className="flex h-full w-64 flex-col border-r border-border bg-sidebar shrink-0">
+    <div className={cn("flex h-full flex-col bg-sidebar", className)}>
       <div className="p-4">
         <Button
           onClick={onNewChat}

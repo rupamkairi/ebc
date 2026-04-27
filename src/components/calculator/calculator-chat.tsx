@@ -1,13 +1,16 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useAiCalculator } from "@/hooks/use-ai-calculator";
 import { HistorySidebar } from "./history-sidebar";
 import { MessageList } from "@/components/ai/message-list";
 import { MessageInput } from "@/components/ai/message-input";
-import { IconRobot } from "@tabler/icons-react";
+import { IconRobot, IconMenu2, IconPlus } from "@tabler/icons-react";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 
 export function CalculatorChat() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const {
     messages,
     input,
@@ -21,15 +24,59 @@ export function CalculatorChat() {
     loadSession,
   } = useAiCalculator();
 
+  const handleSelectSession = (id: string) => {
+    loadSession(id);
+    setIsSidebarOpen(false);
+  };
+
+  const handleNewChat = () => {
+    startNewChat();
+    setIsSidebarOpen(false);
+  };
+
   return (
-    <div className="flex h-[calc(100vh-96px)] w-full overflow-hidden bg-background">
-      {/* History Sidebar */}
+    <div className="flex h-[calc(100vh-96px)] w-full flex-col md:flex-row overflow-hidden bg-background">
+      {/* Mobile Header */}
+      <div className="flex items-center justify-between border-b px-4 py-2 md:hidden">
+        <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-9 w-9">
+              <IconMenu2 size={20} />
+              <span className="sr-only">Toggle Sidebar</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="p-0 w-72">
+            <SheetTitle className="sr-only">Chat History</SheetTitle>
+            <HistorySidebar
+              history={history}
+              currentSessionId={sessionId}
+              onSelectSession={handleSelectSession}
+              onNewChat={handleNewChat}
+              isLoading={isLoadingHistory}
+              className="w-full"
+            />
+          </SheetContent>
+        </Sheet>
+        <h1 className="text-sm font-semibold text-primary">AI Calculator</h1>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-9 w-9"
+          onClick={handleNewChat}
+        >
+          <IconPlus size={20} />
+          <span className="sr-only">New Chat</span>
+        </Button>
+      </div>
+
+      {/* History Sidebar - Desktop */}
       <HistorySidebar
         history={history}
         currentSessionId={sessionId}
         onSelectSession={loadSession}
         onNewChat={startNewChat}
         isLoading={isLoadingHistory}
+        className="hidden md:flex w-64 border-r border-border shrink-0"
       />
 
       {/* Main Chat Area */}
