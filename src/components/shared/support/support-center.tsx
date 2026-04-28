@@ -161,6 +161,11 @@ export function SupportCenter() {
                 <div className="flex justify-center py-8">
                   <Loader2 className="h-6 w-6 animate-spin text-primary" />
                 </div>
+              ) : categories?.length === 0 ? (
+                <div className="text-center py-12 text-muted-foreground border rounded-xl bg-muted/20">
+                  <HelpCircle className="h-12 w-12 mx-auto mb-4 opacity-20" />
+                  <p>No support categories available.</p>
+                </div>
               ) : (
                 categories?.map((cat) => (
                   <button

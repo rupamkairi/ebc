@@ -19,6 +19,21 @@ export const useSupportCategoriesQuery = (enabled = true) => {
   });
 };
 
+export const useCreateSupportCategoryMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: { name: string; description?: string; icon?: string }) => {
+      return fetchClient<SupportCategory>(`${SUPPORT_API}/categories`, {
+        method: "POST",
+        body: payload,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["support-categories"] });
+    },
+  });
+};
+
 export const useSupportQueriesQuery = (status?: string, enabled = true) => {
   return useQuery({
     queryKey: ["support-queries", status],
