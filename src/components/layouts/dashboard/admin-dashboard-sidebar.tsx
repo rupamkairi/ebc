@@ -2,6 +2,7 @@
 
 import { IconInnerShadowTop } from "@tabler/icons-react";
 import {
+  Activity,
   BarChart3,
   ChevronRight,
   FileBox,
@@ -132,6 +133,20 @@ const data = {
       items: [
         { title: "Conference Hall", url: "#" },
         { title: "Calculators", url: "/admin-dashboard/ai/calculator" },
+      ],
+    },
+    {
+      title: "Activities",
+      url: "#",
+      icon: Activity,
+      color: "text-foreground",
+      items: [
+        { title: "Overview", url: "/admin-dashboard/activities" },
+        { title: "Enquiries", url: "/admin-dashboard/activities/enquiries" },
+        {
+          title: "Appointments",
+          url: "/admin-dashboard/activities/appointments",
+        },
       ],
     },
     {
