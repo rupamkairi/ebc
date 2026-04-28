@@ -341,7 +341,7 @@ export function FileUploader({
   };
 
   const acceptString =
-    type === "media" ? "image/*,video/*" : ".pdf,.doc,.docx,.txt,.md";
+    type === "media" ? "image/*,video/*" : ".pdf,.doc,.docx,.txt,.md,.jpg,.jpeg";
 
   return (
     <>
@@ -396,7 +396,7 @@ export function FileUploader({
                 <p className="text-xs text-muted-foreground text-center px-4">
                   {type === "media"
                     ? "PNG, JPG, GIF or Video files"
-                    : "PDF, DOC, DOCX, TXT, or MD files"}
+                    : "PDF, DOC, DOCX, TXT, MD, JPG, or JPEG files"}
                 </p>
               </div>
               <input
