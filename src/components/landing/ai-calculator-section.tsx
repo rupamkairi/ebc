@@ -4,12 +4,14 @@ import Container from "@/components/ui/containers";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Calculator, Presentation, Waves } from "lucide-react";
 import Image from "next/image";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface FeatureProps {
   icon: React.ReactNode;
   title: string;
   description: string;
 }
+
 
 function CostFeature({ icon, title, description }: FeatureProps) {
   return (
@@ -28,17 +30,20 @@ function CostFeature({ icon, title, description }: FeatureProps) {
 }
 
 export function AiCalculatorSection() {
+  const { t } = useLanguage();
+
   return (
     <section id="ai-calculator" className="bg-white py-24 overflow-hidden">
       <Container size="xl">
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="text-primary text-2xl md:text-3xl lg:text-4xl font-black tracking-tight mb-4">
-            EBC Offers <span className="text-secondary">AI-Powered</span> Cost
-            Calculator
+            {t("ai_calculator_offer_title_prefix")}
+            <span className="text-secondary">{t("ai_calculator_offer_title_highlight")}</span>
+            {t("ai_calculator_offer_title_suffix")}
           </h2>
           <p className="text-slate-600 font-medium text-base md:text-lg">
-            AI-powered estimate based on your location and requirements.
+            {t("ai_calculator_offer_subtitle")}
           </p>
         </div>
 
@@ -60,30 +65,28 @@ export function AiCalculatorSection() {
           <div className="flex flex-col space-y-8 lg:pl-12">
             <div className="space-y-4 mb-4">
               <h3 className="text-primary text-2xl lg:text-3xl font-black tracking-tight leading-tight">
-                Smart Construction Cost <br className="hidden md:block" />{" "}
-                Calculator
+                {t("ai_calculator_title")}
               </h3>
               <p className="text-slate-500 text-base md:text-lg max-w-lg">
-                Estimate your home building cost, plan better, and save money
-                with EBC
+                {t("ai_calculator_desc")}
               </p>
             </div>
 
             <div className="space-y-8">
               <CostFeature
                 icon={<Calculator className="size-6" />}
-                title="Accurate Estimation"
-                description="Get reliable cost estimates for your entire home project"
+                title={t("ai_calculator_feature_1_title")}
+                description={t("ai_calculator_feature_1_desc")}
               />
               <CostFeature
                 icon={<Presentation className="size-6" />}
-                title="Budget Planning"
-                description="Plan your budget with confidence, no hidden costs"
+                title={t("ai_calculator_feature_2_title")}
+                description={t("ai_calculator_feature_2_desc")}
               />
               <CostFeature
                 icon={<Waves className="size-6" />}
-                title="Minimize Wastage"
-                description="Calculate the right quantities, avoid over buying materials"
+                title={t("ai_calculator_feature_3_title")}
+                description={t("ai_calculator_feature_3_desc")}
               />
             </div>
           </div>
@@ -96,7 +99,7 @@ export function AiCalculatorSection() {
               href="/calculator"
               className="flex items-center justify-center gap-3"
             >
-              Use AI Calculator
+              {t("ai_calculator_cta")}
               <ChevronRight className="size-6 group-hover:translate-x-1 transition-transform" />
             </a>
           </Button>

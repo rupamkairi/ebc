@@ -4,6 +4,7 @@ import Container from "@/components/ui/containers";
 import Image from "next/image";
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface ReviewCardProps {
   name: string;
@@ -52,31 +53,30 @@ function ReviewCard({ name, time, rating, review, avatar }: ReviewCardProps) {
   );
 }
 
+
 export function ReviewsSection() {
+  const { t } = useLanguage();
   const reviews = [
     {
-      name: "Agusto Lee",
-      time: "2 week ago",
+      name: t("review_1_name"),
+      time: t("review_1_time"),
       rating: 4,
       avatar: "https://placehold.co/100x100?text=AL",
-      review:
-        'These 88 constellations divide the Star maps are made from the brightest stars, and the patterns they form give rise to the constellation names" entire night sky as seen from Earth.',
+      review: t("review_1_text"),
     },
     {
-      name: "Agusto Lee",
-      time: "2 week ago",
+      name: t("review_1_name"),
+      time: t("review_1_time"),
       rating: 4,
       avatar: "https://placehold.co/100x100?text=AL",
-      review:
-        'These 88 constellations divide the Star maps are made from the brightest stars, and the patterns they form give rise to the constellation names" entire night sky as seen from Earth.',
+      review: t("review_1_text"),
     },
     {
-      name: "Agusto Lee",
-      time: "2 week ago",
+      name: t("review_1_name"),
+      time: t("review_1_time"),
       rating: 4,
       avatar: "https://placehold.co/100x100?text=AL",
-      review:
-        'These 88 constellations divide the Star maps are made from the brightest stars, and the patterns they form give rise to the constellation names" entire night sky as seen from Earth.',
+      review: t("review_1_text"),
     },
   ];
 
@@ -85,7 +85,7 @@ export function ReviewsSection() {
       {/* Section Title */}
       <div className="text-center mb-12">
         <h2 className="text-3xl md:text-4xl font-bold text-primary tracking-tight">
-          ECON Reviews
+          {t("reviews_section_title")}
         </h2>
       </div>
 

@@ -17,10 +17,12 @@ export function HowItWorksSection() {
       <Container size="lg">
         <div className="text-center mb-12">
           <TypographyH2 className="text-4xl lg:text-5xl font-black text-primary">
-            How It <span className="text-secondary">Works?</span>
+            {t("how_it_works_section_title_prefix")}
+            <span className="text-secondary">{t("how_it_works_section_title_highlight")}</span>
+            {t("how_it_works_section_title_suffix")}
           </TypographyH2>
           <TypographyP className="text-muted-foreground mt-4 text-base md:text-lg font-medium">
-            3 Simple Steps
+            {t("how_it_works_section_subtitle")}
           </TypographyP>
         </div>
 

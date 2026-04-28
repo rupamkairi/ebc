@@ -41,46 +41,50 @@ function MaterialCard({ title, category, image }: MaterialCardProps) {
   );
 }
 
+import { useLanguage } from "@/hooks/useLanguage";
+
 export function MaterialsSection() {
+  const { t } = useLanguage();
+
   const materials = [
     {
-      title: "Ultratech Cement",
-      category: "cements",
+      title: t("mat_cement_title"),
+      category: t("mat_cement_cat"),
       image: "/images/materials/cement.png",
     },
     {
-      title: "Long Planks",
-      category: "Lumber",
+      title: t("mat_lumber_title"),
+      category: t("mat_lumber_cat"),
       image: "/images/materials/lumber.png",
     },
     {
-      title: "TMT bar",
-      category: "Steel",
+      title: t("mat_steel_title"),
+      category: t("mat_steel_cat"),
       image: "/images/materials/tmt.png",
     },
     {
-      title: "Red Clay Bricks",
-      category: "Bricks and slabs",
+      title: t("mat_bricks_title"),
+      category: t("mat_bricks_cat"),
       image: "/images/materials/bricks.png",
     },
     {
-      title: "Marble Slabs",
-      category: "Bricks and slabs",
+      title: t("mat_marble_title"),
+      category: t("mat_marble_cat"),
       image: "/images/materials/marble.png",
     },
     {
-      title: "Aggregate",
-      category: "Powders",
+      title: t("mat_aggregate_title"),
+      category: t("mat_aggregate_cat"),
       image: "/images/materials/aggregate.png",
     },
     {
-      title: "Fly Ash",
-      category: "Powders",
+      title: t("mat_flyash_title"),
+      category: t("mat_flyash_cat"),
       image: "/images/materials/flyash.png",
     },
     {
-      title: "Gypsum Powder",
-      category: "Bricks and slabs",
+      title: t("mat_gypsum_title"),
+      category: t("mat_gypsum_cat"),
       image: "/images/materials/gypsum.png",
     },
   ];
@@ -91,7 +95,7 @@ export function MaterialsSection() {
         {/* Section Heading */}
         <div className="text-center mb-16">
           <h2 className="text-primary text-3xl md:text-4xl lg:text-5xl font-black tracking-tight uppercase">
-            Major Construction Materials
+            {t("materials_section_title")}
           </h2>
         </div>
 
@@ -111,7 +115,7 @@ export function MaterialsSection() {
         <div className="flex justify-center mt-20">
           <Button variant="glow" size="action" className="group" asChild>
             <Link href="/browse?type=PRODUCT">
-              Select your Products
+              {t("materials_section_cta")}
               <ChevronRight className="size-6 group-hover:translate-x-1 transition-transform" />
             </Link>
           </Button>

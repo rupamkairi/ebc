@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { IconBrandWhatsapp } from "@tabler/icons-react";
 import { TypographyResponsiveSmall } from "@/components/ui/typography";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface WhatsAppButtonProps {
   phoneNumber?: string;
@@ -12,11 +13,15 @@ interface WhatsAppButtonProps {
 
 export function WhatsAppButton({ 
   phoneNumber = "+911234567890", 
-  message = "Hello, I need help with EBC.",
-  label = "WhatsApp help"
+  message,
+  label
 }: WhatsAppButtonProps) {
+  const { t } = useLanguage();
+  
+  const whatsappMessage = message || t("whatsapp_default_message");
+  const buttonLabel = label || t("whatsapp_help_label");
   const handleWhatsAppClick = () => {
-    const url = `https://wa.me/${phoneNumber.replace(/\+/g, "")}?text=${encodeURIComponent(message)}`;
+    const url = `https://wa.me/${phoneNumber.replace(/\+/g, "")}?text=${encodeURIComponent(whatsappMessage)}`;
     window.open(url, "_blank");
   };
 
@@ -28,7 +33,7 @@ export function WhatsAppButton({
       >
         <IconBrandWhatsapp className="h-6 w-6 md:h-8 md:w-8" />
         <TypographyResponsiveSmall className="text-xs md:text-sm font-semibold text-white">
-          {label}
+          {buttonLabel}
         </TypographyResponsiveSmall>
       </Button>
     </div>

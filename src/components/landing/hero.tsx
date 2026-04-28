@@ -55,7 +55,7 @@ export function Hero() {
   const Heading = (
     <div className="w-full text-center max-w-6xl mb-4 md:mb-12 mx-auto px-2">
       <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-primary leading-tight mb-3 md:mb-4 tracking-tight">
-        Build Your{" "}
+        {t("hero_build_your")}{" "}
         <span className="text-secondary">{t("hero_dream_home")}</span>
         <br className="md:hidden" /> {t("hero_build_with")}
       </h1>

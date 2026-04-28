@@ -5,6 +5,7 @@ import { Check } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface EcosystemCardProps {
   title: string;
@@ -65,61 +66,64 @@ function EcosystemCard({
   );
 }
 
+
 export function EcosystemSection() {
+  const { t } = useLanguage();
+
   const ecosystemData = [
     {
-      title: "HOMEOWNER (End User)",
-      subtitle: "Build Better, Save More",
+      title: t("ecosystem_item_1_title"),
+      subtitle: t("ecosystem_item_1_subtitle"),
       image: "/images/ecosystem/homeowner.png",
       benefits: [
-        "Save Budget & Costs",
-        "Access Verified Professionals",
-        "Get Engineer Guidance & Quality Checks",
-        "Avoid Confusion, Ensure Transparency",
+        t("ecosystem_item_1_b1"),
+        t("ecosystem_item_1_b2"),
+        t("ecosystem_item_1_b3"),
+        t("ecosystem_item_1_b4"),
       ],
     },
     {
-      title: "RETAILER / DEALER (B2C Seller)",
-      subtitle: "Expand Your Reach",
+      title: t("ecosystem_item_2_title"),
+      subtitle: t("ecosystem_item_2_subtitle"),
       image: "/images/ecosystem/retailer.png",
       benefits: [
-        "Gain New Customers & Orders",
-        "Zero Marketing Cost",
-        "Fair Price Discovery Platform",
-        "Increased Online Visibility",
+        t("ecosystem_item_2_b1"),
+        t("ecosystem_item_2_b2"),
+        t("ecosystem_item_2_b3"),
+        t("ecosystem_item_2_b4"),
       ],
     },
     {
-      title: "WHOLESALER (B2B Seller)",
-      subtitle: "Bulk Business Made Easy",
+      title: t("ecosystem_item_3_title"),
+      subtitle: t("ecosystem_item_3_subtitle"),
       image: "/images/ecosystem/wholesaler.png",
       benefits: [
-        "Receive Bulk Leads & Inquiries",
-        "Data-Driven Pricing Insights",
-        "Connect with Multiple Dealers",
-        "Streamlined Logistics Support",
+        t("ecosystem_item_3_b1"),
+        t("ecosystem_item_3_b2"),
+        t("ecosystem_item_3_b3"),
+        t("ecosystem_item_3_b4"),
       ],
     },
     {
-      title: "MANUFACTURER (B2B Seller)",
-      subtitle: "Strengthen Your Channel",
+      title: t("ecosystem_item_4_title"),
+      subtitle: t("ecosystem_item_4_subtitle"),
       image: "/images/ecosystem/manufacturer.png",
       benefits: [
-        "Direct Channel Access & Visibility",
-        "Push Technical Documents & Offers",
-        "Transparent Market Strength Data",
-        "Brand Promotion to End Users",
+        t("ecosystem_item_4_b1"),
+        t("ecosystem_item_4_b2"),
+        t("ecosystem_item_4_b3"),
+        t("ecosystem_item_4_b4"),
       ],
     },
     {
-      title: "SERVICE PROVIDER (Professional)",
-      subtitle: "Secure More Jobs",
+      title: t("ecosystem_item_5_title"),
+      subtitle: t("ecosystem_item_5_subtitle"),
       image: "/images/ecosystem/service-provider.png",
       benefits: [
-        "Access Verified Job Requirements",
-        "Better Income & Reliable Payments",
-        "Build Reputation with Ratings & Reviews",
-        "Quality Supervision & Standards",
+        t("ecosystem_item_5_b1"),
+        t("ecosystem_item_5_b2"),
+        t("ecosystem_item_5_b3"),
+        t("ecosystem_item_5_b4"),
       ],
     },
   ];
@@ -131,11 +135,12 @@ export function EcosystemSection() {
       <Container size="xl">
         <div className="text-center mb-32 space-y-4">
           <h2 className="text-white text-3xl md:text-5xl lg:text-5xl font-black tracking-tight drop-shadow-lg">
-            Local <span className="text-secondary">Construction</span>{" "}
-            Eco-System of India
+            {t("ecosystem_section_title_prefix")}
+            <span className="text-secondary">{t("ecosystem_section_title_highlight")}</span>
+            {t("ecosystem_section_title_suffix")}
           </h2>
           <p className="text-white/90 text-xl md:text-2xl font-bold tracking-wide uppercase">
-            ECON Building Centre , Benefits for ALL
+            {t("ecosystem_section_subtitle")}
           </p>
         </div>
 
@@ -171,7 +176,7 @@ export function EcosystemSection() {
 
         <div className="mt-32 text-center max-w-4xl mx-auto">
           <p className="text-white text-xl md:text-3xl lg:text-4xl font-black tracking-tight leading-tight drop-shadow-md">
-            Join EBC for a Smart & Stress-Free Home Building Journey
+            {t("ecosystem_footer_text")}
           </p>
         </div>
       </Container>

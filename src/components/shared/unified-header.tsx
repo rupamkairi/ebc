@@ -35,6 +35,8 @@ interface UnifiedHeaderProps {
   className?: string;
 }
 
+import { useLanguage } from "@/hooks/useLanguage";
+
 export function UnifiedHeader({
   variant = "public",
   centerContent,
@@ -43,12 +45,13 @@ export function UnifiedHeader({
   leftMobileMenu,
   className,
 }: UnifiedHeaderProps) {
+  const { t } = useLanguage();
   const { data: sessionData } = useSessionQuery();
   const user = sessionData?.user;
   const { data: entities = [] } = useEntitiesQuery();
   const mainEntity = entities[0];
 
-  const displayName = mainEntity?.name || user?.name || "Member";
+  const displayName = mainEntity?.name || user?.name || t("member_label");
   const { logout } = useAuthStore();
   const [mounted, setMounted] = React.useState(false);
 
@@ -115,16 +118,16 @@ export function UnifiedHeader({
               {mounted && !user && variant === "public" && (
                 <>
                   <span className="text-sm font-medium text-slate-600 mr-1">
-                    Join As
+                    {t("join_as")}
                   </span>
                   <Link href="/auth/register?role=SELLER">
                     <Button className="bg-secondary hover:bg-secondary/90 text-white font-bold rounded-lg px-6 h-10 border-none shadow-sm">
-                      Seller
+                      {t("seller_btn")}
                     </Button>
                   </Link>
                   <Link href="/auth/register?role=BUYER">
                     <Button className="bg-secondary hover:bg-secondary/90 text-white font-bold rounded-lg px-6 h-10 border-none shadow-sm">
-                      Buyer
+                      {t("buyer_btn")}
                     </Button>
                   </Link>
                 </>
@@ -159,7 +162,7 @@ export function UnifiedHeader({
                       className="flex items-center w-full"
                     >
                       <LayoutDashboard className="mr-2 h-4 w-4" />
-                      <span>Dashboard</span>
+                      <span>{t("dashboard")}</span>
                     </Link>
                   </DropdownMenuItem>
                   {(isSeller || isBuyer) && (
@@ -173,7 +176,7 @@ export function UnifiedHeader({
                         className="flex items-center w-full"
                       >
                         <Settings className="mr-2 h-4 w-4" />
-                        <span>Profile Settings</span>
+                        <span>{t("profile_settings")}</span>
                       </Link>
                     </DropdownMenuItem>
                   )}
@@ -183,7 +186,7 @@ export function UnifiedHeader({
                     className="cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10"
                   >
                     <LogOut className="mr-2 h-4 w-4" />
-                    <span>Logout</span>
+                    <span>{t("logout")}</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

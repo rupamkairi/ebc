@@ -1,17 +1,22 @@
 // src/hooks/useLanguage.ts
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useSyncExternalStore } from "react";
 import i18n from "@/i18n/config";
 
 export const useLanguage = () => {
   // Initialize with the current language from i18n
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
+  
+  // Track mount state to handle hydration properly
+  const isMounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   // Update the language in both i18n and localStorage
   const changeLanguage = useCallback((lng: string) => {
-    i18n.changeLanguage(lng).then(() => {
-      // This will trigger the languageChanged event that we're listening to below
-      localStorage.setItem("i18nextLng", lng);
-    });
+    localStorage.setItem("i18nextLng", lng);
+    return i18n.changeLanguage(lng);
   }, []);
 
   useEffect(() => {
@@ -22,22 +27,22 @@ export const useLanguage = () => {
 
     // Set up the event listener
     i18n.on("languageChanged", handleLanguageChange);
-
-    // Load saved language on initial render
-    const savedLanguage = localStorage.getItem("i18nextLng");
-    if (savedLanguage && savedLanguage !== i18n.language) {
-      changeLanguage(savedLanguage);
+    
+    // Sync state with actual i18n language (for initial render)
+    if (i18n.language !== currentLanguage) {
+      setCurrentLanguage(i18n.language);
     }
 
     // Clean up the event listener
     return () => {
       i18n.off("languageChanged", handleLanguageChange);
     };
-  }, [changeLanguage]);
+  }, [currentLanguage]);
 
   return {
     currentLanguage,
     changeLanguage,
     t: i18n.t.bind(i18n),
+    isReady: isMounted,
   };
 };

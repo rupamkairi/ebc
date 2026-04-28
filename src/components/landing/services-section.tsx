@@ -33,42 +33,46 @@ function ServiceCard({ title, image }: ServiceCardProps) {
   );
 }
 
+import { useLanguage } from "@/hooks/useLanguage";
+
 export function ServicesSection() {
+  const { t } = useLanguage();
+
   const services = [
     {
-      title: "Public or private projects of any size",
+      title: t("ser_item_1"),
       image: "/images/services/architecture.png",
     },
     {
-      title: "Floor extension or upgradation",
+      title: t("ser_item_2"),
       image:
         "/images/services/construction-residential-new-house-progress-building-site 1.png",
     },
     {
-      title: "Building repair or renovation",
+      title: t("ser_item_3"),
       image:
         "/images/services/skilled-worker-installing-ceramic-wood-effect-tiles-floor-worker-making-laminate-flooring-construction-site-new-apartment 1.png",
     },
     {
-      title: "Work Monitoring from anywhere",
+      title: t("ser_item_4"),
       image: "/images/services/site-engineer-construction-site 1.png",
     },
     {
-      title: "Custom Home Design & Planning",
+      title: t("ser_item_5"),
       image: "/images/services/architecture.png",
     },
     {
-      title: "Commercial Space Renovation",
+      title: t("ser_item_6"),
       image:
         "/images/services/construction-residential-new-house-progress-building-site 1.png",
     },
     {
-      title: "Industrial Flooring & Upgrades",
+      title: t("ser_item_7"),
       image:
         "/images/services/skilled-worker-installing-ceramic-wood-effect-tiles-floor-worker-making-laminate-flooring-construction-site-new-apartment 1.png",
     },
     {
-      title: "Remote Technical Supervision",
+      title: t("ser_item_8"),
       image: "/images/services/site-engineer-construction-site 1.png",
     },
   ];
@@ -79,8 +83,8 @@ export function ServicesSection() {
         {/* Section Heading */}
         <div className="text-center mb-12">
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold">
-            <span className="text-secondary">Trending</span>{" "}
-            <span className="text-primary">Construction Services</span>
+            <span className="text-secondary">{t("services_section_title_part1")}</span>{" "}
+            <span className="text-primary">{t("services_section_title_part2")}</span>
           </h2>
         </div>
 
@@ -111,7 +115,7 @@ export function ServicesSection() {
           <div className="mt-12 z-10">
             <Link href="/browse?type=SERVICE">
               <Button variant="glow" size="action" className="group">
-                Select your Service
+                {t("services_section_cta")}
                 <ChevronRight className="size-6 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>

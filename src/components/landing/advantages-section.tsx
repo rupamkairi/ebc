@@ -4,6 +4,7 @@ import Container from "@/components/ui/containers";
 import { Check, PiggyBank, Monitor, HardHat, ShieldCheck } from "lucide-react";
 import Image from "next/image";
 import React from "react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface AdvantageCardProps {
   title: string;
@@ -12,6 +13,7 @@ interface AdvantageCardProps {
   image: string;
   icon: React.ReactNode;
 }
+
 
 function AdvantageCard({
   title,
@@ -64,32 +66,34 @@ function AdvantageCard({
 }
 
 export function AdvantagesSection() {
+  const { t } = useLanguage();
+
   const advantages = [
     {
-      title: "Save money",
-      description: "Avoid wrong purchases",
-      detail: "Save ₹50,000-₹3,00,000 by avoiding wrong purchases",
+      title: t("advantage_1_title"),
+      description: t("advantage_1_desc"),
+      detail: t("advantage_1_detail"),
       image: "/images/advantages/home-finance.png",
       icon: <PiggyBank className="size-5" />,
     },
     {
-      title: "Everything Online",
-      description: "From quotes to hiring",
-      detail: "Everything from online from quotations to hiring",
+      title: t("advantage_2_title"),
+      description: t("advantage_2_desc"),
+      detail: t("advantage_2_detail"),
       image: "/images/advantages/online-dashboard.png",
       icon: <Monitor className="size-5" />,
     },
     {
-      title: "Engineer Help",
-      description: "Seamless constructions",
-      detail: "Enjoy seamless constructions without errors",
+      title: t("advantage_3_title"),
+      description: t("advantage_3_desc"),
+      detail: t("advantage_3_detail"),
       image: "/images/advantages/engineer-site.png",
       icon: <HardHat className="size-5" />,
     },
     {
-      title: "Trusted Hirement",
-      description: "Rated and reviewed",
-      detail: "Rated and reviewed manpower, no random hiring",
+      title: t("advantage_4_title"),
+      description: t("advantage_4_desc"),
+      detail: t("advantage_4_detail"),
       image: "/images/advantages/worker-handshake.png",
       icon: <ShieldCheck className="size-5" />,
     },
@@ -112,7 +116,9 @@ export function AdvantagesSection() {
       <Container size="xl" className="relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-white text-3xl md:text-5xl font-black tracking-tight drop-shadow-lg">
-            Top <span className="text-secondary">Advantages</span> of EBC
+            {t("advantages_section_title_prefix")}
+            <span className="text-secondary">{t("advantages_section_title_highlight")}</span>
+            {t("advantages_section_title_suffix")}
           </h2>
         </div>
 
@@ -133,9 +139,9 @@ export function AdvantagesSection() {
         {/* Footer Text */}
         <div className="mt-20 text-center">
           <p className="text-white text-lg md:text-2xl font-black tracking-tight">
-            A better home.{" "}
-            <span className="text-white/60">A better decision.</span> A better
-            sleep at night.
+            {t("advantages_footer_text_prefix")}
+            <span className="text-white/60">{t("advantages_footer_text_highlight")}</span>
+            {t("advantages_footer_text_suffix")}
           </p>
         </div>
 

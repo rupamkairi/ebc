@@ -6,18 +6,23 @@ import { CheckCircle2, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+import { useLanguage } from "@/hooks/useLanguage";
+
 export function ConferenceHallSection() {
+  const { t } = useLanguage();
+
   return (
     <section id="conference-hall" className="bg-white py-24 overflow-hidden">
       <Container size="xl">
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="text-primary text-2xl md:text-3xl lg:text-4xl font-black tracking-tight mb-4">
-            Not Sure? Learn from Experts & Real{" "}
-            <span className="text-secondary">Home Builders</span>
+            {t("conference_hall_section_title_prefix")}
+            <span className="text-secondary">{t("conference_hall_section_title_highlight")}</span>
+            {t("conference_hall_section_title_suffix")}
           </h2>
           <p className="text-slate-500 font-medium text-base md:text-lg">
-            Ask questions. Read real experiences. Decide confidently.
+            {t("conference_hall_section_subtitle")}
           </p>
         </div>
 
@@ -40,21 +45,20 @@ export function ConferenceHallSection() {
             <div className="space-y-8">
               <div className="space-y-4">
                 <h3 className="text-secondary text-3xl md:text-4xl font-black tracking-tight leading-tight">
-                  Join The Conference Hall
+                  {t("conference_hall_join_title")}
                 </h3>
                 <p className="text-white/80 text-base md:text-lg max-w-md leading-relaxed">
-                  Discover special discounts, latest construction information,
-                  and best practices from top brands in one place.
+                  {t("conference_hall_join_desc")}
                 </p>
               </div>
 
               {/* Bullet Features List */}
               <div className="space-y-6">
                 {[
-                  "Knowledge & Training",
-                  "Live Meeting",
-                  "Offer Zone",
-                  "Q&A Forum",
+                  t("conference_hall_feature_1"),
+                  t("conference_hall_feature_2"),
+                  t("conference_hall_feature_3"),
+                  t("conference_hall_feature_4"),
                 ].map((item, index) => (
                   <div key={index} className="flex items-center gap-4 group">
                     <CheckCircle2 className="size-7 text-secondary shrink-0" />
@@ -72,7 +76,7 @@ export function ConferenceHallSection() {
                   asChild
                 >
                   <Link href="/conference-hall" className="text-lg font-bold">
-                    View Expert Answers
+                    {t("conference_hall_cta")}
                     <ChevronRight className="size-5 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </Button>

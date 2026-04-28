@@ -1,34 +1,37 @@
 "use client";
 
-import Container from "@/components/ui/containers";
+import { useLanguage } from "@/hooks/useLanguage";
 import { cn } from "@/lib/utils";
+import Container from "@/components/ui/containers";
 
 export function PricingSection() {
+  const { t } = useLanguage();
+
   const pricingData = [
     {
-      service: "Latest rate quotation from local material dealers",
+      service: t("pricing_item_1"),
       isFree: true,
     },
-    { service: "Consultation with Technical Professionals", isFree: true },
+    { service: t("pricing_item_2"), isFree: true },
     {
-      service: "Site visit by rated skilled workers & technicians",
+      service: t("pricing_item_3"),
       isFree: true,
     },
-    { service: "Meet at site with local fabricators & fitters", isFree: true },
+    { service: t("pricing_item_4"), isFree: true },
     {
-      service: "Easy hiring of construction tools & machineries",
-      isFree: true,
-    },
-    {
-      service: "Appointment with customer rated renowned contractors",
+      service: t("pricing_item_5"),
       isFree: true,
     },
     {
-      service: "Latest information, guidance, discount & offers",
+      service: t("pricing_item_6"),
       isFree: true,
     },
     {
-      service: "AI-powered, highly predicted project cost calculation",
+      service: t("pricing_item_7"),
+      isFree: true,
+    },
+    {
+      service: t("pricing_item_8"),
       isFree: true,
     },
   ];
@@ -39,8 +42,8 @@ export function PricingSection() {
         {/* Section Heading */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-            <span className="text-primary">EBC</span>{" "}
-            <span className="text-secondary">Pricing</span>
+            <span className="text-primary">{t("pricing_section_title_prefix")}</span>{" "}
+            <span className="text-secondary">{t("pricing_section_title_highlight")}</span>
           </h2>
         </div>
 
@@ -49,12 +52,12 @@ export function PricingSection() {
           <div className="grid grid-cols-12">
             <div className="col-span-7 bg-secondary py-5 px-4">
               <h3 className="text-xl md:text-2xl font-bold text-white text-center">
-                Services
+                {t("pricing_services")}
               </h3>
             </div>
             <div className="col-span-5 bg-primary py-5 px-4">
               <h3 className="text-xl md:text-2xl font-bold text-white text-center">
-                Charges
+                {t("pricing_charges")}
               </h3>
             </div>
           </div>
@@ -86,7 +89,7 @@ export function PricingSection() {
                       <span className="inline-block h-5 w-5 translate-x-8 rounded-full bg-white shadow-sm transition" />
                     </div>
                     <span className="text-sm font-bold text-gray-600">
-                      Free
+                      {t("pricing_free")}
                     </span>
                   </div>
                 </div>
@@ -97,7 +100,7 @@ export function PricingSection() {
 
         <div className="mt-16 text-center max-w-3xl mx-auto">
           <h4 className="text-lg md:text-xl font-semibold text-primary">
-            You choose the help you want. Full control. No hidden commissions.
+            {t("pricing_footer_text")}
           </h4>
         </div>
       </Container>

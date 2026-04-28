@@ -10,7 +10,6 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { UnifiedHeader } from "./unified-header";
 import { useSessionQuery } from "@/queries/authQueries";
-import { USER_ROLE_LABELS } from "@/constants/roles";
 
 export function Header() {
   const { t } = useLanguage();
@@ -39,9 +38,9 @@ export function Header() {
         href={link.href}
         className={cn(
           "px-4 py-2 transition-all duration-200 text-sm font-medium rounded-full",
-            isActive
-              ? "bg-primary text-white"
-              : "text-slate-500 hover:text-slate-900",
+          isActive
+            ? "bg-primary text-white"
+            : "text-slate-500 hover:text-slate-900",
         )}
       >
         {link.name}
@@ -107,9 +106,18 @@ export function Header() {
                       {user.name}
                     </span>
                     <span className="text-sm text-slate-500">
-                      {USER_ROLE_LABELS[
-                        user.role as keyof typeof USER_ROLE_LABELS
-                      ] || user.role}
+                      {user.role === "ADMIN" && t("role_admin")}
+                      {user.role === "USER_PRODUCT_SELLER_ADMIN" &&
+                        t("role_product_seller")}
+                      {user.role === "USER_SERVICE_PROVIDER_ADMIN" &&
+                        t("role_service_provider")}
+                      {user.role === "USER_BUYER_ADMIN" && t("role_buyer")}
+                      {user.role && ![
+                        "ADMIN",
+                        "USER_PRODUCT_SELLER_ADMIN",
+                        "USER_SERVICE_PROVIDER_ADMIN",
+                        "USER_BUYER_ADMIN",
+                      ].includes(user.role) && user.role}
                     </span>
                   </div>
                 </div>

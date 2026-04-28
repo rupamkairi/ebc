@@ -1,21 +1,20 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import Container from "@/components/ui/containers";
-import { TypographyH1 } from "@/components/ui/typography";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogClose,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-
-
-import { Play, MapPin, CheckCircle2 } from "lucide-react";
-import Image from "next/image";
+import { TypographyH1 } from "@/components/ui/typography";
+import { useLanguage } from "@/hooks/useLanguage";
 import { useMounted } from "@/hooks/useMounted";
+import { CheckCircle2, MapPin, Play } from "lucide-react";
+import Image from "next/image";
 
 interface ModalPoint {
   title: string;
@@ -37,6 +36,7 @@ function SolutionCard({
   modalHeading,
   modalPoints,
 }: SolutionCardProps) {
+  const { t } = useLanguage();
   const mounted = useMounted();
 
   const triggerButton = (
@@ -67,9 +67,7 @@ function SolutionCard({
           {points.map((point, index) => (
             <li key={index} className="flex items-start gap-3 text-white">
               <Play className="size-3 fill-secondary text-secondary mt-1 shrink-0" />
-              <span className="text-sm font-medium leading-snug">
-                {point}
-              </span>
+              <span className="text-sm font-medium leading-snug">{point}</span>
             </li>
           ))}
         </ul>
@@ -83,9 +81,7 @@ function SolutionCard({
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        {triggerButton}
-      </DialogTrigger>
+      <DialogTrigger asChild>{triggerButton}</DialogTrigger>
 
       <DialogContent className="max-w-2xl p-0 border-none bg-white rounded-2xl shadow-2xl overflow-hidden">
         <DialogHeader className="sr-only">
@@ -111,7 +107,7 @@ function SolutionCard({
                     />
                   </div>
                   <span className="text-xs font-bold uppercase tracking-widest text-primary/60">
-                    Solution Detail
+                    {t("solution_detail_label")}
                   </span>
                 </div>
                 <h2 className="text-xl md:text-2xl font-black text-slate-800 leading-tight">
@@ -122,7 +118,10 @@ function SolutionCard({
               {/* Points list */}
               <div className="space-y-0">
                 {modalPoints.map((point, index) => (
-                  <div key={index} className="flex gap-4 group/point items-start">
+                  <div
+                    key={index}
+                    className="flex gap-4 group/point items-start"
+                  >
                     <div className="flex flex-col items-center">
                       <div className="size-9 rounded-full bg-[#E31E24]/10 flex items-center justify-center shrink-0 transition-all duration-300 group-hover/point:bg-[#E31E24] group-hover/point:text-white border border-[#E31E24]/20 text-[#E31E24] mt-1">
                         <MapPin className="size-4" />
@@ -150,7 +149,7 @@ function SolutionCard({
             <DialogClose asChild>
               <Button className="cursor-pointer bg-secondary hover:bg-secondary/90 text-white font-black px-10 h-12 text-base rounded-xl transition-all duration-200 shadow-md active:scale-95 w-full sm:w-auto flex items-center justify-center gap-2">
                 <CheckCircle2 className="size-5" />
-                Got it, thanks!
+                {t("solution_got_it")}
               </Button>
             </DialogClose>
           </div>
@@ -161,252 +160,222 @@ function SolutionCard({
 }
 
 export function SolutionSection() {
+  const { t } = useLanguage();
+
   const solutions = [
     {
-      title: "Material Depot",
+      title: t("solution_item_1_title"),
       icon: "/images/solutions/raw-material.svg",
       points: [
-        "Centralized digital inventory hub",
-        "Manufacturer-dealer-consumer bridge",
-        "Assured availability with service linkage",
+        t("solution_item_1_p1"),
+        t("solution_item_1_p2"),
+        t("solution_item_1_p3"),
       ],
-      modalHeading: "Material Depo in EBC (ECON Building Centre)",
+      modalHeading: t("solution_item_1_modal_heading"),
       modalPoints: [
         {
-          title: "Centralized digital inventory hub:",
-          description:
-            "A single, trusted marketplace where all building and construction materials—branded and local—are listed with standardized categories, pricing logic, GST, and availability across PAN-India.",
+          title: t("solution_item_1_modal_p1_title"),
+          description: t("solution_item_1_modal_p1_desc"),
         },
         {
-          title: "Direct manufacturer-dealer-consumer bridge:",
-          description:
-            "Eliminates ambiguity and middle-layer inefficiencies by connecting verified manufacturers, dealers, and local suppliers directly to end users with transparent specifications and supply options.",
+          title: t("solution_item_1_modal_p2_title"),
+          description: t("solution_item_1_modal_p2_desc"),
         },
         {
-          title: "Assured availability with service linkage:",
-          description:
-            "Ensures the right material is available at the right location, at the right time, and is seamlessly linked with related services (transport, installation, workers), reducing cost overruns and construction delays.",
+          title: t("solution_item_1_modal_p3_title"),
+          description: t("solution_item_1_modal_p3_desc"),
         },
       ],
     },
     {
-      title: "Technical Cabin",
+      title: t("solution_item_2_title"),
       icon: "/images/solutions/technical-support.svg",
       points: [
-        "Technical Support & Validation Hub",
-        "Decision-Guidance for Users & Dealers",
-        "Quality, Risk & Cost Control Layer of EBC",
+        t("solution_item_2_p1"),
+        t("solution_item_2_p2"),
+        t("solution_item_2_p3"),
       ],
-      modalHeading:
-        '"Technical Cabin" in the EBC context refers to a dedicated expert-support room/function (physical or digital) within the ECON Building Centre ecosystem. In three clear points:',
+      modalHeading: t("solution_item_2_modal_heading"),
       modalPoints: [
         {
-          title: "Central Technical Support & Validation Hub:",
-          description:
-            "A space where qualified engineers, architects, and technical experts verify drawings, material selections, BOQs, estimates, and construction methods to ensure technical correctness and compliance with standards.",
+          title: t("solution_item_2_modal_p1_title"),
+          description: t("solution_item_2_modal_p1_desc"),
         },
         {
-          title: "Decision-Guidance for Users & Dealers:",
-          description:
-            "Acts as a help desk for homeowners, contractors, and dealers to resolve doubts related to materials, specifications, quantities, workmanship, and cost optimization—reducing confusion and wrong decisions.",
+          title: t("solution_item_2_modal_p2_title"),
+          description: t("solution_item_2_modal_p2_desc"),
         },
         {
-          title: "Quality, Risk & Cost Control Layer of EBC:",
-          description:
-            "Functions as the technical backbone of EBC, preventing material mismatch, overconsumption, structural errors, and substandard execution, thereby protecting quality, safety, and budget across projects.",
+          title: t("solution_item_2_modal_p3_title"),
+          description: t("solution_item_2_modal_p3_desc"),
         },
       ],
     },
     {
-      title: "Manpower Hub",
+      title: t("solution_item_3_title"),
       icon: "/images/solutions/workers.svg",
       points: [
-        "Centralized Workforce Marketplace",
-        "On-Demand Hiring & Scheduling Engine",
-        "Payments & Performance Control",
+        t("solution_item_3_p1"),
+        t("solution_item_3_p2"),
+        t("solution_item_3_p3"),
       ],
-      modalHeading:
-        "Manpower Hub in the EBC platform can be expressed succinctly as follows:",
+      modalHeading: t("solution_item_3_modal_heading"),
       modalPoints: [
         {
-          title: "Centralized Workforce Marketplace:",
-          description:
-            "A dedicated EBC module where skilled, semi-skilled, and unskilled construction manpower (masons, electricians, plumbers, helpers, supervisors, etc.) are onboarded, verified, categorized, and made discoverable PAN-India.",
+          title: t("solution_item_3_modal_p1_title"),
+          description: t("solution_item_3_modal_p1_desc"),
         },
         {
-          title: "On-Demand Hiring & Scheduling Engine:",
-          description:
-            "Enables homeowners, contractors, and builders to search, compare, book, and schedule manpower based on skill type, location, availability, wage model (daily/hourly/job-based), and project duration.",
+          title: t("solution_item_3_modal_p2_title"),
+          description: t("solution_item_3_modal_p2_desc"),
         },
         {
-          title: "Governance, Payments & Performance Control:",
-          description:
-            "Provides admin-level control for worker verification, attendance tracking, standardized wage benchmarks, digital payments, ratings, and compliance—ensuring reliability, transparency, and accountability across all EBC projects.",
+          title: t("solution_item_3_modal_p3_title"),
+          description: t("solution_item_3_modal_p3_desc"),
         },
       ],
     },
     {
-      title: "Fabricator Area",
+      title: t("solution_item_4_title"),
       icon: "/images/solutions/forklift.svg",
       points: [
-        "Central hub for fabrication",
-        "Job-to-fabricator matching & execution",
-        "Quality, pricing, and compliance control",
+        t("solution_item_4_p1"),
+        t("solution_item_4_p2"),
+        t("solution_item_4_p3"),
       ],
-      modalHeading:
-        "Fabricator Area in the ECON Building Centre (EBC) refers to a dedicated functional zone within the platform for metal and structural fabrication-related activities.",
+      modalHeading: t("solution_item_4_modal_heading"),
       modalPoints: [
         {
-          title: "Central hub for fabrication services and materials:",
-          description:
-            "Lists fabricators (MS/SS/Aluminium), fabrication jobs (gates, grills, sheds, railings, staircases, structural frames) and the required raw materials (sections, sheets, pipes, fasteners) in one controlled area.",
+          title: t("solution_item_4_modal_p1_title"),
+          description: t("solution_item_4_modal_p1_desc"),
         },
         {
-          title: "Job-to-fabricator matching & execution flow:",
-          description:
-            "Enables customers, contractors, and dealers to post fabrication requirements, receive quotations, assign jobs to verified fabricators, track progress, and manage delivery/installation.",
+          title: t("solution_item_4_modal_p2_title"),
+          description: t("solution_item_4_modal_p2_desc"),
         },
         {
-          title: "Quality, pricing, and compliance control:",
-          description:
-            "Allows EBC to standardize rates, verify fabricator credentials, ensure material-grade compliance, and maintain workmanship quality across PAN-India projects.",
+          title: t("solution_item_4_modal_p3_title"),
+          description: t("solution_item_4_modal_p3_desc"),
         },
       ],
     },
     {
-      title: "Hiring Terminal",
+      title: t("solution_item_5_title"),
       icon: "/images/solutions/recruiter.svg",
       points: [
-        "Digital hiring space",
-        "Centralized appointment",
-        "Trust and control layer",
+        t("solution_item_5_p1"),
+        t("solution_item_5_p2"),
+        t("solution_item_5_p3"),
       ],
-      modalHeading: "Hiring Terminal room in EBC can be expressed as:",
+      modalHeading: t("solution_item_5_modal_heading"),
       modalPoints: [
         {
-          title: "Digital hiring space:",
-          description:
-            "A dedicated digital hiring space within the EBC platform where customers, contractors, or dealers can search, compare, and book verified workers, technicians, and service providers based on skill, location, availability, and pricing.",
+          title: t("solution_item_5_modal_p1_title"),
+          description: t("solution_item_5_modal_p1_desc"),
         },
         {
-          title: "Centralized appointment:",
-          description:
-            "and allocation hub that manages real-time worker availability, job assignment, scheduling, attendance, and completion tracking, ensuring transparency and accountability for all parties.",
+          title: t("solution_item_5_modal_p2_title"),
+          description: t("solution_item_5_modal_p2_desc"),
         },
         {
-          title: "Trust and control layer:",
-          description:
-            "A trust and control layer of EBC that ensures background-verified manpower, standardized rates, digital job records, and dispute-resolution support, eliminating dependency on unorganized local labour networks.",
+          title: t("solution_item_5_modal_p3_title"),
+          description: t("solution_item_5_modal_p3_desc"),
         },
       ],
     },
     {
-      title: "Contract Desk",
+      title: t("solution_item_6_title"),
       icon: "/images/solutions/contractor.svg",
       points: [
-        "Centralized Negotiation & Finalization Hub",
-        "End-to-End Contract Management",
-        "Trust, Control & Risk Mitigation Layer",
+        t("solution_item_6_p1"),
+        t("solution_item_6_p2"),
+        t("solution_item_6_p3"),
       ],
-      modalHeading:
-        "Contract Desk room in EBC can be expressed succinctly as follows:",
+      modalHeading: t("solution_item_6_modal_heading"),
       modalPoints: [
         {
-          title: "Centralized Negotiation & Finalization Hub:",
-          description:
-            "A dedicated digital space where homeowners, contractors, service providers, and suppliers can negotiate scope, pricing, timelines, and terms, and formally finalize construction-related contracts within the EBC ecosystem.",
+          title: t("solution_item_6_modal_p1_title"),
+          description: t("solution_item_6_modal_p1_desc"),
         },
         {
-          title: "End-to-End Contract Management & Transparency:",
-          description:
-            "Enables structured documentation, approvals, milestones, payment schedules, and compliance tracking, ensuring clarity, accountability, and reduced disputes for all parties.",
+          title: t("solution_item_6_modal_p2_title"),
+          description: t("solution_item_6_modal_p2_desc"),
         },
         {
-          title: "Trust, Control & Risk Mitigation Layer:",
-          description:
-            "Acts as EBC's controlled assurance mechanism—linking verified vendors, standardized terms, and monitored execution—so projects move from quotation to completion with confidence and governance.",
+          title: t("solution_item_6_modal_p3_title"),
+          description: t("solution_item_6_modal_p3_desc"),
         },
       ],
     },
     {
-      title: "Offers Zone",
+      title: t("solution_item_7_title"),
       icon: "/images/solutions/best-price.svg",
       points: [
-        "Dedicated virtual meeting room",
-        "Multi-party coordination",
-        "Central record-backed collaboration space",
+        t("solution_item_7_p1"),
+        t("solution_item_7_p2"),
+        t("solution_item_7_p3"),
       ],
-      modalHeading: "Offers Zone (EBC Platform) – Explained",
+      modalHeading: t("solution_item_7_modal_heading"),
       modalPoints: [
         {
-          title: "Dedicated virtual meeting room:",
-          description:
-            "A dedicated virtual meeting room within the EBC platform where homeowners, contractors, architects, engineers, and EBC advisors can meet together for structured discussions on projects, estimates, designs, and execution planning.",
+          title: t("solution_item_7_modal_p1_title"),
+          description: t("solution_item_7_modal_p1_desc"),
         },
         {
-          title: "Multi-party coordination:",
-          description:
-            "Used for multi-party coordination and decision-making, such as finalizing BOQs, comparing materials/brands, approving designs, resolving site issues, and aligning timelines—eliminating confusion and repeated site visits.",
+          title: t("solution_item_7_modal_p2_title"),
+          description: t("solution_item_7_modal_p2_desc"),
         },
         {
-          title: "Central record-backed collaboration space:",
-          description:
-            "Acts as a central record-backed collaboration space, where meeting outcomes, shared documents, cost approvals, and action points are documented for transparency, accountability, and smooth project execution.",
+          title: t("solution_item_7_modal_p3_title"),
+          description: t("solution_item_7_modal_p3_desc"),
         },
       ],
     },
     {
-      title: "Cost Calculator",
+      title: t("solution_item_8_title"),
       icon: "/images/solutions/budget.svg",
       points: [
-        "Construction Cost Estimation",
-        "Intelligence for Budget Optimization",
-        "Direct Action Enablement Inside Marketplace",
+        t("solution_item_8_p1"),
+        t("solution_item_8_p2"),
+        t("solution_item_8_p3"),
       ],
-      modalHeading:
-        "AI Cost Calculator in the ECON Building Centre (EBC) platform can be clearly expressed as follows:",
+      modalHeading: t("solution_item_8_modal_heading"),
       modalPoints: [
         {
-          title: "Automated, Item-wise Construction Cost Estimation:",
-          description:
-            "Uses AI to calculate accurate, location-adjusted construction cost by auto-mapping project inputs (built-up area, design type, floors, material grade, labour type) with EBC's real-time material prices, service rates, and worker charges available on the platform.",
+          title: t("solution_item_8_modal_p1_title"),
+          description: t("solution_item_8_modal_p1_desc"),
         },
         {
-          title: "Decision Intelligence for Budget Optimization:",
-          description:
-            "Instantly compares multiple scenarios (branded vs local materials, different construction methods, contractor vs worker-based execution) and shows cost savings, trade-offs, and optimized combinations—helping users control budget before money is spent.",
+          title: t("solution_item_8_modal_p2_title"),
+          description: t("solution_item_8_modal_p2_desc"),
         },
         {
-          title: "Direct Action Enablement Inside Marketplace:",
-          description:
-            "Converts the final cost estimate into a structured shopping + service plan, allowing users to directly purchase materials, book services/workers, and lock prices—eliminating guesswork, overbilling, and contractor dependency.",
+          title: t("solution_item_8_modal_p3_title"),
+          description: t("solution_item_8_modal_p3_desc"),
         },
       ],
     },
     {
-      title: "Service Support",
+      title: t("solution_item_9_title"),
       icon: "/images/solutions/technical-support.svg",
       points: [
-        "Mason, plumber, electrician, painter etc.",
-        "Ratings & reviews",
-        "Service oversight",
+        t("solution_item_9_p1"),
+        t("solution_item_9_p2"),
+        t("solution_item_9_p3"),
       ],
-      modalHeading: "Service Support in EBC (ECON Building Centre)",
+      modalHeading: t("solution_item_9_modal_heading"),
       modalPoints: [
         {
-          title: "Verified Professionals at Your Fingertips:",
-          description:
-            "Access a curated list of verified masons, plumbers, electricians, painters, and other construction service providers, complete with ratings and reviews from previous projects.",
+          title: t("solution_item_9_modal_p1_title"),
+          description: t("solution_item_9_modal_p1_desc"),
         },
         {
-          title: "Transparent Pricing & Standardized Rates:",
-          description:
-            "Eliminate the hassle of negotiating by utilizing EBC's standardized rate benchmarks for various services, ensuring you pay a fair price for quality workmanship.",
+          title: t("solution_item_9_modal_p2_title"),
+          description: t("solution_item_9_modal_p2_desc"),
         },
         {
-          title: "Dedicated Support & Quality Assurance:",
-          description:
-            "Benefit from EBC's oversight and support system, designed to ensure that services are delivered to your satisfaction and that any issues are resolved promptly.",
+          title: t("solution_item_9_modal_p3_title"),
+          description: t("solution_item_9_modal_p3_desc"),
         },
       ],
     },
@@ -432,10 +401,11 @@ export function SolutionSection() {
       <Container size="xl" className="relative z-10">
         <div className="text-center mb-16">
           <TypographyH1 className="text-primary font-black text-3xl md:text-5xl drop-shadow-sm">
-            EBC&apos;s Solution
+            {t("solution_section_title").split("'s")[0]}&apos;s{" "}
+            <span className="text-secondary">Solution</span>
           </TypographyH1>
           <p className="text-primary font-bold text-lg md:text-xl mt-4 opacity-80">
-            It&apos;s a Local Marketplace. No Commission. No Hidden Charges.
+            {t("solution_section_subtitle")}
           </p>
         </div>
 
