@@ -45,13 +45,11 @@ export function ServicesSection() {
     },
     {
       title: t("ser_item_2"),
-      image:
-        "/images/services/construction-residential-new-house-progress-building-site 1.png",
+      image: "/images/services/floor-extension-or-upgradation.jpg",
     },
     {
       title: t("ser_item_3"),
-      image:
-        "/images/services/skilled-worker-installing-ceramic-wood-effect-tiles-floor-worker-making-laminate-flooring-construction-site-new-apartment 1.png",
+      image: "/images/services/building-repair-or-renovation.jpg",
     },
     {
       title: t("ser_item_4"),
@@ -59,21 +57,19 @@ export function ServicesSection() {
     },
     {
       title: t("ser_item_5"),
-      image: "/images/services/architecture.png",
+      image: "/images/services/custom-hom-design-and-planning.jpg",
     },
     {
       title: t("ser_item_6"),
-      image:
-        "/images/services/construction-residential-new-house-progress-building-site 1.png",
+      image: "/images/services/construction-residential-new-house-progress-building-site 1.png",
     },
     {
       title: t("ser_item_7"),
-      image:
-        "/images/services/skilled-worker-installing-ceramic-wood-effect-tiles-floor-worker-making-laminate-flooring-construction-site-new-apartment 1.png",
+      image: "/images/services/skilled-worker-installing-ceramic-wood-effect-tiles-floor-worker-making-laminate-flooring-construction-site-new-apartment 1.png",
     },
     {
       title: t("ser_item_8"),
-      image: "/images/services/site-engineer-construction-site 1.png",
+      image: "/images/services/remote-technical-supervision.jpg",
     },
   ];
 
