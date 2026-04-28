@@ -196,7 +196,7 @@ export function AdminDashboardSidebar({
               asChild
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
-              <a href="#">
+              <a href="/admin-dashboard">
                 <img
                   src="/logo.svg"
                   alt="E-CON Building Centre"
