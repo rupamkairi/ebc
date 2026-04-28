@@ -18,6 +18,7 @@ import {
   Loader2,
   Phone,
   Clock,
+  Mail,
 } from "lucide-react";
 import {
   useSupportCategoriesQuery,
@@ -119,6 +120,22 @@ export function SupportCenter() {
                 >
                   <Phone className="h-4 w-4 text-green-600" />
                   <span>Call Executive Directly</span>
+                </a>
+                <a
+                  href="mailto:support@econbuildingcentre.com"
+                  className="flex items-center gap-3 p-3 rounded-lg border hover:bg-muted text-sm transition-colors"
+                >
+                  <Mail className="h-4 w-4 text-blue-600" />
+                  <span>Email Support</span>
+                </a>
+                <a
+                  href="https://wa.me/918800000000"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-3 rounded-lg border hover:bg-muted text-sm transition-colors"
+                >
+                  <MessageCircle className="h-4 w-4 text-green-500" />
+                  <span>WhatsApp Support</span>
                 </a>
               </div>
             </div>
