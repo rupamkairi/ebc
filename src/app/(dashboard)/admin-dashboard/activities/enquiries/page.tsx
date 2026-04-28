@@ -1,35 +1,38 @@
 "use client";
 
 import { useEnquiriesQuery, useQuotationsQuery } from "@/queries/activityQueries";
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
-  CardTitle 
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle
 } from "@/components/ui/card";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Search, Filter, Eye } from "lucide-react";
 import { useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
-import { 
-  ENQUIRY_STATUS, 
-  ENQUIRY_STATUS_LABELS 
+import {
+  ENQUIRY_STATUS,
+  ENQUIRY_STATUS_LABELS
 } from "@/constants/enums";
 import { cn } from "@/lib/utils";
 import Container from "@/components/ui/containers";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
+import { ActivityDetailModal } from "@/components/dashboard/admin/activities/activity-detail-modal";
 
 export default function AdminEnquiriesPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedEnquiry, setSelectedEnquiry] = useState<any | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { data: enquiries = [], isLoading: loadingEnquiries } = useEnquiriesQuery();
   const { data: allQuotations = [], isLoading: loadingQuotations } = useQuotationsQuery();
 
@@ -39,7 +42,7 @@ export default function AdminEnquiriesPage() {
       return (
         enq.id.toLowerCase().includes(q) ||
         enq.createdBy?.name?.toLowerCase().includes(q) ||
-        enq.enquiryLineItems.some((li) => 
+        enq.enquiryLineItems.some((li) =>
           li.item?.name?.toLowerCase().includes(q)
         )
       );
@@ -93,7 +96,7 @@ export default function AdminEnquiriesPage() {
               <TableHead className="font-bold">Responses</TableHead>
               <TableHead className="font-bold">Date</TableHead>
               <TableHead className="font-bold">Status</TableHead>
-              <TableHead className="text-right font-bold">Actions</TableHead>
+              <TableHead className="text-right font-bold">Details</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -132,7 +135,7 @@ export default function AdminEnquiriesPage() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge 
+                      <Badge
                         variant={quotations.length > 0 ? "default" : "outline"}
                         className={cn(
                           "font-black text-[10px] px-2.5 py-0.5 rounded-full",
@@ -146,7 +149,7 @@ export default function AdminEnquiriesPage() {
                       {format(new Date(enq.createdAt), "MMM dd, yyyy")}
                     </TableCell>
                     <TableCell>
-                      <Badge 
+                      <Badge
                         className={cn(
                           "font-black text-[9px] uppercase tracking-widest px-2 py-0.5",
                           enq.status === ENQUIRY_STATUS.PENDING && "bg-amber-100 text-amber-700 hover:bg-amber-100",
@@ -159,7 +162,15 @@ export default function AdminEnquiriesPage() {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="font-black text-[10px] uppercase tracking-widest h-8 px-4 rounded-lg hover:bg-primary hover:text-white transition-all"
+                        onClick={() => {
+                          setSelectedEnquiry(enq);
+                          setIsModalOpen(true);
+                        }}
+                      >
                         <Eye size={16} className="text-primary/60" />
                       </Button>
                     </TableCell>
@@ -170,6 +181,17 @@ export default function AdminEnquiriesPage() {
           </TableBody>
         </Table>
       </Card>
+
+      <ActivityDetailModal
+        type="ENQUIRY"
+        activity={selectedEnquiry}
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedEnquiry(null);
+        }}
+        quotations={selectedEnquiry ? allQuotations.filter(q => q.enquiryId === selectedEnquiry.id) : []}
+      />
     </Container>
   );
 }

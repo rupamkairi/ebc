@@ -27,6 +27,9 @@ import { cn } from "@/lib/utils";
 import Container from "@/components/ui/containers";
 import { format, formatDistanceToNow } from "date-fns";
 import Link from "next/link";
+import { useState } from "react";
+import { ActivityDetailModal } from "@/components/dashboard/admin/activities/activity-detail-modal";
+import { Button } from "@/components/ui/button";
 
 type ActivityType = "ENQUIRY" | "APPOINTMENT" | "QUOTATION" | "VISIT";
 
@@ -43,6 +46,10 @@ interface UnifiedActivity {
 }
 
 export default function AdminActivitiesOverviewPage() {
+  const [selectedActivity, setSelectedActivity] = useState<any | null>(null);
+  const [selectedType, setSelectedType] = useState<"ENQUIRY" | "APPOINTMENT">("ENQUIRY");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const { data: enquiries = [], isLoading: loadingEnquiries } = useEnquiriesQuery();
   const { data: appointments = [], isLoading: loadingAppointments } = useAppointmentsQuery();
   const { data: quotations = [], isLoading: loadingQuotations } = useQuotationsQuery();
@@ -211,12 +218,23 @@ export default function AdminActivitiesOverviewPage() {
                       )}>
                         {activity.status}
                       </Badge>
-                      <Link 
-                        href={activity.link}
-                        className="p-2 rounded-lg bg-slate-50 hover:bg-primary hover:text-white transition-colors group/link"
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-9 w-9 p-0 rounded-lg bg-slate-50 hover:bg-primary hover:text-white transition-colors group/link"
+                        onClick={() => {
+                          if (activity.type === "ENQUIRY" || activity.type === "QUOTATION") {
+                            setSelectedActivity(activity.type === "ENQUIRY" ? activity.raw : activity.raw.enquiry);
+                            setSelectedType("ENQUIRY");
+                          } else {
+                            setSelectedActivity(activity.type === "APPOINTMENT" ? activity.raw : activity.raw.appointment);
+                            setSelectedType("APPOINTMENT");
+                          }
+                          setIsModalOpen(true);
+                        }}
                       >
                         <ArrowRight size={16} className="transition-transform group-hover/link:translate-x-0.5" />
-                      </Link>
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
@@ -231,6 +249,18 @@ export default function AdminActivitiesOverviewPage() {
           )}
         </div>
       </div>
+
+      <ActivityDetailModal
+        type={selectedType}
+        activity={selectedActivity}
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedActivity(null);
+        }}
+        quotations={selectedType === "ENQUIRY" && selectedActivity ? quotations.filter(q => q.enquiryId === selectedActivity.id) : []}
+        visit={selectedType === "APPOINTMENT" && selectedActivity ? visits.find(v => v.appointmentId === selectedActivity.id) : null}
+      />
     </Container>
   );
 }
