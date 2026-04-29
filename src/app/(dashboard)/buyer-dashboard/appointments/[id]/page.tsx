@@ -31,7 +31,9 @@ import {
   FileText as FileTextIcon,
   Download,
   ChevronRight,
+  ArrowRight,
 } from "lucide-react";
+import { IconRobot } from "@tabler/icons-react";
 import { format } from "date-fns";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -212,6 +214,47 @@ export default function BuyerAppointmentDetailsPage() {
                 ),
               )}
             </div>
+          </section>
+
+          <Separator className="opacity-50" />
+
+          {/* Precision Tools Section */}
+          <section className="space-y-6">
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-1.5 bg-secondary rounded-full" />
+              <h3 className="text-2xl font-black tracking-tight flex items-center gap-2 text-primary uppercase italic">
+                Precision Tools
+              </h3>
+            </div>
+
+            <Card className="bg-linear-to-br from-primary/5 to-secondary/5 border-none shadow-sm rounded-3xl overflow-hidden group">
+              <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="flex items-center gap-6">
+                  <div className="h-16 w-16 rounded-3xl bg-white shadow-xl shadow-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-500">
+                    <IconRobot size={32} />
+                  </div>
+                  <div className="space-y-1">
+                    <h4 className="text-lg font-black italic text-primary">
+                      Need an Estimation?
+                    </h4>
+                    <p className="text-sm font-medium text-muted-foreground max-w-sm">
+                      Use our AI-powered Precision Tool to calculate costs,
+                      check material compatibility, or get technical advice for
+                      this appointment.
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  asChild
+                  className="bg-primary hover:bg-primary/90 text-white font-black italic rounded-2xl h-14 px-8 shadow-xl shadow-primary/10 transition-all hover:scale-[1.02]"
+                >
+                  <Link href="/buyer-dashboard">
+                    Open AI Calculator
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
           </section>
 
           <Separator className="opacity-50" />
