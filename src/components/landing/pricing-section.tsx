@@ -42,8 +42,12 @@ export function PricingSection() {
         {/* Section Heading */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-            <span className="text-primary">{t("pricing_section_title_prefix")}</span>{" "}
-            <span className="text-secondary">{t("pricing_section_title_highlight")}</span>
+            <span className="text-primary">
+              {t("pricing_section_title_prefix")}
+            </span>{" "}
+            <span className="text-secondary">
+              {t("pricing_section_title_highlight")}
+            </span>
           </h2>
         </div>
 
@@ -73,10 +77,7 @@ export function PricingSection() {
                 )}
               >
                 {/* Service Column */}
-                <div className="col-span-1 border-r border-[#E5E7EB]/50 flex items-center justify-center">
-                  {/* Left gutter/indicator often seen in tables */}
-                </div>
-                <div className="col-span-6 flex items-center py-4 px-6">
+                <div className="col-span-7 flex items-center py-4 px-6">
                   <p className="text-xs md:text-sm font-medium text-gray-700 leading-snug">
                     {item.service}
                   </p>

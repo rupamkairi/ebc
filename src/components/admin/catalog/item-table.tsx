@@ -1,6 +1,6 @@
 "use client";
 
-import { useItemsQuery, useDeleteItemMutation } from "@/queries/catalogQueries";
+import { useItemsQuery, useDeleteItemMutation, useCategoriesQuery } from "@/queries/catalogQueries";
 import { PaginationState, SortingState } from "@tanstack/react-table";
 import { useState } from "react";
 import { DataTable } from "@/components/datatable/data-table";
@@ -33,6 +33,7 @@ export function ItemTable() {
   const [itemToDelete, setItemToDelete] = useState<Item | null>(null);
   const { setEditOpen } = useItemStore();
 
+  const { data: categories = [] } = useCategoriesQuery({ perPage: 1000 });
   const deleteMutation = useDeleteItemMutation();
 
   const { data, isLoading } = useItemsQuery({
@@ -71,9 +72,35 @@ export function ItemTable() {
       cell: ({ row }) => <Badge variant="outline">{row.original.type}</Badge>,
     },
     {
-      accessorKey: "category.name",
+      id: "category",
       header: "Category",
-      cell: ({ row }) => row.original.category?.name || "-",
+      cell: ({ row }) => {
+        const category = row.original.category;
+        if (!category) return "-";
+        const isSubCategory = category.parentCategoryId || category.parentCategory;
+        if (isSubCategory) {
+          if (category.parentCategory?.name) return category.parentCategory.name;
+          if (category.parentCategoryId) {
+            const parent = categories.find((c) => c.id === category.parentCategoryId);
+            return parent?.name || "-";
+          }
+          return "-";
+        }
+        return category.name;
+      },
+    },
+    {
+      accessorKey: "category.name",
+      header: "Sub Category",
+      cell: ({ row }) => {
+        const category = row.original.category;
+        if (!category) return "-";
+        const isSubCategory = category.parentCategoryId || category.parentCategory;
+        if (isSubCategory) {
+          return category.name;
+        }
+        return "-";
+      },
     },
     {
       accessorKey: "brand.name",
