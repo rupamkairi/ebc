@@ -160,7 +160,7 @@ export function ActivityDetailModal({
                     {(activity as Appointment).appointmentSlots.map((slot, idx) => (
                       <div key={idx} className="text-sm font-medium text-primary flex items-center gap-2">
                         <Clock size={12} className="text-primary/40" />
-                        {format(new Date(slot.fromDateTime), "MMM dd, yyyy HH:mm")} - {format(new Date(slot.toDateTime), "HH:mm")}
+                        {format(new Date(slot.fromDateTime), "MMM dd, yyyy hh:mm a")} - {format(new Date(slot.toDateTime), "hh:mm a")}
                       </div>
                     ))}
                   </div>

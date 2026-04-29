@@ -204,8 +204,8 @@ export default function BuyerAppointmentDetailsPage() {
                         {format(new Date(slot.fromDateTime), "MMM do, yyyy")}
                       </p>
                       <p className="text-[10px] text-muted-foreground font-bold">
-                        {format(new Date(slot.fromDateTime), "p")} -{" "}
-                        {format(new Date(slot.toDateTime), "p")}
+                        {format(new Date(slot.fromDateTime), "hh:mm a")} -{" "}
+                        {format(new Date(slot.toDateTime), "hh:mm a")}
                       </p>
                     </div>
                   </div>
@@ -393,8 +393,8 @@ function VisitListItem({
                   <p className="font-black text-sm">
                     {v.visitSlot ? (
                       <>
-                        {format(new Date(v.visitSlot.fromDateTime), "p")} -{" "}
-                        {format(new Date(v.visitSlot.toDateTime), "p")}
+                        {format(new Date(v.visitSlot.fromDateTime), "hh:mm a")} -{" "}
+                        {format(new Date(v.visitSlot.toDateTime), "hh:mm a")}
                       </>
                     ) : (
                       "N/A"

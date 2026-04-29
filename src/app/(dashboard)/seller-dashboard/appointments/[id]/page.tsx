@@ -124,8 +124,8 @@ export default function AppointmentDetailsPage() {
                     <p className="font-black text-sm text-emerald-900">
                       {existingVisit.visitSlot ? (
                         <>
-                          {format(new Date(existingVisit.visitSlot.fromDateTime), "p")} -{" "}
-                          {format(new Date(existingVisit.visitSlot.toDateTime), "p")}
+                          {format(new Date(existingVisit.visitSlot.fromDateTime), "hh:mm a")} -{" "}
+                          {format(new Date(existingVisit.visitSlot.toDateTime), "hh:mm a")}
                         </>
                       ) : (
                         "N/A"

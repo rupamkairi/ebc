@@ -191,10 +191,10 @@ export default function BuyerVisitsPage() {
                                 <br />
                                 {format(
                                   new Date(v.visitSlot.fromDateTime),
-                                  "p",
+                                  "hh:mm a",
                                 )}{" "}
                                 -{" "}
-                                {format(new Date(v.visitSlot.toDateTime), "p")}
+                                {format(new Date(v.visitSlot.toDateTime), "hh:mm a")}
                               </>
                             ) : (
                               "Not specified"

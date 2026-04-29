@@ -165,8 +165,8 @@ export default function VisitDetailsPage() {
                       {t("time_slot_label")}
                     </p>
                     <p className="font-black text-sm text-emerald-900">
-                      {format(new Date(visit.visitSlot.fromDateTime), "p")} -{" "}
-                      {format(new Date(visit.visitSlot.toDateTime), "p")}
+                      {format(new Date(visit.visitSlot.fromDateTime), "hh:mm a")} -{" "}
+                      {format(new Date(visit.visitSlot.toDateTime), "hh:mm a")}
                     </p>
                   </div>
                 </div>
@@ -285,7 +285,7 @@ export default function VisitDetailsPage() {
                       {format(new Date(visit.visitSlot.fromDateTime), "PPP")}
                       <br />
                       <span className="text-xs text-muted-foreground">
-                        {format(new Date(visit.visitSlot.fromDateTime), "p")} - {format(new Date(visit.visitSlot.toDateTime), "p")}
+                        {format(new Date(visit.visitSlot.fromDateTime), "hh:mm a")} - {format(new Date(visit.visitSlot.toDateTime), "hh:mm a")}
                       </span>
                     </>
                   ) : (

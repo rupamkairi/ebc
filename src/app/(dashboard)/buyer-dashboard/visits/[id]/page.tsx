@@ -143,7 +143,7 @@ export default function BuyerVisitDetailsPage() {
                         <Clock className="h-5 w-5 text-primary" />
                       </div>
                       <p className="font-black text-primary">
-                        {format(new Date(visit.visitSlot.fromDateTime), "p")} - {format(new Date(visit.visitSlot.toDateTime), "p")}
+                        {format(new Date(visit.visitSlot.fromDateTime), "hh:mm a")} - {format(new Date(visit.visitSlot.toDateTime), "hh:mm a")}
                       </p>
                     </div>
                   </div>

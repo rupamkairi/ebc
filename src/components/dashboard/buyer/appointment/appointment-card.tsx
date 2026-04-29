@@ -13,6 +13,7 @@ import {
   FileText,
 } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
+import { formatTime } from "@/lib/utils";
 import Link from "next/link";
 
 interface AppointmentCardProps {
@@ -45,7 +46,7 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
       try {
         return {
           date: format(new Date(parts[0]), "PPP"),
-          time: parts[1],
+          time: formatTime(parts[1]),
         };
       } catch {
         return { date: remarks, time: "" };

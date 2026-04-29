@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, Clock, Plus, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatTime } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -147,7 +147,7 @@ export function DateTimeSlotSelect({
                 </span>
                 <div className="h-4 w-px bg-muted-foreground/30" />
                 <span className="text-sm">
-                  {slot.startTime} - {slot.endTime}
+                  {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
                 </span>
               </div>
               <Button

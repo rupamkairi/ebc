@@ -14,3 +14,14 @@ export function firstAndLastNameInitials(name: string) {
   return initials;
 }
 
+export function formatTime(time: string | Date): string {
+  if (time instanceof Date) {
+    return time.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+  }
+  
+  // Handle HH:mm format string
+  const [hours, minutes] = time.split(':').map(Number);
+  const period = hours >= 12 ? 'PM' : 'AM';
+  const hours12 = hours % 12 || 12;
+  return `${hours12}:${minutes.toString().padStart(2, '0')} ${period}`;
+}

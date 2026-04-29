@@ -154,7 +154,7 @@ export function AppointmentDetailsModal({
                         </div>
                         <div className="space-y-0 text-[11px]">
                           <p className={cn("font-black italic leading-tight")}>
-                            {format(new Date(slot.fromDateTime), "p")} - {format(new Date(slot.toDateTime), "p")}
+                            {format(new Date(slot.fromDateTime), "hh:mm a")} - {format(new Date(slot.toDateTime), "hh:mm a")}
                           </p>
                         </div>
                       </div>
