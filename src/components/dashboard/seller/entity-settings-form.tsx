@@ -58,6 +58,7 @@ export function EntitySettingsForm() {
       city: "",
       pincodeId: "",
       documents: [] as string[],
+      media: [] as string[],
       type: "" as string,
     },
     onSubmit: async ({ value }) => {
@@ -102,7 +103,12 @@ export function EntitySettingsForm() {
         addressLine2: entity.addressLine2 || "",
         city: entity.city || "",
         pincodeId: entity.pincodeId || "",
-        documents: (entity.entityAttachments || []).map((a) => a.documentId),
+        documents: (entity.entityAttachments || [])
+          .filter((a) => a.documentId)
+          .map((a) => a.documentId as string),
+        media: (entity.entityAttachments || [])
+          .filter((a) => a.mediaId)
+          .map((a) => a.mediaId as string),
         type: (entity.type as string) || "",
       });
     }
@@ -494,7 +500,7 @@ export function EntitySettingsForm() {
                     <FileUploader
                       type="document"
                       variant="multiple"
-                      label="Upload Files"
+                      label="Upload Documents"
                       entityId={entity.id}
                       onUploadSuccess={(newFiles: FileUploadResponse[]) => {
                         const newIds = newFiles.map((f) => f.id);
@@ -532,7 +538,9 @@ export function EntitySettingsForm() {
                               {(() => {
                                 const attachment =
                                   entity.entityAttachments?.find(
-                                    (a) => a.documentId === docId || a.document?.id === docId,
+                                    (a) =>
+                                      a.documentId === docId ||
+                                      a.document?.id === docId,
                                   );
                                 const doc = attachment?.document;
                                 const fileName =
@@ -572,7 +580,9 @@ export function EntitySettingsForm() {
                               onClick={() => {
                                 const attachment =
                                   entity.entityAttachments?.find(
-                                    (a) => a.documentId === docId || a.document?.id === docId,
+                                    (a) =>
+                                      a.documentId === docId ||
+                                      a.document?.id === docId,
                                   );
                                 const downloadUrl =
                                   attachment?.document?.url ||
@@ -604,6 +614,131 @@ export function EntitySettingsForm() {
                           </div>
                         </div>
                       ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </form.Field>
+
+            {/* Media Uploads inline */}
+            <form.Field name="media">
+              {(field) => (
+                <div className="mt-8">
+                  <div className="flex justify-end mb-4">
+                    <FileUploader
+                      type="media"
+                      variant="multiple"
+                      label="Upload Media"
+                      entityId={entity.id}
+                      onUploadSuccess={(newFiles: FileUploadResponse[]) => {
+                        const newIds = newFiles.map((f) => f.id);
+                        field.handleChange([
+                          ...(field.state.value || []),
+                          ...newIds,
+                        ]);
+                        queryClient.invalidateQueries({
+                          queryKey: entityKeys.all,
+                        });
+                      }}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {!field.state.value || field.state.value.length === 0 ? (
+                      <div className="col-span-full py-12 text-center border-2 border-dashed border-primary/50 rounded-xl bg-white/50 flex flex-col items-center justify-center">
+                        <FileText
+                          className="size-10 mx-auto text-primary opacity-80 mb-3"
+                          strokeWidth={1.5}
+                        />
+                        <p className="text-sm font-semibold text-primary">
+                          No Media Uploaded Yet
+                        </p>
+                      </div>
+                    ) : (
+                      (field.state.value as string[]).map((mediaId, idx) => {
+                        const attachment = entity.entityAttachments?.find(
+                          (a) =>
+                            a.mediaId === mediaId ||
+                            (a as any).media?.id === mediaId,
+                        );
+                        const media = (attachment as any)?.media;
+                        const fileName =
+                          media?.name ||
+                          media?.key
+                            ?.split("/")
+                            .pop()
+                            ?.split("-")
+                            .slice(2)
+                            .join("-") ||
+                          media?.key?.split("/").pop() ||
+                          `Media ${idx + 1}`;
+
+                        const downloadUrl =
+                          media?.url ||
+                          `${
+                            process.env.NEXT_PUBLIC_API_URL ||
+                            "http://localhost:10000/api"
+                          }/attachment/media/url/${mediaId}`;
+
+                        return (
+                          <div
+                            key={mediaId}
+                            className="flex items-center justify-between p-4 border border-primary/30 rounded-lg bg-white group shadow-sm"
+                          >
+                            <div className="flex items-center gap-3 overflow-hidden">
+                              {media?.url ? (
+                                <img
+                                  src={media.url}
+                                  alt={fileName}
+                                  className="w-10 h-10 object-cover rounded-md border border-primary/20 shrink-0"
+                                />
+                              ) : (
+                                <FileText className="size-5 shrink-0 text-primary" />
+                              )}
+                              <div className="flex flex-col">
+                                <span className="text-sm font-semibold truncate text-primary">
+                                  {decodeURIComponent(fileName)}
+                                </span>
+                                <span className="text-[11px] text-muted-foreground truncate">
+                                  {media
+                                    ? `${(
+                                        parseInt(media.sizeBytes || "0") / 1024
+                                      ).toFixed(1)} KB`
+                                    : `ID: ${mediaId}`}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="size-8"
+                                onClick={() =>
+                                  window.open(downloadUrl, "_blank")
+                                }
+                              >
+                                <FileText className="size-4 text-primary" />
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="size-8 text-destructive hover:bg-destructive/10"
+                                onClick={() =>
+                                  field.handleChange(
+                                    (field.state.value as string[]).filter(
+                                      (id) => id !== mediaId,
+                                    ),
+                                  )
+                                }
+                              >
+                                <X className="size-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        );
+                      })
                     )}
                   </div>
                 </div>

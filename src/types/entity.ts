@@ -24,15 +24,24 @@ export interface Entity {
   entityAttachments?:
     | {
         id: string;
-        documentId: string;
-        document: {
+        documentId?: string | null;
+        document?: {
           id: string;
           key: string;
           url: string;
           mimeType: string;
           sizeBytes: string;
           name?: string;
-        };
+        } | null;
+        mediaId?: string | null;
+        media?: {
+          id: string;
+          key: string;
+          url: string;
+          mimeType: string;
+          sizeBytes: string;
+          name?: string;
+        } | null;
       }[]
     | null;
   pincode?: {
@@ -74,6 +83,7 @@ export interface UpdateEntityRequest {
   city?: string;
   pincodeId?: string;
   documents?: string[];
+  media?: string[];
   type?: ENTITY_TYPE;
   op_type?: ITEM_TYPE;
 }
