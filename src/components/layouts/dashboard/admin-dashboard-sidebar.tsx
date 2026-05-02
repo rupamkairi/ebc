@@ -173,7 +173,7 @@ export function AdminDashboardSidebar({
 
   const filteredNavMain = data.navMain
     .map((group) => {
-      if (group.title === "Admin") {
+      if (group.title === "Admins") {
         const filteredItems = group.items?.filter((item) => {
           // Admin (Super Admin) sees everything
           if (role === USER_ROLE.ADMIN) return true;
