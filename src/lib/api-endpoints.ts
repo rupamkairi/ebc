@@ -9,6 +9,8 @@ export const API_ENDPOINTS = {
       SET_ROLE: "/auth/admin/set-role",
       UPDATE_PROFILE: "/auth/admin/update",
       LIST_USERS: "/auth/admin/list-users",
+      GET_USER: "/auth/admin/user", // :id
+      UPDATE_USER: "/auth/admin/user", // :id
     },
     USER: {
       SEND_OTP: "/auth/user/send-otp",
@@ -138,6 +140,7 @@ export const API_ENDPOINTS = {
   ENTITY: {
     CREATE: "/entity",
     GET_ALL: "/entity",
+    GET: "/entity", // :id
     UPDATE: "/entity", // :id attached in service
     VERIFY: "/entity", // :id/verify attached in service
   },

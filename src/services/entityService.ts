@@ -21,6 +21,12 @@ export const entityService = {
     });
   },
 
+  async getById(id: string): Promise<Entity> {
+    return fetchClient<Entity>(`${API_ENDPOINTS.ENTITY.GET}/${id}`, {
+      method: "GET",
+    });
+  },
+
   async update(id: string, data: UpdateEntityRequest): Promise<Entity> {
     return fetchClient<Entity>(`${API_ENDPOINTS.ENTITY.UPDATE}/${id}`, {
       method: "PATCH",

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { adminService, UserListParams } from "@/services/adminService";
-import { CreateAdminSubordinateRequest } from "@/types/auth";
+import { CreateAdminSubordinateRequest, AdminUser } from "@/types/auth";
 
 export const adminKeys = {
   all: ["admin"] as const,
@@ -54,6 +54,27 @@ export function useCreateAdminExecutiveMutation() {
       adminService.createAdminExecutive(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: adminKeys.all });
+    },
+  });
+}
+
+export function useUserQuery(id: string) {
+  return useQuery({
+    queryKey: [...adminKeys.all, "user", id],
+    queryFn: () => adminService.getAdminUserById(id),
+    enabled: !!id,
+  });
+}
+
+export function useUpdateUserMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<AdminUser> }) =>
+      adminService.updateAdminUser(id, data),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.all });
+      queryClient.invalidateQueries({ queryKey: [...adminKeys.all, "user", variables.id] });
     },
   });
 }

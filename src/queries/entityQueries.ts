@@ -25,6 +25,15 @@ export function useEntitiesQuery() {
   });
 }
 
+export function useEntityQuery(id: string) {
+  const token = useAuthStore((state) => state.token);
+  return useQuery({
+    queryKey: [...entityKeys.all, "detail", id],
+    queryFn: () => entityService.getById(id),
+    enabled: !!token && !!id,
+  });
+}
+
 export function useCreateEntityMutation() {
   const queryClient = useQueryClient();
   return useMutation({

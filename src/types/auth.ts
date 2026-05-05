@@ -66,6 +66,7 @@ export interface AdminUser {
   username?: string | null;
   pincodeId?: string | null;
   pincode?: PincodeDirectory | null;
+  pincode_directory?: PincodeDirectory | null;
   staffAtEntityId?: string | null;
   createdEntities?: Entity[];
   staffAt?: Entity | null;

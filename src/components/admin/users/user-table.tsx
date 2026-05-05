@@ -10,8 +10,9 @@ import { DataTable } from "@/components/datatable/data-table";
 import { DataTableColumnHeader } from "@/components/datatable/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Eye, MoreVertical, CheckCircle, XCircle, PauseCircle } from "lucide-react";
+import { Eye, MoreVertical, CheckCircle, XCircle, PauseCircle, Edit, Building2 } from "lucide-react";
 import { AdminUser } from "@/types/auth";
+import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import {
@@ -42,6 +43,8 @@ export function UserTable({
   sorting,
   onSortingChange,
 }: UserTableProps) {
+  const router = useRouter();
+
   const columns: ColumnDef<AdminUser>[] = [
     {
       accessorKey: "name",
@@ -143,8 +146,23 @@ export function UserTable({
                   <Eye className="size-4 mr-2" />
                   View Details
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => router.push(`/admin-dashboard/users/${user.id}/edit`)}
+                  className="cursor-pointer"
+                >
+                  <Edit className="size-4 mr-2" />
+                  Edit User Profile
+                </DropdownMenuItem>
                 {entity && (
                   <>
+                    <DropdownMenuItem
+                      onClick={() => router.push(`/admin-dashboard/entities/${entity.id}/edit`)}
+                      className="cursor-pointer"
+                    >
+                      <Building2 className="size-4 mr-2" />
+                      Edit Business Details
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuLabel className="text-[10px] font-bold uppercase text-muted-foreground/60 px-2 py-1.5">
                       Status Management

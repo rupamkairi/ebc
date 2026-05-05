@@ -40,4 +40,17 @@ export const adminService = {
       body: params as Record<string, string | number | boolean>,
     });
   },
+
+  async getAdminUserById(id: string) {
+    return fetchClient<AdminUser>(`${API_ENDPOINTS.AUTH.ADMIN.GET_USER}/${id}`, {
+      method: "GET",
+    });
+  },
+
+  async updateAdminUser(id: string, data: Partial<AdminUser>) {
+    return fetchClient<AdminUser>(`${API_ENDPOINTS.AUTH.ADMIN.UPDATE_USER}/${id}`, {
+      method: "PATCH",
+      body: data,
+    });
+  },
 };
