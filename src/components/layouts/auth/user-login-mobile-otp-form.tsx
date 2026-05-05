@@ -106,8 +106,24 @@ export function UserLoginMobileOtpForm({
         phone,
         otp,
       });
-      setToken(token);
       if (user) {
+        // Enforce strict segregation: One phone number = One Role
+        const requestedPortal = props.role?.toUpperCase(); // 'BUYER', 'SELLER', 'SERVICE'
+        const userRole = user.role?.toUpperCase() || "";
+        
+        const isUserBusiness = userRole.includes("SELLER") || userRole.includes("SERVICE") || userRole === USER_ROLE.UNASSIGNED;
+        const isUserBuyer = userRole.includes("BUYER");
+        
+        // Block if mismatch
+        if (requestedPortal === "BUYER" && isUserBusiness) {
+          throw new Error("This number is registered as a Seller. To use the platform as a Buyer, you must use a different phone number.");
+        }
+        
+        if ((requestedPortal === "SELLER" || requestedPortal === "SERVICE") && isUserBuyer) {
+          throw new Error("This number is registered as a Buyer. To use the platform as a Seller, you must use a different phone number.");
+        }
+
+        setToken(token);
         setUser(user);
 
         toast.success("Login successful");

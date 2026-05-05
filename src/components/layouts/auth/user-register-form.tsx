@@ -102,9 +102,9 @@ export function UserRegisterForm({
       });
 
       if (response.isNewUser === false) {
-        toast.info("User already exists. Redirecting to login...");
+        toast.error("This phone number is already registered. To ensure a simple and organized platform, each account must use a unique number for its specific purpose (Buyer or Seller).");
         router.push(
-          `/auth/login?phone=${encodeURIComponent(phone)}&otp_sent=true`,
+          `/auth/login?phone=${encodeURIComponent(phone)}&otp_sent=true&role=${requestedRole?.toLowerCase()}`,
         );
         return;
       }
