@@ -8,10 +8,7 @@ import {
   useAcceptVisitMutation,
   useCompleteAppointmentMutation,
 } from "@/queries/activityQueries";
-import {
-  ReviewForm,
-  ReviewSnapshot,
-} from "@/components/shared/reviews";
+import { ReviewForm, ReviewSnapshot } from "@/components/shared/reviews";
 import { useAppointmentReviewQuery } from "@/queries/reviewQueries";
 import { useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -54,7 +51,7 @@ export default function BuyerAppointmentDetailsPage() {
 
   const acceptedVisits =
     visits?.filter((v: import("@/types/activity").Visit) => v.isAccepted) || [];
-  const confirmedVisit = acceptedVisits[0]; 
+  const confirmedVisit = acceptedVisits[0];
   const isCompleted = appointment?.status === "COMPLETED";
 
   const handleAccept = async (visitId: string) => {
@@ -111,13 +108,13 @@ export default function BuyerAppointmentDetailsPage() {
             <div className="flex items-center gap-3 mb-2">
               <Badge
                 variant="outline"
-                className="font-mono text-[10px] tracking-widest bg-muted uppercase"
+                className="font-mono text-[10px]  bg-muted "
               >
                 ID: {appointment.id.slice(0, 8)}
               </Badge>
               <Badge
                 className={cn(
-                  "uppercase text-[10px] font-black tracking-widest",
+                  " text-[10px] font-black ",
                   appointment.status === "APPROVED"
                     ? "bg-emerald-500"
                     : appointment.status === "COMPLETED"
@@ -148,15 +145,17 @@ export default function BuyerAppointmentDetailsPage() {
                 {t("finish_appointment_btn", "Finish Appointment")}
               </Button>
               {confirmedVisit && confirmedVisit.status !== "COMPLETED" && (
-                <span className="text-[10px] font-black uppercase text-amber-600 tracking-tighter bg-amber-50 px-3 py-1 rounded-full border border-amber-200 animate-pulse">
-                  {t("waiting_service_delivery", "Waiting for service delivery")}
+                <span className="text-[10px] font-black  text-amber-600 tracking-tighter bg-amber-50 px-3 py-1 rounded-full border border-amber-200 animate-pulse">
+                  {t(
+                    "waiting_service_delivery",
+                    "Waiting for service delivery",
+                  )}
                 </span>
               )}
             </div>
           )}
         </div>
       </div>
-
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Side: Appointment Info */}
@@ -198,7 +197,7 @@ export default function BuyerAppointmentDetailsPage() {
                     key={slot.id || index}
                     className="p-4 rounded-2xl bg-white border shadow-sm space-y-2"
                   >
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                    <p className="text-[10px] font-black text-muted-foreground  ">
                       {t("slot_label", "Slot")} {index + 1}
                     </p>
                     <div>
@@ -222,7 +221,7 @@ export default function BuyerAppointmentDetailsPage() {
           <section className="space-y-6">
             <div className="flex items-center gap-3">
               <div className="h-8 w-1.5 bg-secondary rounded-full" />
-              <h3 className="text-2xl font-black tracking-tight flex items-center gap-2 text-primary uppercase italic">
+              <h3 className="text-2xl font-black tracking-tight flex items-center gap-2 text-primary  italic">
                 Precision Tools
               </h3>
             </div>
@@ -277,7 +276,7 @@ export default function BuyerAppointmentDetailsPage() {
                   </p>
                 </div>
               ) : (
-                  <div className="grid gap-6">
+                <div className="grid gap-6">
                   {(isCompleted
                     ? acceptedVisits
                       ? acceptedVisits
@@ -313,7 +312,7 @@ export default function BuyerAppointmentDetailsPage() {
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-primary mt-1" />
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                  <p className="text-[10px] font-black   text-muted-foreground">
                     {t("address_label_text")}
                   </p>
                   <p className="font-bold text-sm leading-relaxed">
@@ -355,10 +354,7 @@ function VisitListItem({
     v.createdBy?.name ||
     "";
 
-  const existingReview = useAppointmentReviewQuery(
-    providerId,
-    appointmentId,
-  );
+  const existingReview = useAppointmentReviewQuery(providerId, appointmentId);
   const hasReviewed = !!existingReview;
   const isVisitCompleted = v.status === "COMPLETED";
 
@@ -368,12 +364,14 @@ function VisitListItem({
     <Card className="rounded-4xl bg-white border shadow-xl shadow-black/5 relative overflow-hidden group">
       <CardContent className="p-8 space-y-8">
         <div className="flex items-center justify-between">
-          <Badge className={cn(
-            "uppercase text-[10px] font-black tracking-widest",
-            v.isAccepted 
-              ? "bg-emerald-500 text-white" 
-              : "bg-primary/10 text-primary border-primary/20"
-          )}>
+          <Badge
+            className={cn(
+              " text-[10px] font-black ",
+              v.isAccepted
+                ? "bg-emerald-500 text-white"
+                : "bg-primary/10 text-primary border-primary/20",
+            )}
+          >
             {v.isAccepted
               ? t("confirmed_visit_label", "Confirmed Visit")
               : t("scheduled_visit_label")}
@@ -393,7 +391,7 @@ function VisitListItem({
         <div className="flex flex-col md:flex-row gap-10">
           <div className="flex-1 space-y-6">
             <div>
-              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">
+              <p className="text-[10px] font-black text-muted-foreground   mb-1">
                 {t("service_by_text")}
               </p>
               <h4 className="text-2xl font-black tracking-tight">
@@ -414,7 +412,7 @@ function VisitListItem({
                   <Calendar className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase">
+                  <p className="text-[10px] font-bold text-muted-foreground ">
                     {t("date_label")}
                   </p>
                   <p className="font-black text-sm">
@@ -430,14 +428,14 @@ function VisitListItem({
                   <Clock className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase">
+                  <p className="text-[10px] font-bold text-muted-foreground ">
                     {t("time_slot_label")}
                   </p>
                   <p className="font-black text-sm">
                     {v.visitSlot ? (
                       <>
-                        {format(new Date(v.visitSlot.fromDateTime), "hh:mm a")} -{" "}
-                        {format(new Date(v.visitSlot.toDateTime), "hh:mm a")}
+                        {format(new Date(v.visitSlot.fromDateTime), "hh:mm a")}{" "}
+                        - {format(new Date(v.visitSlot.toDateTime), "hh:mm a")}
                       </>
                     ) : (
                       "N/A"
@@ -451,54 +449,56 @@ function VisitListItem({
             {firstItem?.itemListing?.attachments &&
               firstItem.itemListing.attachments.length > 0 && (
                 <div className="space-y-3">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                  <p className="text-[10px] font-black   text-muted-foreground">
                     Service Images & Documents
                   </p>
                   <div className="flex flex-wrap gap-3">
-                    {firstItem.itemListing.attachments.map((att: import("@/types/catalog").Attachment) => {
-                      if (att.media) {
-                        return (
-                          <a
-                            key={att.id}
-                            href={att.media.url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="group/image relative h-12 w-12 rounded-lg overflow-hidden border border-border flex items-center justify-center bg-muted/30"
-                          >
-                            <img
-                              src={att.media.url}
-                              alt="Attachment"
-                              className="h-full w-full object-cover transition-transform group-hover/image:scale-110"
-                            />
-                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/image:opacity-100 transition-opacity flex items-center justify-center">
-                              <ExternalLink className="h-3 w-3 text-white" />
-                            </div>
-                          </a>
-                        );
-                      }
-                      if (att.document) {
-                        return (
-                          <a
-                            key={att.id}
-                            href={att.document.url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="flex items-center gap-2 max-w-[160px] p-2 rounded-lg border border-border hover:bg-muted/30 transition-colors"
-                          >
-                            <div className="h-6 w-6 rounded bg-primary/10 flex items-center justify-center shrink-0">
-                              <FileTextIcon className="h-3 w-3 text-primary" />
-                            </div>
-                            <div className="truncate flex-1">
-                              <p className="text-[10px] font-bold text-primary truncate">
-                                {att.document.name || "Document"}
-                              </p>
-                            </div>
-                            <Download className="h-3 w-3 text-muted-foreground shrink-0" />
-                          </a>
-                        );
-                      }
-                      return null;
-                    })}
+                    {firstItem.itemListing.attachments.map(
+                      (att: import("@/types/catalog").Attachment) => {
+                        if (att.media) {
+                          return (
+                            <a
+                              key={att.id}
+                              href={att.media.url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="group/image relative h-12 w-12 rounded-lg overflow-hidden border border-border flex items-center justify-center bg-muted/30"
+                            >
+                              <img
+                                src={att.media.url}
+                                alt="Attachment"
+                                className="h-full w-full object-cover transition-transform group-hover/image:scale-110"
+                              />
+                              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/image:opacity-100 transition-opacity flex items-center justify-center">
+                                <ExternalLink className="h-3 w-3 text-white" />
+                              </div>
+                            </a>
+                          );
+                        }
+                        if (att.document) {
+                          return (
+                            <a
+                              key={att.id}
+                              href={att.document.url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="flex items-center gap-2 max-w-[160px] p-2 rounded-lg border border-border hover:bg-muted/30 transition-colors"
+                            >
+                              <div className="h-6 w-6 rounded bg-primary/10 flex items-center justify-center shrink-0">
+                                <FileTextIcon className="h-3 w-3 text-primary" />
+                              </div>
+                              <div className="truncate flex-1">
+                                <p className="text-[10px] font-bold text-primary truncate">
+                                  {att.document.name || "Document"}
+                                </p>
+                              </div>
+                              <Download className="h-3 w-3 text-muted-foreground shrink-0" />
+                            </a>
+                          );
+                        }
+                        return null;
+                      },
+                    )}
                   </div>
                 </div>
               )}
@@ -507,7 +507,7 @@ function VisitListItem({
           <div className="md:w-64 flex flex-col justify-center shrink-0">
             {isVisitCompleted ? (
               hasReviewed ? (
-                <div className="flex flex-col items-center gap-2 p-4 rounded-3xl bg-emerald-50 border border-emerald-100 italic font-black text-emerald-700 text-[10px] text-center uppercase tracking-widest">
+                <div className="flex flex-col items-center gap-2 p-4 rounded-3xl bg-emerald-50 border border-emerald-100 italic font-black text-emerald-700 text-[10px] text-center  ">
                   <CheckCircle2 className="h-4 w-4" />
                   {t("review_submitted")}
                 </div>
@@ -525,9 +525,7 @@ function VisitListItem({
                     });
                   }}
                   trigger={
-                    <Button
-                      className="w-full h-14 rounded-3xl bg-emerald-500 hover:bg-emerald-600 font-black gap-2 shadow-lg shadow-emerald-500/20"
-                    >
+                    <Button className="w-full h-14 rounded-3xl bg-emerald-500 hover:bg-emerald-600 font-black gap-2 shadow-lg shadow-emerald-500/20">
                       <Star className="h-5 w-5 fill-current" />
                       {t("rate_experience_btn", "Rate Experience")}
                     </Button>

@@ -83,7 +83,7 @@ export function Search({ categories, facets }: SearchProps) {
           >
             <SelectTrigger className="h-full px-4 bg-transparent border-none rounded-none text-white font-semibold text-sm focus:ring-0 shadow-none gap-2.5 hover:bg-white/10 transition-colors [&>span]:flex [&>span]:items-center [&>span]:gap-2">
               <ArrowUpDown className="size-3.5 text-secondary shrink-0" />
-              <span className="text-[10px] uppercase tracking-widest text-white/50 font-bold hidden xs:inline">
+              <span className="text-[10px]   text-white/50 font-bold hidden xs:inline">
                 Sort
               </span>
               <SelectValue placeholder="Relevance" />
@@ -104,7 +104,7 @@ export function Search({ categories, facets }: SearchProps) {
             <SheetTrigger asChild>
               <button className="flex items-center gap-2 px-4 h-full text-white hover:bg-white/10 transition-colors lg:hidden">
                 <SlidersHorizontal className="size-4 text-secondary" />
-                <span className="text-[10px] uppercase tracking-widest text-white/50 font-bold hidden xs:inline">
+                <span className="text-[10px]   text-white/50 font-bold hidden xs:inline">
                   Filter
                 </span>
               </button>

@@ -131,18 +131,18 @@ export default function VisitsPage() {
                   <div className="flex-1 space-y-3">
                     {/* Badges row */}
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="px-3 py-1 rounded-full border border-primary/10 text-primary text-[9px] font-black tracking-widest bg-primary/5 uppercase">
+                      <span className="px-3 py-1 rounded-full border border-primary/10 text-primary text-[9px] font-black  bg-primary/5 ">
                         ID: {visit.id.slice(0, 8)}
                       </span>
                       <span
                         className={cn(
-                          "px-3 py-1 rounded-full text-[9px] font-black tracking-widest",
+                          "px-3 py-1 rounded-full text-[9px] font-black ",
                           badge.className,
                         )}
                       >
                         {badge.label}
                       </span>
-                      <span className="px-3 py-1 rounded-full bg-primary text-white text-[9px] font-black tracking-widest uppercase">
+                      <span className="px-3 py-1 rounded-full bg-primary text-white text-[9px] font-black  ">
                         {visit.status}
                       </span>
                     </div>
@@ -178,7 +178,7 @@ export default function VisitsPage() {
                   <div className="flex items-center shrink-0">
                     <Button
                       asChild
-                      className="bg-primary hover:bg-primary/90 text-white rounded-xl font-black text-[11px] tracking-widest uppercase px-5 h-10 shadow-sm transition-all group-hover:shadow-md"
+                      className="bg-primary hover:bg-primary/90 text-white rounded-xl font-black text-[11px]   px-5 h-10 shadow-sm transition-all group-hover:shadow-md"
                     >
                       <Link
                         href={`/seller-dashboard/visits/${visit.id}`}
@@ -229,25 +229,26 @@ export default function VisitsPage() {
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                       <div className="flex-1 space-y-3">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="px-3 py-1 rounded-full border border-primary/10 text-primary text-[9px] font-black tracking-widest bg-primary/5 uppercase">
+                          <span className="px-3 py-1 rounded-full border border-primary/10 text-primary text-[9px] font-black  bg-primary/5 ">
                             ID: {visit.id.slice(0, 8)}
                           </span>
                           <span
                             className={cn(
-                              "px-3 py-1 rounded-full text-[9px] font-black tracking-widest",
+                              "px-3 py-1 rounded-full text-[9px] font-black ",
                               badge.className,
                             )}
                           >
                             {badge.label}
                           </span>
-                          {visit.appointment?.status === "COMPLETED" && visit.status !== "COMPLETED" ? (
-                            <span className="px-3 py-1 rounded-full bg-blue-500 text-white text-[9px] font-black tracking-widest uppercase">
+                          {visit.appointment?.status === "COMPLETED" &&
+                          visit.status !== "COMPLETED" ? (
+                            <span className="px-3 py-1 rounded-full bg-blue-500 text-white text-[9px] font-black  ">
                               {t("closed_by_buyer", "Closed by Buyer")}
                             </span>
                           ) : (
                             <span
                               className={cn(
-                                "px-3 py-1 rounded-full text-[9px] font-black tracking-widest uppercase",
+                                "px-3 py-1 rounded-full text-[9px] font-black  ",
                                 visit.status === "COMPLETED"
                                   ? "bg-green-600 text-white"
                                   : "bg-gray-400 text-white",
@@ -256,11 +257,12 @@ export default function VisitsPage() {
                               {visit.status}
                             </span>
                           )}
-                          {visit.appointment?.status === "COMPLETED" && visit.status === "COMPLETED" && (
-                            <span className="px-3 py-1 rounded-full bg-blue-500 text-white text-[9px] font-black tracking-widest uppercase">
-                              {t("closed_by_buyer", "Closed by Buyer")}
-                            </span>
-                          )}
+                          {visit.appointment?.status === "COMPLETED" &&
+                            visit.status === "COMPLETED" && (
+                              <span className="px-3 py-1 rounded-full bg-blue-500 text-white text-[9px] font-black  ">
+                                {t("closed_by_buyer", "Closed by Buyer")}
+                              </span>
+                            )}
                         </div>
                         <h3 className="font-black text-secondary/70 text-base">
                           {firstItem?.item?.name || t("site_visit")}
@@ -277,7 +279,7 @@ export default function VisitsPage() {
                         <Button
                           asChild
                           variant="outline"
-                          className="rounded-xl font-black text-[11px] tracking-widest uppercase px-5 h-10"
+                          className="rounded-xl font-black text-[11px]   px-5 h-10"
                         >
                           <Link
                             href={`/seller-dashboard/visits/${visit.id}`}

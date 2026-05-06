@@ -104,9 +104,14 @@ export default function CreateEnquiryPage() {
     }
 
     // Bug Fix: Block Manufacturers from posting enquiries
-    const isManufacturer = entities?.some(e => e.type === "MANUFACTURER");
+    const isManufacturer = entities?.some((e) => e.type === "MANUFACTURER");
     if (isManufacturer) {
-      toast.error(t("manufacturers_cannot_post_enquiries", "Manufacturers are not allowed to post sourcing enquiries."));
+      toast.error(
+        t(
+          "manufacturers_cannot_post_enquiries",
+          "Manufacturers are not allowed to post sourcing enquiries.",
+        ),
+      );
       return;
     }
 
@@ -149,7 +154,7 @@ export default function CreateEnquiryPage() {
 
             {items.length > 0 && (
               <div className="pt-4 border-t border-primary/10">
-                <h3 className="text-sm font-bold tracking-widest text-primary/40 uppercase mb-4 ml-1">
+                <h3 className="text-sm font-bold  text-primary/40  mb-4 ml-1">
                   {t("items_added_to_enquiry", { count: items.length })}
                 </h3>
                 <EnquiryLineItems />

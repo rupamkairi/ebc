@@ -63,11 +63,12 @@ export default function QuotationsPage() {
           `${t("enquiry_id_label", "Enquiry")} #${qut.enquiryId.slice(0, 8)}`,
         displayDate: format(new Date(qut.createdAt), "dd MMM yyyy"),
         isEnquiryClosed: qut.enquiry?.status === ENQUIRY_STATUS.COMPLETED,
-        uiStatus: qut.status === QUOTATION_STATUS.ACCEPTED 
-          ? "Accepted" 
-          : qut.enquiry?.status === ENQUIRY_STATUS.COMPLETED
-          ? "Closed"
-          : "Sent",
+        uiStatus:
+          qut.status === QUOTATION_STATUS.ACCEPTED
+            ? "Accepted"
+            : qut.enquiry?.status === ENQUIRY_STATUS.COMPLETED
+              ? "Closed"
+              : "Sent",
       };
     });
   }, [quotations, searchQuery, t]);
@@ -134,19 +135,20 @@ export default function QuotationsPage() {
                 key={qut.id}
                 className={cn(
                   "bg-white border border-primary/10 rounded-[20px] p-5 md:p-7 shadow-none hover:shadow-md hover:border-primary/25 transition-all group",
-                  qut.uiStatus === "Closed" && "opacity-60 grayscale-[0.5] hover:opacity-100 hover:grayscale-0",
+                  qut.uiStatus === "Closed" &&
+                    "opacity-60 grayscale-[0.5] hover:opacity-100 hover:grayscale-0",
                 )}
               >
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                   <div className="flex-1 space-y-3">
                     {/* Badges row */}
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="px-3 py-1 rounded-full border border-primary/10 text-primary text-[9px] font-black tracking-widest bg-primary/5 uppercase">
+                      <span className="px-3 py-1 rounded-full border border-primary/10 text-primary text-[9px] font-black  bg-primary/5 ">
                         ID: {qut.id.slice(-8).toUpperCase()}
                       </span>
                       <span
                         className={cn(
-                          "px-3 py-1 rounded-full text-[9px] font-black tracking-widest",
+                          "px-3 py-1 rounded-full text-[9px] font-black ",
                           badge.className,
                         )}
                       >
@@ -154,27 +156,34 @@ export default function QuotationsPage() {
                       </span>
                       <span
                         className={cn(
-                          "px-3 py-1 rounded-full text-[9px] font-black tracking-widest uppercase shadow-sm",
+                          "px-3 py-1 rounded-full text-[9px] font-black   shadow-sm",
                           qut.uiStatus === "Accepted"
                             ? "bg-emerald-600 text-white"
                             : qut.uiStatus === "Closed"
-                            ? "bg-gray-500 text-white"
-                            : "bg-primary text-white",
+                              ? "bg-gray-500 text-white"
+                              : "bg-primary text-white",
                         )}
                       >
                         {qut.uiStatus}
                       </span>
-                      {qut.quotationDetails?.[0]?.requestedRevision && !qut.quotationDetails?.[0]?.hasBeenRevised && (
-                        <span className="px-3 py-1 rounded-full text-[9px] font-black tracking-widest bg-orange-500 text-white flex items-center gap-1.5 shadow-sm">
-                          <MessageSquare className="h-2.5 w-2.5" />
-                          REVISION REQUESTED
-                        </span>
-                      )}
+                      {qut.quotationDetails?.[0]?.requestedRevision &&
+                        !qut.quotationDetails?.[0]?.hasBeenRevised && (
+                          <span className="px-3 py-1 rounded-full text-[9px] font-black  bg-orange-500 text-white flex items-center gap-1.5 shadow-sm">
+                            <MessageSquare className="h-2.5 w-2.5" />
+                            REVISION REQUESTED
+                          </span>
+                        )}
                       {qut.quotationDetails?.[0]?.hasBeenRevised && (
-                        <span className="px-3 py-1 rounded-full text-[9px] font-black tracking-widest bg-violet-600 text-white flex items-center gap-1.5 shadow-sm">
-                          {qut.priceChangeType === "DECREASED" && <TrendingDown className="h-2.5 w-2.5" />}
-                          {qut.priceChangeType === "INCREASED" && <TrendingUp className="h-2.5 w-2.5" />}
-                          {qut.priceChangeType === "MAINTAINED" && <RefreshCw className="h-2.5 w-2.5" />}
+                        <span className="px-3 py-1 rounded-full text-[9px] font-black  bg-violet-600 text-white flex items-center gap-1.5 shadow-sm">
+                          {qut.priceChangeType === "DECREASED" && (
+                            <TrendingDown className="h-2.5 w-2.5" />
+                          )}
+                          {qut.priceChangeType === "INCREASED" && (
+                            <TrendingUp className="h-2.5 w-2.5" />
+                          )}
+                          {qut.priceChangeType === "MAINTAINED" && (
+                            <RefreshCw className="h-2.5 w-2.5" />
+                          )}
                           REVISED
                         </span>
                       )}
@@ -200,7 +209,7 @@ export default function QuotationsPage() {
                   <div className="flex flex-col sm:flex-row sm:items-center gap-6 shrink-0">
                     {/* Amount */}
                     <div className="text-left sm:text-right">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-primary/30 mb-0.5">
+                      <p className="text-[10px] font-black   text-primary/30 mb-0.5">
                         {t("quote_value", "Quote Value")}
                       </p>
                       <div className="flex items-center sm:justify-end font-black text-primary text-2xl tracking-tighter">
@@ -212,7 +221,7 @@ export default function QuotationsPage() {
                     {/* Action */}
                     <Button
                       asChild
-                      className="bg-primary hover:bg-primary/90 text-white rounded-xl font-black text-[11px] tracking-widest uppercase px-5 h-10 shadow-sm transition-all group-hover:shadow-md"
+                      className="bg-primary hover:bg-primary/90 text-white rounded-xl font-black text-[11px]   px-5 h-10 shadow-sm transition-all group-hover:shadow-md"
                     >
                       <Link href={`/seller-dashboard/quotations/${qut.id}`}>
                         {t("view_details", "View Details")}

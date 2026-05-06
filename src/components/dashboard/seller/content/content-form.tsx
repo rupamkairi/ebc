@@ -126,7 +126,7 @@ export function ContentForm({ initialData, entityId }: ContentFormProps) {
           )}
           <AlertTitle className="mb-1 flex items-center gap-2">
             Verification Status:
-            <Badge variant="outline" className="uppercase">
+            <Badge variant="outline" className="">
               {initialData.verificationStatus}
             </Badge>
           </AlertTitle>

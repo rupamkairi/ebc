@@ -36,9 +36,7 @@ export default function AdminSupportInbox() {
   const { data: queries, isLoading } = useSupportQueriesQuery(statusFilter);
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
 
-  const selectedTicket = queries?.find(
-    (q) => q.id === selectedTicketId,
-  );
+  const selectedTicket = queries?.find((q) => q.id === selectedTicketId);
   const updateMutation = useUpdateSupportQueryMutation(selectedTicketId || "");
 
   const handleUpdateStatus = async (status: string) => {
@@ -93,38 +91,36 @@ export default function AdminSupportInbox() {
               </p>
             </div>
           ) : (
-            queries?.map?.(
-              (query) => (
-                <Card
-                  key={query.id}
-                  onClick={() => setSelectedTicketId(query.id)}
-                  className={cn(
-                    "cursor-pointer transition-all hover:border-primary/50 shadow-sm",
-                    selectedTicketId === query.id
-                      ? "border-primary bg-primary/5 ring-1 ring-primary"
-                      : "",
-                  )}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <Badge variant="outline" className="text-[10px]">
-                        {query.category?.name}
-                      </Badge>
-                      <span className="text-[10px] text-muted-foreground">
-                        {new Date(query.createdAt).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <h4 className="font-semibold text-sm mb-1 line-clamp-1">
-                      {query.subject}
-                    </h4>
-                    <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-                      <User className="h-3 w-3" />
-                      <span>{query.createdBy?.name}</span>
-                    </div>
-                  </CardContent>
-                </Card>
-              ),
-            )
+            queries?.map?.((query) => (
+              <Card
+                key={query.id}
+                onClick={() => setSelectedTicketId(query.id)}
+                className={cn(
+                  "cursor-pointer transition-all hover:border-primary/50 shadow-sm",
+                  selectedTicketId === query.id
+                    ? "border-primary bg-primary/5 ring-1 ring-primary"
+                    : "",
+                )}
+              >
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <Badge variant="outline" className="text-[10px]">
+                      {query.category?.name}
+                    </Badge>
+                    <span className="text-[10px] text-muted-foreground">
+                      {new Date(query.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <h4 className="font-semibold text-sm mb-1 line-clamp-1">
+                    {query.subject}
+                  </h4>
+                  <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                    <User className="h-3 w-3" />
+                    <span>{query.createdBy?.name}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
           )}
         </div>
       </div>
@@ -152,7 +148,7 @@ export default function AdminSupportInbox() {
                       {selectedTicket?.createdBy?.phone}
                     </a>
                     <span>•</span>
-                    <span className="text-xs uppercase font-medium">
+                    <span className="text-xs  font-medium">
                       {selectedTicket?.status}
                     </span>
                   </div>

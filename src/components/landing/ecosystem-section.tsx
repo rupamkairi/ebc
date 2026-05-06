@@ -42,10 +42,10 @@ function EcosystemCard({
       </div>
 
       <div className="space-y-1 mb-8">
-        <h3 className="text-secondary font-black text-sm md:text-base tracking-tight uppercase">
+        <h3 className="text-secondary font-black text-sm md:text-base tracking-tight ">
           {title}
         </h3>
-        <p className="text-primary font-bold text-base md:text-lg leading-tight uppercase">
+        <p className="text-primary font-bold text-base md:text-lg leading-tight ">
           — {subtitle}
         </p>
       </div>
@@ -65,7 +65,6 @@ function EcosystemCard({
     </div>
   );
 }
-
 
 export function EcosystemSection() {
   const { t } = useLanguage();
@@ -136,10 +135,12 @@ export function EcosystemSection() {
         <div className="text-center mb-32 space-y-4">
           <h2 className="text-white text-3xl md:text-5xl lg:text-5xl font-black tracking-tight drop-shadow-lg">
             {t("ecosystem_section_title_prefix")}
-            <span className="text-secondary">{t("ecosystem_section_title_highlight")}</span>
+            <span className="text-secondary">
+              {t("ecosystem_section_title_highlight")}
+            </span>
             {t("ecosystem_section_title_suffix")}
           </h2>
-          <p className="text-white/90 text-xl md:text-2xl font-bold tracking-wide uppercase">
+          <p className="text-white/90 text-xl md:text-2xl font-bold  ">
             {t("ecosystem_section_subtitle")}
           </p>
         </div>

@@ -17,15 +17,11 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
-import {
-  useAppointmentQuery,
-  useVisitsQuery,
-} from "@/queries/activityQueries";
+import { useAppointmentQuery, useVisitsQuery } from "@/queries/activityQueries";
 import { BuyerInfoCard } from "@/components/dashboard/seller/activity-shared/buyer-info-card";
 import { ActivityActionCard } from "@/components/dashboard/seller/activity-shared/activity-action-card";
 import { ActivityTipCard } from "@/components/dashboard/seller/activity-shared/activity-tip-card";
 import { PageBackButton } from "@/components/dashboard/seller/activity-shared/page-back-button";
-
 
 export default function AppointmentDetailsPage() {
   const { t } = useLanguage();
@@ -66,8 +62,6 @@ export default function AppointmentDetailsPage() {
   const isPending = appointment.status === "PENDING";
   const selectedSlot = appointment.appointmentSlots?.[selectedSlotIdx];
 
-
-
   return (
     <div className="flex flex-col gap-6 max-w-5xl mx-auto">
       {/* ── Page Header ── */}
@@ -97,7 +91,7 @@ export default function AppointmentDetailsPage() {
                   <CheckCircle2 className="h-5 w-5" />
                   {t("confirmed_visit_details", "Confirmed Service Schedule")}
                 </h3>
-                <Badge className="bg-emerald-500 text-white border-none text-[10px] font-black uppercase tracking-widest px-3">
+                <Badge className="bg-emerald-500 text-white border-none text-[10px] font-black   px-3">
                   {t("active_status", "Active")}
                 </Badge>
               </div>
@@ -105,12 +99,15 @@ export default function AppointmentDetailsPage() {
                 <div className="flex items-center gap-3 p-4 rounded-xl bg-white/50 border border-emerald-100">
                   <Calendar className="h-5 w-5 text-emerald-600" />
                   <div>
-                    <p className="text-[10px] font-black text-emerald-700/50 uppercase tracking-widest">
+                    <p className="text-[10px] font-black text-emerald-700/50  ">
                       {t("date_label")}
                     </p>
                     <p className="font-black text-sm text-emerald-900">
                       {existingVisit.visitSlot
-                        ? format(new Date(existingVisit.visitSlot.fromDateTime), "PPP")
+                        ? format(
+                            new Date(existingVisit.visitSlot.fromDateTime),
+                            "PPP",
+                          )
                         : "N/A"}
                     </p>
                   </div>
@@ -118,14 +115,21 @@ export default function AppointmentDetailsPage() {
                 <div className="flex items-center gap-3 p-4 rounded-xl bg-white/50 border border-emerald-100">
                   <Clock className="h-5 w-5 text-emerald-600" />
                   <div>
-                    <p className="text-[10px] font-black text-emerald-700/50 uppercase tracking-widest">
+                    <p className="text-[10px] font-black text-emerald-700/50  ">
                       {t("time_slot_label")}
                     </p>
                     <p className="font-black text-sm text-emerald-900">
                       {existingVisit.visitSlot ? (
                         <>
-                          {format(new Date(existingVisit.visitSlot.fromDateTime), "hh:mm a")} -{" "}
-                          {format(new Date(existingVisit.visitSlot.toDateTime), "hh:mm a")}
+                          {format(
+                            new Date(existingVisit.visitSlot.fromDateTime),
+                            "hh:mm a",
+                          )}{" "}
+                          -{" "}
+                          {format(
+                            new Date(existingVisit.visitSlot.toDateTime),
+                            "hh:mm a",
+                          )}
                         </>
                       ) : (
                         "N/A"
@@ -145,11 +149,11 @@ export default function AppointmentDetailsPage() {
                   {t("site_visit", "Service Requirements")}
                 </h2>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="px-3 py-1 rounded-full border-2 border-secondary text-secondary text-xs font-black tracking-wide">
+                  <span className="px-3 py-1 rounded-full border-2 border-secondary text-secondary text-xs font-black ">
                     ID: {appointment.id.slice(0, 8)}
                   </span>
                   <span
-                    className={`px-4 py-1 rounded-full text-xs font-black tracking-wide text-white ${
+                    className={`px-4 py-1 rounded-full text-xs font-black  text-white ${
                       isPending ? "bg-primary" : "bg-green-600"
                     }`}
                   >
@@ -217,7 +221,7 @@ export default function AppointmentDetailsPage() {
                         : "border-gray-100 bg-white hover:border-primary/20"
                     } ${!isPending ? "opacity-60 cursor-default" : "cursor-pointer"}`}
                   >
-                    <p className="text-xs font-black text-primary/50 uppercase tracking-widest mb-1">
+                    <p className="text-xs font-black text-primary/50   mb-1">
                       Slot {index + 1}
                     </p>
                     <p className="text-sm font-black text-primary">
@@ -303,7 +307,6 @@ export default function AppointmentDetailsPage() {
                 backHref="/seller-dashboard/appointments"
                 backLabel={t("back_to_appointments_link")}
               />
-
             </div>
           ) : (
             <ActivityActionCard

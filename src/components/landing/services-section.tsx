@@ -25,7 +25,7 @@ function ServiceCard({ title, image }: ServiceCardProps) {
         />
       </div>
       <div className="bg-secondary p-3 text-center">
-        <p className="text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider line-clamp-2 min-h-10 flex items-center justify-center">
+        <p className="text-[10px] sm:text-xs font-bold text-white   line-clamp-2 min-h-10 flex items-center justify-center">
           {title}
         </p>
       </div>
@@ -61,11 +61,13 @@ export function ServicesSection() {
     },
     {
       title: t("ser_item_6"),
-      image: "/images/services/construction-residential-new-house-progress-building-site 1.png",
+      image:
+        "/images/services/construction-residential-new-house-progress-building-site 1.png",
     },
     {
       title: t("ser_item_7"),
-      image: "/images/services/skilled-worker-installing-ceramic-wood-effect-tiles-floor-worker-making-laminate-flooring-construction-site-new-apartment 1.png",
+      image:
+        "/images/services/skilled-worker-installing-ceramic-wood-effect-tiles-floor-worker-making-laminate-flooring-construction-site-new-apartment 1.png",
     },
     {
       title: t("ser_item_8"),
@@ -79,8 +81,12 @@ export function ServicesSection() {
         {/* Section Heading */}
         <div className="text-center mb-12">
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold">
-            <span className="text-secondary">{t("services_section_title_part1")}</span>{" "}
-            <span className="text-primary">{t("services_section_title_part2")}</span>
+            <span className="text-secondary">
+              {t("services_section_title_part1")}
+            </span>{" "}
+            <span className="text-primary">
+              {t("services_section_title_part2")}
+            </span>
           </h2>
         </div>
 

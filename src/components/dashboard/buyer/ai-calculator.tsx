@@ -16,11 +16,12 @@ export function AICalculator() {
             <IconRobot size={32} />
           </div>
           <div className="space-y-1">
-            <h3 className="font-black text-primary italic uppercase tracking-widest text-xs">
+            <h3 className="font-black text-primary italic   text-xs">
               Precision AI Assistant
             </h3>
             <p className="max-w-xs text-xs font-bold text-muted-foreground/60 italic leading-relaxed">
-              Describe your project requirements here to get an estimated cost and technical advice.
+              Describe your project requirements here to get an estimated cost
+              and technical advice.
             </p>
           </div>
         </div>
@@ -28,7 +29,9 @@ export function AICalculator() {
         <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
           <div className="p-3 border-b bg-white/50 flex items-center gap-2">
             <IconRobot size={16} className="text-primary" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-primary/40">Active Session</span>
+            <span className="text-[10px] font-black   text-primary/40">
+              Active Session
+            </span>
           </div>
           <div className="flex-1 overflow-y-auto scrollbar-hide">
             <MessageList messages={messages} isLoading={isLoading} />

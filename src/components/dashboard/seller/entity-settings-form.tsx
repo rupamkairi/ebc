@@ -161,7 +161,7 @@ export function EntitySettingsForm() {
                   <div className="space-y-2">
                     <Label
                       htmlFor={field.name}
-                      className="text-primary text-xs font-bold uppercase tracking-wide"
+                      className="text-primary text-xs font-bold  "
                     >
                       Display Name
                     </Label>
@@ -178,7 +178,7 @@ export function EntitySettingsForm() {
               </form.Field>
 
               <div className="space-y-2">
-                <Label className="text-primary text-xs font-bold uppercase tracking-wide">
+                <Label className="text-primary text-xs font-bold  ">
                   Business Type
                 </Label>
                 {isApproved ? (
@@ -241,7 +241,7 @@ export function EntitySettingsForm() {
                   <div className="space-y-2">
                     <Label
                       htmlFor={field.name}
-                      className="text-primary text-xs font-bold uppercase tracking-wide"
+                      className="text-primary text-xs font-bold  "
                     >
                       Legal Business Name
                     </Label>
@@ -263,7 +263,7 @@ export function EntitySettingsForm() {
                     <div className="space-y-2">
                       <Label
                         htmlFor={field.name}
-                        className="text-primary text-xs font-bold uppercase tracking-wide"
+                        className="text-primary text-xs font-bold  "
                       >
                         Business Description
                       </Label>
@@ -285,7 +285,7 @@ export function EntitySettingsForm() {
                   <div className="space-y-2">
                     <Label
                       htmlFor={field.name}
-                      className="text-primary text-xs font-bold uppercase tracking-wide"
+                      className="text-primary text-xs font-bold  "
                     >
                       Contact E-Mail
                     </Label>
@@ -307,7 +307,7 @@ export function EntitySettingsForm() {
                   <div className="space-y-2">
                     <Label
                       htmlFor={field.name}
-                      className="text-primary text-xs font-bold uppercase tracking-wide"
+                      className="text-primary text-xs font-bold  "
                     >
                       Support E-Mail
                     </Label>
@@ -329,7 +329,7 @@ export function EntitySettingsForm() {
                   <div className="space-y-2">
                     <Label
                       htmlFor={field.name}
-                      className="text-primary text-xs font-bold uppercase tracking-wide"
+                      className="text-primary text-xs font-bold  "
                     >
                       Phone Number
                     </Label>
@@ -365,7 +365,7 @@ export function EntitySettingsForm() {
                   <div className="space-y-2">
                     <Label
                       htmlFor={field.name}
-                      className="text-primary text-xs font-bold uppercase tracking-wide"
+                      className="text-primary text-xs font-bold  "
                     >
                       Secondary Phone Number
                     </Label>
@@ -412,7 +412,7 @@ export function EntitySettingsForm() {
                   <div className="space-y-2">
                     <Label
                       htmlFor={field.name}
-                      className="text-primary text-xs font-bold uppercase tracking-wide"
+                      className="text-primary text-xs font-bold  "
                     >
                       Address
                     </Label>
@@ -433,7 +433,7 @@ export function EntitySettingsForm() {
                   <div className="space-y-2">
                     <Label
                       htmlFor={field.name}
-                      className="text-primary text-xs font-bold uppercase tracking-wide"
+                      className="text-primary text-xs font-bold  "
                     >
                       Landmark
                     </Label>
@@ -454,7 +454,7 @@ export function EntitySettingsForm() {
                   <div className="space-y-2">
                     <Label
                       htmlFor={field.name}
-                      className="text-primary text-xs font-bold uppercase tracking-wide"
+                      className="text-primary text-xs font-bold  "
                     >
                       City
                     </Label>
@@ -475,7 +475,7 @@ export function EntitySettingsForm() {
                   <div className="space-y-2 text-left flex flex-col justify-end">
                     <Label
                       htmlFor={field.name}
-                      className="text-primary text-xs font-bold uppercase tracking-wide mb-1"
+                      className="text-primary text-xs font-bold   mb-1"
                     >
                       Pincode
                     </Label>

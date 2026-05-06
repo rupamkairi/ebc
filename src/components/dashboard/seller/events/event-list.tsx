@@ -1,6 +1,9 @@
 "use client";
 
-import { useEventsQuery, useDeleteEventMutation } from "@/queries/conferenceHallQueries";
+import {
+  useEventsQuery,
+  useDeleteEventMutation,
+} from "@/queries/conferenceHallQueries";
 import { useEntitiesQuery } from "@/queries/entityQueries";
 import {
   Card,
@@ -12,14 +15,14 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Calendar, 
-  MapPin, 
-  Video, 
-  MoreVertical, 
-  Trash2, 
+import {
+  Calendar,
+  MapPin,
+  Video,
+  MoreVertical,
+  Trash2,
   Users,
-  Globe
+  Globe,
 } from "lucide-react";
 import { format } from "date-fns";
 import {
@@ -60,7 +63,8 @@ export function EventList() {
         </div>
         <CardTitle>No events found</CardTitle>
         <CardDescription>
-          You haven&apos;t created any events yet. Host a live session or share a recorded one.
+          You haven&apos;t created any events yet. Host a live session or share
+          a recorded one.
         </CardDescription>
       </Card>
     );
@@ -69,11 +73,18 @@ export function EventList() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {events.map((event) => (
-        <Card key={event.id} className="flex flex-col overflow-hidden group hover:shadow-2xl transition-all duration-500 border-none bg-linear-to-b from-card to-muted/20 relative">
+        <Card
+          key={event.id}
+          className="flex flex-col overflow-hidden group hover:shadow-2xl transition-all duration-500 border-none bg-linear-to-b from-card to-muted/20 relative"
+        >
           <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="secondary" size="icon" className="h-8 w-8 rounded-full shadow-md">
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="h-8 w-8 rounded-full shadow-md"
+                >
                   <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -82,7 +93,9 @@ export function EventList() {
                   className="text-destructive focus:text-destructive"
                   onClick={() => {
                     if (!isApproved) {
-                      toast.error("Business must be APPROVED to delete events.");
+                      toast.error(
+                        "Business must be APPROVED to delete events.",
+                      );
                       return;
                     }
                     deleteEvent.mutate(event.id);
@@ -95,26 +108,47 @@ export function EventList() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          
+
           <CardHeader className="pb-4">
             <div className="flex items-center gap-2 mb-3">
-              <Badge variant={event.type === "LIVE" ? "default" : "secondary"} className="rounded-md">
+              <Badge
+                variant={event.type === "LIVE" ? "default" : "secondary"}
+                className="rounded-md"
+              >
                 {event.type}
               </Badge>
-              <Badge 
+              <Badge
                 variant={
-                  event.verificationStatus === "APPROVED" ? "outline" : 
-                  event.verificationStatus === "REJECTED" ? "destructive" : 
-                  "secondary"
-                } 
-                className="uppercase text-[10px]"
+                  event.verificationStatus === "APPROVED"
+                    ? "outline"
+                    : event.verificationStatus === "REJECTED"
+                      ? "destructive"
+                      : "secondary"
+                }
+                className=" text-[10px]"
               >
                 {event.verificationStatus}
               </Badge>
-              {event.isRemote && <Badge variant="outline" className="bg-blue-50/50 text-blue-700 border-blue-200/50 text-[10px]">Remote</Badge>}
-              {event.isPhysical && <Badge variant="outline" className="bg-green-50/50 text-green-700 border-green-200/50 text-[10px]">Physical</Badge>}
+              {event.isRemote && (
+                <Badge
+                  variant="outline"
+                  className="bg-blue-50/50 text-blue-700 border-blue-200/50 text-[10px]"
+                >
+                  Remote
+                </Badge>
+              )}
+              {event.isPhysical && (
+                <Badge
+                  variant="outline"
+                  className="bg-green-50/50 text-green-700 border-green-200/50 text-[10px]"
+                >
+                  Physical
+                </Badge>
+              )}
             </div>
-            <CardTitle className="line-clamp-1 text-lg font-bold group-hover:text-primary transition-colors">{event.name}</CardTitle>
+            <CardTitle className="line-clamp-1 text-lg font-bold group-hover:text-primary transition-colors">
+              {event.name}
+            </CardTitle>
             <CardDescription className="line-clamp-2 h-10 mt-2 text-xs leading-relaxed">
               {event.description || "No description provided."}
             </CardDescription>
@@ -126,7 +160,9 @@ export function EventList() {
                   <div className="bg-primary/10 p-1.5 rounded-md">
                     <Calendar className="h-3.5 w-3.5 text-primary" />
                   </div>
-                  <span className="font-medium text-foreground/80">{format(new Date(event.startDate), "PPP p")}</span>
+                  <span className="font-medium text-foreground/80">
+                    {format(new Date(event.startDate), "PPP p")}
+                  </span>
                 </div>
               )}
               <div className="flex flex-wrap gap-2">
@@ -148,15 +184,26 @@ export function EventList() {
                   <div className="flex items-center gap-1.5">
                     <Users className="h-4 w-4 text-muted-foreground" />
                     <span className="font-bold text-foreground">
-                       {event._count?.participants || 0}
+                      {event._count?.participants || 0}
                     </span>
-                    <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Joined</span>
+                    <span className="text-[10px]   text-muted-foreground">
+                      Joined
+                    </span>
                   </div>
                   {event.targetRegions && event.targetRegions.length > 0 && (
                     <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground line-clamp-1">
                       <Globe className="h-3 w-3" />
                       <span>
-                        Targets: {event.targetRegions.map(r => r.pincode ? (r.pincode.pincode || r.pincode.district || r.pincode.state) : "Area").join(", ")}
+                        Targets:{" "}
+                        {event.targetRegions
+                          .map((r) =>
+                            r.pincode
+                              ? r.pincode.pincode ||
+                                r.pincode.district ||
+                                r.pincode.state
+                              : "Area",
+                          )
+                          .join(", ")}
                       </span>
                     </div>
                   )}
@@ -165,14 +212,16 @@ export function EventList() {
             </div>
           </CardContent>
           <CardFooter className="pt-4 px-6 pb-6 bg-muted/5">
-            <Button 
-              variant="outline" 
-              className="w-full rounded-xl hover:bg-primary hover:text-primary-foreground transition-all duration-300 disabled:opacity-50" 
+            <Button
+              variant="outline"
+              className="w-full rounded-xl hover:bg-primary hover:text-primary-foreground transition-all duration-300 disabled:opacity-50"
               disabled={!isApproved}
               asChild={isApproved}
             >
               {isApproved ? (
-                <a href={`/seller-dashboard/conference-hall/events/${event.id}`}>
+                <a
+                  href={`/seller-dashboard/conference-hall/events/${event.id}`}
+                >
                   Manage Event & Stats
                 </a>
               ) : (

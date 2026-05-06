@@ -152,7 +152,7 @@ export default function ItemDetailsPage() {
               <div className="flex items-center gap-2 flex-wrap">
                 <Badge
                   className={cn(
-                    "uppercase text-[10px] font-black tracking-widest px-3 py-1 rounded-full border-none",
+                    " text-[10px] font-black  px-3 py-1 rounded-full border-none",
                     isProduct
                       ? "bg-primary/10 text-primary"
                       : "bg-secondary/10 text-secondary",
@@ -166,10 +166,7 @@ export default function ItemDetailsPage() {
                   {item.type}
                 </Badge>
                 {subCategoryName && (
-                  <Badge
-                    variant="outline"
-                    className="text-[10px] font-bold tracking-wide uppercase"
-                  >
+                  <Badge variant="outline" className="text-[10px] font-bold  ">
                     {subCategoryName}
                   </Badge>
                 )}
@@ -219,7 +216,7 @@ export default function ItemDetailsPage() {
               <Layers className="size-5 text-primary" />
             </div>
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">
+              <p className="text-[10px] font-black   text-slate-400 mb-1">
                 Category
               </p>
               <p className="text-sm font-bold text-slate-800">
@@ -239,7 +236,7 @@ export default function ItemDetailsPage() {
               <Barcode className="size-5 text-primary" />
             </div>
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">
+              <p className="text-[10px] font-black   text-slate-400 mb-1">
                 HSN Code
               </p>
               <p className="text-sm font-bold text-slate-800 font-mono">
@@ -254,7 +251,7 @@ export default function ItemDetailsPage() {
               <Tag className="size-5 text-primary" />
             </div>
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">
+              <p className="text-[10px] font-black   text-slate-400 mb-1">
                 GST
               </p>
               <p className="text-sm font-bold text-slate-800">
@@ -270,7 +267,7 @@ export default function ItemDetailsPage() {
                 <Building2 className="size-5 text-primary" />
               </div>
               <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">
+                <p className="text-[10px] font-black   text-slate-400 mb-1">
                   Brand
                 </p>
                 <p className="text-sm font-bold text-slate-800">{brandName}</p>
@@ -285,7 +282,7 @@ export default function ItemDetailsPage() {
                 <Package className="size-5 text-primary" />
               </div>
               <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
+                <p className="text-[10px] font-black   text-slate-400 mb-2">
                   Unit Types
                 </p>
                 <div className="flex flex-wrap gap-1.5">
@@ -307,7 +304,7 @@ export default function ItemDetailsPage() {
         {/* Specification */}
         {(specName || specDescription) && (
           <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="text-base font-black text-primary uppercase tracking-widest mb-3">
+            <h2 className="text-base font-black text-primary   mb-3">
               Specification
             </h2>
             {specName && (

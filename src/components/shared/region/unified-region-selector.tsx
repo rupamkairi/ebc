@@ -39,7 +39,7 @@ export function UnifiedRegionSelector({
 
   const addRegion = (pincodeRecord: PincodeRecord) => {
     if (selectedRegions.some((r) => r.pincodeId === pincodeRecord.id)) return;
-    
+
     onUpdate([
       ...selectedRegions,
       {
@@ -51,7 +51,9 @@ export function UnifiedRegionSelector({
   };
 
   const toggleRegion = (pincodeRecord: PincodeRecord) => {
-    const isSelected = selectedRegions.some((r) => r.pincodeId === pincodeRecord.id);
+    const isSelected = selectedRegions.some(
+      (r) => r.pincodeId === pincodeRecord.id,
+    );
     if (isSelected) {
       removeRegion(pincodeRecord.id);
     } else {
@@ -71,7 +73,7 @@ export function UnifiedRegionSelector({
         isSpecial: true,
       });
 
-      // Find the specific one: 
+      // Find the specific one:
       // For STATE: district and pincode are null
       // For DISTRICT: district is set, pincode is null
       const match = results.find((r) => {
@@ -85,7 +87,9 @@ export function UnifiedRegionSelector({
       if (match) {
         addRegion(match);
       } else {
-        toast.error(`Could not find a special entry for this ${type.toLowerCase()}.`);
+        toast.error(
+          `Could not find a special entry for this ${type.toLowerCase()}.`,
+        );
       }
     } catch {
       toast.error("Failed to fetch regional data");
@@ -99,10 +103,12 @@ export function UnifiedRegionSelector({
   };
 
   return (
-    <div className={cn("space-y-6", disabled && "opacity-60 pointer-events-none")}>
+    <div
+      className={cn("space-y-6", disabled && "opacity-60 pointer-events-none")}
+    >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-muted/20 p-4 rounded-lg border">
         <div className="space-y-1">
-          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          <Label className="text-xs font-semibold text-muted-foreground  ">
             Step 1: Select State
           </Label>
           <div className="flex gap-2">
@@ -133,7 +139,7 @@ export function UnifiedRegionSelector({
         </div>
 
         <div className="space-y-1">
-          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          <Label className="text-xs font-semibold text-muted-foreground  ">
             Step 2: Select District (Optional)
           </Label>
           <div className="flex gap-2">
@@ -163,12 +169,12 @@ export function UnifiedRegionSelector({
         </div>
 
         <div className="space-y-1 md:col-span-2">
-          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          <Label className="text-xs font-semibold text-muted-foreground  ">
             Step 3: Search Pincode (Optional)
           </Label>
           <div className="relative">
             <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                <Search className="h-4 w-4" />
+              <Search className="h-4 w-4" />
             </div>
             <Input
               placeholder="Search by pincode (min 3 digits)..."
@@ -189,35 +195,42 @@ export function UnifiedRegionSelector({
         <div className="border rounded-md max-h-48 overflow-y-auto bg-background shadow-sm">
           <div className="grid grid-cols-1 divide-y">
             {records
-              .filter(r => r.pincode) // Only show regular pincodes in this list
+              .filter((r) => r.pincode) // Only show regular pincodes in this list
               .map((r) => {
-              const isSelected = selectedRegions.some((reg) => reg.pincodeId === r.id);
-              return (
-                <div
-                  key={r.id}
-                  className="flex items-center justify-between p-2.5 px-4 hover:bg-muted/50 transition-colors cursor-pointer group"
-                  onClick={() => toggleRegion(r)}
-                >
-                  <div className="flex items-center gap-3 text-sm">
-                    {/* Wrap checkbox to stop bubble and prevent double toggle with div onClick */}
-                    <div onClick={(e) => {
-                      e.stopPropagation();
-                    }} className="flex items-center">
-                      <Checkbox 
-                        checked={isSelected}
-                        onCheckedChange={() => toggleRegion(r)}
-                      />
-                    </div>
-                    <div>
-                      <span className="font-bold tabular-nums">{r.pincode}</span>
-                      <span className="ml-3 text-muted-foreground text-xs">
-                        {r.district}, {r.state}
-                      </span>
+                const isSelected = selectedRegions.some(
+                  (reg) => reg.pincodeId === r.id,
+                );
+                return (
+                  <div
+                    key={r.id}
+                    className="flex items-center justify-between p-2.5 px-4 hover:bg-muted/50 transition-colors cursor-pointer group"
+                    onClick={() => toggleRegion(r)}
+                  >
+                    <div className="flex items-center gap-3 text-sm">
+                      {/* Wrap checkbox to stop bubble and prevent double toggle with div onClick */}
+                      <div
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                        className="flex items-center"
+                      >
+                        <Checkbox
+                          checked={isSelected}
+                          onCheckedChange={() => toggleRegion(r)}
+                        />
+                      </div>
+                      <div>
+                        <span className="font-bold tabular-nums">
+                          {r.pincode}
+                        </span>
+                        <span className="ml-3 text-muted-foreground text-xs">
+                          {r.district}, {r.state}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
           </div>
         </div>
       )}
@@ -261,13 +274,11 @@ export function UnifiedRegionSelector({
                   className="pl-2 pr-1 py-1 gap-1 flex items-center"
                 >
                   <span className="text-xs">
-                    {isWholeState ? (
-                      `Whole ${r.state}`
-                    ) : isWholeDistrict ? (
-                      `${r.district} (District)`
-                    ) : (
-                      `${r?.pincode} - ${r?.district}`
-                    )}
+                    {isWholeState
+                      ? `Whole ${r.state}`
+                      : isWholeDistrict
+                        ? `${r.district} (District)`
+                        : `${r?.pincode} - ${r?.district}`}
                   </span>
                   <button
                     type="button"

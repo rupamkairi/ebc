@@ -40,7 +40,7 @@ export default function EnquiriesPage() {
         <h1 className="text-4xl md:text-5xl font-black text-primary tracking-tight">
           {t("enquiries_title_page")}
         </h1>
-        <p className="text-base text-muted-foreground font-bold uppercase tracking-widest">
+        <p className="text-base text-muted-foreground font-bold  ">
           {t("manage_track_enquiries_subtitle")}
         </p>
       </div>
@@ -55,7 +55,7 @@ export default function EnquiriesPage() {
                 key={filter}
                 onClick={() => setActiveFilter(filter)}
                 className={cn(
-                  "px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300",
+                  "px-8 py-3 rounded-xl text-[10px] font-black   transition-all duration-300",
                   isActive
                     ? "bg-primary text-white shadow-lg shadow-primary/20 scale-105"
                     : "bg-slate-50 text-primary/60 hover:bg-slate-100",
@@ -71,7 +71,7 @@ export default function EnquiriesPage() {
         </div>
 
         <Link href="/enquiry/create">
-          <Button className="bg-secondary hover:bg-secondary/90 text-white px-10 py-7 rounded-2xl font-black uppercase tracking-widest flex items-center gap-3 h-14 shadow-lg shadow-secondary/20 transition-all active:scale-95 border-none">
+          <Button className="bg-secondary hover:bg-secondary/90 text-white px-10 py-7 rounded-2xl font-black   flex items-center gap-3 h-14 shadow-lg shadow-secondary/20 transition-all active:scale-95 border-none">
             <span className="text-xl">+</span>
             {t("create_enquiry_btn")}
           </Button>
@@ -84,7 +84,7 @@ export default function EnquiriesPage() {
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-32 gap-6 bg-white rounded-3xl border border-primary/10 shadow-sm">
               <div className="h-12 w-12 border-4 border-primary/10 border-t-primary rounded-full animate-spin" />
-              <p className="text-primary/40 font-black uppercase tracking-widest text-xs">
+              <p className="text-primary/40 font-black   text-xs">
                 {t("fetching_enquiries")}
               </p>
             </div>
@@ -98,7 +98,7 @@ export default function EnquiriesPage() {
             <div className="flex flex-col items-center justify-center py-32 text-center bg-white rounded-3xl border border-dashed border-primary/20">
               <div className="flex flex-col items-center gap-4 text-primary/30 mb-2">
                 <Frown className="size-16 mb-2 opacity-20" />
-                <p className="text-xl font-black uppercase tracking-widest">
+                <p className="text-xl font-black  ">
                   {t("no_enquiries_empty_state")}
                 </p>
               </div>

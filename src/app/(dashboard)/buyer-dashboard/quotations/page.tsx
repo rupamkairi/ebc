@@ -37,10 +37,12 @@ export default function BuyerQuotationsPage() {
     const details = q.quotationDetails?.[0];
     if (activeFilter === "All") return true;
     if (activeFilter === "Accepted") return q.status === "ACCEPTED";
-    return (q.status === "PENDING" || details?.requestedRevision) && 
-           q.status !== "ACCEPTED" && 
-           q.status !== "REJECTED" && 
-           q.enquiry?.status !== "COMPLETED";
+    return (
+      (q.status === "PENDING" || details?.requestedRevision) &&
+      q.status !== "ACCEPTED" &&
+      q.status !== "REJECTED" &&
+      q.enquiry?.status !== "COMPLETED"
+    );
   });
 
   return (
@@ -113,7 +115,9 @@ export default function BuyerQuotationsPage() {
             const isAccepted = q.status === "ACCEPTED";
             const isEnquiryClosed = q.enquiry?.status === "COMPLETED";
             const details = q.quotationDetails?.[0];
-            const isNegotiable = q.quotationLineItems?.some((li) => li.isNegotiable) && !details?.hasBeenRevised;
+            const isNegotiable =
+              q.quotationLineItems?.some((li) => li.isNegotiable) &&
+              !details?.hasBeenRevised;
 
             return (
               <Card
@@ -141,12 +145,12 @@ export default function BuyerQuotationsPage() {
                         </div>
                         <div className="space-y-1">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em] bg-muted px-2 py-0.5 rounded-full text-muted-foreground">
+                            <span className="text-[10px] font-black  tracking-[0.2em] bg-muted px-2 py-0.5 rounded-full text-muted-foreground">
                               {q.id.slice(-8).toUpperCase()}
                             </span>
                             <Badge
                               className={cn(
-                                "text-[10px] font-black uppercase tracking-wide border-none",
+                                "text-[10px] font-black   border-none",
                                 isAccepted
                                   ? "bg-emerald-100 text-emerald-700"
                                   : isEnquiryClosed
@@ -160,30 +164,41 @@ export default function BuyerQuotationsPage() {
                                   ? t("enquiry_closed")
                                   : t("pending_label")}
                             </Badge>
-                            {isNegotiable && !isAccepted && !isEnquiryClosed && (
-                              <Badge
-                                className="text-[10px] font-black uppercase tracking-widest bg-orange-500 hover:bg-orange-600 text-white border-none px-2.5 py-1 gap-1.5 shadow-md shadow-orange-200 animate-pulse"
-                              >
-                                <MessageSquare className="h-2.5 w-2.5 fill-white/20" />
-                                {t("negotiable_price")}
-                              </Badge>
-                            )}
-                            {details?.requestedRevision && !details?.hasBeenRevised && (
-                               <Badge
-                                 className="text-[10px] font-black uppercase tracking-widest bg-orange-500 text-white border-none px-2.5 py-1 shadow-md shadow-orange-200 animate-pulse"
-                               >
-                                 {t("revision_requested_label", "Revision Requested")}
-                               </Badge>
-                            )}
+                            {isNegotiable &&
+                              !isAccepted &&
+                              !isEnquiryClosed && (
+                                <Badge className="text-[10px] font-black   bg-orange-500 hover:bg-orange-600 text-white border-none px-2.5 py-1 gap-1.5 shadow-md shadow-orange-200 animate-pulse">
+                                  <MessageSquare className="h-2.5 w-2.5 fill-white/20" />
+                                  {t("negotiable_price")}
+                                </Badge>
+                              )}
+                            {details?.requestedRevision &&
+                              !details?.hasBeenRevised && (
+                                <Badge className="text-[10px] font-black   bg-orange-500 text-white border-none px-2.5 py-1 shadow-md shadow-orange-200 animate-pulse">
+                                  {t(
+                                    "revision_requested_label",
+                                    "Revision Requested",
+                                  )}
+                                </Badge>
+                              )}
                             {details?.hasBeenRevised && (
-                               <Badge
-                                 className="text-[10px] font-black uppercase tracking-widest bg-violet-600 text-white border-none px-2.5 py-1 shadow-md shadow-violet-200 flex items-center gap-1.5"
-                               >
-                                 {q.priceChangeType === "DECREASED" && <TrendingDown className="h-3 w-3" />}
-                                 {q.priceChangeType === "INCREASED" && <TrendingUp className="h-3 w-3" />}
-                                 {q.priceChangeType === "MAINTAINED" && <RefreshCw className="h-3 w-3" />}
-                                 {t("revised_label", "Revised")} {q.priceChangeType === "DECREASED" ? "(Price Reduced)" : q.priceChangeType === "INCREASED" ? "(Price Updated)" : ""}
-                               </Badge>
+                              <Badge className="text-[10px] font-black   bg-violet-600 text-white border-none px-2.5 py-1 shadow-md shadow-violet-200 flex items-center gap-1.5">
+                                {q.priceChangeType === "DECREASED" && (
+                                  <TrendingDown className="h-3 w-3" />
+                                )}
+                                {q.priceChangeType === "INCREASED" && (
+                                  <TrendingUp className="h-3 w-3" />
+                                )}
+                                {q.priceChangeType === "MAINTAINED" && (
+                                  <RefreshCw className="h-3 w-3" />
+                                )}
+                                {t("revised_label", "Revised")}{" "}
+                                {q.priceChangeType === "DECREASED"
+                                  ? "(Price Reduced)"
+                                  : q.priceChangeType === "INCREASED"
+                                    ? "(Price Updated)"
+                                    : ""}
+                              </Badge>
                             )}
                           </div>
                           <p className="font-black text-sm">
@@ -216,7 +231,7 @@ export default function BuyerQuotationsPage() {
                       {/* Right: amount + action */}
                       <div className="flex items-center gap-4 md:gap-6">
                         <div className="text-right">
-                          <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                          <p className="text-[10px] font-black   text-muted-foreground">
                             {t("total_label")}
                           </p>
                           <div className="flex items-center justify-end font-black text-primary text-xl">
@@ -224,11 +239,16 @@ export default function BuyerQuotationsPage() {
                             {total.toLocaleString("en-IN")}
                           </div>
                           {q.priceDifference && q.priceDifference !== 0 && (
-                            <p className={cn(
-                              "text-[10px] font-bold mt-0.5",
-                              q.priceChangeType === "DECREASED" ? "text-teal-600" : "text-amber-600"
-                            )}>
-                              {q.priceChangeType === "DECREASED" ? "-" : "+"}₹{Math.abs(q.priceDifference).toLocaleString()}
+                            <p
+                              className={cn(
+                                "text-[10px] font-bold mt-0.5",
+                                q.priceChangeType === "DECREASED"
+                                  ? "text-teal-600"
+                                  : "text-amber-600",
+                              )}
+                            >
+                              {q.priceChangeType === "DECREASED" ? "-" : "+"}₹
+                              {Math.abs(q.priceDifference).toLocaleString()}
                             </p>
                           )}
                         </div>
@@ -237,9 +257,7 @@ export default function BuyerQuotationsPage() {
                           variant="outline"
                           className="border-primary text-primary hover:bg-primary hover:text-white font-black rounded-xl h-10 px-5 transition-all group/btn"
                         >
-                          <Link
-                            href={`/buyer-dashboard/quotations/${q.id}`}
-                          >
+                          <Link href={`/buyer-dashboard/quotations/${q.id}`}>
                             Details
                             <ChevronRight className="ml-1 h-4 w-4 group-hover/btn:translate-x-0.5 transition-transform" />
                           </Link>

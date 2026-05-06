@@ -70,7 +70,7 @@ export default function VisitDetailsPage() {
 
   const details = appointment.appointmentDetails?.[0];
   const firstItem = appointment.appointmentLineItems?.[0];
-  
+
   // NOTE: isActive means they've paid the lead cost and responded.
   // isAccepted means the buyer has picked them as one of the 3 visits.
   const isPaidResponse = visit.isActive;
@@ -142,15 +142,17 @@ export default function VisitDetailsPage() {
                   <CheckCircle2 className="h-5 w-5" />
                   {t("confirmed_visit_details", "Confirmed Service Schedule")}
                 </h3>
-                <Badge className="bg-emerald-500 text-white border-none text-[10px] font-black uppercase tracking-widest px-3">
-                  {visit.status === "COMPLETED" ? t("completed_status", "Completed") : t("active_status", "Confirmed")}
+                <Badge className="bg-emerald-500 text-white border-none text-[10px] font-black   px-3">
+                  {visit.status === "COMPLETED"
+                    ? t("completed_status", "Completed")
+                    : t("active_status", "Confirmed")}
                 </Badge>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex items-center gap-3 p-4 rounded-xl bg-white/50 border border-emerald-100">
                   <Calendar className="h-5 w-5 text-emerald-600" />
                   <div>
-                    <p className="text-[10px] font-black text-emerald-700/50 uppercase tracking-widest">
+                    <p className="text-[10px] font-black text-emerald-700/50  ">
                       {t("date_label")}
                     </p>
                     <p className="font-black text-sm text-emerald-900">
@@ -161,11 +163,15 @@ export default function VisitDetailsPage() {
                 <div className="flex items-center gap-3 p-4 rounded-xl bg-white/50 border border-emerald-100">
                   <Clock className="h-5 w-5 text-emerald-600" />
                   <div>
-                    <p className="text-[10px] font-black text-emerald-700/50 uppercase tracking-widest">
+                    <p className="text-[10px] font-black text-emerald-700/50  ">
                       {t("time_slot_label")}
                     </p>
                     <p className="font-black text-sm text-emerald-900">
-                      {format(new Date(visit.visitSlot.fromDateTime), "hh:mm a")} -{" "}
+                      {format(
+                        new Date(visit.visitSlot.fromDateTime),
+                        "hh:mm a",
+                      )}{" "}
+                      -{" "}
                       {format(new Date(visit.visitSlot.toDateTime), "hh:mm a")}
                     </p>
                   </div>
@@ -175,17 +181,26 @@ export default function VisitDetailsPage() {
           )}
 
           {/* If Paid Response but NOT yet accepted by buyer, show status card */}
-          {visit.visitSlot && isPaidResponse && !isAcceptedByBuyer && !isCompleted && (
-            <div className="bg-amber-50 rounded-2xl border border-amber-100 p-6 space-y-3">
-              <div className="flex items-center gap-2 text-amber-900 font-black">
-                <Clock className="h-4 w-4" />
-                {t("awaiting_acceptance_title", "Response Sent - Awaiting Buyer Selection")}
+          {visit.visitSlot &&
+            isPaidResponse &&
+            !isAcceptedByBuyer &&
+            !isCompleted && (
+              <div className="bg-amber-50 rounded-2xl border border-amber-100 p-6 space-y-3">
+                <div className="flex items-center gap-2 text-amber-900 font-black">
+                  <Clock className="h-4 w-4" />
+                  {t(
+                    "awaiting_acceptance_title",
+                    "Response Sent - Awaiting Buyer Selection",
+                  )}
+                </div>
+                <p className="text-sm text-amber-700 font-medium">
+                  {t(
+                    "awaiting_acceptance_msg",
+                    "You've successfully responded with a proposed schedule. The buyer can accept up to 3 service providers for this appointment. You'll be notified if you're selected.",
+                  )}
+                </p>
               </div>
-              <p className="text-sm text-amber-700 font-medium">
-                {t("awaiting_acceptance_msg", "You've successfully responded with a proposed schedule. The buyer can accept up to 3 service providers for this appointment. You'll be notified if you're selected.")}
-              </p>
-            </div>
-          )}
+            )}
 
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6">
             {/* Title row */}
@@ -195,25 +210,30 @@ export default function VisitDetailsPage() {
                   {t("visit_details_title", "Visit Details")}
                 </h2>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="px-3 py-1 rounded-full border-2 border-secondary text-secondary text-xs font-black tracking-wide">
+                  <span className="px-3 py-1 rounded-full border-2 border-secondary text-secondary text-xs font-black ">
                     ID: {visit.id.slice(0, 8)}
                   </span>
                   <span
                     className={cn(
-                      "px-4 py-1 rounded-full text-xs font-black tracking-wide text-white",
-                      isAppointmentCompleted ? "bg-blue-600" : isCompleted ? "bg-green-600" : isAcceptedByBuyer ? "bg-emerald-600" : "bg-primary",
+                      "px-4 py-1 rounded-full text-xs font-black  text-white",
+                      isAppointmentCompleted
+                        ? "bg-blue-600"
+                        : isCompleted
+                          ? "bg-green-600"
+                          : isAcceptedByBuyer
+                            ? "bg-emerald-600"
+                            : "bg-primary",
                     )}
                   >
                     {isAppointmentCompleted
-                        ? t("closed_by_buyer_label", "Closed by Buyer")
-                        : isCompleted 
-                            ? t("completed_label") 
-                            : isAcceptedByBuyer 
-                                ? t("confirmed_label") 
-                                : isPaidResponse 
-                                    ? t("response_sent_badge", "Response Sent") 
-                                    : t("pending_label")
-                    }
+                      ? t("closed_by_buyer_label", "Closed by Buyer")
+                      : isCompleted
+                        ? t("completed_label")
+                        : isAcceptedByBuyer
+                          ? t("confirmed_label")
+                          : isPaidResponse
+                            ? t("response_sent_badge", "Response Sent")
+                            : t("pending_label")}
                   </span>
                 </div>
               </div>
@@ -237,7 +257,7 @@ export default function VisitDetailsPage() {
               </h3>
               <div className="rounded-xl border border-gray-100 bg-gray-50/50 p-4 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-black text-primary/40 uppercase tracking-widest">
+                  <span className="text-xs font-black text-primary/40  ">
                     ID: {appointment.id.slice(0, 8)}
                   </span>
                   <Link
@@ -274,10 +294,9 @@ export default function VisitDetailsPage() {
               <div className="space-y-1.5">
                 <h4 className="text-sm font-black text-primary flex items-center gap-2">
                   <Clock className="h-4 w-4" />
-                  {isAcceptedByBuyer 
+                  {isAcceptedByBuyer
                     ? t("confirmed_visit_label", "Confirmed Slot")
-                    : t("proposed_slot_label", "Proposed Slot")
-                  }
+                    : t("proposed_slot_label", "Proposed Slot")}
                 </h4>
                 <p className="text-sm text-gray-500 font-medium pl-6">
                   {visit.visitSlot ? (
@@ -285,7 +304,15 @@ export default function VisitDetailsPage() {
                       {format(new Date(visit.visitSlot.fromDateTime), "PPP")}
                       <br />
                       <span className="text-xs text-muted-foreground">
-                        {format(new Date(visit.visitSlot.fromDateTime), "hh:mm a")} - {format(new Date(visit.visitSlot.toDateTime), "hh:mm a")}
+                        {format(
+                          new Date(visit.visitSlot.fromDateTime),
+                          "hh:mm a",
+                        )}{" "}
+                        -{" "}
+                        {format(
+                          new Date(visit.visitSlot.toDateTime),
+                          "hh:mm a",
+                        )}
                       </span>
                     </>
                   ) : (
@@ -341,20 +368,39 @@ export default function VisitDetailsPage() {
             {isPaidResponse && !isAcceptedByBuyer && !isCompleted && (
               <div className="p-5 bg-white rounded-2xl border border-dashed border-primary/20 flex flex-col items-center text-center gap-4">
                 <div className="h-12 w-12 rounded-full bg-primary/5 flex items-center justify-center">
-                  <Clock className={cn("h-6 w-6 text-primary/40", !isAppointmentCompleted && "animate-pulse")} />
+                  <Clock
+                    className={cn(
+                      "h-6 w-6 text-primary/40",
+                      !isAppointmentCompleted && "animate-pulse",
+                    )}
+                  />
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm font-black text-primary uppercase tracking-tight">
-                    {isAppointmentCompleted ? t("closed_by_buyer", "Closed by Buyer") : t("waiting_for_buyer", "Awaiting Buyer")}
+                  <p className="text-sm font-black text-primary  tracking-tight">
+                    {isAppointmentCompleted
+                      ? t("closed_by_buyer", "Closed by Buyer")
+                      : t("waiting_for_buyer", "Awaiting Buyer")}
                   </p>
                   <p className="text-[10px] text-primary/60 font-bold leading-relaxed px-2">
-                    {isAppointmentCompleted 
-                      ? t("closed_by_buyer_msg_unpicked", "The buyer has completed this appointment with another provider. This request is now closed.")
-                      : t("buyer_selection_pending", "Your response is with the buyer. You will be able to complete this service once they officially accept your visit.")}
+                    {isAppointmentCompleted
+                      ? t(
+                          "closed_by_buyer_msg_unpicked",
+                          "The buyer has completed this appointment with another provider. This request is now closed.",
+                        )
+                      : t(
+                          "buyer_selection_pending",
+                          "Your response is with the buyer. You will be able to complete this service once they officially accept your visit.",
+                        )}
                   </p>
                 </div>
-                <Button asChild variant="secondary" className="w-full rounded-xl font-black h-10 text-[10px] uppercase tracking-widest">
-                    <Link href="/seller-dashboard/visits">{t("back_to_list", "Back to List")}</Link>
+                <Button
+                  asChild
+                  variant="secondary"
+                  className="w-full rounded-xl font-black h-10 text-[10px]  "
+                >
+                  <Link href="/seller-dashboard/visits">
+                    {t("back_to_list", "Back to List")}
+                  </Link>
                 </Button>
               </div>
             )}
@@ -362,14 +408,43 @@ export default function VisitDetailsPage() {
             {isAcceptedByBuyer && !isCompleted && (
               <ActivityActionCard
                 isPending={!isAppointmentCompleted}
-                actionLabel={isAppointmentCompleted ? "" : t("complete_visit_btn", "Mark as Completed")}
+                actionLabel={
+                  isAppointmentCompleted
+                    ? ""
+                    : t("complete_visit_btn", "Mark as Completed")
+                }
                 onAction={isAppointmentCompleted ? () => {} : handleComplete}
-                actionIcon={isAppointmentCompleted ? <PackageCheck className="h-4 w-4" /> : <PackageCheck className="h-4 w-4" />}
-                actionDescription={isAppointmentCompleted 
-                  ? t("closed_by_buyer_msg", "The buyer has marked the entire appointment as complete. This visit is now closed.")
-                  : t("mark_as_completed_btn", "Mark this visit as finished after the onsite consultation.")}
-                respondedLabel={isAppointmentCompleted ? t("closed_by_buyer", "Closed by Buyer") : ""}
-                respondedDescription={isAppointmentCompleted ? t("closed_by_buyer_msg", "The buyer has marked the entire appointment as complete. This visit is now closed.") : ""}
+                actionIcon={
+                  isAppointmentCompleted ? (
+                    <PackageCheck className="h-4 w-4" />
+                  ) : (
+                    <PackageCheck className="h-4 w-4" />
+                  )
+                }
+                actionDescription={
+                  isAppointmentCompleted
+                    ? t(
+                        "closed_by_buyer_msg",
+                        "The buyer has marked the entire appointment as complete. This visit is now closed.",
+                      )
+                    : t(
+                        "mark_as_completed_btn",
+                        "Mark this visit as finished after the onsite consultation.",
+                      )
+                }
+                respondedLabel={
+                  isAppointmentCompleted
+                    ? t("closed_by_buyer", "Closed by Buyer")
+                    : ""
+                }
+                respondedDescription={
+                  isAppointmentCompleted
+                    ? t(
+                        "closed_by_buyer_msg",
+                        "The buyer has marked the entire appointment as complete. This visit is now closed.",
+                      )
+                    : ""
+                }
                 backHref="/seller-dashboard/visits"
                 backLabel={t("back_to_visits", "Back to Visits")}
                 isProcessing={isCompleting}
@@ -381,7 +456,10 @@ export default function VisitDetailsPage() {
               <ActivityActionCard
                 isPending={false}
                 actionLabel=""
-                respondedLabel={t("service_completed_title", "Visit Completed!")}
+                respondedLabel={t(
+                  "service_completed_title",
+                  "Visit Completed!",
+                )}
                 respondedDescription={t(
                   "service_completed_msg",
                   "The site visit or consultation has been successfully finished.",

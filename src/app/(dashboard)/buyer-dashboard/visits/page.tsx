@@ -140,12 +140,12 @@ export default function BuyerVisitsPage() {
                         </div>
                         <div className="space-y-1">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em] bg-muted px-2 py-0.5 rounded-full text-muted-foreground">
+                            <span className="text-[10px] font-black  tracking-[0.2em] bg-muted px-2 py-0.5 rounded-full text-muted-foreground">
                               {v.id.slice(-8).toUpperCase()}
                             </span>
                             <Badge
                               className={cn(
-                                "text-[10px] font-black uppercase tracking-wide border-none",
+                                "text-[10px] font-black   border-none",
                                 statusColor,
                               )}
                             >
@@ -178,7 +178,7 @@ export default function BuyerVisitsPage() {
                       {/* Right: amount + action */}
                       <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 mt-4 md:mt-0">
                         <div className="text-center md:text-right bg-slate-50 p-3 rounded-xl border">
-                          <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">
+                          <p className="text-[10px] font-black   text-muted-foreground mb-1">
                             {t("date_time_label") || "SCHEDULED FOR"}
                           </p>
                           <div className="text-xs font-bold text-primary">
@@ -194,7 +194,10 @@ export default function BuyerVisitsPage() {
                                   "hh:mm a",
                                 )}{" "}
                                 -{" "}
-                                {format(new Date(v.visitSlot.toDateTime), "hh:mm a")}
+                                {format(
+                                  new Date(v.visitSlot.toDateTime),
+                                  "hh:mm a",
+                                )}
                               </>
                             ) : (
                               "Not specified"
@@ -206,9 +209,7 @@ export default function BuyerVisitsPage() {
                           variant="outline"
                           className="border-primary text-primary hover:bg-primary hover:text-white font-black rounded-xl h-10 px-5 transition-all group/btn w-full md:w-auto"
                         >
-                          <Link
-                            href={`/buyer-dashboard/visits/${v.id}`}
-                          >
+                          <Link href={`/buyer-dashboard/visits/${v.id}`}>
                             Details
                             <ChevronRight className="ml-1 h-4 w-4 group-hover/btn:translate-x-0.5 transition-transform" />
                           </Link>

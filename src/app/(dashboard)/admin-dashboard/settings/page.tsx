@@ -50,7 +50,7 @@ export default function AdminSettingsPage() {
                   <p className="text-sm font-medium text-muted-foreground">
                     Role
                   </p>
-                  <p className="text-sm font-mono uppercase text-primary bg-primary/5 px-2 py-0.5 rounded w-fit">
+                  <p className="text-sm font-mono  text-primary bg-primary/5 px-2 py-0.5 rounded w-fit">
                     {user?.role}
                   </p>
                 </div>

@@ -11,7 +11,10 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { useEntitiesQuery } from "@/queries/entityQueries";
-import { useAssignmentsQuery, useQuotationsQuery } from "@/queries/activityQueries";
+import {
+  useAssignmentsQuery,
+  useQuotationsQuery,
+} from "@/queries/activityQueries";
 import { useItemListingsQuery } from "@/queries/catalogQueries";
 import { Input } from "@/components/ui/input";
 import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
@@ -29,12 +32,14 @@ export default function EnquiriesPage() {
   const [showResponded, setShowResponded] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: assignments = [], isLoading: loadingAssignments } = useAssignmentsQuery({
-    toEntityId: mainEntity?.id,
-    type: ACTIVITY_TYPE.ENQUIRY_ASSIGNMENT,
-  });
+  const { data: assignments = [], isLoading: loadingAssignments } =
+    useAssignmentsQuery({
+      toEntityId: mainEntity?.id,
+      type: ACTIVITY_TYPE.ENQUIRY_ASSIGNMENT,
+    });
 
-  const { data: myQuotations = [], isLoading: loadingQuotations } = useQuotationsQuery();
+  const { data: myQuotations = [], isLoading: loadingQuotations } =
+    useQuotationsQuery();
 
   // Fetch seller's own item listings to filter assignments by category match
   const { data: myListings = [] } = useItemListingsQuery({
@@ -57,7 +62,8 @@ export default function EnquiriesPage() {
       const enquiryItems = a.enquiry?.enquiryLineItems;
       if (!enquiryItems || enquiryItems.length === 0) return true; // edge case: show if no item info
       return enquiryItems.some(
-        (li: EnquiryLineItem) => li.item?.categoryId && myCategoryIds.has(li.item.categoryId)
+        (li: EnquiryLineItem) =>
+          li.item?.categoryId && myCategoryIds.has(li.item.categoryId),
       );
     });
   }, [assignments, myCategoryIds]);
@@ -73,43 +79,65 @@ export default function EnquiriesPage() {
   // IDs of enquiries this seller has actually sent a quotation for
   const myRespondedEnquiryIds = new Set(
     myQuotations
-      .filter(q => !!mainEntity?.id && (q.createdBy?.staffAtEntityId === mainEntity.id || 
-                   q.createdBy?.createdEntities?.some(e => e.id === mainEntity.id)))
-      .map((q) => q.enquiryId)
+      .filter(
+        (q) =>
+          !!mainEntity?.id &&
+          (q.createdBy?.staffAtEntityId === mainEntity.id ||
+            q.createdBy?.createdEntities?.some((e) => e.id === mainEntity.id)),
+      )
+      .map((q) => q.enquiryId),
   );
 
   // IDs of enquiries where buyer has requested a revision from this seller, and it has NOT been sent yet
   const myRevisionRequestedEnquiryIds = new Set(
     myQuotations
-      .filter(q => !!mainEntity?.id && (q.createdBy?.staffAtEntityId === mainEntity.id || 
-                   q.createdBy?.createdEntities?.some(e => e.id === mainEntity.id)) && q.quotationDetails?.[0]?.requestedRevision && !q.quotationDetails?.[0]?.hasBeenRevised)
-      .map((q) => q.enquiryId)
+      .filter(
+        (q) =>
+          !!mainEntity?.id &&
+          (q.createdBy?.staffAtEntityId === mainEntity.id ||
+            q.createdBy?.createdEntities?.some(
+              (e) => e.id === mainEntity.id,
+            )) &&
+          q.quotationDetails?.[0]?.requestedRevision &&
+          !q.quotationDetails?.[0]?.hasBeenRevised,
+      )
+      .map((q) => q.enquiryId),
   );
 
   // IDs of enquiries where this seller has already responded to a revision request
   const myRevisedEnquiryIds = new Set(
     myQuotations
-      .filter(q => !!mainEntity?.id && (q.createdBy?.staffAtEntityId === mainEntity.id || 
-                   q.createdBy?.createdEntities?.some(e => e.id === mainEntity.id)) && q.quotationDetails?.[0]?.hasBeenRevised)
-      .map((q) => q.enquiryId)
+      .filter(
+        (q) =>
+          !!mainEntity?.id &&
+          (q.createdBy?.staffAtEntityId === mainEntity.id ||
+            q.createdBy?.createdEntities?.some(
+              (e) => e.id === mainEntity.id,
+            )) &&
+          q.quotationDetails?.[0]?.hasBeenRevised,
+      )
+      .map((q) => q.enquiryId),
   );
 
   // Split into pending (active) vs responded
   const pendingAssignments = relevantAssignments.filter(
-    (a) => 
-      a.enquiry?.id && 
+    (a) =>
+      a.enquiry?.id &&
       // Filter out self-created enquiries (B2B Sourcing)
       a.enquiry.createdBy?.staffAtEntityId !== mainEntity?.id &&
-      (!myRespondedEnquiryIds.has(a.enquiry.id) || myRevisionRequestedEnquiryIds.has(a.enquiry.id)) && 
-      (!a.enquiry?.status || (a.enquiry.status !== ENQUIRY_STATUS.COMPLETED && a.enquiry.status !== ENQUIRY_STATUS.CANCELLED)),
+      (!myRespondedEnquiryIds.has(a.enquiry.id) ||
+        myRevisionRequestedEnquiryIds.has(a.enquiry.id)) &&
+      (!a.enquiry?.status ||
+        (a.enquiry.status !== ENQUIRY_STATUS.COMPLETED &&
+          a.enquiry.status !== ENQUIRY_STATUS.CANCELLED)),
   );
-  
+
   const respondedAssignments = relevantAssignments.filter(
-    (a) => 
-      a.enquiry?.id && 
+    (a) =>
+      a.enquiry?.id &&
       // Filter out self-created enquiries (B2B Sourcing)
       a.enquiry.createdBy?.staffAtEntityId !== mainEntity?.id &&
-      myRespondedEnquiryIds.has(a.enquiry.id) && 
+      myRespondedEnquiryIds.has(a.enquiry.id) &&
       !myRevisionRequestedEnquiryIds.has(a.enquiry.id),
   );
 
@@ -188,17 +216,17 @@ export default function EnquiriesPage() {
                     {/* Top Row: Meta & Status */}
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex flex-wrap items-center gap-2">
-                        <div className="px-3 py-1 rounded-full border border-primary/10 text-primary text-[9px] font-black tracking-widest bg-primary/5 uppercase">
+                        <div className="px-3 py-1 rounded-full border border-primary/10 text-primary text-[9px] font-black  bg-primary/5 ">
                           ID: {enq.id.slice(0, 8)}
                         </div>
                         {myRevisionRequestedEnquiryIds.has(enq.id) && (
-                          <div className="px-3 py-1 rounded-full bg-orange-500 text-white text-[9px] font-black tracking-widest uppercase">
+                          <div className="px-3 py-1 rounded-full bg-orange-500 text-white text-[9px] font-black  ">
                             {t("revision_requested", "Requested Revision")}
                           </div>
                         )}
                         <div
                           className={cn(
-                            "px-3 py-1 rounded-full text-[9px] font-black tracking-widest uppercase",
+                            "px-3 py-1 rounded-full text-[9px] font-black  ",
                             badge.className,
                           )}
                         >
@@ -207,11 +235,16 @@ export default function EnquiriesPage() {
                       </div>
                       <div
                         className={cn(
-                          "px-3 py-1 rounded-lg font-black text-[9px] tracking-widest uppercase shrink-0",
-                          enq.status === ENQUIRY_STATUS.PENDING && "bg-amber-100 text-amber-700",
-                          enq.status === ENQUIRY_STATUS.APPROVED && "bg-sky-100 text-sky-700",
-                          enq.status === ENQUIRY_STATUS.COMPLETED && "bg-emerald-100 text-emerald-700",
-                          (enq.status === ENQUIRY_STATUS.CANCELLED || enq.status === ENQUIRY_STATUS.REJECTED) && "bg-gray-100 text-gray-700",
+                          "px-3 py-1 rounded-lg font-black text-[9px]   shrink-0",
+                          enq.status === ENQUIRY_STATUS.PENDING &&
+                            "bg-amber-100 text-amber-700",
+                          enq.status === ENQUIRY_STATUS.APPROVED &&
+                            "bg-sky-100 text-sky-700",
+                          enq.status === ENQUIRY_STATUS.COMPLETED &&
+                            "bg-emerald-100 text-emerald-700",
+                          (enq.status === ENQUIRY_STATUS.CANCELLED ||
+                            enq.status === ENQUIRY_STATUS.REJECTED) &&
+                            "bg-gray-100 text-gray-700",
                         )}
                       >
                         {enq.status === ENQUIRY_STATUS.APPROVED
@@ -227,7 +260,7 @@ export default function EnquiriesPage() {
                       <h3 className="text-lg font-black text-primary leading-none">
                         {enq.createdBy?.name || t("anonymous_buyer")}
                       </h3>
-                      <p className="text-[9px] font-bold text-primary/30 tracking-widest uppercase truncate sm:max-w-[200px]">
+                      <p className="text-[9px] font-bold text-primary/30   truncate sm:max-w-[200px]">
                         {details?.address || t("no_location")}
                       </p>
                     </div>
@@ -238,7 +271,7 @@ export default function EnquiriesPage() {
                     {/* Requirement Section */}
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
                       <div className="flex-1 space-y-2">
-                        <p className="text-[9px] font-black text-primary/40 uppercase tracking-[0.25em] leading-none">
+                        <p className="text-[9px] font-black text-primary/40  tracking-[0.25em] leading-none">
                           {t("enquiry")}
                         </p>
                         <div className="flex flex-wrap items-end gap-2">
@@ -266,7 +299,7 @@ export default function EnquiriesPage() {
 
                       <Button
                         asChild
-                        className="bg-primary hover:bg-primary/90 text-white h-10 w-full md:w-auto px-6 rounded-xl font-black text-[11px] tracking-widest uppercase transition-all duration-300 border-none shadow-sm shadow-primary/20"
+                        className="bg-primary hover:bg-primary/90 text-white h-10 w-full md:w-auto px-6 rounded-xl font-black text-[11px]   transition-all duration-300 border-none shadow-sm shadow-primary/20"
                       >
                         <Link
                           href={`/seller-dashboard/enquiries/${enq.id}`}
@@ -311,7 +344,7 @@ export default function EnquiriesPage() {
               />
             </button>
 
-            {showResponded &&  (
+            {showResponded && (
               <div className="grid gap-4 animate-in fade-in slide-in-from-top-2 duration-300">
                 {visibleResponded.map((assignment) => {
                   const enq = assignment.enquiry;
@@ -321,21 +354,33 @@ export default function EnquiriesPage() {
                   return (
                     <Card
                       key={assignment.id}
-                      className={cn("border-green-100 bg-white/60 border shadow-xs rounded-[20px] overflow-hidden p-5 md:p-7", enq.status === "COMPLETED" ? "opacity-80" : "opacity-100")}
+                      className={cn(
+                        "border-green-100 bg-white/60 border shadow-xs rounded-[20px] overflow-hidden p-5 md:p-7",
+                        enq.status === "COMPLETED"
+                          ? "opacity-80"
+                          : "opacity-100",
+                      )}
                     >
                       <div className="flex flex-col gap-3">
                         <div className="flex items-center justify-between gap-3">
                           <div className="flex flex-wrap items-center gap-2">
-                            <div className="px-3 py-1 rounded-full border border-primary/10 text-primary text-[9px] font-black tracking-widest bg-primary/5 uppercase">
+                            <div className="px-3 py-1 rounded-full border border-primary/10 text-primary text-[9px] font-black  bg-primary/5 ">
                               ID: {enq.id.slice(0, 8)}
                             </div>
                             {myRevisedEnquiryIds.has(enq.id) && (
-                              <div className="px-3 py-1 rounded-full bg-violet-600 text-white text-[9px] font-black tracking-widest uppercase">
+                              <div className="px-3 py-1 rounded-full bg-violet-600 text-white text-[9px] font-black  ">
                                 {t("revised", "Revised")}
                               </div>
                             )}
                           </div>
-                          <div className={cn("px-3 py-1 rounded-lg  font-black text-[9px] tracking-widest uppercase shrink-0 flex items-center gap-1", enq.status === ENQUIRY_STATUS.COMPLETED ? "bg-green-100 text-green-700" : "bg-green-100 text-orange-700")}>
+                          <div
+                            className={cn(
+                              "px-3 py-1 rounded-lg  font-black text-[9px]   shrink-0 flex items-center gap-1",
+                              enq.status === ENQUIRY_STATUS.COMPLETED
+                                ? "bg-green-100 text-green-700"
+                                : "bg-green-100 text-orange-700",
+                            )}
+                          >
                             <CheckCircle2 size={10} />
                             {enq.status}
                           </div>
@@ -345,7 +390,7 @@ export default function EnquiriesPage() {
                           <h3 className="text-base font-black text-primary/70 leading-none">
                             {enq.createdBy?.name || t("anonymous_buyer")}
                           </h3>
-                          <p className="text-[9px] font-bold text-primary/30 tracking-widest uppercase truncate sm:max-w-[200px]">
+                          <p className="text-[9px] font-bold text-primary/30   truncate sm:max-w-[200px]">
                             {details?.address || t("no_location")}
                           </p>
                         </div>
@@ -354,7 +399,7 @@ export default function EnquiriesPage() {
 
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                           <div className="flex-1">
-                            <p className="text-[9px] font-black text-primary/40 uppercase tracking-[0.25em] mb-1">
+                            <p className="text-[9px] font-black text-primary/40  tracking-[0.25em] mb-1">
                               {t("enquiry")}
                             </p>
                             <p className="text-sm font-bold text-primary/60">
@@ -369,7 +414,7 @@ export default function EnquiriesPage() {
                           <Button
                             asChild
                             variant="outline"
-                            className="h-9 w-full md:w-auto px-5 rounded-xl font-black text-[11px] tracking-widest uppercase border-primary/20 text-primary/60"
+                            className="h-9 w-full md:w-auto px-5 rounded-xl font-black text-[11px]   border-primary/20 text-primary/60"
                           >
                             <Link
                               href={`/seller-dashboard/enquiries/${enq.id}`}

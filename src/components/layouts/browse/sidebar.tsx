@@ -84,7 +84,7 @@ export function Sidebar({ categories, facets, isLoading }: SidebarProps) {
                   />
                   <span
                     className={cn(
-                      "text-[11px] font-bold transition-colors uppercase",
+                      "text-[11px] font-bold transition-colors ",
                       isActive
                         ? "text-slate-900"
                         : "text-slate-600 group-hover:text-slate-900",
@@ -129,7 +129,7 @@ export function Sidebar({ categories, facets, isLoading }: SidebarProps) {
                     </div>
                     <span
                       className={cn(
-                        "text-[11px] font-bold transition-colors uppercase",
+                        "text-[11px] font-bold transition-colors ",
                         isChecked
                           ? "text-slate-900"
                           : "text-slate-600 group-hover:text-slate-900",
@@ -160,7 +160,9 @@ export function Sidebar({ categories, facets, isLoading }: SidebarProps) {
                   <div
                     key={spec.value}
                     className="flex items-center gap-2 group cursor-pointer"
-                    onClick={() => handleSpecificationChange(spec.value, !isChecked)}
+                    onClick={() =>
+                      handleSpecificationChange(spec.value, !isChecked)
+                    }
                   >
                     <div
                       className={cn(
@@ -174,7 +176,7 @@ export function Sidebar({ categories, facets, isLoading }: SidebarProps) {
                     </div>
                     <span
                       className={cn(
-                        "text-[11px] font-bold transition-colors uppercase",
+                        "text-[11px] font-bold transition-colors ",
                         isChecked
                           ? "text-slate-900"
                           : "text-slate-600 group-hover:text-slate-900",

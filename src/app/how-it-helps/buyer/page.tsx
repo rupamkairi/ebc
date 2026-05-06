@@ -55,7 +55,7 @@ export default function BuyerHowItHelps() {
           <div className="container mx-auto px-4">
             <Link
               href="/how-it-works"
-              className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-primary hover:gap-3 transition-all"
+              className="inline-flex items-center gap-2 text-sm font-black   text-primary hover:gap-3 transition-all"
             >
               <ChevronLeft size={16} />
               {t("return_to_selection")}
@@ -78,7 +78,7 @@ export default function BuyerHowItHelps() {
                 <div className="absolute inset-0 bg-primary/10" />
               </div>
               <div className="p-8 md:p-12 flex-1 flex flex-col justify-center space-y-6">
-                <div className="inline-flex items-center gap-2 rounded-lg bg-emerald-50 text-emerald-600 px-3 py-1 text-xs font-black uppercase tracking-wider w-fit">
+                <div className="inline-flex items-center gap-2 rounded-lg bg-emerald-50 text-emerald-600 px-3 py-1 text-xs font-black   w-fit">
                   <Sparkles size={14} />
                   {t("homeowner_path")}
                 </div>
@@ -245,11 +245,11 @@ export default function BuyerHowItHelps() {
                       "grid transition-all duration-300",
                       openFaq === i
                         ? "grid-rows-[1fr] opacity-100 border-t border-border"
-                        : "grid-rows-[0fr] opacity-0"
+                        : "grid-rows-[0fr] opacity-0",
                     )}
                   >
                     <div className="overflow-hidden px-6 py-6 text-foreground/60 font-medium leading-relaxed bg-muted/10">
-                      <span className="font-black text-primary mr-2 uppercase text-xs">
+                      <span className="font-black text-primary mr-2  text-xs">
                         Answer:
                       </span>{" "}
                       {faq.a}

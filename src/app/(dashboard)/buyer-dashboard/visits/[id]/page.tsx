@@ -87,17 +87,22 @@ export default function BuyerVisitDetailsPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-1">
             <div className="flex items-center gap-3">
-              <Badge variant="outline" className="font-mono text-[10px] tracking-widest bg-muted uppercase">
+              <Badge
+                variant="outline"
+                className="font-mono text-[10px]  bg-muted "
+              >
                 VIS#{visit.id.slice(-8).toUpperCase()}
               </Badge>
-              <Badge className={cn(
-                "uppercase text-[10px] font-black tracking-widest",
-                isCompleted
-                  ? "bg-blue-600"
-                  : isConfirmed
-                    ? "bg-emerald-500"
-                    : "bg-amber-500"
-              )}>
+              <Badge
+                className={cn(
+                  " text-[10px] font-black ",
+                  isCompleted
+                    ? "bg-blue-600"
+                    : isConfirmed
+                      ? "bg-emerald-500"
+                      : "bg-amber-500",
+                )}
+              >
                 {visit.status}
               </Badge>
             </div>
@@ -105,7 +110,8 @@ export default function BuyerVisitDetailsPage() {
               Visit Details
             </h1>
             <p className="text-muted-foreground font-medium">
-              Confirmed with <span className="text-foreground font-bold">{providerName}</span>
+              Confirmed with{" "}
+              <span className="text-foreground font-bold">{providerName}</span>
             </p>
           </div>
         </div>
@@ -126,7 +132,9 @@ export default function BuyerVisitDetailsPage() {
               <CardContent className="p-6 md:p-8 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Date</p>
+                    <p className="text-[10px] font-black   text-muted-foreground">
+                      Date
+                    </p>
                     <div className="flex items-center gap-3">
                       <div className="h-10 w-10 rounded-xl bg-white flex items-center justify-center shadow-sm shrink-0">
                         <Calendar className="h-5 w-5 text-primary" />
@@ -137,13 +145,23 @@ export default function BuyerVisitDetailsPage() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Time Slot</p>
+                    <p className="text-[10px] font-black   text-muted-foreground">
+                      Time Slot
+                    </p>
                     <div className="flex items-center gap-3">
                       <div className="h-10 w-10 rounded-xl bg-white flex items-center justify-center shadow-sm shrink-0">
                         <Clock className="h-5 w-5 text-primary" />
                       </div>
                       <p className="font-black text-primary">
-                        {format(new Date(visit.visitSlot.fromDateTime), "hh:mm a")} - {format(new Date(visit.visitSlot.toDateTime), "hh:mm a")}
+                        {format(
+                          new Date(visit.visitSlot.fromDateTime),
+                          "hh:mm a",
+                        )}{" "}
+                        -{" "}
+                        {format(
+                          new Date(visit.visitSlot.toDateTime),
+                          "hh:mm a",
+                        )}
                       </p>
                     </div>
                   </div>
@@ -163,14 +181,19 @@ export default function BuyerVisitDetailsPage() {
             <CardContent className="p-0">
               <div className="divide-y divide-dashed">
                 {appointment.appointmentLineItems?.map((li) => (
-                  <div key={li.id} className="p-6 md:p-8 flex flex-col md:flex-row justify-between gap-6 group hover:bg-muted/10 transition-colors">
+                  <div
+                    key={li.id}
+                    className="p-6 md:p-8 flex flex-col md:flex-row justify-between gap-6 group hover:bg-muted/10 transition-colors"
+                  >
                     <div className="space-y-2">
                       <div className="flex items-center gap-3">
                         <div className="h-10 w-10 rounded-xl bg-primary/5 flex items-center justify-center shrink-0">
                           <Package className="h-5 w-5 text-primary" />
                         </div>
                         <div>
-                          <h4 className="font-black text-lg text-primary">{li.item?.name}</h4>
+                          <h4 className="font-black text-lg text-primary">
+                            {li.item?.name}
+                          </h4>
                         </div>
                       </div>
                       {li.remarks && (
@@ -180,40 +203,72 @@ export default function BuyerVisitDetailsPage() {
                       )}
 
                       {/* Attachments */}
-                      {li.itemListing?.attachments && li.itemListing.attachments.length > 0 && (
-                        <div className="ml-13 mt-4 space-y-3">
-                          <p className="text-[10px] font-black uppercase tracking-widest text-primary/50">Attached Media & Documents</p>
-                          <div className="flex flex-wrap gap-3">
-                            {li.itemListing.attachments.map((att: import("@/types/catalog").Attachment) => {
-                              if (att.media) {
-                                return (
-                                  <a key={att.id} href={att.media.url} target="_blank" rel="noreferrer" className="group/image relative h-16 w-16 rounded-xl overflow-hidden border border-border flex items-center justify-center bg-muted/30">
-                                    <img src={att.media.url} alt="Attachment" className="h-full w-full object-cover transition-transform group-hover/image:scale-110" />
-                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/image:opacity-100 transition-opacity flex items-center justify-center">
-                                      <ExternalLink className="h-4 w-4 text-white" />
-                                    </div>
-                                  </a>
-                                );
-                              }
-                              if (att.document) {
-                                return (
-                                  <a key={att.id} href={att.document.url} target="_blank" rel="noreferrer" className="flex items-center gap-2 max-w-[200px] p-2 pr-4 rounded-xl border border-border hover:bg-muted/30 transition-colors">
-                                    <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                                      <FileTextIcon className="h-4 w-4 text-primary" />
-                                    </div>
-                                    <div className="truncate flex-1">
-                                      <p className="text-xs font-bold text-primary truncate" title={att.document.name || "Document"}>{att.document.name || "Document"}</p>
-                                      <p className="text-[9px] font-bold text-muted-foreground uppercase">{att.document.mimeType?.split("/")[1] || "FILE"}</p>
-                                    </div>
-                                    <Download className="h-3 w-3 text-muted-foreground shrink-0" />
-                                  </a>
-                                );
-                              }
-                              return null;
-                            })}
+                      {li.itemListing?.attachments &&
+                        li.itemListing.attachments.length > 0 && (
+                          <div className="ml-13 mt-4 space-y-3">
+                            <p className="text-[10px] font-black   text-primary/50">
+                              Attached Media & Documents
+                            </p>
+                            <div className="flex flex-wrap gap-3">
+                              {li.itemListing.attachments.map(
+                                (att: import("@/types/catalog").Attachment) => {
+                                  if (att.media) {
+                                    return (
+                                      <a
+                                        key={att.id}
+                                        href={att.media.url}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="group/image relative h-16 w-16 rounded-xl overflow-hidden border border-border flex items-center justify-center bg-muted/30"
+                                      >
+                                        <img
+                                          src={att.media.url}
+                                          alt="Attachment"
+                                          className="h-full w-full object-cover transition-transform group-hover/image:scale-110"
+                                        />
+                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/image:opacity-100 transition-opacity flex items-center justify-center">
+                                          <ExternalLink className="h-4 w-4 text-white" />
+                                        </div>
+                                      </a>
+                                    );
+                                  }
+                                  if (att.document) {
+                                    return (
+                                      <a
+                                        key={att.id}
+                                        href={att.document.url}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="flex items-center gap-2 max-w-[200px] p-2 pr-4 rounded-xl border border-border hover:bg-muted/30 transition-colors"
+                                      >
+                                        <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                                          <FileTextIcon className="h-4 w-4 text-primary" />
+                                        </div>
+                                        <div className="truncate flex-1">
+                                          <p
+                                            className="text-xs font-bold text-primary truncate"
+                                            title={
+                                              att.document.name || "Document"
+                                            }
+                                          >
+                                            {att.document.name || "Document"}
+                                          </p>
+                                          <p className="text-[9px] font-bold text-muted-foreground ">
+                                            {att.document.mimeType?.split(
+                                              "/",
+                                            )[1] || "FILE"}
+                                          </p>
+                                        </div>
+                                        <Download className="h-3 w-3 text-muted-foreground shrink-0" />
+                                      </a>
+                                    );
+                                  }
+                                  return null;
+                                },
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
                     </div>
                   </div>
                 ))}
@@ -234,7 +289,9 @@ export default function BuyerVisitDetailsPage() {
                     {(providerName || "S").charAt(0)}
                   </div>
                   <div className="space-y-2">
-                    <h4 className="text-2xl font-black text-primary">{providerName}</h4>
+                    <h4 className="text-2xl font-black text-primary">
+                      {providerName}
+                    </h4>
                     <ReviewSnapshot
                       entityId={providerEntityId}
                       entityName={providerName}
@@ -262,8 +319,12 @@ export default function BuyerVisitDetailsPage() {
                       <MapPin className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Address</p>
-                      <p className="text-sm font-bold leading-relaxed">{details?.address || "N/A"}</p>
+                      <p className="text-[10px] font-black   text-muted-foreground mb-1">
+                        Address
+                      </p>
+                      <p className="text-sm font-bold leading-relaxed">
+                        {details?.address || "N/A"}
+                      </p>
                     </div>
                   </div>
 
@@ -275,8 +336,12 @@ export default function BuyerVisitDetailsPage() {
                           <Package className="h-5 w-5 text-primary" />
                         </div>
                         <div>
-                          <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Remarks</p>
-                          <p className="text-sm font-medium leading-relaxed italic">"{details.remarks}"</p>
+                          <p className="text-[10px] font-black   text-muted-foreground mb-1">
+                            Remarks
+                          </p>
+                          <p className="text-sm font-medium leading-relaxed italic">
+                            "{details.remarks}"
+                          </p>
                         </div>
                       </div>
                     </>
@@ -285,8 +350,14 @@ export default function BuyerVisitDetailsPage() {
 
                 <SeparatorComponent />
 
-                <Button asChild variant="outline" className="w-full h-12 rounded-xl font-bold border-primary text-primary hover:bg-primary hover:text-white transition-all">
-                  <Link href={`/buyer-dashboard/appointments/${appointment.id}`}>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="w-full h-12 rounded-xl font-bold border-primary text-primary hover:bg-primary hover:text-white transition-all"
+                >
+                  <Link
+                    href={`/buyer-dashboard/appointments/${appointment.id}`}
+                  >
                     View Appointment
                   </Link>
                 </Button>
@@ -295,7 +366,11 @@ export default function BuyerVisitDetailsPage() {
 
             {/* Directions */}
             {details?.address && (
-              <Button asChild variant="outline" className="w-full h-12 rounded-xl font-bold border-primary/20 text-primary hover:bg-primary hover:text-white transition-all mt-4">
+              <Button
+                asChild
+                variant="outline"
+                className="w-full h-12 rounded-xl font-bold border-primary/20 text-primary hover:bg-primary hover:text-white transition-all mt-4"
+              >
                 <a
                   href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(details.address)}`}
                   target="_blank"

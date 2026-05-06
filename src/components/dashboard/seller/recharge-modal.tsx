@@ -1,16 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
   DialogDescription,
-  DialogFooter
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useWalletPackages, useCreateRechargeOrder, useVerifyPayment } from "@/queries/walletQueries";
+import {
+  useWalletPackages,
+  useCreateRechargeOrder,
+  useVerifyPayment,
+} from "@/queries/walletQueries";
 import { useEntitiesQuery } from "@/queries/entityQueries";
 import { IndianRupee, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
@@ -49,7 +53,6 @@ declare global {
   }
 }
 
-
 interface RechargeModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -68,7 +71,10 @@ export function RechargeModal({ isOpen, onClose }: RechargeModalProps) {
 
     try {
       setIsProcessing(true);
-      const orderData = await createOrderMutation.mutateAsync({ packageId, entityId });
+      const orderData = await createOrderMutation.mutateAsync({
+        packageId,
+        entityId,
+      });
 
       const options: RazorpayOptions = {
         key: orderData.key || process.env.RAZORPAY_KEY_ID,
@@ -77,7 +83,11 @@ export function RechargeModal({ isOpen, onClose }: RechargeModalProps) {
         name: "E-CON Building Centre",
         description: "Coin Recharge",
         order_id: orderData.orderId || orderData.id || "",
-        handler: async (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) => {
+        handler: async (response: {
+          razorpay_order_id: string;
+          razorpay_payment_id: string;
+          razorpay_signature: string;
+        }) => {
           try {
             await verifyPaymentMutation.mutateAsync({
               razorpay_order_id: response.razorpay_order_id,
@@ -134,7 +144,9 @@ export function RechargeModal({ isOpen, onClose }: RechargeModalProps) {
             {isLoadingPackages ? (
               <div className="flex flex-col items-center py-8 gap-4">
                 <Loader2 className="animate-spin text-amber-500" size={32} />
-                <p className="text-sm font-bold text-muted-foreground italic">Fetching best deals for you...</p>
+                <p className="text-sm font-bold text-muted-foreground italic">
+                  Fetching best deals for you...
+                </p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -148,13 +160,19 @@ export function RechargeModal({ isOpen, onClose }: RechargeModalProps) {
                     <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:scale-110 transition-transform">
                       <IndianRupee size={40} className="text-amber-500" />
                     </div>
-                    <span className="text-xs font-black uppercase tracking-widest text-muted-foreground">{pkg.name}</span>
+                    <span className="text-xs font-black   text-muted-foreground">
+                      {pkg.name}
+                    </span>
                     <div className="text-2xl font-black text-foreground flex items-center gap-1">
                       {pkg.coins}
-                      <span className="text-sm font-bold opacity-50">Coins</span>
+                      <span className="text-sm font-bold opacity-50">
+                        Coins
+                      </span>
                     </div>
                     <div className="mt-auto pt-2 border-t border-dashed border-border flex items-center justify-between">
-                      <span className="text-lg font-black text-amber-600">₹{pkg.priceInInr}</span>
+                      <span className="text-lg font-black text-amber-600">
+                        ₹{pkg.priceInInr}
+                      </span>
                       <div className="h-6 w-6 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 group-hover:bg-amber-600 group-hover:text-white transition-colors">
                         <CheckCircle2 size={14} />
                       </div>
@@ -168,7 +186,8 @@ export function RechargeModal({ isOpen, onClose }: RechargeModalProps) {
           <DialogFooter className="sm:justify-start">
             <div className="flex items-start gap-2 text-[10px] font-bold text-muted-foreground italic">
               <AlertCircle size={12} className="mt-0.5 shrink-0" />
-              By continuing, you agree to our terms of payment and coin usage policy. Coins are non-refundable.
+              By continuing, you agree to our terms of payment and coin usage
+              policy. Coins are non-refundable.
             </div>
           </DialogFooter>
         </DialogContent>

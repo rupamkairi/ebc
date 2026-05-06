@@ -97,7 +97,7 @@ export function RegionSelectionStep({
           </div>
 
           <div className="rounded-lg border overflow-hidden bg-background shadow-sm">
-            <div className="bg-muted/50 p-3 border-b flex justify-between items-center text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            <div className="bg-muted/50 p-3 border-b flex justify-between items-center text-xs font-bold   text-muted-foreground">
               <span>Available Locations</span>
               {records && (
                 <Badge variant="outline" className="text-[10px]">
@@ -199,9 +199,7 @@ export function RegionSelectionStep({
               ) : (
                 <div className="flex flex-col items-center justify-center p-12 text-center text-muted-foreground/30">
                   <Globe size={40} className="mb-3" />
-                  <p className="text-[10px] font-bold uppercase tracking-widest">
-                    No regions selected
-                  </p>
+                  <p className="text-[10px] font-bold  ">No regions selected</p>
                 </div>
               )}
             </div>

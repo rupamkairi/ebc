@@ -21,7 +21,7 @@ export function PageBackButton({
     return (
       <Link
         href={href}
-        className="inline-flex items-center gap-1 text-xs font-black tracking-widest uppercase text-primary hover:text-primary transition-colors"
+        className="inline-flex items-center gap-1 text-xs font-black   text-primary hover:text-primary transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
         {label}

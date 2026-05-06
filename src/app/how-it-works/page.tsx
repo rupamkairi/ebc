@@ -32,7 +32,7 @@ export default function HowItWorksPage() {
           <div className="space-y-4 animate-in fade-in slide-in-from-top duration-700">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-primary hover:gap-3 transition-all mb-4"
+              className="inline-flex items-center gap-2 text-sm font-black   text-primary hover:gap-3 transition-all mb-4"
             >
               <ChevronLeft size={16} />
               {t("return_to_home")}
@@ -136,7 +136,7 @@ export default function HowItWorksPage() {
             </div>
           </div>
 
-          <div className="pt-8 text-foreground/40 text-sm font-bold uppercase tracking-widest animate-in fade-in duration-1000 delay-700">
+          <div className="pt-8 text-foreground/40 text-sm font-bold   animate-in fade-in duration-1000 delay-700">
             {t("ebc_tagline")}
           </div>
         </div>

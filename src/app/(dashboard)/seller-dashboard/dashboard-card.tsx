@@ -26,13 +26,13 @@ export function DashboardCard({
     <div
       className={cn(
         "flex flex-col overflow-hidden rounded-[20px] border border-primary/5 bg-white shadow-xs hover:shadow-md transition-all duration-300",
-        className
+        className,
       )}
     >
       <div
         className={cn(
           "flex items-center gap-3 bg-primary px-5 py-4 text-white",
-          headerClassName
+          headerClassName,
         )}
       >
         <IconWrapper
@@ -42,9 +42,7 @@ export function DashboardCard({
           iconColor="text-white"
           className="p-2 rounded-xl"
         />
-        <h3 className="text-[13px] font-black leading-none uppercase tracking-widest">
-          {title}
-        </h3>
+        <h3 className="text-[13px] font-black leading-none  ">{title}</h3>
       </div>
       <div className="flex-1 p-5 md:p-6">{children}</div>
       {footer && (

@@ -191,11 +191,13 @@ const offerSchema = z.object({
     }),
   ),
   pincodeIds: z.any().optional(),
-  targetRegions: z.array(z.object({
-    pincodeId: z.string(),
-    state: z.string().optional(),
-    district: z.string().optional(),
-  })),
+  targetRegions: z.array(
+    z.object({
+      pincodeId: z.string(),
+      state: z.string().optional(),
+      district: z.string().optional(),
+    }),
+  ),
 });
 
 type OfferFormValues = z.infer<typeof offerSchema>;
@@ -458,7 +460,7 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
             )}
             <AlertTitle className="mb-1 flex items-center gap-2">
               Verification Status:
-              <Badge variant="outline" className="uppercase">
+              <Badge variant="outline" className="">
                 {existingOffer.verificationStatus}
               </Badge>
             </AlertTitle>
@@ -714,7 +716,7 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                           variant="secondary"
                           className="mr-2 mb-2 p-2 gap-2"
                         >
-                          <span className="font-bold text-[10px] uppercase text-muted-foreground mr-1">
+                          <span className="font-bold text-[10px]  text-muted-foreground mr-1">
                             {r.relationType}
                           </span>
                           {getRelationName(r.relationType, r.relationId)}

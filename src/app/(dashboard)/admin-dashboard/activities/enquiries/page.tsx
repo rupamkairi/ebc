@@ -1,28 +1,23 @@
 "use client";
 
-import { useEnquiriesQuery, useQuotationsQuery } from "@/queries/activityQueries";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card";
+  useEnquiriesQuery,
+  useQuotationsQuery,
+} from "@/queries/activityQueries";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow
+  TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Search, Filter, Eye } from "lucide-react";
 import { useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
-import {
-  ENQUIRY_STATUS,
-  ENQUIRY_STATUS_LABELS
-} from "@/constants/enums";
+import { ENQUIRY_STATUS, ENQUIRY_STATUS_LABELS } from "@/constants/enums";
 import { cn } from "@/lib/utils";
 import Container from "@/components/ui/containers";
 import { format } from "date-fns";
@@ -33,8 +28,10 @@ export default function AdminEnquiriesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedEnquiry, setSelectedEnquiry] = useState<any | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { data: enquiries = [], isLoading: loadingEnquiries } = useEnquiriesQuery();
-  const { data: allQuotations = [], isLoading: loadingQuotations } = useQuotationsQuery();
+  const { data: enquiries = [], isLoading: loadingEnquiries } =
+    useEnquiriesQuery();
+  const { data: allQuotations = [], isLoading: loadingQuotations } =
+    useQuotationsQuery();
 
   const filteredEnquiries = useMemo(() => {
     return enquiries.filter((enq) => {
@@ -43,7 +40,7 @@ export default function AdminEnquiriesPage() {
         enq.id.toLowerCase().includes(q) ||
         enq.createdBy?.name?.toLowerCase().includes(q) ||
         enq.enquiryLineItems.some((li) =>
-          li.item?.name?.toLowerCase().includes(q)
+          li.item?.name?.toLowerCase().includes(q),
         )
       );
     });
@@ -102,22 +99,32 @@ export default function AdminEnquiriesPage() {
           <TableBody>
             {filteredEnquiries.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="h-32 text-center text-muted-foreground">
+                <TableCell
+                  colSpan={7}
+                  className="h-32 text-center text-muted-foreground"
+                >
                   No enquiries found.
                 </TableCell>
               </TableRow>
             ) : (
               filteredEnquiries.map((enq) => {
-                const quotations = allQuotations.filter(q => q.enquiryId === enq.id);
+                const quotations = allQuotations.filter(
+                  (q) => q.enquiryId === enq.id,
+                );
                 return (
-                  <TableRow key={enq.id} className="hover:bg-slate-50/50 transition-colors">
+                  <TableRow
+                    key={enq.id}
+                    className="hover:bg-slate-50/50 transition-colors"
+                  >
                     <TableCell className="font-mono text-xs text-primary/70">
                       #{enq.id.slice(0, 8)}
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-col">
-                        <span className="font-bold text-sm">{enq.createdBy?.name || "Anonymous"}</span>
-                        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                        <span className="font-bold text-sm">
+                          {enq.createdBy?.name || "Anonymous"}
+                        </span>
+                        <span className="text-[10px] text-muted-foreground  ">
                           {enq.createdBy?.phone}
                         </span>
                       </div>
@@ -128,7 +135,7 @@ export default function AdminEnquiriesPage() {
                           {enq.enquiryLineItems[0]?.item?.name || "Items"}
                         </span>
                         {enq.enquiryLineItems.length > 1 && (
-                          <span className="text-[10px] text-primary/40 font-bold uppercase">
+                          <span className="text-[10px] text-primary/40 font-bold ">
                             + {enq.enquiryLineItems.length - 1} more items
                           </span>
                         )}
@@ -139,10 +146,13 @@ export default function AdminEnquiriesPage() {
                         variant={quotations.length > 0 ? "default" : "outline"}
                         className={cn(
                           "font-black text-[10px] px-2.5 py-0.5 rounded-full",
-                          quotations.length > 0 ? "bg-emerald-500 hover:bg-emerald-600 text-white border-none" : "text-slate-400 border-slate-200"
+                          quotations.length > 0
+                            ? "bg-emerald-500 hover:bg-emerald-600 text-white border-none"
+                            : "text-slate-400 border-slate-200",
                         )}
                       >
-                        {quotations.length} {quotations.length === 1 ? "Response" : "Responses"}
+                        {quotations.length}{" "}
+                        {quotations.length === 1 ? "Response" : "Responses"}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
@@ -151,11 +161,16 @@ export default function AdminEnquiriesPage() {
                     <TableCell>
                       <Badge
                         className={cn(
-                          "font-black text-[9px] uppercase tracking-widest px-2 py-0.5",
-                          enq.status === ENQUIRY_STATUS.PENDING && "bg-amber-100 text-amber-700 hover:bg-amber-100",
-                          enq.status === ENQUIRY_STATUS.APPROVED && "bg-sky-100 text-sky-700 hover:bg-sky-100",
-                          enq.status === ENQUIRY_STATUS.COMPLETED && "bg-emerald-100 text-emerald-700 hover:bg-emerald-100",
-                          (enq.status === ENQUIRY_STATUS.CANCELLED || enq.status === ENQUIRY_STATUS.REJECTED) && "bg-gray-100 text-gray-700 hover:bg-gray-100",
+                          "font-black text-[9px]   px-2 py-0.5",
+                          enq.status === ENQUIRY_STATUS.PENDING &&
+                            "bg-amber-100 text-amber-700 hover:bg-amber-100",
+                          enq.status === ENQUIRY_STATUS.APPROVED &&
+                            "bg-sky-100 text-sky-700 hover:bg-sky-100",
+                          enq.status === ENQUIRY_STATUS.COMPLETED &&
+                            "bg-emerald-100 text-emerald-700 hover:bg-emerald-100",
+                          (enq.status === ENQUIRY_STATUS.CANCELLED ||
+                            enq.status === ENQUIRY_STATUS.REJECTED) &&
+                            "bg-gray-100 text-gray-700 hover:bg-gray-100",
                         )}
                       >
                         {enq.status}
@@ -165,7 +180,7 @@ export default function AdminEnquiriesPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="font-black text-[10px] uppercase tracking-widest h-8 px-4 rounded-lg hover:bg-primary hover:text-white transition-all"
+                        className="font-black text-[10px]   h-8 px-4 rounded-lg hover:bg-primary hover:text-white transition-all"
                         onClick={() => {
                           setSelectedEnquiry(enq);
                           setIsModalOpen(true);
@@ -190,7 +205,11 @@ export default function AdminEnquiriesPage() {
           setIsModalOpen(false);
           setSelectedEnquiry(null);
         }}
-        quotations={selectedEnquiry ? allQuotations.filter(q => q.enquiryId === selectedEnquiry.id) : []}
+        quotations={
+          selectedEnquiry
+            ? allQuotations.filter((q) => q.enquiryId === selectedEnquiry.id)
+            : []
+        }
       />
     </Container>
   );

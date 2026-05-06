@@ -61,10 +61,11 @@ export default function BuyerDashboardPage() {
       ).length || 0;
 
     const pendingQuotations =
-      quotations?.filter((q) => 
-        q.status !== "ACCEPTED" && 
-        q.status !== "REJECTED" && 
-        q.enquiry?.status !== "COMPLETED"
+      quotations?.filter(
+        (q) =>
+          q.status !== "ACCEPTED" &&
+          q.status !== "REJECTED" &&
+          q.enquiry?.status !== "COMPLETED",
       ).length || 0;
     const acceptedQuotations =
       quotations?.filter((q) => q.status === "ACCEPTED").length || 0;
@@ -100,170 +101,170 @@ export default function BuyerDashboardPage() {
         )}
 
         <div className="flex flex-col gap-10">
-            {/* Project Pulse - Rooms */}
-            <section>
-              <div className="flex items-center gap-3 mb-4 md:mb-6">
-                <div className="h-8 w-1.5 bg-secondary rounded-full" />
-                <h2 className="text-xl md:text-2xl font-black text-primary uppercase tracking-wider">
-                  {t("project_pulse")}
-                </h2>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <RoomCard
-                  title={t("material_depo")}
-                  icon={Armchair}
-                  href="/browse?categoryId="
-                />
-                <RoomCard
-                  title={t("technical_cabin")}
-                  icon={Bed}
-                  href="/browse?categoryId="
-                />
-                <RoomCard
-                  title={t("fabricator_area")}
-                  icon={Bath}
-                  href="/browse?categoryId="
-                />
-                <RoomCard
-                  title={t("contract_desk")}
-                  icon={Tv}
-                  href="/browse?categoryId="
-                />
-              </div>
-            </section>
+          {/* Project Pulse - Rooms */}
+          <section>
+            <div className="flex items-center gap-3 mb-4 md:mb-6">
+              <div className="h-8 w-1.5 bg-secondary rounded-full" />
+              <h2 className="text-xl md:text-2xl font-black text-primary  ">
+                {t("project_pulse")}
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <RoomCard
+                title={t("material_depo")}
+                icon={Armchair}
+                href="/browse?type=PRODUCT"
+              />
+              <RoomCard
+                title={t("technical_cabin")}
+                icon={Bed}
+                href="/browse?categoryId="
+              />
+              <RoomCard
+                title={t("fabricator_area")}
+                icon={Bath}
+                href="/browse?categoryId="
+              />
+              <RoomCard
+                title={t("contract_desk")}
+                icon={Tv}
+                href="/browse?categoryId="
+              />
+            </div>
+          </section>
 
-            {/* Operations Center - Activity Stats */}
-            <section>
-              <div className="flex items-center gap-3 mb-4 md:mb-6">
-                <div className="h-8 w-1.5 bg-secondary rounded-full" />
-                <h2 className="text-xl md:text-2xl font-black text-primary uppercase tracking-wider">
-                  {t("operations_center")}
-                </h2>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <ActivitySectionCard
-                  title={t("my_enquiries")}
-                  icon={FileText}
-                  footerLink="/buyer-dashboard/enquiries"
-                  footerText={t("view_all_enquiries")}
-                >
-                  <ActivityStatCard
-                    label={t("pending_enquiries")}
-                    value={stats.pendingEnquiries}
-                    icon={Clock}
-                  />
-                  <ActivityStatCard
-                    label={t("approved_enquiries")}
-                    value={stats.approvedEnquiries}
-                    icon={CheckCircle2}
-                  />
-                </ActivitySectionCard>
-
-                <ActivitySectionCard
-                  title={t("my_appointments")}
-                  icon={CalendarDays}
-                  footerLink="/buyer-dashboard/appointments"
-                  footerText={t("view_all_appointments")}
-                >
-                  <ActivityStatCard
-                    label={t("upcoming")}
-                    value={stats.upcomingAppointments}
-                    icon={Clock}
-                  />
-                  <ActivityStatCard
-                    label={t("completed")}
-                    value={stats.pastAppointments}
-                    icon={CheckCircle2}
-                  />
-                </ActivitySectionCard>
-
-                <ActivitySectionCard
-                  title={t("my_quotations")}
-                  icon={Quote}
-                  footerLink="/buyer-dashboard/quotations"
-                  footerText={t("view_all_quotations")}
-                >
-                  <ActivityStatCard
-                    label={t("pending")}
-                    value={stats.pendingQuotations}
-                    icon={Clock}
-                  />
-                  <ActivityStatCard
-                    label={t("accepted")}
-                    value={stats.acceptedQuotations}
-                    icon={FileCheck}
-                  />
-                </ActivitySectionCard>
-
-                <ActivitySectionCard
-                  title={t("my_site_visits")}
-                  icon={MapPin}
-                  footerLink="/buyer-dashboard/visits"
-                  footerText={t("view_all_visits")}
-                >
-                  <ActivityStatCard
-                    label={t("scheduled")}
-                    value={stats.scheduledVisits}
-                    icon={Clock}
-                  />
-                  <ActivityStatCard
-                    label={t("completed")}
-                    value={stats.completedVisits}
-                    icon={CheckCircle2}
-                  />
-                </ActivitySectionCard>
-              </div>
-            </section>
-
-            {/* Project Domains - Conference Hall */}
-            <section>
-              <div className="flex items-center gap-3 mb-4 md:mb-6">
-                <div className="h-8 w-1.5 bg-secondary rounded-full" />
-                <h2 className="text-xl md:text-2xl font-black text-primary uppercase tracking-wider">
-                  {t("project_domains")}
-                </h2>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <ConferenceHallItem
-                  title={t("info_updates")}
-                  icon={Info}
-                  href="/buyer-dashboard/conference-hall"
+          {/* Operations Center - Activity Stats */}
+          <section>
+            <div className="flex items-center gap-3 mb-4 md:mb-6">
+              <div className="h-8 w-1.5 bg-secondary rounded-full" />
+              <h2 className="text-xl md:text-2xl font-black text-primary  ">
+                {t("operations_center")}
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <ActivitySectionCard
+                title={t("my_enquiries")}
+                icon={FileText}
+                footerLink="/buyer-dashboard/enquiries"
+                footerText={t("view_all_enquiries")}
+              >
+                <ActivityStatCard
+                  label={t("pending_enquiries")}
+                  value={stats.pendingEnquiries}
+                  icon={Clock}
                 />
-                <ConferenceHallItem
-                  title={t("meetings")}
-                  icon={Users}
-                  href="/buyer-dashboard/conference-hall"
+                <ActivityStatCard
+                  label={t("approved_enquiries")}
+                  value={stats.approvedEnquiries}
+                  icon={CheckCircle2}
                 />
-                <ConferenceHallItem
-                  title={t("forums")}
-                  icon={MessageSquare}
-                  href="/buyer-dashboard/conference-hall"
-                />
-                <ConferenceHallItem
-                  title={t("demos")}
-                  icon={Video}
-                  href="/buyer-dashboard/conference-hall"
-                />
-                <ConferenceHallItem
-                  title={t("live")}
-                  icon={LifeBuoy}
-                  href="/buyer-dashboard/conference-hall"
-                />
-              </div>
-            </section>
+              </ActivitySectionCard>
 
-            {/* Precision Tools - AI Calculator */}
-            <section>
-              <div className="flex items-center gap-3 mb-4 md:mb-6">
-                <div className="h-8 w-1.5 bg-secondary rounded-full" />
-                <h2 className="text-xl md:text-2xl font-black text-primary uppercase tracking-wider">
-                  {t("precision_tools")}
-                </h2>
-              </div>
-              <div className="rounded-2xl md:rounded-3xl bg-white p-4 md:p-8 shadow-sm ring-1 ring-muted/50">
-                <AICalculator />
-              </div>
-            </section>
+              <ActivitySectionCard
+                title={t("my_appointments")}
+                icon={CalendarDays}
+                footerLink="/buyer-dashboard/appointments"
+                footerText={t("view_all_appointments")}
+              >
+                <ActivityStatCard
+                  label={t("upcoming")}
+                  value={stats.upcomingAppointments}
+                  icon={Clock}
+                />
+                <ActivityStatCard
+                  label={t("completed")}
+                  value={stats.pastAppointments}
+                  icon={CheckCircle2}
+                />
+              </ActivitySectionCard>
+
+              <ActivitySectionCard
+                title={t("my_quotations")}
+                icon={Quote}
+                footerLink="/buyer-dashboard/quotations"
+                footerText={t("view_all_quotations")}
+              >
+                <ActivityStatCard
+                  label={t("pending")}
+                  value={stats.pendingQuotations}
+                  icon={Clock}
+                />
+                <ActivityStatCard
+                  label={t("accepted")}
+                  value={stats.acceptedQuotations}
+                  icon={FileCheck}
+                />
+              </ActivitySectionCard>
+
+              <ActivitySectionCard
+                title={t("my_site_visits")}
+                icon={MapPin}
+                footerLink="/buyer-dashboard/visits"
+                footerText={t("view_all_visits")}
+              >
+                <ActivityStatCard
+                  label={t("scheduled")}
+                  value={stats.scheduledVisits}
+                  icon={Clock}
+                />
+                <ActivityStatCard
+                  label={t("completed")}
+                  value={stats.completedVisits}
+                  icon={CheckCircle2}
+                />
+              </ActivitySectionCard>
+            </div>
+          </section>
+
+          {/* Project Domains - Conference Hall */}
+          <section>
+            <div className="flex items-center gap-3 mb-4 md:mb-6">
+              <div className="h-8 w-1.5 bg-secondary rounded-full" />
+              <h2 className="text-xl md:text-2xl font-black text-primary  ">
+                {t("project_domains")}
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <ConferenceHallItem
+                title={t("info_updates")}
+                icon={Info}
+                href="/buyer-dashboard/conference-hall"
+              />
+              <ConferenceHallItem
+                title={t("meetings")}
+                icon={Users}
+                href="/buyer-dashboard/conference-hall"
+              />
+              <ConferenceHallItem
+                title={t("forums")}
+                icon={MessageSquare}
+                href="/buyer-dashboard/conference-hall"
+              />
+              <ConferenceHallItem
+                title={t("demos")}
+                icon={Video}
+                href="/buyer-dashboard/conference-hall"
+              />
+              <ConferenceHallItem
+                title={t("live")}
+                icon={LifeBuoy}
+                href="/buyer-dashboard/conference-hall"
+              />
+            </div>
+          </section>
+
+          {/* Precision Tools - AI Calculator */}
+          <section>
+            <div className="flex items-center gap-3 mb-4 md:mb-6">
+              <div className="h-8 w-1.5 bg-secondary rounded-full" />
+              <h2 className="text-xl md:text-2xl font-black text-primary  ">
+                {t("precision_tools")}
+              </h2>
+            </div>
+            <div className="rounded-2xl md:rounded-3xl bg-white p-4 md:p-8 shadow-sm ring-1 ring-muted/50">
+              <AICalculator />
+            </div>
+          </section>
         </div>
       </div>
     </AuthGuard>

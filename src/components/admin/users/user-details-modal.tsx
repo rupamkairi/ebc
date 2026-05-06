@@ -77,7 +77,12 @@ export function UserDetailsModal({
       toast.success(successMessage);
       onOpenChange(false);
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : (status === "PAUSED" ? "Failed to pause business" : "Failed to verify business");
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : status === "PAUSED"
+            ? "Failed to pause business"
+            : "Failed to verify business";
       toast.error(errorMessage);
     }
   };
@@ -92,7 +97,7 @@ export function UserDetailsModal({
                 <User2 className="size-6" />
                 User Details
               </DialogTitle>
-              <Badge variant="outline" className="uppercase font-mono">
+              <Badge variant="outline" className=" font-mono">
                 {user.role
                   ? USER_ROLE_LABELS[
                       user.role as keyof typeof USER_ROLE_LABELS
@@ -146,7 +151,7 @@ export function UserDetailsModal({
                         entity.verificationStatus === "APPROVED" &&
                           "bg-emerald-500 hover:bg-emerald-600 border-none",
                         entity.verificationStatus === "PAUSED" &&
-                          "border-amber-500 text-amber-600 hover:bg-amber-50"
+                          "border-amber-500 text-amber-600 hover:bg-amber-50",
                       )}
                     >
                       {entity.verificationStatus}
@@ -178,7 +183,7 @@ export function UserDetailsModal({
                   </div>
 
                   <div className="bg-muted/50 p-4 rounded-lg space-y-4">
-                    <h4 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
+                    <h4 className="text-sm font-bold   text-muted-foreground">
                       Contact & Address
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -200,7 +205,7 @@ export function UserDetailsModal({
                       />
                     </div>
                     <div className="pt-2">
-                      <Label className="text-muted-foreground text-xs uppercase">
+                      <Label className="text-muted-foreground text-xs ">
                         Address
                       </Label>
                       <p className="mt-1 text-sm">
@@ -222,7 +227,7 @@ export function UserDetailsModal({
 
                   {/* Verification Documents Section */}
                   <div className="space-y-3">
-                    <h4 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
+                    <h4 className="text-sm font-bold   text-muted-foreground">
                       Verification Documents
                     </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -366,7 +371,7 @@ export function UserDetailsModal({
 function InfoItem({ label, value }: { label: string; value: string }) {
   return (
     <div className="space-y-1">
-      <Label className="text-muted-foreground text-xs uppercase tracking-tight">
+      <Label className="text-muted-foreground text-xs  tracking-tight">
         {label}
       </Label>
       <p className="font-medium text-sm leading-snug">{value}</p>

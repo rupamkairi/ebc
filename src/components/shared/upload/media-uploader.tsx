@@ -235,7 +235,7 @@ export function FileUploader({
             try {
               const res = JSON.parse(xhr.responseText);
               let data: FileUploadResponse[];
-              
+
               if (type === "document") {
                 if (Array.isArray(res.documents)) {
                   data = res.documents.map((d: RawDocumentResponse) => ({
@@ -246,13 +246,18 @@ export function FileUploader({
                     size: Number(d.sizeBytes) || 0,
                   }));
                 } else if (res.document) {
-                  data = [{
-                    id: res.document.id,
-                    url: res.document.url,
-                    name: res.document.name || res.document.key?.split("/").pop() || "Document",
-                    mimeType: res.document.mimeType || "",
-                    size: Number(res.document.sizeBytes) || 0,
-                  }];
+                  data = [
+                    {
+                      id: res.document.id,
+                      url: res.document.url,
+                      name:
+                        res.document.name ||
+                        res.document.key?.split("/").pop() ||
+                        "Document",
+                      mimeType: res.document.mimeType || "",
+                      size: Number(res.document.sizeBytes) || 0,
+                    },
+                  ];
                 } else {
                   data = [];
                 }
@@ -266,18 +271,23 @@ export function FileUploader({
                     size: Number(m.sizeBytes) || 0,
                   }));
                 } else if (res.media) {
-                  data = [{
-                    id: res.media.id,
-                    url: res.media.url,
-                    name: res.media.name || res.media.key?.split("/").pop() || "Media",
-                    mimeType: res.media.mimeType || "",
-                    size: Number(res.media.sizeBytes) || 0,
-                  }];
+                  data = [
+                    {
+                      id: res.media.id,
+                      url: res.media.url,
+                      name:
+                        res.media.name ||
+                        res.media.key?.split("/").pop() ||
+                        "Media",
+                      mimeType: res.media.mimeType || "",
+                      size: Number(res.media.sizeBytes) || 0,
+                    },
+                  ];
                 } else {
                   data = [];
                 }
               }
-              
+
               resolve(data);
             } catch {
               reject(new Error("Invalid response from server"));
@@ -465,7 +475,7 @@ export function FileUploader({
 
             {isUploading && (
               <div className="space-y-1">
-                <div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-muted-foreground">
+                <div className="flex items-center justify-between text-[10px]   text-muted-foreground">
                   <span>Total Progress</span>
                   <span>{overallProgress}%</span>
                 </div>

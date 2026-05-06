@@ -46,19 +46,19 @@ function HireHeader() {
         </p>
 
         <div className="flex flex-col items-center gap-2 pt-6">
-          {[
-            t("hire_benefit_1"),
-            t("hire_benefit_2"),
-            t("hire_benefit_3"),
-          ].map((text, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-2 bg-white/50 backdrop-blur-sm px-3 py-2 rounded-full shadow-sm border border-slate-100 max-w-xs w-full justify-center"
-            >
-              <CheckCircle2 className="size-4 text-secondary shrink-0" />
-              <span className="text-slate-600 font-bold text-xs md:text-sm">{text}</span>
-            </div>
-          ))}
+          {[t("hire_benefit_1"), t("hire_benefit_2"), t("hire_benefit_3")].map(
+            (text, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-2 bg-white/50 backdrop-blur-sm px-3 py-2 rounded-full shadow-sm border border-slate-100 max-w-xs w-full justify-center"
+              >
+                <CheckCircle2 className="size-4 text-secondary shrink-0" />
+                <span className="text-slate-600 font-bold text-xs md:text-sm">
+                  {text}
+                </span>
+              </div>
+            ),
+          )}
         </div>
       </Container>
     </div>
@@ -83,7 +83,7 @@ function ServiceCategoryGrid({
     <div className="py-10 md:py-16 bg-white border-y border-slate-100">
       <Container size="lg">
         <div className="text-center mb-8 md:mb-12">
-          <h2 className="text-lg md:text-2xl font-black text-primary uppercase tracking-wider relative inline-block">
+          <h2 className="text-lg md:text-2xl font-black text-primary   relative inline-block">
             {t("service_categories")}
             <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-1 bg-secondary rounded-full" />
           </h2>
@@ -111,7 +111,7 @@ function ServiceCategoryGrid({
                 <span className="text-2xl md:text-3xl shrink-0 group-hover:scale-110 transition-transform">
                   {style.icon}
                 </span>
-                <span className="font-black text-[10px] md:text-xs uppercase leading-tight tracking-tight">
+                <span className="font-black text-[10px] md:text-xs  leading-tight tracking-tight">
                   {cat.name}
                 </span>
                 {isActive && (
@@ -140,7 +140,7 @@ function SubServiceTabs({
     <div className="py-8 md:py-12 bg-slate-50/50">
       <Container size="lg">
         <div className="text-center mb-6 md:mb-10">
-          <h2 className="text-base md:text-xl font-black text-primary uppercase tracking-wider">
+          <h2 className="text-base md:text-xl font-black text-primary  ">
             {t("sub_service_categories")}
           </h2>
         </div>
@@ -152,7 +152,7 @@ function SubServiceTabs({
                 key={sub.id}
                 onClick={() => onToggle(sub.id)}
                 className={cn(
-                  "px-4 md:px-6 py-2 rounded-full border text-[10px] md:text-xs font-black uppercase transition-all tracking-widest",
+                  "px-4 md:px-6 py-2 rounded-full border text-[10px] md:text-xs font-black  transition-all ",
                   isActive
                     ? "bg-secondary border-secondary text-white shadow-lg -translate-y-0.5"
                     : "bg-white border-slate-200 text-slate-400 hover:border-secondary hover:text-secondary hover:bg-secondary/5",
@@ -173,7 +173,7 @@ function ServiceCard({ item }: { item: BrowseItem }) {
   return (
     <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col group h-full">
       <div className="bg-[#4D4D4D] p-3 md:p-4 text-center group-hover:bg-primary transition-colors duration-500">
-        <h3 className="text-white text-[11px] md:text-sm font-black uppercase tracking-tight line-clamp-2 leading-snug">
+        <h3 className="text-white text-[11px] md:text-sm font-black  tracking-tight line-clamp-2 leading-snug">
           {item.title}
         </h3>
       </div>
@@ -188,7 +188,7 @@ function ServiceCard({ item }: { item: BrowseItem }) {
           />
         </div>
         <Button
-          className="w-full bg-white border border-slate-200 text-secondary hover:bg-secondary hover:text-white font-black rounded-lg h-9 md:h-12 text-[10px] md:text-[12px] uppercase tracking-widest transition-all duration-300 shadow-sm"
+          className="w-full bg-white border border-slate-200 text-secondary hover:bg-secondary hover:text-white font-black rounded-lg h-9 md:h-12 text-[10px] md:text-[12px]   transition-all duration-300 shadow-sm"
           variant="outline"
         >
           {t("request_appointment")}
@@ -251,7 +251,7 @@ function HirePageContent() {
       <div className="py-12 md:py-20 bg-white">
         <Container size="lg">
           <div className="text-center mb-10 md:mb-16">
-            <h2 className="text-xl md:text-3xl font-black text-primary uppercase tracking-wider relative inline-block">
+            <h2 className="text-xl md:text-3xl font-black text-primary   relative inline-block">
               {t("available_services")}
               <span className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-16 h-1.5 bg-secondary rounded-full" />
             </h2>
@@ -277,7 +277,7 @@ function HirePageContent() {
           {!isLoading && (!data?.items || data.items.length === 0) && (
             <div className="py-20 md:py-32 text-center rounded-3xl bg-slate-50 border-2 border-dashed border-slate-200">
               <div className="max-w-md mx-auto space-y-4 px-4">
-                <p className="text-slate-400 font-bold text-base md:text-lg uppercase tracking-widest">
+                <p className="text-slate-400 font-bold text-base md:text-lg  ">
                   {t("no_matching_services")}
                 </p>
                 <p className="text-slate-500 text-sm">

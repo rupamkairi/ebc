@@ -336,7 +336,7 @@ export function EventDiscovery({
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 text-primary">
                     <div className="h-px flex-1 bg-slate-200" />
-                    <span className="text-[10px] font-black uppercase tracking-widest bg-slate-100 px-3 py-1 rounded-full">
+                    <span className="text-[10px] font-black   bg-slate-100 px-3 py-1 rounded-full">
                       About this event
                     </span>
                     <div className="h-px flex-1 bg-slate-200" />
@@ -355,7 +355,7 @@ export function EventDiscovery({
                       <Clock className="h-6 w-6" />
                     </div>
                     <div className="space-y-1">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      <p className="text-[10px] font-black text-slate-400  ">
                         Date & Time
                       </p>
                       <p className="text-sm font-bold text-slate-700">
@@ -372,7 +372,7 @@ export function EventDiscovery({
                       <MapPin className="h-6 w-6" />
                     </div>
                     <div className="space-y-1">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      <p className="text-[10px] font-black text-slate-400  ">
                         {selectedEvent.isRemote
                           ? "Meeting Link"
                           : "Venue Location"}
@@ -392,7 +392,7 @@ export function EventDiscovery({
                 {selectedEvent.attachments &&
                   selectedEvent.attachments.length > 0 && (
                     <div className="space-y-3">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      <p className="text-[10px] font-black text-slate-400  ">
                         Resources & Materials
                       </p>
                       <div className="grid grid-cols-1 gap-2">
@@ -428,10 +428,10 @@ export function EventDiscovery({
                       <Building2 className="h-5 w-5" />
                     </div>
                     <div className="space-y-0.5 text-center md:text-left">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      <p className="text-[10px] font-black text-slate-400  ">
                         Hosted by
                       </p>
-                      <p className="text-sm font-black text-primary uppercase">
+                      <p className="text-sm font-black text-primary ">
                         {selectedEvent.entity?.name}
                       </p>
                     </div>

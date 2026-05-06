@@ -14,7 +14,6 @@ interface AdvantageCardProps {
   icon: React.ReactNode;
 }
 
-
 function AdvantageCard({
   title,
   description,
@@ -48,7 +47,7 @@ function AdvantageCard({
           </h3>
         </div>
 
-        <p className="text-slate-400 text-[10px] font-bold leading-tight mb-3 uppercase tracking-wide">
+        <p className="text-slate-400 text-[10px] font-bold leading-tight mb-3  ">
           {description}
         </p>
 
@@ -117,7 +116,9 @@ export function AdvantagesSection() {
         <div className="text-center mb-16">
           <h2 className="text-white text-3xl md:text-5xl font-black tracking-tight drop-shadow-lg">
             {t("advantages_section_title_prefix")}
-            <span className="text-secondary">{t("advantages_section_title_highlight")}</span>
+            <span className="text-secondary">
+              {t("advantages_section_title_highlight")}
+            </span>
             {t("advantages_section_title_suffix")}
           </h2>
         </div>
@@ -140,7 +141,9 @@ export function AdvantagesSection() {
         <div className="mt-20 text-center">
           <p className="text-white text-lg md:text-2xl font-black tracking-tight">
             {t("advantages_footer_text_prefix")}
-            <span className="text-white/60">{t("advantages_footer_text_highlight")}</span>
+            <span className="text-white/60">
+              {t("advantages_footer_text_highlight")}
+            </span>
             {t("advantages_footer_text_suffix")}
           </p>
         </div>

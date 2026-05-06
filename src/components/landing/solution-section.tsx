@@ -106,7 +106,7 @@ function SolutionCard({
                       unoptimized
                     />
                   </div>
-                  <span className="text-xs font-bold uppercase tracking-widest text-primary/60">
+                  <span className="text-xs font-bold   text-primary/60">
                     {t("solution_detail_label")}
                   </span>
                 </div>

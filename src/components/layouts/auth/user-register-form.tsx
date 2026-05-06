@@ -53,18 +53,21 @@ export function UserRegisterForm({
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
   const [pincodeId, setPincodeId] = useState("");
-  
+
   // Initialize type from search params if provided, otherwise default to buyer
-  const initialType = requestedRole?.toUpperCase() === "SELLER" 
-    ? USER_ROLE.USER_PRODUCT_SELLER_ADMIN
-    : requestedRole?.toUpperCase() === "SERVICE"
-    ? USER_ROLE.USER_SERVICE_PROVIDER_ADMIN
-    : requestedRole?.toUpperCase() === "BUYER"
-    ? USER_ROLE.USER_BUYER_ADMIN
-    : USER_ROLE.USER_BUYER_ADMIN;
+  const initialType =
+    requestedRole?.toUpperCase() === "SELLER"
+      ? USER_ROLE.USER_PRODUCT_SELLER_ADMIN
+      : requestedRole?.toUpperCase() === "SERVICE"
+        ? USER_ROLE.USER_SERVICE_PROVIDER_ADMIN
+        : requestedRole?.toUpperCase() === "BUYER"
+          ? USER_ROLE.USER_BUYER_ADMIN
+          : USER_ROLE.USER_BUYER_ADMIN;
 
   const isBuyerType = requestedRole?.toUpperCase() === "BUYER";
-  const isSellerType = requestedRole?.toUpperCase() === "SELLER" || requestedRole?.toUpperCase() === "SERVICE";
+  const isSellerType =
+    requestedRole?.toUpperCase() === "SELLER" ||
+    requestedRole?.toUpperCase() === "SERVICE";
   const [type, setType] = useState<string>(initialType);
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"info" | "otp">("info");
@@ -102,7 +105,9 @@ export function UserRegisterForm({
       });
 
       if (response.isNewUser === false) {
-        toast.error("This phone number is already registered. To ensure a simple and organized platform, each account must use a unique number for its specific purpose (Buyer or Seller).");
+        toast.error(
+          "This phone number is already registered. To ensure a simple and organized platform, each account must use a unique number for its specific purpose (Buyer or Seller).",
+        );
         router.push(
           `/auth/login?phone=${encodeURIComponent(phone)}&otp_sent=true&role=${requestedRole?.toLowerCase()}`,
         );
@@ -140,7 +145,10 @@ export function UserRegisterForm({
 
         // Redirection logic
         const role = user.role?.toUpperCase() || "";
-        if (isNewUser && (role.includes("SELLER") || role.includes("SERVICE"))) {
+        if (
+          isNewUser &&
+          (role.includes("SELLER") || role.includes("SERVICE"))
+        ) {
           router.push("/auth/register/onboarding");
         } else if (
           role === USER_ROLE.UNASSIGNED ||
@@ -172,9 +180,7 @@ export function UserRegisterForm({
       >
         <CardHeader className={cn(isDarkTheme && "px-0")}>
           <CardTitle
-            className={cn(
-              isDarkTheme && "text-white text-3xl font-medium tracking-wide",
-            )}
+            className={cn(isDarkTheme && "text-white text-3xl font-medium ")}
           >
             {t("create_account")}
           </CardTitle>
@@ -240,7 +246,8 @@ export function UserRegisterForm({
                         isDarkTheme && "text-white/60",
                       )}
                     >
-                      Enter 10-digit mobile number (digits only, no spaces or special characters)
+                      Enter 10-digit mobile number (digits only, no spaces or
+                      special characters)
                     </FieldDescription>
                   </Field>
                   <Field>
@@ -268,10 +275,14 @@ export function UserRegisterForm({
                           <SelectValue placeholder={t("select_type")} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value={USER_ROLE.USER_PRODUCT_SELLER_ADMIN}>
+                          <SelectItem
+                            value={USER_ROLE.USER_PRODUCT_SELLER_ADMIN}
+                          >
                             {t("product_seller")}
                           </SelectItem>
-                          <SelectItem value={USER_ROLE.USER_SERVICE_PROVIDER_ADMIN}>
+                          <SelectItem
+                            value={USER_ROLE.USER_SERVICE_PROVIDER_ADMIN}
+                          >
                             {t("service_provider")}
                           </SelectItem>
                           {!isSellerType && (

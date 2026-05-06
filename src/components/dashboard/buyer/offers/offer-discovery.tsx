@@ -11,7 +11,14 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Search, ArrowRight, Sparkles, MapPin, Building2 } from "lucide-react";
+import {
+  Calendar,
+  Search,
+  ArrowRight,
+  Sparkles,
+  MapPin,
+  Building2,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -31,7 +38,10 @@ interface OfferDiscoveryProps {
   isPublic?: boolean;
 }
 
-export function OfferDiscovery({ pincodeId, isPublic = true }: OfferDiscoveryProps) {
+export function OfferDiscovery({
+  pincodeId,
+  isPublic = true,
+}: OfferDiscoveryProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
 
@@ -174,7 +184,10 @@ export function OfferDiscovery({ pincodeId, isPublic = true }: OfferDiscoveryPro
       )}
 
       {/* Offer Details Modal */}
-      <Dialog open={!!selectedOffer} onOpenChange={(open) => !open && setSelectedOffer(null)}>
+      <Dialog
+        open={!!selectedOffer}
+        onOpenChange={(open) => !open && setSelectedOffer(null)}
+      >
         <DialogContent className="max-w-2xl p-0 overflow-hidden border-none rounded-3xl shadow-2xl">
           {selectedOffer && (
             <div className="flex flex-col">
@@ -183,7 +196,7 @@ export function OfferDiscovery({ pincodeId, isPublic = true }: OfferDiscoveryPro
                 <div className="absolute top-0 right-0 p-8 opacity-10">
                   <Sparkles className="h-32 w-32" />
                 </div>
-                <Badge className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-md mb-4 px-3 py-1 text-xs uppercase tracking-widest font-bold">
+                <Badge className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-md mb-4 px-3 py-1 text-xs   font-bold">
                   Exclusive Promotion
                 </Badge>
                 <DialogHeader className="text-left space-y-2 relative z-10">
@@ -199,7 +212,7 @@ export function OfferDiscovery({ pincodeId, isPublic = true }: OfferDiscoveryPro
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 text-primary">
                     <div className="h-px flex-1 bg-slate-200" />
-                    <span className="text-[10px] font-black uppercase tracking-widest bg-slate-100 px-3 py-1 rounded-full">
+                    <span className="text-[10px] font-black   bg-slate-100 px-3 py-1 rounded-full">
                       Offer Details
                     </span>
                     <div className="h-px flex-1 bg-slate-200" />
@@ -217,17 +230,29 @@ export function OfferDiscovery({ pincodeId, isPublic = true }: OfferDiscoveryPro
                       <Calendar className="h-6 w-6" />
                     </div>
                     <div className="space-y-1">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Validity Period</p>
+                      <p className="text-[10px] font-black text-slate-400  ">
+                        Validity Period
+                      </p>
                       <p className="text-sm font-bold text-slate-700">
                         {selectedOffer.offerDetails?.[0]?.startDate ? (
                           <>
-                            {format(new Date(selectedOffer.offerDetails[0].startDate), "PPP")}
+                            {format(
+                              new Date(selectedOffer.offerDetails[0].startDate),
+                              "PPP",
+                            )}
                             {" - "}
                             {selectedOffer.offerDetails[0].endDate
-                              ? format(new Date(selectedOffer.offerDetails[0].endDate), "PPP")
+                              ? format(
+                                  new Date(
+                                    selectedOffer.offerDetails[0].endDate,
+                                  ),
+                                  "PPP",
+                                )
                               : "Ongoing"}
                           </>
-                        ) : "N/A"}
+                        ) : (
+                          "N/A"
+                        )}
                       </p>
                     </div>
                   </div>
@@ -238,10 +263,15 @@ export function OfferDiscovery({ pincodeId, isPublic = true }: OfferDiscoveryPro
                       <MapPin className="h-6 w-6" />
                     </div>
                     <div className="space-y-1">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Regions</p>
+                      <p className="text-[10px] font-black text-slate-400  ">
+                        Active Regions
+                      </p>
                       <p className="text-sm font-bold text-slate-700 line-clamp-2">
-                        {selectedOffer.targetRegions && selectedOffer.targetRegions.length > 0
-                          ? selectedOffer.targetRegions.map(r => r.pincode?.pincode || r.pincodeId).join(", ")
+                        {selectedOffer.targetRegions &&
+                        selectedOffer.targetRegions.length > 0
+                          ? selectedOffer.targetRegions
+                              .map((r) => r.pincode?.pincode || r.pincodeId)
+                              .join(", ")
                           : "Pan India"}
                       </p>
                     </div>
@@ -255,11 +285,15 @@ export function OfferDiscovery({ pincodeId, isPublic = true }: OfferDiscoveryPro
                       <Building2 className="h-5 w-5" />
                     </div>
                     <div className="space-y-0.5 text-center md:text-left">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Hosted by</p>
-                      <p className="text-sm font-black text-primary uppercase">{selectedOffer.entity?.name}</p>
+                      <p className="text-[10px] font-black text-slate-400  ">
+                        Hosted by
+                      </p>
+                      <p className="text-sm font-black text-primary ">
+                        {selectedOffer.entity?.name}
+                      </p>
                     </div>
                   </div>
-                  
+
                   <Button
                     className="rounded-2xl h-12 px-8 bg-secondary hover:bg-secondary/90 text-white font-black gap-2 shadow-lg shadow-amber-200 w-full md:w-auto"
                     onClick={() => setSelectedOffer(null)}

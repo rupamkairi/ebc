@@ -72,12 +72,22 @@ export function ForumSection({
     }
 
     // Check if the business is approved (for non-admins/buyers)
-    const isAdmin = ["ADMIN", "ADMIN_MANAGER", "ADMIN_EXECUTIVE", "ADMIN_ACCOUNTANT"].includes(user.role || "");
+    const isAdmin = [
+      "ADMIN",
+      "ADMIN_MANAGER",
+      "ADMIN_EXECUTIVE",
+      "ADMIN_ACCOUNTANT",
+    ].includes(user.role || "");
     const isBuyer = user.role === "USER_BUYER_ADMIN";
-    
-    if (!isAdmin && !isBuyer && user.staffAt && user.staffAt.verificationStatus !== "APPROVED") {
+
+    if (
+      !isAdmin &&
+      !isBuyer &&
+      user.staffAt &&
+      user.staffAt.verificationStatus !== "APPROVED"
+    ) {
       toast.error(
-        `Your business must be APPROVED to post in forums. Current status: ${user.staffAt.verificationStatus}`
+        `Your business must be APPROVED to post in forums. Current status: ${user.staffAt.verificationStatus}`,
       );
       return;
     }
@@ -118,7 +128,11 @@ export function ForumSection({
   }
 
   const allPosts = data?.posts || [];
-  const isAdmin = user?.role && ["ADMIN", "ADMIN_MANAGER", "ADMIN_EXECUTIVE", "ADMIN_ACCOUNTANT"].includes(user.role);
+  const isAdmin =
+    user?.role &&
+    ["ADMIN", "ADMIN_MANAGER", "ADMIN_EXECUTIVE", "ADMIN_ACCOUNTANT"].includes(
+      user.role,
+    );
 
   interface ThreadedPost extends DiscussionPost {
     children: ThreadedPost[];
@@ -171,11 +185,11 @@ export function ForumSection({
                 {post.createdBy.name}
               </span>
               {post.createdBy.staffAt && (
-                <span className="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-black uppercase rounded-lg">
+                <span className="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-black  rounded-lg">
                   {post.createdBy.staffAt.name}
                 </span>
               )}
-              <span className="text-[10px] font-bold text-muted-foreground/50 uppercase">
+              <span className="text-[10px] font-bold text-muted-foreground/50 ">
                 {formatDistanceToNow(new Date(post.createdAt), {
                   addSuffix: true,
                 })}
@@ -255,14 +269,14 @@ export function ForumSection({
           </div>
           <div>
             <h3 className="text-xl font-black tracking-tight">Public Forum</h3>
-            <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">
+            <p className="text-xs text-muted-foreground font-medium  ">
               Conference Hall Activity
             </p>
           </div>
         </div>
         <div className="text-right">
           <div className="text-2xl font-black">{allPosts.length}</div>
-          <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-tighter">
+          <div className="text-[10px] font-bold text-muted-foreground  tracking-tighter">
             Community Contributions
           </div>
         </div>
@@ -346,7 +360,7 @@ export function ForumSection({
                 {replyingTo ? "POST REPLY" : "PUBLISH"}
               </Button>
             </div>
-            <p className="text-[10px] font-bold text-center text-muted-foreground uppercase tracking-widest px-10">
+            <p className="text-[10px] font-bold text-center text-muted-foreground   px-10">
               Your contribution will be visible to the public. Please follow the
               professional code of conduct in the Conference Hall.
             </p>

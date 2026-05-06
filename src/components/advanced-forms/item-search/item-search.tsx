@@ -56,13 +56,14 @@ export function ItemSearch({
           <div className="flex items-center gap-3 border-b border-white/20 pb-4">
             <Search className="size-8 text-white" />
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-              {title || `Choose Items to ${type === "PRODUCT" ? "Enquire" : "Book"}`}
+              {title ||
+                `Choose Items to ${type === "PRODUCT" ? "Enquire" : "Book"}`}
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2 group">
-              <Label className="text-[10px] font-black tracking-[0.2em] text-white/60 uppercase pl-1">
+              <Label className="text-[10px] font-black tracking-[0.2em] text-white/60  pl-1">
                 Sub Category
               </Label>
               <div className="relative">
@@ -77,7 +78,7 @@ export function ItemSearch({
             </div>
 
             <div className="space-y-2 group">
-              <Label className="text-[10px] font-black tracking-[0.2em] text-white/60 uppercase pl-1">
+              <Label className="text-[10px] font-black tracking-[0.2em] text-white/60  pl-1">
                 Brand
               </Label>
               <BrandSearchAutocomplete
@@ -89,7 +90,7 @@ export function ItemSearch({
             </div>
 
             <div className="space-y-2 group">
-              <Label className="text-[10px] font-black tracking-[0.2em] text-white/60 uppercase pl-1">
+              <Label className="text-[10px] font-black tracking-[0.2em] text-white/60  pl-1">
                 Specification
               </Label>
               <SpecificationSearchAutocomplete
@@ -102,7 +103,7 @@ export function ItemSearch({
           </div>
 
           <div className="space-y-2">
-            <Label className="text-[10px] font-black tracking-[0.2em] text-white/60 uppercase pl-1">
+            <Label className="text-[10px] font-black tracking-[0.2em] text-white/60  pl-1">
               Item Search
             </Label>
             <div className="relative group">

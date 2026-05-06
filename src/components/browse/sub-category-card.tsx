@@ -76,9 +76,7 @@ export function SubCategoryCardContainer({
 
   return (
     <div className="w-full space-y-3">
-      <h3 className="font-semibold text-sm tracking-wide uppercase text-muted-foreground">
-        {title}
-      </h3>
+      <h3 className="font-semibold text-sm   text-muted-foreground">{title}</h3>
       <ScrollArea className="w-full whitespace-nowrap rounded-md border">
         <div className="flex w-max space-x-4 p-4">
           {items.map((item) => (

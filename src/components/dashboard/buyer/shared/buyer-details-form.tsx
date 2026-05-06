@@ -23,7 +23,9 @@ import { usePrefetchBuyerDetails } from "@/hooks/usePrefetchBuyerDetails";
 const buyerDetailsSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
-  phoneNumber: z.string().length(10, { message: "Phone number must be exactly 10 digits." }),
+  phoneNumber: z
+    .string()
+    .length(10, { message: "Phone number must be exactly 10 digits." }),
   address: z
     .string()
     .min(5, { message: "Address must be at least 5 characters." }),
@@ -76,12 +78,20 @@ export function BuyerDetailsForm({
   // This runs independently of defaultValues so the store can't overwrite it with an empty string.
   useEffect(() => {
     if (session?.user) {
-      const rawPhone = (session.user as { phone?: string; phoneNumber?: string }).phone
-        || (session.user as { phone?: string; phoneNumber?: string }).phoneNumber
-        || "";
-      const localPhone = rawPhone.replace(/^\+?91/, "").replace(/\D/g, "").slice(0, 10);
+      const rawPhone =
+        (session.user as { phone?: string; phoneNumber?: string }).phone ||
+        (session.user as { phone?: string; phoneNumber?: string })
+          .phoneNumber ||
+        "";
+      const localPhone = rawPhone
+        .replace(/^\+?91/, "")
+        .replace(/\D/g, "")
+        .slice(0, 10);
       if (localPhone && !form.getValues("phoneNumber")) {
-        form.setValue("phoneNumber", localPhone, { shouldValidate: false, shouldDirty: false });
+        form.setValue("phoneNumber", localPhone, {
+          shouldValidate: false,
+          shouldDirty: false,
+        });
       }
     }
   }, [session, form]);
@@ -90,7 +100,10 @@ export function BuyerDetailsForm({
   useEffect(() => {
     if (defaultValues) {
       const currentValues = form.getValues();
-      const merged = { ...currentValues, ...defaultValues } as BuyerDetailsSchema;
+      const merged = {
+        ...currentValues,
+        ...defaultValues,
+      } as BuyerDetailsSchema;
       // Never overwrite a valid phone with an empty one from the store
       if (!merged.phoneNumber && currentValues.phoneNumber) {
         merged.phoneNumber = currentValues.phoneNumber;
@@ -119,8 +132,7 @@ export function BuyerDetailsForm({
 
   const inputClass =
     "h-12 bg-white dark:bg-white border-primary/20 rounded-xl focus:border-secondary focus:ring-secondary/10 font-medium text-primary transition-all duration-200 placeholder:text-primary/20";
-  const labelClass =
-    "text-xs font-semibold tracking-wider text-primary opacity-80 ml-1";
+  const labelClass = "text-xs font-semibold  text-primary opacity-80 ml-1";
 
   return (
     <div className="rounded-2xl bg-white border-2 border-primary/10 p-6 sm:p-8 shadow-xl relative overflow-hidden group hover:border-primary/20 transition-all duration-500">
@@ -199,12 +211,23 @@ export function BuyerDetailsForm({
                             type="tel"
                             placeholder="Enter 10-digit mobile number"
                             {...field}
-                            value={field.value.replace(/^\+?91/, "").replace(/\D/g, "").slice(0, 10)}
-                            onChange={(e) => field.onChange(e.target.value.replace(/^\+?91/, "").replace(/\D/g, "").slice(0, 10))}
+                            value={field.value
+                              .replace(/^\+?91/, "")
+                              .replace(/\D/g, "")
+                              .slice(0, 10)}
+                            onChange={(e) =>
+                              field.onChange(
+                                e.target.value
+                                  .replace(/^\+?91/, "")
+                                  .replace(/\D/g, "")
+                                  .slice(0, 10),
+                              )
+                            }
                             className={cn(
                               inputClass,
                               "pl-3 rounded-l-none",
-                              hasSession && "bg-muted/30 text-primary cursor-not-allowed select-none",
+                              hasSession &&
+                                "bg-muted/30 text-primary cursor-not-allowed select-none",
                             )}
                             disabled={hasSession}
                           />
@@ -212,7 +235,8 @@ export function BuyerDetailsForm({
                       </div>
                     </FormControl>
                     <p className="text-xs text-primary/60">
-                      Enter 10-digit mobile number (digits only, no spaces or special characters)
+                      Enter 10-digit mobile number (digits only, no spaces or
+                      special characters)
                     </p>
                     <FormMessage />
                   </FormItem>

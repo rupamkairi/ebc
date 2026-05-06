@@ -58,7 +58,7 @@ export default function BuyerDashboardHeader() {
   );
 
   const rightContent = (
-    <Button className="rounded-full bg-secondary hover:bg-secondary/90 text-white px-6 py-2 sm:py-3 h-10 flex items-center gap-2 font-bold shadow-sm text-xs uppercase tracking-wider transition-all active:scale-95 border-none">
+    <Button className="rounded-full bg-secondary hover:bg-secondary/90 text-white px-6 py-2 sm:py-3 h-10 flex items-center gap-2 font-bold shadow-sm text-xs   transition-all active:scale-95 border-none">
       <HeadphonesIcon className="size-4" />
       <span className="hidden sm:inline">Talk To Support</span>
     </Button>

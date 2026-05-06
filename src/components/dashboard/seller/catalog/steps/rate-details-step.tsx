@@ -1,6 +1,13 @@
 "use client";
 
-import { ChevronLeft, Package, IndianRupee, Scale, AlertCircle, CheckCircle2 } from "lucide-react";
+import {
+  ChevronLeft,
+  Package,
+  IndianRupee,
+  Scale,
+  AlertCircle,
+  CheckCircle2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Item } from "@/types/catalog";
 import { Input } from "@/components/ui/input";
@@ -61,7 +68,7 @@ export function RateDetailsStep({
           <Package size={24} />
         </div>
         <div className="min-w-0">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <p className="text-[10px] font-semibold   text-muted-foreground">
             Selected Item
           </p>
           <h4 className="text-lg font-bold truncate">{selectedItem?.name}</h4>
@@ -94,7 +101,10 @@ export function RateDetailsStep({
         /* Advisory — always shown before first submission */
         <div className="rounded-lg border border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-950/40 p-4">
           <div className="flex items-center gap-2 mb-1">
-            <AlertCircle size={15} className="text-amber-600 dark:text-amber-400 shrink-0" />
+            <AlertCircle
+              size={15}
+              className="text-amber-600 dark:text-amber-400 shrink-0"
+            />
             <p className="text-sm font-semibold text-amber-700 dark:text-amber-300">
               Unit type is item-specific
             </p>

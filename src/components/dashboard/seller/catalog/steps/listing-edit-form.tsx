@@ -53,7 +53,6 @@ import { Badge } from "@/components/ui/badge";
 import { RegionSelectionStep } from "./region-selection-step";
 import { ITEM_TYPE } from "@/constants/enums";
 
-
 const listingEditSchema = z.object({
   isActive: z.boolean(),
   unitType: z.enum(UNIT_TYPES).optional(),
@@ -87,10 +86,12 @@ interface AttachmentWithMedia {
   document?: { id: string; url: string } | null;
 }
 
-const getAttachmentIds = (listing: ItemListing): { mediaIds: string[]; documentIds: string[] } => {
+const getAttachmentIds = (
+  listing: ItemListing,
+): { mediaIds: string[]; documentIds: string[] } => {
   const mediaIds: string[] = [];
   const documentIds: string[] = [];
-  
+
   if (listing.attachments && listing.attachments.length > 0) {
     listing.attachments.forEach((att: AttachmentWithMedia) => {
       if (att.mediaId && !mediaIds.includes(att.mediaId)) {
@@ -101,14 +102,14 @@ const getAttachmentIds = (listing: ItemListing): { mediaIds: string[]; documentI
       }
     });
   }
-  
+
   return { mediaIds, documentIds };
 };
 
 const getInitialFormValues = (listing: ItemListing) => {
   const rate = listing.itemRates?.[0];
   const { mediaIds, documentIds } = getAttachmentIds(listing);
-  
+
   return {
     isActive: listing.isActive,
     unitType: (rate?.unitType as UnitType) || "Nos",
@@ -131,7 +132,8 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
   const allowedUnits: UnitType[] | undefined = (() => {
     const item = listing.item;
     if (!item) return undefined;
-    if (item.acceptableUnitTypes?.length) return item.acceptableUnitTypes as UnitType[];
+    if (item.acceptableUnitTypes?.length)
+      return item.acceptableUnitTypes as UnitType[];
     if (item.specification?.acceptableUnitTypes?.length)
       return item.specification.acceptableUnitTypes as UnitType[];
     return undefined;
@@ -272,7 +274,7 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
         </div>
         <div>
           <h4 className="text-lg font-bold">{listing.item?.name}</h4>
-          <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+          <p className="text-[11px] font-medium text-muted-foreground  ">
             {listing.item?.category?.name} • {listing.item?.brand?.name}
           </p>
         </div>
@@ -327,7 +329,9 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
                       <span>
                         This item can only be listed in:{" "}
                         <strong>
-                          {allowedUnits.map((u) => UNIT_TYPE_LABELS[u]).join(", ")}
+                          {allowedUnits
+                            .map((u) => UNIT_TYPE_LABELS[u])
+                            .join(", ")}
                         </strong>
                         . Other unit types have been hidden.
                       </span>
@@ -366,7 +370,9 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
                     name="minQuantity"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="font-bold">Min Quantity</FormLabel>
+                        <FormLabel className="font-bold">
+                          Min Quantity
+                        </FormLabel>
                         <FormControl>
                           <Input
                             type="number"
@@ -401,7 +407,8 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
                           />
                         </FormControl>
                         <FormDescription className="text-[10px]">
-                          Per {UNIT_TYPE_LABELS[form.watch("unitType") || "Nos"]}
+                          Per{" "}
+                          {UNIT_TYPE_LABELS[form.watch("unitType") || "Nos"]}
                         </FormDescription>
                         <FormMessage />
                       </FormItem>

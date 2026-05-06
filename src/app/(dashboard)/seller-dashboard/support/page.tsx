@@ -87,7 +87,8 @@ export default function SupportPage() {
               rel="noopener noreferrer"
               className="group flex items-center gap-4 rounded-2xl p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
               style={{
-                background: "linear-gradient(135deg, var(--primary) 0%, var(--primary) 100%)",
+                background:
+                  "linear-gradient(135deg, var(--primary) 0%, var(--primary) 100%)",
               }}
             >
               <div className="shrink-0 h-14 w-14 rounded-xl bg-white flex items-center justify-center shadow-md">
@@ -111,9 +112,7 @@ export default function SupportPage() {
         {/* Bottom Two-Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-start">
           {/* Submit a Ticket */}
-          <div
-            className="rounded-2xl p-6 md:p-8 flex flex-col gap-5 bg-gradient-to-br from-primary to-primary/80"
-          >
+          <div className="rounded-2xl p-6 md:p-8 flex flex-col gap-5 bg-gradient-to-br from-primary to-primary/80">
             <div>
               <h2 className="text-white text-2xl font-black">
                 {t("submit_ticket")}
@@ -127,7 +126,7 @@ export default function SupportPage() {
             >
               {/* Issue Category */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-white/60 text-[10px] font-black uppercase tracking-widest">
+                <label className="text-white/60 text-[10px] font-black  ">
                   {t("issue_category")}
                 </label>
                 <input
@@ -141,7 +140,7 @@ export default function SupportPage() {
 
               {/* Describe Problem */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-white/60 text-[10px] font-black uppercase tracking-widest">
+                <label className="text-white/60 text-[10px] font-black  ">
                   {t("describe_your_problem")}
                 </label>
                 <textarea
@@ -155,7 +154,7 @@ export default function SupportPage() {
 
               <button
                 type="submit"
-                className="w-full bg-secondary hover:bg-secondary/90 active:scale-95 text-white font-black py-3.5 rounded-xl text-sm tracking-wide transition-all duration-200 shadow-lg shadow-orange-300/20"
+                className="w-full bg-secondary hover:bg-secondary/90 active:scale-95 text-white font-black py-3.5 rounded-xl text-sm  transition-all duration-200 shadow-lg shadow-orange-300/20"
               >
                 {t("submit_your_ticket")}
               </button>

@@ -69,7 +69,7 @@ export function FooterSection() {
 
           {/* Marketplace Column */}
           <div className="lg:col-span-2 space-y-4 pt-1">
-            <h4 className="text-[17px] font-semibold tracking-wide">
+            <h4 className="text-[17px] font-semibold ">
               {t("footer_marketplace")}
             </h4>
             <ul className="space-y-2 text-[13px] font-medium text-white/90">
@@ -113,7 +113,7 @@ export function FooterSection() {
 
           {/* For You Column */}
           <div className="lg:col-span-2 space-y-4 pt-1">
-            <h4 className="text-[17px] font-semibold tracking-wide">
+            <h4 className="text-[17px] font-semibold ">
               {t("footer_for_you")}
             </h4>
             <ul className="space-y-2 text-[13px] font-medium text-white/90">
@@ -142,7 +142,7 @@ export function FooterSection() {
 
           {/* Helpful Links Column */}
           <div className="lg:col-span-2 space-y-4 pt-1">
-            <h4 className="text-[17px] font-semibold tracking-wide">
+            <h4 className="text-[17px] font-semibold ">
               {t("footer_helpful_links")}
             </h4>
             <ul className="space-y-2 text-[13px] font-medium text-white/90">
@@ -171,7 +171,7 @@ export function FooterSection() {
 
           {/* Support & Company Column */}
           <div className="lg:col-span-2 space-y-4 pt-1">
-            <h4 className="text-[17px] font-semibold tracking-wide">
+            <h4 className="text-[17px] font-semibold ">
               {t("footer_support_company")}
             </h4>
             <ul className="space-y-2 text-[13px] font-medium text-white/90">
@@ -239,7 +239,7 @@ export function FooterSection() {
                   <circle cx="12" cy="10" r="3" />
                 </svg>
               </div>
-              <span className="text-[10px] md:text-[11px] font-medium tracking-wide">
+              <span className="text-[10px] md:text-[11px] font-medium ">
                 {t("footer_location")}
               </span>
             </div>
@@ -255,7 +255,7 @@ export function FooterSection() {
                   <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                 </svg>
               </div>
-              <span className="text-[10px] md:text-[11px] font-medium tracking-wide">
+              <span className="text-[10px] md:text-[11px] font-medium ">
                 +91 1234567890
               </span>
             </div>
@@ -272,7 +272,7 @@ export function FooterSection() {
                   <polyline points="22,6 12,13 2,6" />
                 </svg>
               </div>
-              <span className="text-[10px] md:text-[11px] font-medium tracking-wide">
+              <span className="text-[10px] md:text-[11px] font-medium ">
                 {t("footer_email")}
               </span>
             </div>

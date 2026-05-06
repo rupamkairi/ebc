@@ -27,13 +27,13 @@ export function CatalogToolbar({
         <TabsList className="bg-muted p-1 rounded-md h-auto">
           <TabsTrigger
             value="products"
-            className="rounded-sm px-8 py-2 font-semibold text-xs transition-all uppercase tracking-widest"
+            className="rounded-sm px-8 py-2 font-semibold text-xs transition-all  "
           >
             Products
           </TabsTrigger>
           <TabsTrigger
             value="services"
-            className="rounded-sm px-8 py-2 font-semibold text-xs transition-all uppercase tracking-widest"
+            className="rounded-sm px-8 py-2 font-semibold text-xs transition-all  "
           >
             Services
           </TabsTrigger>

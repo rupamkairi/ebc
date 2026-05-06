@@ -1,9 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { useEntityReviewsQuery, useEntityReviewsFullQuery } from "@/queries/reviewQueries";
+import {
+  useEntityReviewsQuery,
+  useEntityReviewsFullQuery,
+} from "@/queries/reviewQueries";
 import { ReviewCard } from "./review-card";
-import { Loader2, MessageSquare, Star, TrendingUp, ShieldCheck } from "lucide-react";
+import {
+  Loader2,
+  MessageSquare,
+  Star,
+  TrendingUp,
+  ShieldCheck,
+} from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -17,8 +26,10 @@ interface ReviewListProps {
 
 export function ReviewList({ entityId, isOwner }: ReviewListProps) {
   const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
-  const { data: publicReviews, isLoading: loadingPublic } = useEntityReviewsQuery(entityId);
-  const { data: fullReviews, isLoading: loadingFull } = useEntityReviewsFullQuery(isOwner ? entityId : "");
+  const { data: publicReviews, isLoading: loadingPublic } =
+    useEntityReviewsQuery(entityId);
+  const { data: fullReviews, isLoading: loadingFull } =
+    useEntityReviewsFullQuery(isOwner ? entityId : "");
 
   const reviews: Review[] = (isOwner ? fullReviews : publicReviews) || [];
   const isLoading = isOwner ? loadingFull : loadingPublic;
@@ -27,7 +38,9 @@ export function ReviewList({ entityId, isOwner }: ReviewListProps) {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-4">
         <Loader2 className="h-10 w-10 animate-spin text-primary opacity-40" />
-        <p className="text-sm font-medium text-muted-foreground animate-pulse">Fetching trust signals...</p>
+        <p className="text-sm font-medium text-muted-foreground animate-pulse">
+          Fetching trust signals...
+        </p>
       </div>
     );
   }
@@ -40,8 +53,8 @@ export function ReviewList({ entityId, isOwner }: ReviewListProps) {
         </div>
         <h3 className="text-xl font-bold mb-2">No reviews yet</h3>
         <p className="max-w-xs mx-auto text-sm text-balance text-muted-foreground">
-          {isOwner 
-            ? "Your reputation is just starting. Complete some enquiries to earn your first badge!" 
+          {isOwner
+            ? "Your reputation is just starting. Complete some enquiries to earn your first badge!"
             : "This entity hasn't received any reviews yet. Be the first to share your experience!"}
         </p>
       </div>
@@ -50,9 +63,13 @@ export function ReviewList({ entityId, isOwner }: ReviewListProps) {
 
   // Calculate Average Rating
   const validReviews = reviews.filter((r) => !r.isHidden);
-  const avgRating = validReviews.length > 0 
-    ? (validReviews.reduce((sum, r) => sum + r.rating, 0) / validReviews.length).toFixed(1)
-    : "0.0";
+  const avgRating =
+    validReviews.length > 0
+      ? (
+          validReviews.reduce((sum, r) => sum + r.rating, 0) /
+          validReviews.length
+        ).toFixed(1)
+      : "0.0";
 
   // Filter reviews for display
   const displayReviews = reviews.filter((r) => {
@@ -72,7 +89,9 @@ export function ReviewList({ entityId, isOwner }: ReviewListProps) {
             </div>
             <div>
               <div className="text-3xl font-black">{avgRating}</div>
-              <div className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">Average Rating</div>
+              <div className="text-[10px]  font-bold  text-muted-foreground">
+                Average Rating
+              </div>
             </div>
           </div>
 
@@ -82,7 +101,9 @@ export function ReviewList({ entityId, isOwner }: ReviewListProps) {
             </div>
             <div>
               <div className="text-3xl font-black">{validReviews.length}</div>
-              <div className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">Total Feedbacks</div>
+              <div className="text-[10px]  font-bold  text-muted-foreground">
+                Total Feedbacks
+              </div>
             </div>
           </div>
 
@@ -95,7 +116,9 @@ export function ReviewList({ entityId, isOwner }: ReviewListProps) {
                 <div className="text-3xl font-black">
                   {reviews.filter((r) => r.isPinned).length} / 5
                 </div>
-                <div className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">Pinned to top</div>
+                <div className="text-[10px]  font-bold  text-muted-foreground">
+                  Pinned to top
+                </div>
               </div>
             </div>
           )}
@@ -105,18 +128,20 @@ export function ReviewList({ entityId, isOwner }: ReviewListProps) {
         <div className="flex items-center justify-between px-2 bg-muted/30 p-4 rounded-2xl border border-dashed">
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-5 w-5 text-emerald-600" />
-            <span className="text-sm font-bold tracking-tight text-foreground/80">Marketplace Trust Filter</span>
+            <span className="text-sm font-bold tracking-tight text-foreground/80">
+              Marketplace Trust Filter
+            </span>
           </div>
           <div className="flex items-center space-x-3">
-            <Label 
-              htmlFor="verified-filter" 
-              className="text-[10px] font-black uppercase tracking-widest text-muted-foreground cursor-pointer select-none"
+            <Label
+              htmlFor="verified-filter"
+              className="text-[10px] font-black   text-muted-foreground cursor-pointer select-none"
             >
               Verified Only
             </Label>
-            <Switch 
-              id="verified-filter" 
-              checked={showVerifiedOnly} 
+            <Switch
+              id="verified-filter"
+              checked={showVerifiedOnly}
               onCheckedChange={setShowVerifiedOnly}
             />
           </div>
@@ -136,12 +161,13 @@ export function ReviewList({ entityId, isOwner }: ReviewListProps) {
           </div>
           <h3 className="text-xl font-bold mb-2">No verified reviews found</h3>
           <p className="max-w-xs mx-auto text-sm text-balance text-muted-foreground">
-            This entity doesn&apos;t have any verified transaction-linked reviews matching this filter yet.
+            This entity doesn&apos;t have any verified transaction-linked
+            reviews matching this filter yet.
           </p>
-          <Button 
-            variant="link" 
+          <Button
+            variant="link"
             onClick={() => setShowVerifiedOnly(false)}
-            className="mt-4 text-primary font-bold uppercase tracking-widest text-[10px]"
+            className="mt-4 text-primary font-bold   text-[10px]"
           >
             Show All Reviews
           </Button>
@@ -150,5 +176,3 @@ export function ReviewList({ entityId, isOwner }: ReviewListProps) {
     </div>
   );
 }
-
-

@@ -41,7 +41,7 @@ export function EnquiryCard({ enquiry, detailsHref }: EnquiryCardProps) {
       <CardHeader className="pb-4 border-b bg-slate-50/30">
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-black uppercase text-primary/40 tracking-wider">
+            <span className="text-[10px] font-black  text-primary/40 ">
               {t("enquiry_id")}
             </span>
             <CardTitle className="text-sm font-black text-primary">
@@ -50,7 +50,7 @@ export function EnquiryCard({ enquiry, detailsHref }: EnquiryCardProps) {
           </div>
           <Badge
             variant="outline"
-            className={`${getStatusColor(enquiry.status || ENQUIRY_STATUS.PENDING)} font-bold text-[10px] uppercase px-3 py-1 rounded-full border shadow-xs`}
+            className={`${getStatusColor(enquiry.status || ENQUIRY_STATUS.PENDING)} font-bold text-[10px]  px-3 py-1 rounded-full border shadow-xs`}
           >
             {enquiry.status || "Pending"}
           </Badge>
@@ -60,11 +60,11 @@ export function EnquiryCard({ enquiry, detailsHref }: EnquiryCardProps) {
       <CardContent className="pt-6 pb-6 space-y-6">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h4 className="text-[10px] font-black uppercase text-primary/60 flex items-center gap-2 tracking-widest">
+            <h4 className="text-[10px] font-black  text-primary/60 flex items-center gap-2 ">
               <Package className="h-4 w-4" />
               {t("items")} ({items.length})
             </h4>
-            <div className="flex items-center gap-1 text-[10px] font-black text-primary/60 uppercase">
+            <div className="flex items-center gap-1 text-[10px] font-black text-primary/60 ">
               <Calendar className="h-3.5 w-3.5" />
               {enquiry.createdAt
                 ? format(new Date(enquiry.createdAt), "dd MMM yyyy")
@@ -90,14 +90,14 @@ export function EnquiryCard({ enquiry, detailsHref }: EnquiryCardProps) {
                       <span className="text-sm font-black text-secondary">
                         {lineItem.quantity}
                       </span>
-                      <span className="text-[10px] font-black text-primary/60 uppercase tracking-tighter">
+                      <span className="text-[10px] font-black text-primary/60  tracking-tighter">
                         {lineItem.unitType
                           ? UNIT_TYPE_LABELS[lineItem.unitType as UnitType]
                           : "-"}
                       </span>
                     </div>
                     {lineItem.flexibleWithBrands && (
-                      <span className="text-[10px] font-black text-green-600 bg-green-50 px-2 py-0.5 rounded-md border border-green-100 uppercase tracking-tighter">
+                      <span className="text-[10px] font-black text-green-600 bg-green-50 px-2 py-0.5 rounded-md border border-green-100  tracking-tighter">
                         {t("flexible_brands")}
                       </span>
                     )}
@@ -110,7 +110,7 @@ export function EnquiryCard({ enquiry, detailsHref }: EnquiryCardProps) {
 
         {details?.address && (
           <div className="pt-5 border-t border-slate-100 space-y-2">
-            <h4 className="text-[10px] font-black uppercase text-primary/60 flex items-center gap-1.5 tracking-widest">
+            <h4 className="text-[10px] font-black  text-primary/60 flex items-center gap-1.5 ">
               <MapPin className="h-4 w-4" />
               {t("delivery_location")}
             </h4>
@@ -126,9 +126,11 @@ export function EnquiryCard({ enquiry, detailsHref }: EnquiryCardProps) {
           variant="outline"
           size="sm"
           asChild
-          className="w-full bg-white border-primary/20 text-primary font-black text-xs h-12 rounded-xl hover:bg-primary hover:text-white transition-all shadow-sm flex items-center justify-center gap-2 uppercase tracking-widest group"
+          className="w-full bg-white border-primary/20 text-primary font-black text-xs h-12 rounded-xl hover:bg-primary hover:text-white transition-all shadow-sm flex items-center justify-center gap-2   group"
         >
-          <Link href={detailsHref || `/buyer-dashboard/enquiries/${enquiry.id}`}>
+          <Link
+            href={detailsHref || `/buyer-dashboard/enquiries/${enquiry.id}`}
+          >
             {t("view_details")}
             <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
           </Link>

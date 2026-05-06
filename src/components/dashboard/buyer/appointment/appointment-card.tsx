@@ -60,7 +60,7 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
       <CardHeader className="pb-4 border-b bg-slate-50/30">
         <div className="flex justify-between items-start">
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-black uppercase text-primary/40 tracking-wider">
+            <span className="text-[10px] font-black  text-primary/40 ">
               {t("appointment_id")}
             </span>
             <CardTitle className="text-sm font-black text-primary flex items-center gap-2">
@@ -69,7 +69,7 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
                 {firstItem?.item?.name || "Appointment Item"}
               </span>
             </CardTitle>
-            <div className="flex items-center gap-2 text-[10px] font-black text-primary/60 mt-1 uppercase">
+            <div className="flex items-center gap-2 text-[10px] font-black text-primary/60 mt-1 ">
               <span className="bg-slate-100 px-1.5 py-0.5 rounded">
                 #{appointment.id.slice(0, 8).toUpperCase()}
               </span>
@@ -82,7 +82,7 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
           </div>
           <Badge
             variant="outline"
-            className={`${getStatusColor(appointment.status || "PENDING")} font-bold text-[10px] uppercase px-3 py-1 rounded-full border shadow-xs`}
+            className={`${getStatusColor(appointment.status || "PENDING")} font-bold text-[10px]  px-3 py-1 rounded-full border shadow-xs`}
           >
             {appointment.status
               ? appointment.status.charAt(0).toUpperCase() +
@@ -95,7 +95,7 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
         <div className="flex flex-col md:flex-row justify-between gap-8">
           <div className="space-y-6 flex-1">
             <div>
-              <span className="text-[10px] font-black uppercase text-primary/60 mb-4 tracking-widest flex items-center gap-2">
+              <span className="text-[10px] font-black  text-primary/60 mb-4  flex items-center gap-2">
                 <Clock className="h-4 w-4" />
                 {t("preferred_time_slots")}
               </span>
@@ -111,10 +111,8 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
                         <CalendarDays className="h-4 w-4 text-primary/40" />
                       </div>
                       <div className="text-xs">
-                        <p className="font-black text-primary">
-                          {parsed.date}
-                        </p>
-                        <p className="text-primary/60 font-bold uppercase text-[9px] mt-0.5 tracking-wider">
+                        <p className="font-black text-primary">{parsed.date}</p>
+                        <p className="text-primary/60 font-bold  text-[9px] mt-0.5 ">
                           {parsed.time}
                         </p>
                       </div>
@@ -131,7 +129,7 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
 
             {details?.remarks && (
               <div className="pt-5 border-t border-slate-100">
-                <span className="text-[10px] font-black uppercase text-primary/60 mb-3 tracking-widest flex items-center gap-2">
+                <span className="text-[10px] font-black  text-primary/60 mb-3  flex items-center gap-2">
                   <FileText className="h-4 w-4" />
                   {t("additional_details")}
                 </span>
@@ -148,7 +146,7 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
               variant="outline"
               size="sm"
               asChild
-              className="bg-white border-primary/20 text-primary font-black text-xs px-8 h-12 rounded-xl hover:bg-primary hover:text-white transition-all shadow-sm flex items-center gap-2 uppercase tracking-widest group"
+              className="bg-white border-primary/20 text-primary font-black text-xs px-8 h-12 rounded-xl hover:bg-primary hover:text-white transition-all shadow-sm flex items-center gap-2   group"
             >
               <Link href={`/buyer-dashboard/appointments/${appointment.id}`}>
                 {t("view_details")}

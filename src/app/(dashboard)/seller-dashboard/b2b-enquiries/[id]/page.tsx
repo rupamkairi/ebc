@@ -132,7 +132,7 @@ export default function SellerEnquiryDetailsPage() {
                       <div className="text-xl md:text-2xl font-black">
                         {item.quantity}
                       </div>
-                      <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                      <div className="text-[10px] font-black   text-muted-foreground">
                         {UNIT_TYPE_LABELS[item.unitType as UnitType]}
                       </div>
                     </div>
@@ -294,7 +294,7 @@ export default function SellerEnquiryDetailsPage() {
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-primary mt-1" />
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                  <p className="text-[10px] font-black   text-muted-foreground">
                     {t("location_field")}
                   </p>
                   <p className="font-bold text-sm leading-relaxed">
@@ -313,7 +313,7 @@ export default function SellerEnquiryDetailsPage() {
                   )}
                 />
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                  <p className="text-[10px] font-black   text-muted-foreground">
                     {isCompleted && acceptedQuotation
                       ? "Promised Delivery"
                       : t("expected_date_field")}
@@ -351,7 +351,7 @@ export default function SellerEnquiryDetailsPage() {
                   <div className="flex items-start gap-3 pt-4 border-t border-emerald-100/50">
                     <FileText className="h-5 w-5 text-emerald-600 mt-1" />
                     <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-emerald-600/60">
+                      <p className="text-[10px] font-black   text-emerald-600/60">
                         Seller Remarks
                       </p>
                       <p className="text-xs font-medium text-emerald-800 leading-relaxed italic">
@@ -384,7 +384,8 @@ function QuotationListItem({
   const itemCount = q.quotationLineItems?.length ?? 0;
   const isAccepted = q.status === QUOTATION_STATUS.ACCEPTED;
   const isNegotiable =
-    q.quotationLineItems?.some((li) => li.isNegotiable) && !q.quotationDetails?.[0]?.hasBeenRevised;
+    q.quotationLineItems?.some((li) => li.isNegotiable) &&
+    !q.quotationDetails?.[0]?.hasBeenRevised;
 
   return (
     <Card className="overflow-hidden border border-primary/5 shadow-sm hover:shadow-md transition-all bg-white rounded-2xl">
@@ -407,12 +408,12 @@ function QuotationListItem({
               </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] bg-muted px-2 py-0.5 rounded-full text-muted-foreground">
+                  <span className="text-[10px] font-black  tracking-[0.2em] bg-muted px-2 py-0.5 rounded-full text-muted-foreground">
                     {q.id.slice(-8).toUpperCase()}
                   </span>
                   <Badge
                     className={cn(
-                      "text-[10px] font-black uppercase tracking-wide border-none",
+                      "text-[10px] font-black   border-none",
                       isAccepted
                         ? "bg-emerald-100 text-emerald-700"
                         : isEnquiryClosed
@@ -427,16 +428,17 @@ function QuotationListItem({
                         : t("pending_label")}
                   </Badge>
                   {isNegotiable && !isAccepted && !isEnquiryClosed && (
-                    <Badge className="text-[10px] font-black uppercase tracking-widest bg-orange-500 hover:bg-orange-600 text-white border-none px-2.5 py-1 gap-1.5 shadow-md shadow-orange-200 animate-pulse">
+                    <Badge className="text-[10px] font-black   bg-orange-500 hover:bg-orange-600 text-white border-none px-2.5 py-1 gap-1.5 shadow-md shadow-orange-200 animate-pulse">
                       <MessageSquare className="h-2.5 w-2.5 fill-white/20" />
                       {t("negotiable_price")}
                     </Badge>
                   )}
-                  {q.quotationDetails?.[0]?.requestedRevision && !q.quotationDetails?.[0]?.hasBeenRevised && (
-                    <Badge className="text-[10px] font-black uppercase tracking-widest bg-violet-600 text-white border-none px-2.5 py-1 shadow-md shadow-violet-200">
-                      {t("revision_requested_label", "Revision Requested")}
-                    </Badge>
-                  )}
+                  {q.quotationDetails?.[0]?.requestedRevision &&
+                    !q.quotationDetails?.[0]?.hasBeenRevised && (
+                      <Badge className="text-[10px] font-black   bg-violet-600 text-white border-none px-2.5 py-1 shadow-md shadow-violet-200">
+                        {t("revision_requested_label", "Revision Requested")}
+                      </Badge>
+                    )}
                 </div>
                 <p className="font-black text-sm">
                   {itemCount > 1
@@ -467,7 +469,7 @@ function QuotationListItem({
 
             <div className="flex items-center gap-4 md:gap-6">
               <div className="text-right">
-                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                <p className="text-[10px] font-black   text-muted-foreground">
                   {t("total_label")}
                 </p>
                 <div className="flex items-center justify-end font-black text-primary text-xl">
@@ -492,4 +494,3 @@ function QuotationListItem({
     </Card>
   );
 }
-

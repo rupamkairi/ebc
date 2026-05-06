@@ -129,7 +129,7 @@ export function ContentVerificationModal({
 
               {/* Attachments Section */}
               <div className="space-y-3">
-                <h4 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
+                <h4 className="text-sm font-bold   text-muted-foreground">
                   Attachments
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -173,7 +173,7 @@ export function ContentVerificationModal({
               {/* Previous Remarks if any */}
               {content.verificationRemark && (
                 <div className="bg-muted p-4 rounded-md">
-                  <Label className="text-muted-foreground text-xs uppercase">
+                  <Label className="text-muted-foreground text-xs ">
                     Previous Remarks
                   </Label>
                   <p className="text-sm mt-1">{content.verificationRemark}</p>
@@ -274,7 +274,7 @@ function InfoItem({
 }) {
   return (
     <div className="space-y-1">
-      <Label className="text-muted-foreground text-xs uppercase tracking-tight">
+      <Label className="text-muted-foreground text-xs  tracking-tight">
         {label}
       </Label>
       <p className="font-medium text-sm leading-snug">{value || "N/A"}</p>

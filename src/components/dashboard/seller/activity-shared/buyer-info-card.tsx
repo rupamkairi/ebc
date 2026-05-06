@@ -16,9 +16,7 @@ export function BuyerInfoCard({
   const { t } = useLanguage();
 
   return (
-    <div
-      className="rounded-2xl p-5 space-y-4 bg-gradient-to-br from-secondary to-secondary/80"
-    >
+    <div className="rounded-2xl p-5 space-y-4 bg-gradient-to-br from-secondary to-secondary/80">
       <h3 className="text-white font-black text-base flex items-center gap-2">
         <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center shrink-0">
           <User className="h-4 w-4 text-white" />
@@ -37,7 +35,7 @@ export function BuyerInfoCard({
             <p className="text-white font-black text-sm leading-none">
               {buyer?.name || t("anonymous_buyer")}
             </p>
-            <p className="text-white/60 text-[10px] font-semibold mt-0.5 uppercase tracking-wide">
+            <p className="text-white/60 text-[10px] font-semibold mt-0.5  ">
               {buyer?.role || "Buyer"}
             </p>
           </div>

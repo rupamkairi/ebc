@@ -28,21 +28,24 @@ export default function EnquiriesPage() {
 
   const filteredEnquiries = useMemo(() => {
     let result = enquiries || [];
-    
+
     // Search filter
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
-      result = result.filter((e) => 
-        e.id.toLowerCase().includes(q) ||
-        (e.enquiryLineItems || []).some((li: EnquiryLineItem) => 
-          li.item?.name?.toLowerCase().includes(q)
-        )
+      result = result.filter(
+        (e) =>
+          e.id.toLowerCase().includes(q) ||
+          (e.enquiryLineItems || []).some((li: EnquiryLineItem) =>
+            li.item?.name?.toLowerCase().includes(q),
+          ),
       );
     }
 
     // Status filter
     if (activeFilter !== "All") {
-      result = result.filter((e) => (e.status || "").toUpperCase() === activeFilter.toUpperCase());
+      result = result.filter(
+        (e) => (e.status || "").toUpperCase() === activeFilter.toUpperCase(),
+      );
     }
 
     return result;
@@ -59,11 +62,10 @@ export default function EnquiriesPage() {
   return (
     <div className="flex flex-col gap-6 max-w-5xl mx-auto">
       <div className="flex flex-col gap-6 p-4 md:p-0 animate-in fade-in slide-in-from-bottom-4 duration-700">
-        
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-black tracking-tight text-primary uppercase">
+            <h1 className="text-3xl font-black tracking-tight text-primary ">
               {t("my_enquiries_title")}
             </h1>
             <p className="text-sm text-primary/60 font-medium mt-1">
@@ -72,7 +74,7 @@ export default function EnquiriesPage() {
           </div>
           {!isManufacturer && (
             <Link href="/enquiry/create">
-              <Button className="bg-secondary hover:bg-secondary/90 text-white px-6 rounded-xl font-black text-[11px] tracking-widest uppercase h-11 shadow-lg shadow-secondary/20 transition-all active:scale-95 border-none">
+              <Button className="bg-secondary hover:bg-secondary/90 text-white px-6 rounded-xl font-black text-[11px]   h-11 shadow-lg shadow-secondary/20 transition-all active:scale-95 border-none">
                 <Plus className="h-4 w-4 mr-2" strokeWidth={3} />
                 {t("create_enquiry_btn")}
               </Button>
@@ -101,7 +103,7 @@ export default function EnquiriesPage() {
                   key={filter}
                   onClick={() => setActiveFilter(filter)}
                   className={cn(
-                    "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-300 border",
+                    "px-4 py-1.5 rounded-full text-[10px] font-black   transition-all duration-300 border",
                     isActive
                       ? "bg-primary text-white border-primary shadow-sm"
                       : "bg-white text-primary/40 border-primary/10 hover:border-primary/30",
@@ -122,8 +124,10 @@ export default function EnquiriesPage() {
           {filteredEnquiries.length === 0 ? (
             <div className="flex h-[240px] flex-col items-center justify-center bg-white rounded-[24px] border-2 border-dashed border-primary/10">
               <Frown className="h-10 w-10 text-primary/10 mb-4" />
-              <p className="text-primary/40 font-bold uppercase tracking-widest text-xs">
-                {searchQuery ? t("no_matching_enquiries") : t("no_enquiries_empty_state")}
+              <p className="text-primary/40 font-bold   text-xs">
+                {searchQuery
+                  ? t("no_matching_enquiries")
+                  : t("no_enquiries_empty_state")}
               </p>
             </div>
           ) : (
@@ -141,12 +145,12 @@ export default function EnquiriesPage() {
                     {/* Top Row: Meta & Status */}
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex flex-wrap items-center gap-2">
-                        <div className="px-3 py-1 rounded-full border border-primary/10 text-primary text-[9px] font-black tracking-widest bg-primary/5 uppercase">
+                        <div className="px-3 py-1 rounded-full border border-primary/10 text-primary text-[9px] font-black  bg-primary/5 ">
                           ID: {enq.id.slice(0, 8)}
                         </div>
                         <div
                           className={cn(
-                            "px-3 py-1 rounded-full text-[9px] font-black tracking-widest uppercase",
+                            "px-3 py-1 rounded-full text-[9px] font-black  ",
                             badge.className,
                           )}
                         >
@@ -155,11 +159,16 @@ export default function EnquiriesPage() {
                       </div>
                       <div
                         className={cn(
-                          "px-3 py-1 rounded-lg font-black text-[9px] tracking-widest uppercase shrink-0",
-                          enq.status === ENQUIRY_STATUS.PENDING && "bg-amber-100 text-amber-700",
-                          enq.status === ENQUIRY_STATUS.APPROVED && "bg-sky-100 text-sky-700",
-                          enq.status === ENQUIRY_STATUS.COMPLETED && "bg-emerald-100 text-emerald-700",
-                          (enq.status === ENQUIRY_STATUS.CANCELLED || enq.status === ENQUIRY_STATUS.REJECTED) && "bg-gray-100 text-gray-700",
+                          "px-3 py-1 rounded-lg font-black text-[9px]   shrink-0",
+                          enq.status === ENQUIRY_STATUS.PENDING &&
+                            "bg-amber-100 text-amber-700",
+                          enq.status === ENQUIRY_STATUS.APPROVED &&
+                            "bg-sky-100 text-sky-700",
+                          enq.status === ENQUIRY_STATUS.COMPLETED &&
+                            "bg-emerald-100 text-emerald-700",
+                          (enq.status === ENQUIRY_STATUS.CANCELLED ||
+                            enq.status === ENQUIRY_STATUS.REJECTED) &&
+                            "bg-gray-100 text-gray-700",
                         )}
                       >
                         {enq.status === ENQUIRY_STATUS.APPROVED
@@ -172,10 +181,10 @@ export default function EnquiriesPage() {
 
                     {/* Requirement Header */}
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-                      <h3 className="text-lg font-black text-primary leading-none uppercase tracking-tight">
+                      <h3 className="text-lg font-black text-primary leading-none  tracking-tight">
                         {firstItem?.item?.name || "Enquiry Items"}
                       </h3>
-                      <p className="text-[9px] font-bold text-primary/30 tracking-widest uppercase truncate sm:max-w-[200px]">
+                      <p className="text-[9px] font-bold text-primary/30   truncate sm:max-w-[200px]">
                         {details?.address || t("no_location")}
                       </p>
                     </div>
@@ -186,14 +195,15 @@ export default function EnquiriesPage() {
                     {/* Requirement Section */}
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
                       <div className="flex-1 space-y-2">
-                        <p className="text-[9px] font-black text-primary/40 uppercase tracking-[0.25em] leading-none">
+                        <p className="text-[9px] font-black text-primary/40  tracking-[0.25em] leading-none">
                           {t("sourcing_requirement", "Sourcing Requirement")}
                         </p>
                         <div className="flex flex-wrap items-end gap-2">
                           <p className="text-sm font-bold text-primary/60 leading-none">
                             {enq.enquiryLineItems.length > 1 && (
                               <span className="mr-1">
-                                {enq.enquiryLineItems.length} {t("items_requested")}
+                                {enq.enquiryLineItems.length}{" "}
+                                {t("items_requested")}
                               </span>
                             )}
                             {firstItem?.quantity}{" "}
@@ -201,21 +211,25 @@ export default function EnquiriesPage() {
                               UNIT_TYPE_LABELS[
                                 firstItem.unitType as UnitType
                               ]}{" "}
-                             Requested
+                            Requested
                           </p>
                         </div>
                       </div>
 
                       <Button
                         asChild
-                        className="bg-primary hover:bg-primary/90 text-white h-10 w-full md:w-auto px-6 rounded-xl font-black text-[11px] tracking-widest uppercase transition-all duration-300 border-none shadow-sm shadow-primary/20"
+                        className="bg-primary hover:bg-primary/90 text-white h-10 w-full md:w-auto px-6 rounded-xl font-black text-[11px]   transition-all duration-300 border-none shadow-sm shadow-primary/20"
                       >
                         <Link
                           href={`/seller-dashboard/b2b-enquiries/${enq.id}`}
                           className="flex items-center justify-center gap-2"
                         >
                           {t("view_details")}
-                          <ChevronRight size={14} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
+                          <ChevronRight
+                            size={14}
+                            strokeWidth={3}
+                            className="group-hover:translate-x-1 transition-transform"
+                          />
                         </Link>
                       </Button>
                     </div>

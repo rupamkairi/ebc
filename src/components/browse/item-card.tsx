@@ -55,9 +55,7 @@ export function ItemCard({ item }: ItemCardProps) {
         <h3 className="text-primary font-black text-lg line-clamp-1 leading-tight group-hover:text-secondary transition-colors">
           {item.title}
         </h3>
-        <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">
-          {item.category}
-        </p>
+        <p className="text-slate-400 text-xs font-bold  ">{item.category}</p>
       </div>
 
       <div className="p-4 pt-2 mt-auto">

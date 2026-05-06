@@ -30,7 +30,7 @@ function MaterialCard({ title, category, image }: MaterialCardProps) {
 
       {/* Bottom Text Area - Tightened padding */}
       <div className="py-2 px-2 text-center">
-        <h3 className="text-white font-black text-[13px] md:text-sm leading-tight uppercase tracking-tight">
+        <h3 className="text-white font-black text-[13px] md:text-sm leading-tight  tracking-tight">
           {title}
         </h3>
         <p className="text-white/80 text-[10px] font-bold leading-tight mt-0.5 lowercase">
@@ -94,7 +94,7 @@ export function MaterialsSection() {
       <Container size="lg">
         {/* Section Heading */}
         <div className="text-center mb-16">
-          <h2 className="text-primary text-3xl md:text-4xl lg:text-5xl font-black tracking-tight uppercase">
+          <h2 className="text-primary text-3xl md:text-4xl lg:text-5xl font-black tracking-tight ">
             {t("materials_section_title")}
           </h2>
         </div>

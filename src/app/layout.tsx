@@ -1,15 +1,21 @@
-import type { Metadata } from "next";
 import { I18nProvider } from "@/components/providers/I18nProvider";
 import QueryClientProvider from "@/queries/QueryClientProvider";
-import { Poppins, Open_Sans } from "next/font/google";
-import "./globals.css";
 import "katex/dist/katex.min.css";
+import type { Metadata } from "next";
+import { Open_Sans, Poppins } from "next/font/google";
+import "./globals.css";
 
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
+// const poppins = Rubik({
+//   variable: "--font-poppins",
+//   subsets: ["latin"],
+//   weight: ["300", "400", "500", "600", "700"],
+//   // weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+// });
 
 const openSans = Open_Sans({
   variable: "--font-open-sans",
@@ -26,8 +32,8 @@ export const metadata: Metadata = {
   },
 };
 
-import { Toaster } from "@/components/ui/sonner";
 import { SupportCenter } from "@/components/shared/support/support-center";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function RootLayout({
   children,

@@ -32,7 +32,7 @@ export default function SellerHowItHelps() {
           <div className="container mx-auto px-4">
             <Link
               href="/how-it-works"
-              className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-primary hover:gap-3 transition-all"
+              className="inline-flex items-center gap-2 text-sm font-black   text-primary hover:gap-3 transition-all"
             >
               <ChevronLeft size={16} />
               {t("return_to_selection")}
@@ -56,7 +56,7 @@ export default function SellerHowItHelps() {
           </div>
 
           <div className="container mx-auto px-4 relative z-10 text-center space-y-8">
-            <div className="inline-flex items-center gap-3 rounded-full border border-secondary/20 bg-secondary/10 px-6 py-2 text-sm font-black uppercase tracking-[0.3em] text-secondary">
+            <div className="inline-flex items-center gap-3 rounded-full border border-secondary/20 bg-secondary/10 px-6 py-2 text-sm font-black  tracking-[0.3em] text-secondary">
               <Rocket className="size-4" />
               {t("empowering_growth")}
             </div>
@@ -101,7 +101,8 @@ export default function SellerHowItHelps() {
                       {t("negotiable_quotations")}
                     </li>
                     <li className="flex items-center gap-2">
-                      <div className="size-1.5 bg-primary rounded-full" /> {t("bulk_order_leads")}
+                      <div className="size-1.5 bg-primary rounded-full" />{" "}
+                      {t("bulk_order_leads")}
                     </li>
                   </ul>
                 </div>
@@ -136,7 +137,9 @@ export default function SellerHowItHelps() {
                   <div className="bg-primary/10 p-3 rounded-lg text-primary">
                     <Cpu className="w-6 h-6" />
                   </div>
-                  <h3 className="text-xl font-bold">{t("future_proof_tech")}</h3>
+                  <h3 className="text-xl font-bold">
+                    {t("future_proof_tech")}
+                  </h3>
                 </div>
                 <div className="space-y-4">
                   <p className="font-bold text-foreground/70 leading-relaxed">
@@ -144,7 +147,8 @@ export default function SellerHowItHelps() {
                   </p>
                   <ul className="space-y-2 text-xs font-bold text-foreground/40">
                     <li className="flex items-center gap-2">
-                      <div className="size-1.5 bg-primary rounded-full" /> {t("ai_matching")}
+                      <div className="size-1.5 bg-primary rounded-full" />{" "}
+                      {t("ai_matching")}
                     </li>
                     <li className="flex items-center gap-2">
                       <div className="size-1.5 bg-primary rounded-full" />{" "}
@@ -226,13 +230,13 @@ export default function SellerHowItHelps() {
               <div className="grid grid-cols-2 gap-8 text-center bg-muted/30 p-10 rounded-3xl border border-border">
                 <div className="space-y-1">
                   <div className="text-3xl font-black text-primary">500+</div>
-                  <div className="text-[10px] uppercase font-bold text-foreground/40">
+                  <div className="text-[10px]  font-bold text-foreground/40">
                     {t("retailers")}
                   </div>
                 </div>
                 <div className="space-y-1">
                   <div className="text-3xl font-black text-primary">2004</div>
-                  <div className="text-[10px] uppercase font-bold text-foreground/40">
+                  <div className="text-[10px]  font-bold text-foreground/40">
                     {t("est_year")}
                   </div>
                 </div>
@@ -257,15 +261,15 @@ export default function SellerHowItHelps() {
                   href="/auth/login?role=seller"
                   className="w-full sm:w-auto"
                 >
-                    <Button
-                      size="lg"
-                      className="bg-primary hover:bg-primary/90 h-20 px-16 text-2xl font-black rounded-2xl shadow-2xl shadow-primary/20 group/btn"
-                    >
-                      {t("join_ebc_today")}
-                      <ArrowRight className="size-6 group-hover/btn:translate-x-2 transition-transform" />
-                    </Button>
+                  <Button
+                    size="lg"
+                    className="bg-primary hover:bg-primary/90 h-20 px-16 text-2xl font-black rounded-2xl shadow-2xl shadow-primary/20 group/btn"
+                  >
+                    {t("join_ebc_today")}
+                    <ArrowRight className="size-6 group-hover/btn:translate-x-2 transition-transform" />
+                  </Button>
                 </Link>
-                <p className="mt-8 text-foreground/40 text-xs font-black tracking-[0.4em] uppercase">
+                <p className="mt-8 text-foreground/40 text-xs font-black tracking-[0.4em] ">
                   {t("india_premier_digital")}
                 </p>
               </div>

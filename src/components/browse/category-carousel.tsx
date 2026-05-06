@@ -56,7 +56,7 @@ function CategoryCard({ item, isSelected, onClick }: CategoryCardProps) {
         </div>
       )}
       <div className="py-2 text-center w-full">
-        <p className="text-[10px] font-black uppercase text-white wrap-normal tracking-widest leading-tight">
+        <p className="text-[10px] font-black  text-white wrap-normal  leading-tight">
           {item.name}
         </p>
       </div>
@@ -101,9 +101,7 @@ export function CategoryCarousel({
 
   return (
     <div className="w-full space-y-3">
-      <h3 className="font-semibold text-sm tracking-wide uppercase text-muted-foreground">
-        {title}
-      </h3>
+      <h3 className="font-semibold text-sm   text-muted-foreground">{title}</h3>
       <ScrollArea className="w-full ">
         <div className="flex w-max space-x-3 p-2 pb-4">
           {categories.map((cat) => (

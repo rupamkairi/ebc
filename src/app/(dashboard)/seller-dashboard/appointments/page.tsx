@@ -56,7 +56,8 @@ export default function AppointmentsPage() {
       const appointmentItems = a.appointment?.appointmentLineItems;
       if (!appointmentItems || appointmentItems.length === 0) return true; // edge case: show if no item info
       return appointmentItems.some(
-        (li: AppointmentLineItem) => li.item?.categoryId && myCategoryIds.has(li.item.categoryId)
+        (li: AppointmentLineItem) =>
+          li.item?.categoryId && myCategoryIds.has(li.item.categoryId),
       );
     });
   }, [assignments, myCategoryIds]);
@@ -71,10 +72,16 @@ export default function AppointmentsPage() {
 
   // Split into pending (active) vs confirmed/completed
   const pendingAssignments = relevantAssignments.filter(
-    (a) => !a.appointment?.status || a.appointment.status === "PENDING" || a.appointment.status === "APPROVED",
+    (a) =>
+      !a.appointment?.status ||
+      a.appointment.status === "PENDING" ||
+      a.appointment.status === "APPROVED",
   );
   const confirmedAssignments = relevantAssignments.filter(
-    (a) => a.appointment?.status && (a.appointment.status === "CONFIRMED" || a.appointment.status === "COMPLETED"),
+    (a) =>
+      a.appointment?.status &&
+      (a.appointment.status === "CONFIRMED" ||
+        a.appointment.status === "COMPLETED"),
   );
 
   // Filter by search
@@ -151,18 +158,18 @@ export default function AppointmentsPage() {
                   <div className="flex-1 space-y-3">
                     {/* Badges row */}
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="px-3 py-1 rounded-full border border-primary/10 text-primary text-[9px] font-black tracking-widest bg-primary/5 uppercase">
+                      <span className="px-3 py-1 rounded-full border border-primary/10 text-primary text-[9px] font-black  bg-primary/5 ">
                         ID: {apt.id.slice(0, 8)}
                       </span>
                       <span
                         className={cn(
-                          "px-3 py-1 rounded-full text-[9px] font-black tracking-widest",
+                          "px-3 py-1 rounded-full text-[9px] font-black ",
                           badge.className,
                         )}
                       >
                         {badge.label}
                       </span>
-                      <span className="px-3 py-1 rounded-full bg-primary text-white text-[9px] font-black tracking-widest uppercase">
+                      <span className="px-3 py-1 rounded-full bg-primary text-white text-[9px] font-black  ">
                         {apt.status}
                       </span>
                     </div>
@@ -194,7 +201,8 @@ export default function AppointmentsPage() {
                     {/* Location (pincode only — full address is shown after payment) */}
                     {details?.pincode && (
                       <p className="text-xs text-primary/40 font-medium truncate max-w-md">
-                        📍 {details.pincode.pincode} · {details.pincode.district}, {details.pincode.state}
+                        📍 {details.pincode.pincode} ·{" "}
+                        {details.pincode.district}, {details.pincode.state}
                       </p>
                     )}
                   </div>
@@ -203,7 +211,7 @@ export default function AppointmentsPage() {
                   <div className="flex items-center shrink-0">
                     <Button
                       asChild
-                      className="bg-primary hover:bg-primary/90 text-white rounded-xl font-black text-[11px] tracking-widest uppercase px-5 h-10 shadow-sm transition-all group-hover:shadow-md"
+                      className="bg-primary hover:bg-primary/90 text-white rounded-xl font-black text-[11px]   px-5 h-10 shadow-sm transition-all group-hover:shadow-md"
                     >
                       <Link
                         href={`/seller-dashboard/appointments/${apt.id}`}
@@ -256,18 +264,18 @@ export default function AppointmentsPage() {
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                       <div className="flex-1 space-y-3">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="px-3 py-1 rounded-full border border-primary/10 text-primary text-[9px] font-black tracking-widest bg-primary/5 uppercase">
+                          <span className="px-3 py-1 rounded-full border border-primary/10 text-primary text-[9px] font-black  bg-primary/5 ">
                             ID: {apt.id.slice(0, 8)}
                           </span>
                           <span
                             className={cn(
-                              "px-3 py-1 rounded-full text-[9px] font-black tracking-widest",
+                              "px-3 py-1 rounded-full text-[9px] font-black ",
                               badge.className,
                             )}
                           >
                             {badge.label}
                           </span>
-                          <span className="px-3 py-1 rounded-full bg-green-600 text-white text-[9px] font-black tracking-widest uppercase">
+                          <span className="px-3 py-1 rounded-full bg-green-600 text-white text-[9px] font-black  ">
                             {apt.status}
                           </span>
                         </div>
@@ -286,7 +294,7 @@ export default function AppointmentsPage() {
                         <Button
                           asChild
                           variant="outline"
-                          className="rounded-xl font-black text-[11px] tracking-widest uppercase px-5 h-10"
+                          className="rounded-xl font-black text-[11px]   px-5 h-10"
                         >
                           <Link
                             href={`/seller-dashboard/appointments/${apt.id}`}

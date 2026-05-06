@@ -10,7 +10,15 @@ import { DataTable } from "@/components/datatable/data-table";
 import { DataTableColumnHeader } from "@/components/datatable/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Eye, MoreVertical, CheckCircle, XCircle, PauseCircle, Edit, Building2 } from "lucide-react";
+import {
+  Eye,
+  MoreVertical,
+  CheckCircle,
+  XCircle,
+  PauseCircle,
+  Edit,
+  Building2,
+} from "lucide-react";
 import { AdminUser } from "@/types/auth";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
@@ -96,14 +104,14 @@ export function UserTable({
               entity.verificationStatus === "APPROVED"
                 ? "default"
                 : entity.verificationStatus === "REJECTED"
-                ? "destructive"
-                : "outline"
+                  ? "destructive"
+                  : "outline"
             }
             className={cn(
               entity.verificationStatus === "APPROVED" &&
                 "bg-emerald-500 hover:bg-emerald-600 border-none",
-              entity.verificationStatus === "PAUSED" && 
-                "border-amber-500 text-amber-600 hover:bg-amber-50"
+              entity.verificationStatus === "PAUSED" &&
+                "border-amber-500 text-amber-600 hover:bg-amber-50",
             )}
           >
             {entity.verificationStatus}
@@ -148,7 +156,9 @@ export function UserTable({
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  onClick={() => router.push(`/admin-dashboard/users/${user.id}/edit`)}
+                  onClick={() =>
+                    router.push(`/admin-dashboard/users/${user.id}/edit`)
+                  }
                   className="cursor-pointer"
                 >
                   <Edit className="size-4 mr-2" />
@@ -157,14 +167,18 @@ export function UserTable({
                 {entity && (
                   <>
                     <DropdownMenuItem
-                      onClick={() => router.push(`/admin-dashboard/entities/${entity.id}/edit`)}
+                      onClick={() =>
+                        router.push(
+                          `/admin-dashboard/entities/${entity.id}/edit`,
+                        )
+                      }
                       className="cursor-pointer"
                     >
                       <Building2 className="size-4 mr-2" />
                       Edit Business Details
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuLabel className="text-[10px] font-bold uppercase text-muted-foreground/60 px-2 py-1.5">
+                    <DropdownMenuLabel className="text-[10px] font-bold  text-muted-foreground/60 px-2 py-1.5">
                       Status Management
                     </DropdownMenuLabel>
                     <DropdownMenuItem

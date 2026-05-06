@@ -53,7 +53,7 @@ export function BuyerOtpForm({ phoneNumber, onVerify }: BuyerOtpFormProps) {
       <CardContent className="space-y-4">
         <div className="flex justify-center">
           <Input
-            className="text-center text-lg tracking-widest w-40"
+            className="text-center text-lg  w-40"
             maxLength={6}
             placeholder="000000"
             value={otp}

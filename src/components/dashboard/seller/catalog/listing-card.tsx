@@ -54,9 +54,7 @@ export function ListingCard({ listing, type }: ListingCardProps) {
           </div>
 
           <div className="flex-1 p-4 flex items-center justify-between">
-            <div
-              className="flex-1 space-y-1 min-w-0 pr-4"
-            >
+            <div className="flex-1 space-y-1 min-w-0 pr-4">
               <div className="flex items-center gap-2">
                 {isApproved ? (
                   <Link href={`/seller-dashboard/catalog/${listing.id}`}>
@@ -72,7 +70,7 @@ export function ListingCard({ listing, type }: ListingCardProps) {
                 <Badge
                   variant={listing.isActive ? "outline" : "secondary"}
                   className={cn(
-                    "text-[10px] uppercase h-5 font-bold",
+                    "text-[10px]  h-5 font-bold",
                     listing.isActive &&
                       "bg-emerald-500/10 text-emerald-600 border-none",
                   )}
@@ -100,7 +98,7 @@ export function ListingCard({ listing, type }: ListingCardProps) {
             <div className="flex items-center gap-4 shrink-0">
               {isProduct && (
                 <div className="text-right flex flex-col items-end">
-                  <p className="text-[10px] text-primary/40 uppercase font-black tracking-widest leading-none">
+                  <p className="text-[10px] text-primary/40  font-black  leading-none">
                     Min Order
                   </p>
                   <p className="text-sm font-black text-secondary">
@@ -115,14 +113,24 @@ export function ListingCard({ listing, type }: ListingCardProps) {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-10 w-10 text-muted-foreground/40 hover:text-primary">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-10 w-10 text-muted-foreground/40 hover:text-primary"
+                  >
                     <MoreVertical size={18} />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="rounded-xl border shadow-xl">
+                <DropdownMenuContent
+                  align="end"
+                  className="rounded-xl border shadow-xl"
+                >
                   {isApproved ? (
                     <DropdownMenuItem asChild>
-                      <Link href={`/seller-dashboard/catalog/${listing.id}`} className="font-bold cursor-pointer">
+                      <Link
+                        href={`/seller-dashboard/catalog/${listing.id}`}
+                        className="font-bold cursor-pointer"
+                      >
                         View Details
                       </Link>
                     </DropdownMenuItem>

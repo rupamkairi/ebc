@@ -14,7 +14,10 @@ import { toast } from "sonner";
 import { CreateQuotationRequest } from "@/types/activity";
 import { CoinDeductionModal } from "@/components/dashboard/seller/coin-deduction-modal";
 import { useEffect } from "react";
-import { useUpdateQuotationMutation, useQuotationQuery } from "@/queries/activityQueries";
+import {
+  useUpdateQuotationMutation,
+  useQuotationQuery,
+} from "@/queries/activityQueries";
 import { REF_TYPE } from "@/constants/enums";
 import { PageBackButton } from "@/components/dashboard/seller/activity-shared/page-back-button";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -37,10 +40,8 @@ function CreateQuotationContent() {
   const { data: enquiry, isLoading: isEnquiryLoading } = useEnquiryQuery(
     enquiryId || "",
   );
-  
-  const { data: revisionData } = useQuotationQuery(
-    revisionId || "",
-  );
+
+  const { data: revisionData } = useQuotationQuery(revisionId || "");
 
   const { data: entities, isLoading: isEntitiesLoading } = useEntitiesQuery();
   const sellerEntity = entities?.[0];
@@ -49,7 +50,7 @@ function CreateQuotationContent() {
   const { mutate: createQuotation, isPending: isCreating } =
     useCreateQuotationMutation();
 
-  const { mutate: updateQuotation, isPending: isUpdating } = 
+  const { mutate: updateQuotation, isPending: isUpdating } =
     useUpdateQuotationMutation();
 
   const { mutate: createNotification } = useCreateNotificationMutation();
@@ -60,48 +61,61 @@ function CreateQuotationContent() {
   useEffect(() => {
     if (maintain && revisionId && revisionData && !isUpdating) {
       const data: Partial<CreateQuotationRequest> = {
-        lineItems: revisionData.quotationLineItems.map(li => ({
+        lineItems: revisionData.quotationLineItems.map((li) => ({
           itemId: li.itemId,
           rate: li.rate || 0,
           amount: li.amount || 0,
           isNegotiable: li.isNegotiable,
         })),
         details: {
-          expectedDate: revisionData.quotationDetails?.[0]?.expectedDate || undefined,
+          expectedDate:
+            revisionData.quotationDetails?.[0]?.expectedDate || undefined,
           remarks: revisionData.quotationDetails?.[0]?.remarks || undefined,
-        }
-      };
-      
-      updateQuotation({ 
-        id: revisionId, 
-        data: { 
-          ...data,
-          hasBeenRevised: true,
-          priceChangeType: "MAINTAINED"
-        } 
-      }, {
-        onSuccess: () => {
-          toast.success("Price maintained. Revision request resolved.");
-          // Notify buyer
-          createNotification({
-            type: NOTIFICATION_TYPE.QUOTATION_SUMBIT,
-            activityId: revisionId,
-            activityType: ACTIVITY_TYPE.ENQUIRY_ASSIGNMENT,
-            metadata: {
-              subject: "Quotation price maintained",
-              isRevision: true,
-              priceChangeType: "MAINTAINED"
-            }
-          });
-          router.push(`/seller-dashboard/enquiries/${enquiryId}`);
         },
-        onError: (err) => {
-          toast.error(err.message || "Failed to maintain price.");
-          router.push(`/seller-dashboard/enquiries/${enquiryId}`);
-        }
-      });
+      };
+
+      updateQuotation(
+        {
+          id: revisionId,
+          data: {
+            ...data,
+            hasBeenRevised: true,
+            priceChangeType: "MAINTAINED",
+          },
+        },
+        {
+          onSuccess: () => {
+            toast.success("Price maintained. Revision request resolved.");
+            // Notify buyer
+            createNotification({
+              type: NOTIFICATION_TYPE.QUOTATION_SUMBIT,
+              activityId: revisionId,
+              activityType: ACTIVITY_TYPE.ENQUIRY_ASSIGNMENT,
+              metadata: {
+                subject: "Quotation price maintained",
+                isRevision: true,
+                priceChangeType: "MAINTAINED",
+              },
+            });
+            router.push(`/seller-dashboard/enquiries/${enquiryId}`);
+          },
+          onError: (err) => {
+            toast.error(err.message || "Failed to maintain price.");
+            router.push(`/seller-dashboard/enquiries/${enquiryId}`);
+          },
+        },
+      );
     }
-  }, [maintain, revisionId, revisionData, enquiryId, isUpdating, updateQuotation, createNotification, router]);
+  }, [
+    maintain,
+    revisionId,
+    revisionData,
+    enquiryId,
+    isUpdating,
+    updateQuotation,
+    createNotification,
+    router,
+  ]);
 
   if (!enquiryId) {
     return (
@@ -135,7 +149,7 @@ function CreateQuotationContent() {
           <p className="text-muted-foreground max-w-md mx-auto">
             Your business must be <strong>APPROVED</strong> to create
             quotations. Current status:{" "}
-            <span className="font-bold uppercase">
+            <span className="font-bold ">
               {sellerEntity?.verificationStatus || "unknown"}
             </span>
           </p>
@@ -170,43 +184,53 @@ function CreateQuotationContent() {
 
     if (revisionId) {
       // Calculate price change type
-      let priceChangeType: "INCREASED" | "DECREASED" | "MAINTAINED" = "MAINTAINED";
+      let priceChangeType: "INCREASED" | "DECREASED" | "MAINTAINED" =
+        "MAINTAINED";
       if (revisionData) {
-        const oldTotal = revisionData.quotationLineItems.reduce((sum, li) => sum + (li.amount || 0), 0);
-        const newTotal = pendingData.lineItems.reduce((sum, li) => sum + (li.amount || 0), 0);
-        
+        const oldTotal = revisionData.quotationLineItems.reduce(
+          (sum, li) => sum + (li.amount || 0),
+          0,
+        );
+        const newTotal = pendingData.lineItems.reduce(
+          (sum, li) => sum + (li.amount || 0),
+          0,
+        );
+
         if (newTotal > oldTotal) priceChangeType = "INCREASED";
         else if (newTotal < oldTotal) priceChangeType = "DECREASED";
       }
 
-      updateQuotation({ 
-        id: revisionId, 
-        data: { 
-          ...pendingData, 
-          hasBeenRevised: true,
-          priceChangeType 
-        } 
-      }, {
-        onSuccess: () => {
-          toast.success("Revised quotation submitted successfully!");
-          // Notify buyer
-          createNotification({
-            type: NOTIFICATION_TYPE.QUOTATION_SUMBIT,
-            activityId: revisionId,
-            activityType: ACTIVITY_TYPE.ENQUIRY_ASSIGNMENT,
-            metadata: {
-              subject: "Revised quotation received",
-              isRevision: true,
-              priceChangeType 
-            }
-          });
-          router.push(`/seller-dashboard/enquiries/${enquiryId}`);
+      updateQuotation(
+        {
+          id: revisionId,
+          data: {
+            ...pendingData,
+            hasBeenRevised: true,
+            priceChangeType,
+          },
         },
-        onError: (error: Error) => {
-          toast.error(error.message || "Failed to update quotation.");
-          setShowDeductionModal(false);
+        {
+          onSuccess: () => {
+            toast.success("Revised quotation submitted successfully!");
+            // Notify buyer
+            createNotification({
+              type: NOTIFICATION_TYPE.QUOTATION_SUMBIT,
+              activityId: revisionId,
+              activityType: ACTIVITY_TYPE.ENQUIRY_ASSIGNMENT,
+              metadata: {
+                subject: "Revised quotation received",
+                isRevision: true,
+                priceChangeType,
+              },
+            });
+            router.push(`/seller-dashboard/enquiries/${enquiryId}`);
+          },
+          onError: (error: Error) => {
+            toast.error(error.message || "Failed to update quotation.");
+            setShowDeductionModal(false);
+          },
         },
-      });
+      );
     } else {
       createQuotation(pendingData, {
         onSuccess: () => {
@@ -239,23 +263,32 @@ function CreateQuotationContent() {
 
       <QuotationForm
         enquiry={enquiry}
-        initialData={revisionData ? {
-          lineItems: revisionData.quotationLineItems.map(li => ({
-            id: li.id,
-            itemId: li.itemId,
-            itemListingId: "", // Since the API doesn't return listing ID directly in the flat structure usually, but the form will try to find it
-            rate: li.rate || 0,
-            amount: li.amount || 0,
-            isNegotiable: li.isNegotiable,
-            remarks: li.remarks || "",
-            quantity: enquiry.enquiryLineItems.find(e => e.itemId === li.itemId)?.quantity || 0
-          })),
-          details: {
-            expectedDate: revisionData.quotationDetails?.[0]?.expectedDate || undefined,
-            remarks: revisionData.quotationDetails?.[0]?.remarks || undefined,
-            attachmentIds: [],
-          }
-        } : null}
+        initialData={
+          revisionData
+            ? {
+                lineItems: revisionData.quotationLineItems.map((li) => ({
+                  id: li.id,
+                  itemId: li.itemId,
+                  itemListingId: "", // Since the API doesn't return listing ID directly in the flat structure usually, but the form will try to find it
+                  rate: li.rate || 0,
+                  amount: li.amount || 0,
+                  isNegotiable: li.isNegotiable,
+                  remarks: li.remarks || "",
+                  quantity:
+                    enquiry.enquiryLineItems.find((e) => e.itemId === li.itemId)
+                      ?.quantity || 0,
+                })),
+                details: {
+                  expectedDate:
+                    revisionData.quotationDetails?.[0]?.expectedDate ||
+                    undefined,
+                  remarks:
+                    revisionData.quotationDetails?.[0]?.remarks || undefined,
+                  attachmentIds: [],
+                },
+              }
+            : null
+        }
         onSubmit={handleSubmit}
         isLoading={isSubmitting}
       />

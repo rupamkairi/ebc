@@ -7,7 +7,14 @@ import {
 } from "@/queries/activityQueries";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, Suspense } from "react";
-import { Loader2, Calendar, Clock, MapPin, PackageCheck, MessageSquare } from "lucide-react";
+import {
+  Loader2,
+  Calendar,
+  Clock,
+  MapPin,
+  PackageCheck,
+  MessageSquare,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { PageBackButton } from "@/components/dashboard/seller/activity-shared/page-back-button";
@@ -105,7 +112,7 @@ function VisitCreateContent() {
             <h2 className="text-lg font-black text-primary">
               {t("appointment_summary", "Appointment Summary")}
             </h2>
-            <span className="px-3 py-1 rounded-full border border-primary/10 text-primary text-[10px] font-black tracking-widest bg-primary/5 uppercase">
+            <span className="px-3 py-1 rounded-full border border-primary/10 text-primary text-[10px] font-black  bg-primary/5 ">
               ID: {appointment.id.slice(0, 8)}
             </span>
           </div>
@@ -165,7 +172,7 @@ function VisitCreateContent() {
                     : "border-gray-100 bg-white hover:border-primary/20"
                 }`}
               >
-                <p className="text-xs font-black text-primary/50 uppercase tracking-widest mb-1">
+                <p className="text-xs font-black text-primary/50   mb-1">
                   Slot {index + 1}
                 </p>
                 <p className="text-sm font-black text-primary">

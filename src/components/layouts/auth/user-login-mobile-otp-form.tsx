@@ -110,17 +110,27 @@ export function UserLoginMobileOtpForm({
         // Enforce strict segregation: One phone number = One Role
         const requestedPortal = props.role?.toUpperCase(); // 'BUYER', 'SELLER', 'SERVICE'
         const userRole = user.role?.toUpperCase() || "";
-        
-        const isUserBusiness = userRole.includes("SELLER") || userRole.includes("SERVICE") || userRole === USER_ROLE.UNASSIGNED;
+
+        const isUserBusiness =
+          userRole.includes("SELLER") ||
+          userRole.includes("SERVICE") ||
+          userRole === USER_ROLE.UNASSIGNED;
         const isUserBuyer = userRole.includes("BUYER");
-        
+
         // Block if mismatch
         if (requestedPortal === "BUYER" && isUserBusiness) {
-          throw new Error("This number is registered as a Seller. To use the platform as a Buyer, you must use a different phone number.");
+          throw new Error(
+            "This number is registered as a Seller. To use the platform as a Buyer, you must use a different phone number.",
+          );
         }
-        
-        if ((requestedPortal === "SELLER" || requestedPortal === "SERVICE") && isUserBuyer) {
-          throw new Error("This number is registered as a Buyer. To use the platform as a Seller, you must use a different phone number.");
+
+        if (
+          (requestedPortal === "SELLER" || requestedPortal === "SERVICE") &&
+          isUserBuyer
+        ) {
+          throw new Error(
+            "This number is registered as a Buyer. To use the platform as a Seller, you must use a different phone number.",
+          );
         }
 
         setToken(token);
@@ -160,14 +170,12 @@ export function UserLoginMobileOtpForm({
       >
         <CardHeader className={cn(isDarkTheme && "px-0")}>
           <CardTitle
-            className={cn(
-              isDarkTheme && "text-white text-3xl font-medium tracking-wide",
-            )}
-            >
-              {t("login_to_your_account")}
-            </CardTitle>
-            <CardDescription className={cn(isDarkTheme && "text-white/70")}>
-              {t("dont_have_account")}{" "}
+            className={cn(isDarkTheme && "text-white text-3xl font-medium ")}
+          >
+            {t("login_to_your_account")}
+          </CardTitle>
+          <CardDescription className={cn(isDarkTheme && "text-white/70")}>
+            {t("dont_have_account")}{" "}
             <Link
               href="/auth/register"
               className={cn(
@@ -215,7 +223,8 @@ export function UserLoginMobileOtpForm({
                         isDarkTheme && "text-white/60",
                       )}
                     >
-                      Enter 10-digit mobile number (digits only, no spaces or special characters)
+                      Enter 10-digit mobile number (digits only, no spaces or
+                      special characters)
                     </FieldDescription>
                   </Field>
                   <Field className="pt-2">

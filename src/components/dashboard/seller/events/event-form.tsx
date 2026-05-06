@@ -124,9 +124,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
               })),
               entityId,
             });
-            toast.success(
-              "Event created and sent for admin approval!",
-            );
+            toast.success("Event created and sent for admin approval!");
           }
           router.push("/seller-dashboard/conference-hall/events");
         } catch (error) {
@@ -167,7 +165,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
           )}
           <AlertTitle className="mb-1 flex items-center gap-2">
             Verification Status:
-            <Badge variant="outline" className="uppercase">
+            <Badge variant="outline" className="">
               {initialData.verificationStatus}
             </Badge>
           </AlertTitle>
@@ -575,67 +573,73 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                         </div>
                       )}
                     </form.Field>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
 
-              <Card className="bg-muted/30">
-                <CardContent className="pt-6">
-                  <div className="space-y-4">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">
-                        Publishing Fee
-                      </span>
-                      <span className="font-semibold text-primary">
-                        {isLoadingPricing ? (
-                          <Loader2 className="h-4 w-4 animate-spin inline-block" />
-                        ) : (
-                          publishingFee
-                        )}{" "}
-                        Coins
-                      </span>
-                    </div>
-                    <div className="p-3 bg-yellow-50 border border-yellow-200 rounded text-[10px] text-yellow-800">
-                      By publishing, you agree that{" "}
-                      {isLoadingPricing ? "the applicable" : publishingFee}{" "}
-                      coins will be deducted from your entity wallet.
-                    </div>
-                    <form.Subscribe
-                      selector={(state) => [
-                        state.canSubmit,
-                        state.isSubmitting,
-                        state.values.isPublic,
-                      ]}
-                    >
-                      {([canSubmit, isSubmitting, isPublic]) => (
-                        <Button
-                          type="submit"
-                          className="w-full gap-2"
-                          disabled={(!canSubmit || isSubmitting) || (isApproved && !initialData?.isPublic && !form.getFieldValue('isPublic'))}
-                          size="lg"
-                        >
-                          {isSubmitting ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
+                <Card className="bg-muted/30">
+                  <CardContent className="pt-6">
+                    <div className="space-y-4">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">
+                          Publishing Fee
+                        </span>
+                        <span className="font-semibold text-primary">
+                          {isLoadingPricing ? (
+                            <Loader2 className="h-4 w-4 animate-spin inline-block" />
                           ) : (
-                            <Save className="h-4 w-4" />
-                          )}
-                          {initialData
-                            ? isApproved &&
-                              !initialData.publishedAt &&
-                              isPublic
-                              ? "Publish Event"
-                              : "Update Event"
-                            : "Save & Request Approval"}
-                        </Button>
-                      )}
-                    </form.Subscribe>
-                  </div>
-                </CardContent>
-              </Card>
+                            publishingFee
+                          )}{" "}
+                          Coins
+                        </span>
+                      </div>
+                      <div className="p-3 bg-yellow-50 border border-yellow-200 rounded text-[10px] text-yellow-800">
+                        By publishing, you agree that{" "}
+                        {isLoadingPricing ? "the applicable" : publishingFee}{" "}
+                        coins will be deducted from your entity wallet.
+                      </div>
+                      <form.Subscribe
+                        selector={(state) => [
+                          state.canSubmit,
+                          state.isSubmitting,
+                          state.values.isPublic,
+                        ]}
+                      >
+                        {([canSubmit, isSubmitting, isPublic]) => (
+                          <Button
+                            type="submit"
+                            className="w-full gap-2"
+                            disabled={
+                              !canSubmit ||
+                              isSubmitting ||
+                              (isApproved &&
+                                !initialData?.isPublic &&
+                                !form.getFieldValue("isPublic"))
+                            }
+                            size="lg"
+                          >
+                            {isSubmitting ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Save className="h-4 w-4" />
+                            )}
+                            {initialData
+                              ? isApproved &&
+                                !initialData.publishedAt &&
+                                isPublic
+                                ? "Publish Event"
+                                : "Update Event"
+                              : "Save & Request Approval"}
+                          </Button>
+                        )}
+                      </form.Subscribe>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
-          </div>
-        );
-      }}
-    </form.Subscribe>
-  </form>
-);
+          );
+        }}
+      </form.Subscribe>
+    </form>
+  );
 }

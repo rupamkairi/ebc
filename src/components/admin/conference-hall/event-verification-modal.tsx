@@ -151,7 +151,7 @@ export function EventVerificationModal({
                     <div className="space-y-1">
                       <div className="flex items-center gap-2 mb-1">
                         <Video className="h-4 w-4 text-muted-foreground" />
-                        <Label className="text-muted-foreground text-xs uppercase tracking-tight">
+                        <Label className="text-muted-foreground text-xs  tracking-tight">
                           Meeting Link
                         </Label>
                       </div>
@@ -165,7 +165,7 @@ export function EventVerificationModal({
 
               {/* Attachments Section */}
               <div className="space-y-3">
-                <h4 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
+                <h4 className="text-sm font-bold   text-muted-foreground">
                   Attachments
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -209,7 +209,7 @@ export function EventVerificationModal({
               {/* Previous Remarks if any */}
               {event.verificationRemark && (
                 <div className="bg-muted p-4 rounded-md">
-                  <Label className="text-muted-foreground text-xs uppercase">
+                  <Label className="text-muted-foreground text-xs ">
                     Previous Remarks
                   </Label>
                   <p className="text-sm mt-1">{event.verificationRemark}</p>
@@ -310,7 +310,7 @@ function InfoItem({
 }) {
   return (
     <div className="space-y-1">
-      <Label className="text-muted-foreground text-xs uppercase tracking-tight">
+      <Label className="text-muted-foreground text-xs  tracking-tight">
         {label}
       </Label>
       <p className="font-medium text-sm leading-snug">{value || "N/A"}</p>

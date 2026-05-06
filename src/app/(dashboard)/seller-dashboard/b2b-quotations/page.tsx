@@ -36,28 +36,33 @@ export default function SellerReceivedQuotationsPage() {
   const { t } = useLanguage();
 
   const filtered = useMemo(() => {
-    let result = (quotations || []).filter((q) => q.enquiry?.createdById === session?.user?.id);
+    let result = (quotations || []).filter(
+      (q) => q.enquiry?.createdById === session?.user?.id,
+    );
 
     // Search filter
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
-      result = result.filter((item) => 
-        item.id.toLowerCase().includes(q) ||
-        (item.quotationLineItems || []).some((li) => 
-          li.item?.name?.toLowerCase().includes(q)
-        )
+      result = result.filter(
+        (item) =>
+          item.id.toLowerCase().includes(q) ||
+          (item.quotationLineItems || []).some((li) =>
+            li.item?.name?.toLowerCase().includes(q),
+          ),
       );
     }
 
     // Status filter
     if (activeFilter !== "All") {
-       result = result.filter((q) => {
+      result = result.filter((q) => {
         const details = q.quotationDetails?.[0];
         if (activeFilter === "Accepted") return q.status === "ACCEPTED";
-        return (q.status === "PENDING" || details?.requestedRevision) && 
-               q.status !== "ACCEPTED" && 
-               q.status !== "REJECTED" && 
-               q.enquiry?.status !== "COMPLETED";
+        return (
+          (q.status === "PENDING" || details?.requestedRevision) &&
+          q.status !== "ACCEPTED" &&
+          q.status !== "REJECTED" &&
+          q.enquiry?.status !== "COMPLETED"
+        );
       });
     }
 
@@ -75,12 +80,11 @@ export default function SellerReceivedQuotationsPage() {
   return (
     <div className="flex flex-col gap-6 max-w-5xl mx-auto">
       <div className="flex flex-col gap-6 p-4 md:p-0 animate-in fade-in slide-in-from-bottom-4 duration-700">
-        
         {/* Header Section */}
         <div className="flex items-center gap-4">
           <PageBackButton href="/seller-dashboard/b2b-enquiries" />
           <div>
-            <h1 className="text-3xl font-black tracking-tight text-primary uppercase">
+            <h1 className="text-3xl font-black tracking-tight text-primary ">
               {t("received_quotations_title")}
             </h1>
             <p className="text-sm text-primary/60 font-medium mt-1">
@@ -110,7 +114,7 @@ export default function SellerReceivedQuotationsPage() {
                   key={filter}
                   onClick={() => setActiveFilter(filter)}
                   className={cn(
-                    "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-300 border",
+                    "px-4 py-1.5 rounded-full text-[10px] font-black   transition-all duration-300 border",
                     isActive
                       ? "bg-primary text-white border-primary shadow-sm"
                       : "bg-white text-primary/40 border-primary/10 hover:border-primary/30",
@@ -130,19 +134,28 @@ export default function SellerReceivedQuotationsPage() {
           {filtered.length === 0 ? (
             <div className="flex h-[240px] flex-col items-center justify-center bg-white rounded-[24px] border-2 border-dashed border-primary/10">
               <FileText className="h-10 w-10 text-primary/10 mb-4" />
-              <p className="text-primary/40 font-bold uppercase tracking-widest text-xs">
-                {searchQuery ? t("no_matching_quotations", "No matching quotations found") : t("no_quotations_msg")}
+              <p className="text-primary/40 font-bold   text-xs">
+                {searchQuery
+                  ? t("no_matching_quotations", "No matching quotations found")
+                  : t("no_quotations_msg")}
               </p>
             </div>
           ) : (
             filtered.map((q) => {
-              const total = q.quotationLineItems?.reduce((sum, li) => sum + (li.amount || 0), 0) ?? 0;
-              const mainItem = q.quotationLineItems?.[0]?.item?.name || t("multiple_items");
+              const total =
+                q.quotationLineItems?.reduce(
+                  (sum, li) => sum + (li.amount || 0),
+                  0,
+                ) ?? 0;
+              const mainItem =
+                q.quotationLineItems?.[0]?.item?.name || t("multiple_items");
               const itemCount = q.quotationLineItems?.length ?? 0;
               const isAccepted = q.status === "ACCEPTED";
               const isEnquiryClosed = q.enquiry?.status === "COMPLETED";
               const details = q.quotationDetails?.[0];
-              const isNegotiable = q.quotationLineItems?.some((li) => li.isNegotiable) && !details?.hasBeenRevised;
+              const isNegotiable =
+                q.quotationLineItems?.some((li) => li.isNegotiable) &&
+                !details?.hasBeenRevised;
 
               return (
                 <Card
@@ -170,12 +183,12 @@ export default function SellerReceivedQuotationsPage() {
                           </div>
                           <div className="space-y-1.5">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-[9px] font-black uppercase tracking-[0.2em] bg-muted px-2.5 py-1 rounded-full text-muted-foreground">
+                              <span className="text-[9px] font-black  tracking-[0.2em] bg-muted px-2.5 py-1 rounded-full text-muted-foreground">
                                 {q.id.slice(-8).toUpperCase()}
                               </span>
                               <Badge
                                 className={cn(
-                                  "text-[9px] font-black uppercase tracking-widest border-none px-2.5 py-1",
+                                  "text-[9px] font-black   border-none px-2.5 py-1",
                                   isAccepted
                                     ? "bg-emerald-100 text-emerald-700"
                                     : isEnquiryClosed
@@ -189,38 +202,58 @@ export default function SellerReceivedQuotationsPage() {
                                     ? t("enquiry_closed")
                                     : t("pending_label")}
                               </Badge>
-                              {isNegotiable && !isAccepted && !isEnquiryClosed && (
-                                <Badge className="text-[9px] font-black uppercase tracking-widest bg-orange-500 text-white border-none px-2.5 py-1 animate-pulse">
-                                  {t("negotiable_price")}
-                                </Badge>
-                              )}
-                              {details?.requestedRevision && !details?.hasBeenRevised && (
-                                <Badge className="text-[9px] font-black uppercase tracking-widest bg-orange-500 text-white border-none px-2.5 py-1 animate-pulse">
-                                  {t("revision_requested_label", "Revision Requested")}
-                                </Badge>
-                              )}
+                              {isNegotiable &&
+                                !isAccepted &&
+                                !isEnquiryClosed && (
+                                  <Badge className="text-[9px] font-black   bg-orange-500 text-white border-none px-2.5 py-1 animate-pulse">
+                                    {t("negotiable_price")}
+                                  </Badge>
+                                )}
+                              {details?.requestedRevision &&
+                                !details?.hasBeenRevised && (
+                                  <Badge className="text-[9px] font-black   bg-orange-500 text-white border-none px-2.5 py-1 animate-pulse">
+                                    {t(
+                                      "revision_requested_label",
+                                      "Revision Requested",
+                                    )}
+                                  </Badge>
+                                )}
                               {details?.hasBeenRevised && (
-                                <Badge className="text-[9px] font-black uppercase tracking-widest bg-violet-600 text-white border-none px-2.5 py-1 flex items-center gap-1.5">
-                                  {q.priceChangeType === "DECREASED" && <TrendingDown className="h-3 w-3" />}
-                                  {q.priceChangeType === "INCREASED" && <TrendingUp className="h-3 w-3" />}
-                                  {q.priceChangeType === "MAINTAINED" && <RefreshCw className="h-3 w-3" />}
+                                <Badge className="text-[9px] font-black   bg-violet-600 text-white border-none px-2.5 py-1 flex items-center gap-1.5">
+                                  {q.priceChangeType === "DECREASED" && (
+                                    <TrendingDown className="h-3 w-3" />
+                                  )}
+                                  {q.priceChangeType === "INCREASED" && (
+                                    <TrendingUp className="h-3 w-3" />
+                                  )}
+                                  {q.priceChangeType === "MAINTAINED" && (
+                                    <RefreshCw className="h-3 w-3" />
+                                  )}
                                   {t("revised_label", "Revised")}
                                 </Badge>
                               )}
                             </div>
-                            <h3 className="font-black text-lg text-primary tracking-tight uppercase leading-none">
+                            <h3 className="font-black text-lg text-primary tracking-tight  leading-none">
                               {itemCount > 1
                                 ? `${mainItem} (+${itemCount - 1} ${t("more")})`
                                 : mainItem}
                             </h3>
                             <div className="flex items-center gap-3">
-                              <p className="text-[10px] text-primary/40 font-bold flex items-center gap-1 uppercase tracking-widest">
+                              <p className="text-[10px] text-primary/40 font-bold flex items-center gap-1  ">
                                 <Clock className="h-3 w-3" />
                                 {format(new Date(q.createdAt), "dd MMM yyyy")}
                               </p>
                               <ReviewSnapshot
-                                entityId={q.createdBy?.staffAtEntityId || q.createdBy?.createdEntities?.[0]?.id || ""}
-                                entityName={q.createdBy?.staffAt?.name || q.createdBy?.createdEntities?.[0]?.name || q.createdBy?.name}
+                                entityId={
+                                  q.createdBy?.staffAtEntityId ||
+                                  q.createdBy?.createdEntities?.[0]?.id ||
+                                  ""
+                                }
+                                entityName={
+                                  q.createdBy?.staffAt?.name ||
+                                  q.createdBy?.createdEntities?.[0]?.name ||
+                                  q.createdBy?.name
+                                }
                                 className="scale-75 origin-left"
                               />
                             </div>
@@ -230,29 +263,42 @@ export default function SellerReceivedQuotationsPage() {
                         {/* Action section */}
                         <div className="flex items-center gap-6">
                           <div className="text-right">
-                            <p className="text-[9px] font-black uppercase tracking-widest text-primary/40 mb-1">
+                            <p className="text-[9px] font-black   text-primary/40 mb-1">
                               {t("total_label")}
                             </p>
                             <div className="flex items-center justify-end font-black text-primary text-xl">
-                              <IndianRupee className="h-4 w-4" strokeWidth={3} />
+                              <IndianRupee
+                                className="h-4 w-4"
+                                strokeWidth={3}
+                              />
                               {total.toLocaleString("en-IN")}
                             </div>
                             {q.priceDifference && q.priceDifference !== 0 && (
-                              <p className={cn(
-                                "text-[10px] font-bold mt-0.5 uppercase tracking-tighter",
-                                q.priceChangeType === "DECREASED" ? "text-teal-600" : "text-amber-600"
-                              )}>
-                                {q.priceChangeType === "DECREASED" ? "-" : "+"}₹{Math.abs(q.priceDifference).toLocaleString()}
+                              <p
+                                className={cn(
+                                  "text-[10px] font-bold mt-0.5  tracking-tighter",
+                                  q.priceChangeType === "DECREASED"
+                                    ? "text-teal-600"
+                                    : "text-amber-600",
+                                )}
+                              >
+                                {q.priceChangeType === "DECREASED" ? "-" : "+"}₹
+                                {Math.abs(q.priceDifference).toLocaleString()}
                               </p>
                             )}
                           </div>
                           <Button
                             asChild
-                            className="bg-primary hover:bg-primary/90 text-white h-10 px-6 rounded-xl font-black text-[11px] tracking-widest uppercase transition-all duration-300 border-none shadow-sm shadow-primary/20"
+                            className="bg-primary hover:bg-primary/90 text-white h-10 px-6 rounded-xl font-black text-[11px]   transition-all duration-300 border-none shadow-sm shadow-primary/20"
                           >
-                            <Link href={`/seller-dashboard/b2b-quotations/${q.id}`}>
+                            <Link
+                              href={`/seller-dashboard/b2b-quotations/${q.id}`}
+                            >
                               {t("details")}
-                              <ChevronRight className="ml-1 h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" strokeWidth={3} />
+                              <ChevronRight
+                                className="ml-1 h-3.5 w-3.5 group-hover:translate-x-1 transition-transform"
+                                strokeWidth={3}
+                              />
                             </Link>
                           </Button>
                         </div>

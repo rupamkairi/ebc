@@ -41,7 +41,7 @@ export function ProgressBar({
               key={step.step}
               className={cn(
                 "flex flex-col items-center gap-2 cursor-pointer group",
-                isActive ? "text-foreground" : "text-muted-foreground"
+                isActive ? "text-foreground" : "text-muted-foreground",
               )}
               onClick={() =>
                 onStepClick && step.step < currentStep && onStepClick(step.step)
@@ -53,8 +53,8 @@ export function ProgressBar({
                   isCompleted
                     ? "bg-primary border-primary text-primary-foreground scale-90"
                     : isCurrent
-                    ? "bg-background border-primary text-primary shadow-lg scale-110 ring-4 ring-primary/20"
-                    : "bg-background border-muted text-muted-foreground group-hover:border-primary/50"
+                      ? "bg-background border-primary text-primary shadow-lg scale-110 ring-4 ring-primary/20"
+                      : "bg-background border-muted text-muted-foreground group-hover:border-primary/50",
                 )}
               >
                 {isCompleted ? (
@@ -67,8 +67,8 @@ export function ProgressBar({
               </div>
               <span
                 className={cn(
-                  "text-xs md:text-sm font-bold uppercase tracking-wide whitespace-nowrap transition-colors lg:absolute lg:top-full lg:mt-3",
-                  isCurrent ? "text-primary" : "text-muted-foreground"
+                  "text-xs md:text-sm font-bold   whitespace-nowrap transition-colors lg:absolute lg:top-full lg:mt-3",
+                  isCurrent ? "text-primary" : "text-muted-foreground",
                 )}
               >
                 {step.label}

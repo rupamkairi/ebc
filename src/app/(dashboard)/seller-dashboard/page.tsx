@@ -69,7 +69,10 @@ export default function SellerDashboardPage() {
   });
 
   const pendingQuotations = quotations.filter(
-    (q) => q.status === "PENDING" || q.status === "REVISE_REQUESTED" || q.quotationDetails?.[0]?.requestedRevision,
+    (q) =>
+      q.status === "PENDING" ||
+      q.status === "REVISE_REQUESTED" ||
+      q.quotationDetails?.[0]?.requestedRevision,
   ).length;
   const sentQuotations = quotations.length;
 
@@ -87,17 +90,29 @@ export default function SellerDashboardPage() {
   // IDs of enquiries this seller has actually sent a quotation for
   const myRespondedEnquiryIds = new Set(
     quotations
-      .filter(q => !!mainEntity?.id && (q.createdBy?.staffAtEntityId === mainEntity.id || 
-                   q.createdBy?.createdEntities?.some(e => e.id === mainEntity.id)))
-      .map((q) => q.enquiryId)
+      .filter(
+        (q) =>
+          !!mainEntity?.id &&
+          (q.createdBy?.staffAtEntityId === mainEntity.id ||
+            q.createdBy?.createdEntities?.some((e) => e.id === mainEntity.id)),
+      )
+      .map((q) => q.enquiryId),
   );
 
   // IDs of enquiries where buyer has requested a revision from this seller
   const myRevisionRequestedEnquiryIds = new Set(
     quotations
-      .filter(q => !!mainEntity?.id && (q.createdBy?.staffAtEntityId === mainEntity.id || 
-                   q.createdBy?.createdEntities?.some(e => e.id === mainEntity.id)) && (q.status === "REVISE_REQUESTED" || q.quotationDetails?.[0]?.requestedRevision))
-      .map((q) => q.enquiryId)
+      .filter(
+        (q) =>
+          !!mainEntity?.id &&
+          (q.createdBy?.staffAtEntityId === mainEntity.id ||
+            q.createdBy?.createdEntities?.some(
+              (e) => e.id === mainEntity.id,
+            )) &&
+          (q.status === "REVISE_REQUESTED" ||
+            q.quotationDetails?.[0]?.requestedRevision),
+      )
+      .map((q) => q.enquiryId),
   );
 
   // Split enquiry assignments into pending vs responded
@@ -105,7 +120,8 @@ export default function SellerDashboardPage() {
     if (!a.enquiry?.id) return false;
     const isResponded = myRespondedEnquiryIds.has(a.enquiry.id);
     const revisionRequested = myRevisionRequestedEnquiryIds.has(a.enquiry.id);
-    const isClosed = a.enquiry.status === "APPROVED" || a.enquiry.status === "COMPLETED";
+    const isClosed =
+      a.enquiry.status === "APPROVED" || a.enquiry.status === "COMPLETED";
 
     // Pending if NOT responded yet, OR if buyer requested a revision
     return (!isResponded || revisionRequested) && !isClosed;
@@ -115,7 +131,7 @@ export default function SellerDashboardPage() {
     if (!a.enquiry?.id) return false;
     const isResponded = myRespondedEnquiryIds.has(a.enquiry.id);
     const revisionRequested = myRevisionRequestedEnquiryIds.has(a.enquiry.id);
-    
+
     // Responded if responded AND no revision requested
     return isResponded && !revisionRequested;
   }).length;
@@ -123,7 +139,12 @@ export default function SellerDashboardPage() {
   // Build a Set of responded enquiry IDs for the notification inbox badge
   const respondedEnquiryIds = new Set(
     enquiryAssignments
-      .filter((a) => a.enquiry?.id && myRespondedEnquiryIds.has(a.enquiry.id) && !myRevisionRequestedEnquiryIds.has(a.enquiry.id))
+      .filter(
+        (a) =>
+          a.enquiry?.id &&
+          myRespondedEnquiryIds.has(a.enquiry.id) &&
+          !myRevisionRequestedEnquiryIds.has(a.enquiry.id),
+      )
       .map((a) => a.enquiry!.id),
   );
 
@@ -157,7 +178,8 @@ export default function SellerDashboardPage() {
                 ? t("complete_info_in_settings")
                 : status === "PAUSED"
                   ? t("verification_paused_desc")
-                  : mainEntity?.verificaitonRemark || t("verification_rejected_desc")}
+                  : mainEntity?.verificaitonRemark ||
+                    t("verification_rejected_desc")}
             </span>
             <Link href="/seller-dashboard/settings" className="ml-4">
               <Button variant="outline" size="sm" className="bg-background">
@@ -175,7 +197,7 @@ export default function SellerDashboardPage() {
           <section>
             <div className="flex items-center gap-2 mb-6 text-primary/40">
               <Bell className="h-4 w-4" strokeWidth={3} />
-              <h2 className="text-[11px] font-black uppercase tracking-[0.25em]">
+              <h2 className="text-[11px] font-black  tracking-[0.25em]">
                 {t("active_business")}
               </h2>
             </div>
@@ -304,7 +326,7 @@ export default function SellerDashboardPage() {
                     </div>
                     <div className="flex-1 flex items-stretch divide-x divide-gray-100">
                       <div className="flex flex-col items-center justify-center flex-1 p-3 sm:p-4 bg-white hover:bg-orange-50/50 transition-colors">
-                        <span className="text-[11px] sm:text-[13px] uppercase tracking-wider text-muted-foreground font-semibold mb-1 sm:mb-2 text-center">
+                        <span className="text-[11px] sm:text-[13px]   text-muted-foreground font-semibold mb-1 sm:mb-2 text-center">
                           {t("sent")}
                         </span>
                         <span className="text-3xl sm:text-4xl font-bold text-secondary">
@@ -312,7 +334,7 @@ export default function SellerDashboardPage() {
                         </span>
                       </div>
                       <div className="flex flex-col items-center justify-center flex-1 p-3 sm:p-4 bg-white hover:bg-orange-50/50 transition-colors">
-                        <span className="text-[11px] sm:text-[13px] uppercase tracking-wider text-muted-foreground font-semibold mb-1 sm:mb-2 text-center">
+                        <span className="text-[11px] sm:text-[13px]   text-muted-foreground font-semibold mb-1 sm:mb-2 text-center">
                           {t("pending")}
                         </span>
                         <span className="text-3xl sm:text-4xl font-bold text-secondary">
@@ -339,11 +361,15 @@ export default function SellerDashboardPage() {
                       <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full"></div>
                     </div>
                     <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 bg-white">
-                      <span className="text-[11px] sm:text-[13px] uppercase tracking-wider text-muted-foreground font-semibold mb-1 sm:mb-2 text-center">
+                      <span className="text-[11px] sm:text-[13px]   text-muted-foreground font-semibold mb-1 sm:mb-2 text-center">
                         {t("site_visit_requests")}
                       </span>
                       <span className="text-3xl sm:text-4xl font-bold text-secondary">
-                        {appointmentAssignments.filter((a) => a.appointment?.status !== "COMPLETED").length}
+                        {
+                          appointmentAssignments.filter(
+                            (a) => a.appointment?.status !== "COMPLETED",
+                          ).length
+                        }
                       </span>
                     </div>
                   </Card>
@@ -362,7 +388,7 @@ export default function SellerDashboardPage() {
                     </div>
                     <div className="flex-1 flex items-stretch divide-x divide-gray-100">
                       <div className="flex flex-col items-center justify-center flex-1 p-3 sm:p-4 bg-white hover:bg-orange-50/50 transition-colors">
-                        <span className="text-[11px] sm:text-[13px] uppercase tracking-wider text-muted-foreground font-semibold mb-1 sm:mb-2 text-center">
+                        <span className="text-[11px] sm:text-[13px]   text-muted-foreground font-semibold mb-1 sm:mb-2 text-center">
                           {t("total")}
                         </span>
                         <span className="text-3xl sm:text-4xl font-bold text-secondary">
@@ -370,7 +396,7 @@ export default function SellerDashboardPage() {
                         </span>
                       </div>
                       <div className="flex flex-col items-center justify-center flex-1 p-3 sm:p-4 bg-white hover:bg-orange-50/50 transition-colors">
-                        <span className="text-[11px] sm:text-[13px] uppercase tracking-wider text-muted-foreground font-semibold mb-1 sm:mb-2 text-center">
+                        <span className="text-[11px] sm:text-[13px]   text-muted-foreground font-semibold mb-1 sm:mb-2 text-center">
                           {t("pending")}
                         </span>
                         <span className="text-3xl sm:text-4xl font-bold text-secondary">
@@ -396,7 +422,9 @@ export default function SellerDashboardPage() {
                   </div>
                   <span className="text-4xl sm:text-5xl font-bold text-secondary drop-shadow-md mt-2">
                     {isService
-                      ? appointmentAssignments.filter((a) => a.appointment?.status !== "COMPLETED").length
+                      ? appointmentAssignments.filter(
+                          (a) => a.appointment?.status !== "COMPLETED",
+                        ).length
                       : pendingEnquiryCount}
                   </span>
                 </div>
@@ -428,7 +456,7 @@ export default function SellerDashboardPage() {
             <section className="animate-in fade-in slide-in-from-bottom-4 duration-700">
               <div className="flex items-center gap-2 mb-6 text-primary/40">
                 <ShoppingBag className="h-4 w-4" strokeWidth={3} />
-                <h2 className="text-[11px] font-black uppercase tracking-[0.25em]">
+                <h2 className="text-[11px] font-black  tracking-[0.25em]">
                   {t("b2b_sourcing")}
                 </h2>
               </div>
@@ -440,7 +468,7 @@ export default function SellerDashboardPage() {
                       <FileText className="h-7 w-7" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-black text-primary uppercase tracking-tight italic mb-1">
+                      <h3 className="text-xl font-black text-primary  tracking-tight italic mb-1">
                         {t("my_enquiries_title")}
                       </h3>
                       <p className="text-sm text-muted-foreground font-medium leading-relaxed">
@@ -448,7 +476,7 @@ export default function SellerDashboardPage() {
                       </p>
                     </div>
                     <Link href="/seller-dashboard/b2b-enquiries">
-                      <Button className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl h-14 font-black uppercase tracking-widest mt-4 shadow-lg shadow-primary/20">
+                      <Button className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl h-14 font-black   mt-4 shadow-lg shadow-primary/20">
                         {t("manage_enquiries", "Manage Enquiries")}
                       </Button>
                     </Link>
@@ -456,13 +484,13 @@ export default function SellerDashboardPage() {
                 </Card>
 
                 <Card className="p-7 flex flex-col justify-between border border-primary/5 shadow-xs bg-white hover:shadow-md transition-all rounded-3xl relative overflow-hidden group">
-                   <div className="absolute -right-6 -top-6 h-28 w-28 bg-secondary/5 rounded-full blur-2xl group-hover:bg-secondary/10 transition-colors" />
+                  <div className="absolute -right-6 -top-6 h-28 w-28 bg-secondary/5 rounded-full blur-2xl group-hover:bg-secondary/10 transition-colors" />
                   <div className="space-y-5 relative z-10">
                     <div className="h-14 w-14 rounded-2xl bg-secondary/5 flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
                       <FileText className="h-7 w-7" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-black text-secondary uppercase tracking-tight italic mb-1">
+                      <h3 className="text-xl font-black text-secondary  tracking-tight italic mb-1">
                         {t("received_quotations_title")}
                       </h3>
                       <p className="text-sm text-muted-foreground font-medium leading-relaxed">
@@ -470,7 +498,7 @@ export default function SellerDashboardPage() {
                       </p>
                     </div>
                     <Link href="/seller-dashboard/b2b-quotations">
-                      <Button className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-xl h-14 font-black uppercase tracking-widest mt-4 shadow-lg shadow-secondary/20">
+                      <Button className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-xl h-14 font-black   mt-4 shadow-lg shadow-secondary/20">
                         {t("review_quotes", "Review Quotes")}
                       </Button>
                     </Link>
@@ -485,18 +513,18 @@ export default function SellerDashboardPage() {
             <section className="h-full">
               <div className="flex items-center gap-2 mb-6 text-primary/40">
                 <Wallet className="h-4 w-4" strokeWidth={3} />
-                <h2 className="text-[11px] font-black uppercase tracking-[0.25em]">
+                <h2 className="text-[11px] font-black  tracking-[0.25em]">
                   {t("finance")}
                 </h2>
               </div>
-                <Card className="bg-secondary text-white p-7 rounded-[20px] shadow-lg shadow-secondary/20 flex flex-col justify-between border-0 gap-6 h-[calc(100%-2.5rem)] relative group overflow-hidden">
-                  <div className="absolute -right-6 -top-6 h-32 w-32 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-all duration-500" />
+              <Card className="bg-secondary text-white p-7 rounded-[20px] shadow-lg shadow-secondary/20 flex flex-col justify-between border-0 gap-6 h-[calc(100%-2.5rem)] relative group overflow-hidden">
+                <div className="absolute -right-6 -top-6 h-32 w-32 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-all duration-500" />
                 <div className="flex items-center gap-4">
                   <div className="bg-white/20 p-3 rounded-xl backdrop-blur-md shadow-inner">
                     <Wallet className="h-6 w-6 text-white" />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-xs font-medium text-white/90 tracking-wide uppercase">
+                    <span className="text-xs font-medium text-white/90  ">
                       {t("coin_balance")}
                     </span>
                     <div className="flex items-baseline gap-1">
@@ -536,7 +564,7 @@ export default function SellerDashboardPage() {
             <section className="h-full">
               <div className="flex items-center gap-2 mb-6 text-primary/40">
                 <Settings className="h-4 w-4" strokeWidth={3} />
-                <h2 className="text-[11px] font-black uppercase tracking-[0.25em]">
+                <h2 className="text-[11px] font-black  tracking-[0.25em]">
                   {t("operations")}
                 </h2>
               </div>
@@ -547,7 +575,9 @@ export default function SellerDashboardPage() {
                       <div className="bg-blue-50 p-2 rounded-lg">
                         <Store className="h-6 w-6" />
                       </div>
-                      <h3 className="font-bold text-lg">{t("store_setting")}</h3>
+                      <h3 className="font-bold text-lg">
+                        {t("store_setting")}
+                      </h3>
                     </div>
                     <p className="text-sm text-gray-500 font-medium leading-relaxed">
                       {t("store_setting_desc")}
@@ -586,7 +616,7 @@ export default function SellerDashboardPage() {
           <section>
             <div className="flex items-center gap-2 mb-6 text-primary/40">
               <MessageSquare className="h-4 w-4" strokeWidth={3} />
-              <h2 className="text-[11px] font-black uppercase tracking-[0.25em]">
+              <h2 className="text-[11px] font-black  tracking-[0.25em]">
                 {t("relations")}
               </h2>
             </div>
@@ -597,9 +627,7 @@ export default function SellerDashboardPage() {
                 </div>
                 <div className="flex items-center gap-3 mb-8 relative z-10">
                   <Users className="h-6 w-6 text-secondary" />
-                  <h3 className="font-bold text-lg tracking-wide">
-                    {t("customers")}
-                  </h3>
+                  <h3 className="font-bold text-lg ">{t("customers")}</h3>
                 </div>
                 <Link
                   href="/seller-dashboard/customers"
@@ -617,9 +645,7 @@ export default function SellerDashboardPage() {
                 </div>
                 <div className="flex items-center gap-3 mb-8 relative z-10">
                   <Star className="h-6 w-6 text-secondary" />
-                  <h3 className="font-bold text-lg tracking-wide">
-                    {t("reviews")}
-                  </h3>
+                  <h3 className="font-bold text-lg ">{t("reviews")}</h3>
                 </div>
                 <Link
                   href="/seller-dashboard/reviews"
@@ -637,7 +663,7 @@ export default function SellerDashboardPage() {
                 </div>
                 <div className="flex items-center gap-3 mb-8 relative z-10">
                   <Headphones className="h-6 w-6 text-secondary" />
-                  <h3 className="font-bold text-lg tracking-wide">
+                  <h3 className="font-bold text-lg ">
                     {t("technical_support")}
                   </h3>
                 </div>
@@ -660,7 +686,7 @@ export default function SellerDashboardPage() {
           {/* Conference Hall (Kept as requested) */}
           <section className="mt-8 border-t border-primary/5 pt-8">
             <div className="flex items-center gap-2 mb-6 text-primary/40">
-              <h2 className="text-[11px] font-black uppercase tracking-[0.25em]">
+              <h2 className="text-[11px] font-black  tracking-[0.25em]">
                 {t("conference_hall")}
               </h2>
             </div>
@@ -793,7 +819,7 @@ export default function SellerDashboardPage() {
           <div className="sticky top-24 pt-4 lg:pt-0">
             <div className="flex items-center gap-2 mb-6 text-primary/40">
               <Bell className="h-4 w-4" strokeWidth={3} />
-              <h2 className="text-[11px] font-black uppercase tracking-[0.25em]">
+              <h2 className="text-[11px] font-black  tracking-[0.25em]">
                 {t("notifications")}
               </h2>
             </div>

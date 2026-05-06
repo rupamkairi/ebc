@@ -1,19 +1,17 @@
 "use client";
 
-import { useAppointmentsQuery, useVisitsQuery } from "@/queries/activityQueries";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card";
+  useAppointmentsQuery,
+  useVisitsQuery,
+} from "@/queries/activityQueries";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow
+  TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Search, Filter, Eye, Calendar } from "lucide-react";
@@ -27,9 +25,12 @@ import { ActivityDetailModal } from "@/components/dashboard/admin/activities/act
 
 export default function AdminAppointmentsPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedAppointment, setSelectedAppointment] = useState<any | null>(null);
+  const [selectedAppointment, setSelectedAppointment] = useState<any | null>(
+    null,
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { data: appointments = [], isLoading: loadingAppointments } = useAppointmentsQuery();
+  const { data: appointments = [], isLoading: loadingAppointments } =
+    useAppointmentsQuery();
   const { data: allVisits = [], isLoading: loadingVisits } = useVisitsQuery();
 
   const filteredAppointments = useMemo(() => {
@@ -39,7 +40,7 @@ export default function AdminAppointmentsPage() {
         app.id.toLowerCase().includes(q) ||
         app.createdBy?.name?.toLowerCase().includes(q) ||
         app.appointmentLineItems.some((li) =>
-          li.item?.name?.toLowerCase().includes(q)
+          li.item?.name?.toLowerCase().includes(q),
         )
       );
     });
@@ -60,7 +61,8 @@ export default function AdminAppointmentsPage() {
           Platform Appointments
         </h1>
         <p className="text-muted-foreground font-medium">
-          Monitor all service bookings and provider responses across the platform.
+          Monitor all service bookings and provider responses across the
+          platform.
         </p>
       </div>
 
@@ -98,22 +100,30 @@ export default function AdminAppointmentsPage() {
           <TableBody>
             {filteredAppointments.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="h-32 text-center text-muted-foreground">
+                <TableCell
+                  colSpan={7}
+                  className="h-32 text-center text-muted-foreground"
+                >
                   No appointments found.
                 </TableCell>
               </TableRow>
             ) : (
               filteredAppointments.map((app) => {
-                const visit = allVisits.find(v => v.appointmentId === app.id);
+                const visit = allVisits.find((v) => v.appointmentId === app.id);
                 return (
-                  <TableRow key={app.id} className="hover:bg-slate-50/50 transition-colors">
+                  <TableRow
+                    key={app.id}
+                    className="hover:bg-slate-50/50 transition-colors"
+                  >
                     <TableCell className="font-mono text-xs text-primary/70">
                       #{app.id.slice(0, 8)}
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-col">
-                        <span className="font-bold text-sm">{app.createdBy?.name || "Anonymous"}</span>
-                        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                        <span className="font-bold text-sm">
+                          {app.createdBy?.name || "Anonymous"}
+                        </span>
+                        <span className="text-[10px] text-muted-foreground  ">
                           {app.createdBy?.phone}
                         </span>
                       </div>
@@ -124,7 +134,7 @@ export default function AdminAppointmentsPage() {
                           {app.appointmentLineItems[0]?.item?.name || "Service"}
                         </span>
                         {app.appointmentLineItems.length > 1 && (
-                          <span className="text-[10px] text-primary/40 font-bold uppercase">
+                          <span className="text-[10px] text-primary/40 font-bold ">
                             + {app.appointmentLineItems.length - 1} more
                           </span>
                         )}
@@ -136,8 +146,10 @@ export default function AdminAppointmentsPage() {
                           <Badge
                             variant="outline"
                             className={cn(
-                              "font-black text-[9px] uppercase tracking-widest px-2 py-0.5",
-                              visit.status === "COMPLETED" ? "bg-emerald-50 text-emerald-600 border-emerald-200" : "bg-blue-50 text-blue-600 border-blue-200"
+                              "font-black text-[9px]   px-2 py-0.5",
+                              visit.status === "COMPLETED"
+                                ? "bg-emerald-50 text-emerald-600 border-emerald-200"
+                                : "bg-blue-50 text-blue-600 border-blue-200",
                             )}
                           >
                             {visit.status}
@@ -145,12 +157,15 @@ export default function AdminAppointmentsPage() {
                           {visit.visitSlot && (
                             <span className="text-[10px] text-muted-foreground font-medium flex items-center gap-1">
                               <Calendar size={10} />
-                              {format(new Date(visit.visitSlot.fromDateTime), "MMM dd")}
+                              {format(
+                                new Date(visit.visitSlot.fromDateTime),
+                                "MMM dd",
+                              )}
                             </span>
                           )}
                         </div>
                       ) : (
-                        <span className="text-[10px] text-slate-400 font-bold uppercase italic">
+                        <span className="text-[10px] text-slate-400 font-bold  italic">
                           No visit scheduled
                         </span>
                       )}
@@ -161,11 +176,16 @@ export default function AdminAppointmentsPage() {
                     <TableCell>
                       <Badge
                         className={cn(
-                          "font-black text-[9px] uppercase tracking-widest px-2 py-0.5",
-                          app.status === "PENDING" && "bg-amber-100 text-amber-700 hover:bg-amber-100",
-                          app.status === "APPROVED" && "bg-sky-100 text-sky-700 hover:bg-sky-100",
-                          app.status === "COMPLETED" && "bg-emerald-100 text-emerald-700 hover:bg-emerald-100",
-                          (app.status === "CANCELLED" || app.status === "REJECTED") && "bg-gray-100 text-gray-700 hover:bg-gray-100",
+                          "font-black text-[9px]   px-2 py-0.5",
+                          app.status === "PENDING" &&
+                            "bg-amber-100 text-amber-700 hover:bg-amber-100",
+                          app.status === "APPROVED" &&
+                            "bg-sky-100 text-sky-700 hover:bg-sky-100",
+                          app.status === "COMPLETED" &&
+                            "bg-emerald-100 text-emerald-700 hover:bg-emerald-100",
+                          (app.status === "CANCELLED" ||
+                            app.status === "REJECTED") &&
+                            "bg-gray-100 text-gray-700 hover:bg-gray-100",
                         )}
                       >
                         {app.status}
@@ -175,7 +195,7 @@ export default function AdminAppointmentsPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="font-black text-[10px] uppercase tracking-widest h-8 px-4 rounded-lg hover:bg-primary hover:text-white transition-all"
+                        className="font-black text-[10px]   h-8 px-4 rounded-lg hover:bg-primary hover:text-white transition-all"
                         onClick={() => {
                           setSelectedAppointment(app);
                           setIsModalOpen(true);
@@ -200,7 +220,11 @@ export default function AdminAppointmentsPage() {
           setIsModalOpen(false);
           setSelectedAppointment(null);
         }}
-        visit={selectedAppointment ? allVisits.find(v => v.appointmentId === selectedAppointment.id) : null}
+        visit={
+          selectedAppointment
+            ? allVisits.find((v) => v.appointmentId === selectedAppointment.id)
+            : null
+        }
       />
     </Container>
   );

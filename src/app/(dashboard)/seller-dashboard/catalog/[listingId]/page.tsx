@@ -57,7 +57,11 @@ export default function ListingDetailsPage() {
   }
 
   if (!listing) {
-    return <div>{t("listing_details")} {t("not_specified")}</div>;
+    return (
+      <div>
+        {t("listing_details")} {t("not_specified")}
+      </div>
+    );
   }
 
   return (
@@ -79,7 +83,9 @@ export default function ListingDetailsPage() {
 
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
           <DialogTrigger asChild>
-            <Button disabled={listing.entity?.verificationStatus !== "APPROVED"}>
+            <Button
+              disabled={listing.entity?.verificationStatus !== "APPROVED"}
+            >
               <Edit className="mr-2 h-4 w-4" />
               {t("edit_listing")}
             </Button>
@@ -109,13 +115,13 @@ export default function ListingDetailsPage() {
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div className="space-y-1">
-              <p className="text-xs text-muted-foreground uppercase font-semibold">
+              <p className="text-xs text-muted-foreground  font-semibold">
                 {t("listing_id")}
               </p>
               <p className="text-sm font-medium">{listing.id}</p>
             </div>
             <div className="space-y-1">
-              <p className="text-xs text-muted-foreground uppercase font-semibold">
+              <p className="text-xs text-muted-foreground  font-semibold">
                 {t("status")}
               </p>
               <Badge variant={listing.isActive ? "default" : "secondary"}>
@@ -125,7 +131,7 @@ export default function ListingDetailsPage() {
             {listing.itemRates?.[0] && (
               <>
                 <div className="space-y-1">
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">
+                  <p className="text-xs text-muted-foreground  font-semibold">
                     {t("price")}
                   </p>
                   <p className="text-sm font-medium">
@@ -133,7 +139,7 @@ export default function ListingDetailsPage() {
                   </p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">
+                  <p className="text-xs text-muted-foreground  font-semibold">
                     {t("category")}
                   </p>
                   <p className="text-sm font-medium">
@@ -146,37 +152,62 @@ export default function ListingDetailsPage() {
 
           {listing.attachments && listing.attachments.length > 0 && (
             <div className="mt-8 space-y-4">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2">
+              <h3 className="text-sm font-semibold   text-muted-foreground border-b pb-2">
                 {t("attached_media_documents", "Attached Media & Documents")}
               </h3>
               <div className="flex flex-wrap gap-4">
-                {listing.attachments.map((att: import("@/types/catalog").Attachment) => {
-                  if (att.media) {
-                    return (
-                      <a key={att.id} href={att.media.url} target="_blank" rel="noreferrer" className="group relative h-24 w-24 rounded-xl overflow-hidden border border-border flex items-center justify-center bg-muted/30">
-                        <img src={att.media.url} alt="Attachment" className="h-full w-full object-cover transition-transform group-hover:scale-110" />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <ExternalLink className="h-5 w-5 text-white" />
-                        </div>
-                      </a>
-                    );
-                  }
-                  if (att.document) {
-                    return (
-                      <a key={att.id} href={att.document.url} target="_blank" rel="noreferrer" className="flex items-center gap-3 w-[250px] p-3 rounded-xl border border-border hover:bg-muted/30 transition-colors">
-                        <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                          <FileTextIcon className="h-5 w-5 text-primary" />
-                        </div>
-                        <div className="truncate flex-1">
-                          <p className="text-sm font-bold text-primary truncate" title={att.document.name || "Document"}>{att.document.name || "Document"}</p>
-                          <p className="text-[10px] font-bold text-muted-foreground uppercase">{att.document.fileType || "PDF"}</p>
-                        </div>
-                        <Download className="h-4 w-4 text-muted-foreground shrink-0" />
-                      </a>
-                    );
-                  }
-                  return null;
-                })}
+                {listing.attachments.map(
+                  (att: import("@/types/catalog").Attachment) => {
+                    if (att.media) {
+                      return (
+                        <a
+                          key={att.id}
+                          href={att.media.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="group relative h-24 w-24 rounded-xl overflow-hidden border border-border flex items-center justify-center bg-muted/30"
+                        >
+                          <img
+                            src={att.media.url}
+                            alt="Attachment"
+                            className="h-full w-full object-cover transition-transform group-hover:scale-110"
+                          />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <ExternalLink className="h-5 w-5 text-white" />
+                          </div>
+                        </a>
+                      );
+                    }
+                    if (att.document) {
+                      return (
+                        <a
+                          key={att.id}
+                          href={att.document.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="flex items-center gap-3 w-[250px] p-3 rounded-xl border border-border hover:bg-muted/30 transition-colors"
+                        >
+                          <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                            <FileTextIcon className="h-5 w-5 text-primary" />
+                          </div>
+                          <div className="truncate flex-1">
+                            <p
+                              className="text-sm font-bold text-primary truncate"
+                              title={att.document.name || "Document"}
+                            >
+                              {att.document.name || "Document"}
+                            </p>
+                            <p className="text-[10px] font-bold text-muted-foreground ">
+                              {att.document.fileType || "PDF"}
+                            </p>
+                          </div>
+                          <Download className="h-4 w-4 text-muted-foreground shrink-0" />
+                        </a>
+                      );
+                    }
+                    return null;
+                  },
+                )}
               </div>
             </div>
           )}

@@ -1,11 +1,7 @@
 "use client";
 
 import { useQuotationStore, QuotationState } from "@/store/quotationStore";
-import {
-  CreateQuotationRequest,
-  Enquiry,
-  Quotation,
-} from "@/types/activity";
+import { CreateQuotationRequest, Enquiry, Quotation } from "@/types/activity";
 import { QUOTATION_STATUS, REF_TYPE } from "@/constants/enums";
 import { ItemListingAutocomplete } from "./item-listing-autocomplete";
 import { Input } from "@/components/ui/input";
@@ -102,7 +98,8 @@ export function QuotationForm({
         const exactListing = listings.find((l) => l.itemId === eli.itemId);
         // Pull default rate and negotiable status if listing exists
         const defaultRate = exactListing?.itemRates?.[0]?.rate || 0;
-        const defaultNegotiable = exactListing?.itemRates?.[0]?.isNegotiable ?? false;
+        const defaultNegotiable =
+          exactListing?.itemRates?.[0]?.isNegotiable ?? false;
 
         return {
           itemId: eli.itemId,
@@ -173,7 +170,7 @@ export function QuotationForm({
                 <Lock size={32} />
               </div>
               <div className="space-y-1">
-                <h4 className="text-2xl font-black italic uppercase tracking-tight">
+                <h4 className="text-2xl font-black italic  tracking-tight">
                   Lead Locked
                 </h4>
                 <p className="text-sm font-bold opacity-70 italic max-w-md leading-relaxed">
@@ -188,7 +185,7 @@ export function QuotationForm({
             </div>
             <div className="flex items-center gap-6">
               <div className="text-right hidden md:block">
-                <p className="text-[10px] font-black uppercase opacity-40 tracking-widest mb-1">
+                <p className="text-[10px] font-black  opacity-40  mb-1">
                   Your Balance
                 </p>
                 <p className="text-2xl font-black text-amber-600 italic flex items-center justify-end gap-1.5">
@@ -237,7 +234,9 @@ export function QuotationForm({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* Buyer */}
               <div className="space-y-1.5">
-                <span className="text-[10px] font-black uppercase tracking-widest text-primary/50">Buyer</span>
+                <span className="text-[10px] font-black   text-primary/50">
+                  Buyer
+                </span>
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4 text-primary" />
                   <span className="font-bold text-primary text-sm">
@@ -247,25 +246,37 @@ export function QuotationForm({
               </div>
               {/* Contact Details */}
               <div className="space-y-1.5">
-                <span className="text-[10px] font-black uppercase tracking-widest text-primary/50">Contact Details</span>
+                <span className="text-[10px] font-black   text-primary/50">
+                  Contact Details
+                </span>
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
                     <Phone className="h-4 w-4 text-primary" />
-                    <span className={`font-medium text-sm text-primary ${quotation && !quotation.isActive ? "blur-md select-none" : ""}`}>
-                      {quotation?.isActive ? enquiry.createdBy?.phone : "+91 ••••• •••••"}
+                    <span
+                      className={`font-medium text-sm text-primary ${quotation && !quotation.isActive ? "blur-md select-none" : ""}`}
+                    >
+                      {quotation?.isActive
+                        ? enquiry.createdBy?.phone
+                        : "+91 ••••• •••••"}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Mail className="h-4 w-4 text-primary" />
-                    <span className={`font-medium text-sm text-primary ${quotation && !quotation.isActive ? "blur-md select-none" : ""}`}>
-                      {quotation?.isActive ? enquiry.createdBy?.email || "No email" : "••••••••@••••.com"}
+                    <span
+                      className={`font-medium text-sm text-primary ${quotation && !quotation.isActive ? "blur-md select-none" : ""}`}
+                    >
+                      {quotation?.isActive
+                        ? enquiry.createdBy?.email || "No email"
+                        : "••••••••@••••.com"}
                     </span>
                   </div>
                 </div>
               </div>
               {/* Location */}
               <div className="space-y-1.5">
-                <span className="text-[10px] font-black uppercase tracking-widest text-primary/50">Location</span>
+                <span className="text-[10px] font-black   text-primary/50">
+                  Location
+                </span>
                 <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4 text-primary" />
                   <span className="font-medium text-sm text-primary line-clamp-1">
@@ -275,19 +286,26 @@ export function QuotationForm({
               </div>
               {/* Expected Delivery Date */}
               <div className="space-y-1.5">
-                <span className="text-[10px] font-black uppercase tracking-widest text-primary/50">Expected Delivery</span>
+                <span className="text-[10px] font-black   text-primary/50">
+                  Expected Delivery
+                </span>
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-primary" />
                   <span className="font-semibold text-sm text-primary">
-                    {enquiry.enquiryDetails?.[0]?.expectedDate 
-                      ? format(new Date(enquiry.enquiryDetails[0].expectedDate), "dd MMM yyyy") 
+                    {enquiry.enquiryDetails?.[0]?.expectedDate
+                      ? format(
+                          new Date(enquiry.enquiryDetails[0].expectedDate),
+                          "dd MMM yyyy",
+                        )
                       : "Not Specified"}
                   </span>
                 </div>
               </div>
               {/* Remarks */}
               <div className="space-y-1.5">
-                <span className="text-[10px] font-black uppercase tracking-widest text-primary/50">Remarks</span>
+                <span className="text-[10px] font-black   text-primary/50">
+                  Remarks
+                </span>
                 <div className="flex items-center gap-2">
                   <MessageSquare className="h-4 w-4 text-primary" />
                   <span className="font-medium text-sm text-primary line-clamp-1">
@@ -314,19 +332,22 @@ export function QuotationForm({
                   <div className="px-5 py-4 border-b border-gray-50">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                       <div>
-                        <p className="font-black text-secondary text-base">{eli.item?.name}</p>
+                        <p className="font-black text-secondary text-base">
+                          {eli.item?.name}
+                        </p>
                         <p className="text-sm text-gray-400 font-medium mt-0.5">
-                          Requested {eli.quantity} {UNIT_TYPE_LABELS[eli.unitType]}
+                          Requested {eli.quantity}{" "}
+                          {UNIT_TYPE_LABELS[eli.unitType]}
                         </p>
                       </div>
                       <div className="flex flex-wrap gap-2 shrink-0">
                         {enquiry.enquiryDetails?.[0]?.expectedDate && (
-                          <span className="px-3 py-1 rounded-full bg-primary text-white text-[10px] font-black tracking-wide whitespace-nowrap">
+                          <span className="px-3 py-1 rounded-full bg-primary text-white text-[10px] font-black  whitespace-nowrap">
                             Deliver Within 7 days
                           </span>
                         )}
                         {eli.flexibleWithBrands && (
-                          <span className="px-3 py-1 rounded-full bg-secondary text-white text-[10px] font-black tracking-wide whitespace-nowrap">
+                          <span className="px-3 py-1 rounded-full bg-secondary text-white text-[10px] font-black  whitespace-nowrap">
                             Flexible with brands
                           </span>
                         )}
@@ -344,7 +365,7 @@ export function QuotationForm({
                   <div className="p-5 space-y-5">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       <div className="space-y-1.5">
-                        <Label className="text-[10px] font-black uppercase tracking-widest text-primary/50">
+                        <Label className="text-[10px] font-black   text-primary/50">
                           Select Your Matching Listing
                         </Label>
                         {sellerEntityId ? (
@@ -357,10 +378,15 @@ export function QuotationForm({
                             value={currentLineItem?.itemListingId}
                             placeholder={`Select ${eli.item?.name}...`}
                             onValueChange={(val) => {
-                              const selectedListing = listings?.find((l) => l.id === val);
-                              const listingRate = selectedListing?.itemRates?.[0]?.rate || 0;
-                              const listingNegotiable = selectedListing?.itemRates?.[0]?.isNegotiable ?? false;
-                              
+                              const selectedListing = listings?.find(
+                                (l) => l.id === val,
+                              );
+                              const listingRate =
+                                selectedListing?.itemRates?.[0]?.rate || 0;
+                              const listingNegotiable =
+                                selectedListing?.itemRates?.[0]?.isNegotiable ??
+                                false;
+
                               updateLineItem(index, {
                                 itemListingId: val,
                                 itemId: selectedListing?.itemId || eli.itemId,
@@ -369,7 +395,9 @@ export function QuotationForm({
                                 isNegotiable: listingNegotiable,
                               });
                             }}
-                            disabled={(killSwitchUpdateDisabled && isUpdate) || disabled}
+                            disabled={
+                              (killSwitchUpdateDisabled && isUpdate) || disabled
+                            }
                           />
                         ) : (
                           <div className="p-4 bg-red-50 border border-red-200 text-red-600 rounded-xl text-sm flex flex-col gap-2">
@@ -378,35 +406,48 @@ export function QuotationForm({
                               <span>Business Identity Missing</span>
                             </div>
                             <p className="text-xs">
-                              We couldn&apos;t find a business entity associated with your account ({entities?.length || 0} found).
-                              You must have an approved business profile to respond to enquiries.
+                              We couldn&apos;t find a business entity associated
+                              with your account ({entities?.length || 0} found).
+                              You must have an approved business profile to
+                              respond to enquiries.
                             </p>
                           </div>
                         )}
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1.5">
-                          <Label className="text-[10px] font-black uppercase tracking-widest text-primary/50">
+                          <Label className="text-[10px] font-black   text-primary/50">
                             Rate (Per {UNIT_TYPE_LABELS[eli.unitType]})
                           </Label>
                           <div className="relative">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-primary text-sm font-bold">₹</span>
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-primary text-sm font-bold">
+                              ₹
+                            </span>
                             <Input
                               type="number"
                               className="pl-7 border-primary/15 focus:border-primary focus:ring-primary/10 rounded-xl"
                               placeholder=""
                               value={currentLineItem?.rate || ""}
-                              onChange={(e) => updateLineItem(index, { rate: parseFloat(e.target.value) || 0 })}
-                              disabled={(killSwitchUpdateDisabled && isUpdate) || disabled}
+                              onChange={(e) =>
+                                updateLineItem(index, {
+                                  rate: parseFloat(e.target.value) || 0,
+                                })
+                              }
+                              disabled={
+                                (killSwitchUpdateDisabled && isUpdate) ||
+                                disabled
+                              }
                             />
                           </div>
                         </div>
                         <div className="space-y-1.5">
-                          <Label className="text-[10px] font-black uppercase tracking-widest text-primary/50">
+                          <Label className="text-[10px] font-black   text-primary/50">
                             Total Amount
                           </Label>
                           <div className="relative">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-primary text-sm font-bold">₹</span>
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-primary text-sm font-bold">
+                              ₹
+                            </span>
                             <Input
                               type="number"
                               className="pl-7 bg-gray-50 font-bold rounded-xl"
@@ -419,25 +460,33 @@ export function QuotationForm({
                     </div>
                     <div className="flex flex-col md:flex-row md:items-center gap-5 justify-between">
                       <div className="space-y-1.5 flex-1">
-                        <Label className="text-[10px] font-black uppercase tracking-widest text-primary/50">
+                        <Label className="text-[10px] font-black   text-primary/50">
                           Item Specific Remarks (Optional)
                         </Label>
                         <Input
                           placeholder="e.g. Write Delivery Included, Brand Specifics, etc."
                           className="border-primary/15 focus:border-primary rounded-xl"
                           value={currentLineItem?.remarks || ""}
-                          onChange={(e) => updateLineItem(index, { remarks: e.target.value })}
-                          disabled={(killSwitchUpdateDisabled && isUpdate) || disabled}
+                          onChange={(e) =>
+                            updateLineItem(index, { remarks: e.target.value })
+                          }
+                          disabled={
+                            (killSwitchUpdateDisabled && isUpdate) || disabled
+                          }
                         />
                       </div>
                       <div className="flex items-center gap-3 pt-2 md:pt-5">
-                         <Label className="text-[10px] font-black uppercase tracking-widest text-primary/50">
+                        <Label className="text-[10px] font-black   text-primary/50">
                           Negotiable?
                         </Label>
-                        <Switch 
+                        <Switch
                           checked={currentLineItem?.isNegotiable || false}
-                          onCheckedChange={(val) => updateLineItem(index, { isNegotiable: val })}
-                          disabled={(killSwitchUpdateDisabled && isUpdate) || disabled}
+                          onCheckedChange={(val) =>
+                            updateLineItem(index, { isNegotiable: val })
+                          }
+                          disabled={
+                            (killSwitchUpdateDisabled && isUpdate) || disabled
+                          }
                         />
                       </div>
                     </div>
@@ -450,29 +499,40 @@ export function QuotationForm({
 
         {/* Summary sidebar — dark blue gradient */}
         <div className="space-y-4">
-          <div
-            className="sticky top-24 rounded-2xl overflow-hidden bg-linear-to-br from-primary to-primary/80"
-          >
+          <div className="sticky top-24 rounded-2xl overflow-hidden bg-linear-to-br from-primary to-primary/80">
             <div className="px-6 py-5 border-b border-white/10">
-              <h3 className="text-white font-black text-lg">Quotation Summary</h3>
+              <h3 className="text-white font-black text-lg">
+                Quotation Summary
+              </h3>
             </div>
             <div className="p-6 space-y-6">
               {/* Item rows */}
               <div className="space-y-3">
-                <div className="flex justify-between items-center text-xs font-black uppercase tracking-widest text-white/40">
+                <div className="flex justify-between items-center text-xs font-black   text-white/40">
                   <span>Total Items</span>
                   <span>Quantity</span>
                 </div>
                 {enquiry.enquiryLineItems.map((eli, i) => (
-                  <div key={i} className="flex justify-between items-center text-sm">
-                    <span className="text-white/80 font-medium">{eli.item?.name}</span>
-                    <span className="text-white font-black">{String(eli.quantity).padStart(2, "0")}</span>
+                  <div
+                    key={i}
+                    className="flex justify-between items-center text-sm"
+                  >
+                    <span className="text-white/80 font-medium">
+                      {eli.item?.name}
+                    </span>
+                    <span className="text-white font-black">
+                      {String(eli.quantity).padStart(2, "0")}
+                    </span>
                   </div>
                 ))}
                 <div className="h-px bg-white/10" />
                 <div className="flex justify-between items-center">
-                  <span className="text-white font-black text-base">Grand Total</span>
-                  <span className="text-white font-black text-lg">₹{totalAmount.toLocaleString()}</span>
+                  <span className="text-white font-black text-base">
+                    Grand Total
+                  </span>
+                  <span className="text-white font-black text-lg">
+                    ₹{totalAmount.toLocaleString()}
+                  </span>
                 </div>
               </div>
 
@@ -480,15 +540,22 @@ export function QuotationForm({
 
               {/* Expected Delivery */}
               <div className="space-y-2">
-                <Label className="text-[10px] font-black uppercase tracking-widest text-white/40 flex items-center gap-1.5">
+                <Label className="text-[10px] font-black   text-white/40 flex items-center gap-1.5">
                   <Calendar className="h-3 w-3" /> Expected Delivery
                 </Label>
                 <Input
                   type="date"
                   className="bg-white/10 border-white/20 text-white placeholder-white/30 rounded-xl focus:border-secondary focus:ring-secondary/20 scheme-dark"
-                  value={details.expectedDate ? format(new Date(details.expectedDate), "yyyy-MM-dd") : ""}
+                  value={
+                    details.expectedDate
+                      ? format(new Date(details.expectedDate), "yyyy-MM-dd")
+                      : ""
+                  }
                   onChange={(e) => {
-                    if (e.target.value) setDetails({ expectedDate: new Date(e.target.value).toISOString() });
+                    if (e.target.value)
+                      setDetails({
+                        expectedDate: new Date(e.target.value).toISOString(),
+                      });
                   }}
                   disabled={(killSwitchUpdateDisabled && isUpdate) || disabled}
                 />
@@ -496,7 +563,7 @@ export function QuotationForm({
 
               {/* Overall Remarks */}
               <div className="space-y-2">
-                <Label className="text-[10px] font-black uppercase tracking-widest text-white/40 flex items-center gap-1.5">
+                <Label className="text-[10px] font-black   text-white/40 flex items-center gap-1.5">
                   <MessageSquare className="h-3 w-3" /> Overall Remarks
                 </Label>
                 <Textarea
@@ -513,20 +580,30 @@ export function QuotationForm({
                 <div className="p-4 bg-white/10 border border-white/20 rounded-xl flex items-start gap-3">
                   <Lock className="h-5 w-5 text-white shrink-0 mt-0.5" />
                   <p className="text-xs text-white/80">
-                    <strong className="text-white block mb-1 uppercase tracking-widest text-[10px]">Editing Not Allowed</strong>
-                    {quotation?.status === QUOTATION_STATUS.REVISED && "This quotation has already been revised. You cannot edit it again unless the buyer requests another revision."}
-                    {quotation?.status === QUOTATION_STATUS.ACCEPTED && "This quotation has been accepted by the buyer and is now locked for processing."}
-                    {quotation?.status === QUOTATION_STATUS.REJECTED && "This quotation was rejected by the buyer."}
-                    {quotation?.status === QUOTATION_STATUS.CANCELLED && "This quotation or its associated enquiry has been cancelled."}
-                    {quotation?.status === QUOTATION_STATUS.EXPIRED && "This quotation has expired and can no longer be updated."}
-                    {!!quotation?.quotationDetails?.[0]?.requestedRevision && !quotation?.quotationDetails?.[0]?.hasBeenRevised && "A revision has been requested. Use the 'Review & Respond' flow on the Enquiry page to submit your update."}
+                    <strong className="text-white block mb-1   text-[10px]">
+                      Editing Not Allowed
+                    </strong>
+                    {quotation?.status === QUOTATION_STATUS.REVISED &&
+                      "This quotation has already been revised. You cannot edit it again unless the buyer requests another revision."}
+                    {quotation?.status === QUOTATION_STATUS.ACCEPTED &&
+                      "This quotation has been accepted by the buyer and is now locked for processing."}
+                    {quotation?.status === QUOTATION_STATUS.REJECTED &&
+                      "This quotation was rejected by the buyer."}
+                    {quotation?.status === QUOTATION_STATUS.CANCELLED &&
+                      "This quotation or its associated enquiry has been cancelled."}
+                    {quotation?.status === QUOTATION_STATUS.EXPIRED &&
+                      "This quotation has expired and can no longer be updated."}
+                    {!!quotation?.quotationDetails?.[0]?.requestedRevision &&
+                      !quotation?.quotationDetails?.[0]?.hasBeenRevised &&
+                      "A revision has been requested. Use the 'Review & Respond' flow on the Enquiry page to submit your update."}
                   </p>
                 </div>
               ) : killSwitchUpdateDisabled && isUpdate ? (
                 <div className="p-4 bg-yellow-500/20 border border-yellow-400/30 rounded-xl flex items-start gap-3">
                   <AlertCircle className="h-5 w-5 text-yellow-300 shrink-0 mt-0.5" />
                   <p className="text-xs text-yellow-200">
-                    <strong>Kill Switch Active:</strong> Quotations cannot be updated at this moment.
+                    <strong>Kill Switch Active:</strong> Quotations cannot be
+                    updated at this moment.
                   </p>
                 </div>
               ) : (
@@ -535,7 +612,11 @@ export function QuotationForm({
                   className="w-full h-12 bg-secondary hover:bg-secondary/90 active:scale-95 text-white font-black text-base rounded-xl border-0 shadow-lg shadow-orange-300/20 transition-all"
                   disabled={isLoading}
                 >
-                  {isLoading ? "Processing..." : isUpdate ? "Update Quotation" : "Submit Quotation"}
+                  {isLoading
+                    ? "Processing..."
+                    : isUpdate
+                      ? "Update Quotation"
+                      : "Submit Quotation"}
                 </Button>
               )}
             </div>

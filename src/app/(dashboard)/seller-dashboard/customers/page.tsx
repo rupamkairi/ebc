@@ -147,10 +147,10 @@ export default function CustomersPage() {
                       {cus.name}
                     </h3>
                     <div className="flex flex-wrap items-center gap-3">
-                      <Badge className="bg-[#f2f48f] text-[#865d21] uppercase text-[10px] font-black rounded px-3 py-1 hover:bg-[#f2f48f]">
+                      <Badge className="bg-[#f2f48f] text-[#865d21]  text-[10px] font-black rounded px-3 py-1 hover:bg-[#f2f48f]">
                         {cus.status.toUpperCase()}
                       </Badge>
-                      <span className="text-white/60 text-[11px] font-bold tracking-wider">
+                      <span className="text-white/60 text-[11px] font-bold ">
                         ID: {cus.id.substring(0, 8).toUpperCase()}
                       </span>
                     </div>
@@ -181,7 +181,7 @@ export default function CustomersPage() {
 
                 {/* Recent Purchases Activity Table */}
                 <div className="rounded-3xl overflow-hidden border border-white/10">
-                  <div className="bg-[#5164b4] py-3 px-6 text-white text-[12px] font-black uppercase tracking-widest">
+                  <div className="bg-[#5164b4] py-3 px-6 text-white text-[12px] font-black  ">
                     {t("recent_product_purchases", "Recent Product Purchases")}
                   </div>
                   <div className="bg-white p-0">
@@ -206,7 +206,7 @@ export default function CustomersPage() {
                           <tr>
                             <td
                               colSpan={5}
-                              className="py-6 text-center text-[9px] font-black text-slate-300 uppercase tracking-widest italic"
+                              className="py-6 text-center text-[9px] font-black text-slate-300   italic"
                             >
                               {t("no_recent_activity", "No Recent Activity")}
                             </td>
@@ -249,7 +249,7 @@ export default function CustomersPage() {
                                     )}
                                   </td>
                                   <td className="py-3 px-4 text-center">
-                                    <span className="text-[#008767] font-black uppercase text-[9px] tracking-widest">
+                                    <span className="text-[#008767] font-black  text-[9px] ">
                                       REGULAR
                                     </span>
                                   </td>

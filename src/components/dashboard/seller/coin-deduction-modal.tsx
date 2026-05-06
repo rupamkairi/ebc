@@ -66,7 +66,7 @@ export function CoinDeductionModal({
             <>
               <div className="flex items-center justify-between p-4 bg-amber-50 rounded-2xl border border-amber-100">
                 <div className="space-y-0.5">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-amber-700/60">
+                  <span className="text-[10px] font-black   text-amber-700/60">
                     Required Coins
                   </span>
                   <div className="text-2xl font-black text-amber-900 flex items-center gap-1">
@@ -76,7 +76,7 @@ export function CoinDeductionModal({
                 </div>
                 <div className="h-10 w-px bg-amber-200" />
                 <div className="space-y-0.5 text-right">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-amber-700/60">
+                  <span className="text-[10px] font-black   text-amber-700/60">
                     Your Balance
                   </span>
                   <div
@@ -105,7 +105,7 @@ export function CoinDeductionModal({
                     <Button
                       asChild
                       variant="link"
-                      className="p-0 h-auto text-rose-800 font-black text-xs uppercase tracking-tighter"
+                      className="p-0 h-auto text-rose-800 font-black text-xs  tracking-tighter"
                     >
                       <Link href="/seller-dashboard/wallet">
                         Recharge Now →
