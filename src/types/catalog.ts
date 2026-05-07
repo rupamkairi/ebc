@@ -128,12 +128,14 @@ export interface BrandListParams {
 export interface CreateSpecificationRequest {
   name: string;
   description?: string;
+  acceptableUnitTypes?: UnitType[];
 }
 
 export interface UpdateSpecificationRequest {
   id: string;
   name?: string;
   description?: string;
+  acceptableUnitTypes?: UnitType[];
 }
 
 export interface SpecificationListParams {
@@ -153,6 +155,7 @@ export interface CreateItemRequest {
   categoryId: string;
   brandId: string;
   specificationId: string;
+  acceptableUnitTypes?: UnitType[];
 }
 
 export interface UpdateItemRequest {
@@ -165,6 +168,7 @@ export interface UpdateItemRequest {
   categoryId?: string;
   brandId?: string;
   specificationId?: string;
+  acceptableUnitTypes?: UnitType[];
 }
 
 export interface ItemListParams {

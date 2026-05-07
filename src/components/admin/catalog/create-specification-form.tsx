@@ -22,6 +22,9 @@ import { ApiError } from "@/lib/api-client";
 import { useSpecificationStore } from "@/store/specificationStore";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect } from "react";
+import { UNIT_TYPE, UNIT_TYPE_LABELS } from "@/constants/enums";
+import { Checkbox } from "@/components/ui/checkbox";
+import { UNIT_TYPES, UnitType } from "@/constants/quantities";
 
 export function SpecificationForm() {
   const {
@@ -41,6 +44,7 @@ export function SpecificationForm() {
     defaultValues: {
       name: selectedSpecification?.name || "",
       description: selectedSpecification?.description || "",
+      acceptableUnitTypes: (selectedSpecification?.acceptableUnitTypes as UnitType[]) || [],
     },
     onSubmit: async ({ value }) => {
       try {
@@ -75,11 +79,13 @@ export function SpecificationForm() {
       form.reset({
         name: selectedSpecification.name,
         description: selectedSpecification.description || "",
+        acceptableUnitTypes: (selectedSpecification.acceptableUnitTypes as UnitType[]) || [],
       });
     } else {
       form.reset({
         name: "",
         description: "",
+        acceptableUnitTypes: [],
       });
     }
   }, [isEditing, selectedSpecification, form]);
@@ -168,6 +174,42 @@ export function SpecificationForm() {
                     className="col-span-3"
                   />
                 </div>
+              </div>
+            )}
+          </form.Field>
+
+          {/* Acceptable Unit Types */}
+          <form.Field name="acceptableUnitTypes">
+            {(field) => (
+              <div className="flex flex-col gap-3">
+                <Label className="text-sm font-bold">Acceptable Unit Types</Label>
+                <div className="grid grid-cols-2 gap-3 p-3 border rounded-lg bg-muted/30">
+                  {UNIT_TYPES.map((unit) => (
+                    <div key={unit} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`spec-unit-${unit}`}
+                        checked={field.state.value.includes(unit)}
+                        onCheckedChange={(checked) => {
+                          const current = [...field.state.value];
+                          if (checked) {
+                            field.handleChange([...current, unit]);
+                          } else {
+                            field.handleChange(current.filter((u) => u !== unit));
+                          }
+                        }}
+                      />
+                      <Label
+                        htmlFor={`spec-unit-${unit}`}
+                        className="text-xs font-medium cursor-pointer"
+                      >
+                        {UNIT_TYPE_LABELS[unit]}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-[10px] text-muted-foreground">
+                  Default allowed units for items using this specification.
+                </p>
               </div>
             )}
           </form.Field>

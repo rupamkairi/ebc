@@ -32,7 +32,9 @@ import { useEffect } from "react";
 import { BrandSearchAutocomplete } from "@/components/autocompletes/brand-search-autocomplete";
 import { CategorySearchAutocomplete } from "@/components/autocompletes/category-search-autocomplete";
 import { SpecificationSearchAutocomplete } from "@/components/autocompletes/specification-search-autocomplete";
-import { ITEM_TYPE } from "@/constants/enums";
+import { ITEM_TYPE, UNIT_TYPE, UNIT_TYPE_LABELS } from "@/constants/enums";
+import { Checkbox } from "@/components/ui/checkbox";
+import { UNIT_TYPES, UnitType } from "@/constants/quantities";
 
 export function ItemForm() {
   const { isCreateOpen, setCreateOpen, isEditOpen, setEditOpen, selectedItem } =
@@ -54,6 +56,7 @@ export function ItemForm() {
       categoryId: selectedItem?.categoryId || "",
       brandId: selectedItem?.brandId || "",
       specificationId: selectedItem?.specificationId || "",
+      acceptableUnitTypes: (selectedItem?.acceptableUnitTypes as UnitType[]) || [],
     },
     onSubmit: async ({ value }) => {
       try {
@@ -91,6 +94,7 @@ export function ItemForm() {
         categoryId: selectedItem.categoryId,
         brandId: selectedItem.brandId,
         specificationId: selectedItem.specificationId,
+        acceptableUnitTypes: (selectedItem.acceptableUnitTypes as UnitType[]) || [],
       });
     } else {
       form.reset({
@@ -102,6 +106,7 @@ export function ItemForm() {
         categoryId: "",
         brandId: "",
         specificationId: "",
+        acceptableUnitTypes: [],
       });
     }
   }, [isEditing, selectedItem, form]);
@@ -372,6 +377,42 @@ export function ItemForm() {
                     </p>
                   ) : null}
                 </div>
+              </div>
+            )}
+          </form.Field>
+
+          {/* Acceptable Unit Types */}
+          <form.Field name="acceptableUnitTypes">
+            {(field) => (
+              <div className="flex flex-col gap-3">
+                <Label className="text-sm font-bold">Acceptable Unit Types</Label>
+                <div className="grid grid-cols-2 gap-3 p-3 border rounded-lg bg-muted/30">
+                  {UNIT_TYPES.map((unit) => (
+                    <div key={unit} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`unit-${unit}`}
+                        checked={field.state.value.includes(unit)}
+                        onCheckedChange={(checked) => {
+                          const current = [...field.state.value];
+                          if (checked) {
+                            field.handleChange([...current, unit]);
+                          } else {
+                            field.handleChange(current.filter((u) => u !== unit));
+                          }
+                        }}
+                      />
+                      <Label
+                        htmlFor={`unit-${unit}`}
+                        className="text-xs font-medium cursor-pointer"
+                      >
+                        {UNIT_TYPE_LABELS[unit]}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-[10px] text-muted-foreground">
+                  Select which units sellers can use when listing this item.
+                </p>
               </div>
             )}
           </form.Field>
