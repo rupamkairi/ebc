@@ -36,6 +36,7 @@ import {
   X,
   DollarSign,
   Scale,
+  IndianRupee,
 } from "lucide-react";
 
 import { ItemListing } from "@/types/catalog";
@@ -393,8 +394,8 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="font-bold flex items-center gap-2">
-                          <DollarSign size={14} className="text-primary" /> Base
-                          Rate
+                          <IndianRupee size={14} className="text-primary" /> Base
+                          Price
                         </FormLabel>
                         <FormControl>
                           <Input

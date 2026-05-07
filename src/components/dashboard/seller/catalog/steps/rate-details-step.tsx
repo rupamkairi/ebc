@@ -161,7 +161,7 @@ export function RateDetailsStep({
         <div className="space-y-2">
           <Label className="text-sm font-bold flex items-center gap-1.5">
             <IndianRupee size={13} className="text-primary" />
-            Base Rate{" "}
+            Base Price{" "}
             <span className="font-normal text-muted-foreground">
               (per {UNIT_TYPE_LABELS[unitType]})
             </span>
