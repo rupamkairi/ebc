@@ -381,41 +381,55 @@ export function ItemForm() {
             )}
           </form.Field>
 
-          {/* Acceptable Unit Types */}
-          <form.Field name="acceptableUnitTypes">
-            {(field) => (
-              <div className="flex flex-col gap-3">
-                <Label className="text-sm font-bold">Acceptable Unit Types</Label>
-                <div className="grid grid-cols-2 gap-3 p-3 border rounded-lg bg-muted/30">
-                  {UNIT_TYPES.map((unit) => (
-                    <div key={unit} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={`unit-${unit}`}
-                        checked={field.state.value.includes(unit)}
-                        onCheckedChange={(checked) => {
-                          const current = [...field.state.value];
-                          if (checked) {
-                            field.handleChange([...current, unit]);
-                          } else {
-                            field.handleChange(current.filter((u) => u !== unit));
-                          }
-                        }}
-                      />
-                      <Label
-                        htmlFor={`unit-${unit}`}
-                        className="text-xs font-medium cursor-pointer"
-                      >
-                        {UNIT_TYPE_LABELS[unit]}
+          {/* Acceptable Unit Types - Only for Products */}
+          <form.Subscribe selector={(state) => [state.values.type]}>
+            {([type]) =>
+              type === ITEM_TYPE.PRODUCT && (
+                <form.Field name="acceptableUnitTypes">
+                  {(field) => (
+                    <div className="flex flex-col gap-3">
+                      <Label className="text-sm font-bold">
+                        Acceptable Unit Types
                       </Label>
+                      <div className="grid grid-cols-2 gap-3 p-3 border rounded-lg bg-muted/30">
+                        {UNIT_TYPES.map((unit) => (
+                          <div
+                            key={unit}
+                            className="flex items-center space-x-2"
+                          >
+                            <Checkbox
+                              id={`unit-${unit}`}
+                              checked={field.state.value.includes(unit)}
+                              onCheckedChange={(checked) => {
+                                const current = [...field.state.value];
+                                if (checked) {
+                                  field.handleChange([...current, unit]);
+                                } else {
+                                  field.handleChange(
+                                    current.filter((u) => u !== unit),
+                                  );
+                                }
+                              }}
+                            />
+                            <Label
+                              htmlFor={`unit-${unit}`}
+                              className="text-xs font-medium cursor-pointer"
+                            >
+                              {UNIT_TYPE_LABELS[unit]}
+                            </Label>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-[10px] text-muted-foreground">
+                        Select which units sellers can use when listing this
+                        item.
+                      </p>
                     </div>
-                  ))}
-                </div>
-                <p className="text-[10px] text-muted-foreground">
-                  Select which units sellers can use when listing this item.
-                </p>
-              </div>
-            )}
-          </form.Field>
+                  )}
+                </form.Field>
+              )
+            }
+          </form.Subscribe>
 
           <DialogFooter>
             <form.Subscribe
