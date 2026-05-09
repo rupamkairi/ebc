@@ -14,6 +14,7 @@ export interface BrowseParams {
   subCategory: string[]; // Multiple subcategories allowed
   brand: string[];
   specification: string[];
+  roomId: string | null;
   sort: SortOption;
   page: number;
 }
@@ -41,6 +42,7 @@ export const useBrowseParams = () => {
         ...searchParams.getAll("brandId"),
       ],
       specification: searchParams.getAll("specification"),
+      roomId: searchParams.get("roomId") || null,
       sort: (searchParams.get("sort") as SortOption) || "relevance",
       page: Number(searchParams.get("page")) || 1,
     };
@@ -72,9 +74,17 @@ export const useBrowseParams = () => {
         } else {
           current.delete("parentCategory");
         }
-        // Clear subcategories when parent changes
         current.delete("subCategory");
         current.delete("category"); // legacy
+      }
+
+      // Room
+      if (newParams.roomId !== undefined) {
+        if (newParams.roomId) {
+          current.set("roomId", newParams.roomId);
+        } else {
+          current.delete("roomId");
+        }
       }
 
       // Sort
@@ -114,6 +124,7 @@ export const useBrowseParams = () => {
         newParams.subCategory !== undefined ||
         newParams.brand !== undefined ||
         newParams.specification !== undefined ||
+        newParams.roomId !== undefined ||
         newParams.type !== undefined;
 
       if (filtersChanged && newParams.page === undefined) {

@@ -20,6 +20,7 @@ import {
   Quote,
   MapPin,
   FileCheck,
+  LucideIcon,
 } from "lucide-react";
 import {
   useEnquiriesQuery,
@@ -27,6 +28,7 @@ import {
   useQuotationsQuery,
   useVisitsQuery,
 } from "@/queries/activityQueries";
+import { useRoomsQuery } from "@/queries/catalogQueries";
 import { useMemo } from "react";
 import {
   RoomCard,
@@ -44,6 +46,7 @@ export default function BuyerDashboardPage() {
   const { data: quotations } = useQuotationsQuery({});
   const { data: visits } = useVisitsQuery({});
   const { data: session } = useSessionQuery();
+  const { data: rooms } = useRoomsQuery();
 
   const stats = useMemo(() => {
     const pendingEnquiries =
@@ -110,26 +113,23 @@ export default function BuyerDashboardPage() {
               </h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <RoomCard
-                title={t("material_depo")}
-                icon={Armchair}
-                href="/browse?type=PRODUCT"
-              />
-              <RoomCard
-                title={t("technical_cabin")}
-                icon={Bed}
-                href="/browse?categoryId="
-              />
-              <RoomCard
-                title={t("fabricator_area")}
-                icon={Bath}
-                href="/browse?categoryId="
-              />
-              <RoomCard
-                title={t("contract_desk")}
-                icon={Tv}
-                href="/browse?categoryId="
-              />
+              {rooms?.map((room) => {
+                const iconMap: Record<string, LucideIcon> = {
+                  MATERIAL_DEPOT: Armchair,
+                  TECHNICAL_CABIN: Bed,
+                  FABRICATOR_AREA: Bath,
+                  CONTRACT_DESK: Tv,
+                };
+                const Icon = iconMap[room.staticId] || Armchair;
+                return (
+                  <RoomCard
+                    key={room.id}
+                    title={room.name}
+                    icon={Icon}
+                    href={`/browse?roomId=${room.staticId}`}
+                  />
+                );
+              })}
             </div>
           </section>
 

@@ -9,6 +9,7 @@ import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
+import { useSearchParams } from "next/navigation";
 import { useSessionQuery, useSendOtpMutation } from "@/queries/authQueries";
 import { useEntitiesQuery } from "@/queries/entityQueries";
 import { BuyerProfileCard } from "@/components/dashboard/buyer/dashboard-components";
@@ -24,6 +25,8 @@ export default function CreateEnquiryPage() {
   const { items, buyerDetails, setBuyerDetails } = useEnquiryStore();
   const { data: session } = useSessionQuery();
   const { data: entities = [] } = useEntitiesQuery();
+  const searchParams = useSearchParams();
+  const roomId = searchParams.get("roomId");
   const sendOtp = useSendOtpMutation();
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -142,7 +145,11 @@ export default function CreateEnquiryPage() {
         {/* Left Column: Items */}
         <div className="lg:col-span-4 space-y-8">
           <section className="space-y-8">
-            <ItemSearch type="PRODUCT" onItemSelect={handleItemSelect} />
+            <ItemSearch 
+              type="PRODUCT" 
+              onItemSelect={handleItemSelect} 
+              additionalParams={{ roomId: roomId || undefined }}
+            />
 
             {selectedProduct && (
               <AddToEnquiryModal

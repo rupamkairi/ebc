@@ -39,6 +39,8 @@ export interface Category {
   categoryIconId?: string | null;
   categoryIcon?: Media;
   image?: string;
+  roomId?: string | null;
+  room?: Room;
 }
 
 export interface Brand {
@@ -59,6 +61,14 @@ export interface Specification {
   updatedAt?: string;
 }
 
+export interface Room {
+  id: string;
+  name: string;
+  staticId: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface Item {
   id: string;
   name: string;
@@ -74,6 +84,8 @@ export interface Item {
   category?: Category;
   brand?: Brand;
   specification?: Specification;
+  roomId?: string | null;
+  room?: Room;
   /** Convenience field: populated from the backend's acceptableUnitTypes column */
   acceptableUnitTypes?: UnitType[] | null;
 }
@@ -84,6 +96,7 @@ export interface CreateCategoryRequest {
   isSubCategory: boolean;
   parentCategoryId?: string;
   categoryIconId?: string;
+  roomId?: string;
 }
 
 export interface UpdateCategoryRequest {
@@ -93,17 +106,20 @@ export interface UpdateCategoryRequest {
   isSubCategory?: boolean;
   parentCategoryId?: string | null;
   categoryIconId?: string | null;
+  roomId?: string | null;
 }
 
 export interface CategoryListParams {
   type?: ITEM_TYPE;
   isSubCategory?: boolean;
   parentCategoryId?: string;
+  roomId?: string;
   search?: string;
   page?: number;
   perPage?: number;
   sort?: string;
   order?: "asc" | "desc";
+  enabled?: boolean;
 }
 
 export interface CreateBrandRequest {
@@ -123,6 +139,7 @@ export interface BrandListParams {
   perPage?: number;
   sort?: string;
   order?: "asc" | "desc";
+  enabled?: boolean;
 }
 
 export interface CreateSpecificationRequest {
@@ -144,6 +161,7 @@ export interface SpecificationListParams {
   perPage?: number;
   sort?: string;
   order?: "asc" | "desc";
+  enabled?: boolean;
 }
 
 export interface CreateItemRequest {
@@ -155,6 +173,7 @@ export interface CreateItemRequest {
   categoryId: string;
   brandId: string;
   specificationId: string;
+  roomId?: string;
   acceptableUnitTypes?: UnitType[];
 }
 
@@ -168,6 +187,7 @@ export interface UpdateItemRequest {
   categoryId?: string;
   brandId?: string;
   specificationId?: string;
+  roomId?: string | null;
   acceptableUnitTypes?: UnitType[];
 }
 
@@ -176,11 +196,13 @@ export interface ItemListParams {
   brandId?: string;
   specificationId?: string;
   type?: ITEM_TYPE;
+  roomId?: string;
   search?: string;
   page?: number;
   perPage?: number;
   sort?: string;
   order?: "asc" | "desc";
+  enabled?: boolean;
 }
 
 export interface ItemParams {
@@ -188,6 +210,7 @@ export interface ItemParams {
   brandId?: string;
   specificationId?: string;
   type?: ITEM_TYPE;
+  enabled?: boolean;
 }
 
 export interface ItemRate {
@@ -293,4 +316,24 @@ export interface ItemRateListParams {
 
 export interface ItemRegionListParams {
   itemListingId: string;
+}
+
+export interface CreateRoomRequest {
+  name: string;
+  staticId: string;
+}
+
+export interface UpdateRoomRequest {
+  id: string;
+  name?: string;
+  staticId?: string;
+}
+
+export interface RoomListParams {
+  search?: string;
+  page?: number;
+  perPage?: number;
+  sort?: string;
+  order?: "asc" | "desc";
+  enabled?: boolean;
 }

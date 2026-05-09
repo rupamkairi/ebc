@@ -32,6 +32,7 @@ import { useEffect } from "react";
 import { BrandSearchAutocomplete } from "@/components/autocompletes/brand-search-autocomplete";
 import { CategorySearchAutocomplete } from "@/components/autocompletes/category-search-autocomplete";
 import { SpecificationSearchAutocomplete } from "@/components/autocompletes/specification-search-autocomplete";
+import { RoomSearchAutocomplete } from "@/components/autocompletes/room-search-autocomplete";
 import { ITEM_TYPE, UNIT_TYPE, UNIT_TYPE_LABELS } from "@/constants/enums";
 import { Checkbox } from "@/components/ui/checkbox";
 import { UNIT_TYPES, UnitType } from "@/constants/quantities";
@@ -56,6 +57,7 @@ export function ItemForm() {
       categoryId: selectedItem?.categoryId || "",
       brandId: selectedItem?.brandId || "",
       specificationId: selectedItem?.specificationId || "",
+      roomId: selectedItem?.roomId || "",
       acceptableUnitTypes: (selectedItem?.acceptableUnitTypes as UnitType[]) || [],
     },
     onSubmit: async ({ value }) => {
@@ -94,6 +96,7 @@ export function ItemForm() {
         categoryId: selectedItem.categoryId,
         brandId: selectedItem.brandId,
         specificationId: selectedItem.specificationId,
+        roomId: selectedItem.roomId || "",
         acceptableUnitTypes: (selectedItem.acceptableUnitTypes as UnitType[]) || [],
       });
     } else {
@@ -106,6 +109,7 @@ export function ItemForm() {
         categoryId: "",
         brandId: "",
         specificationId: "",
+        roomId: "",
         acceptableUnitTypes: [],
       });
     }
@@ -376,6 +380,25 @@ export function ItemForm() {
                       {field.state.meta.errors.join(", ")}
                     </p>
                   ) : null}
+                </div>
+              </div>
+            )}
+          </form.Field>
+
+          {/* Room */}
+          <form.Field name="roomId">
+            {(field) => (
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor={field.name} className="text-right">
+                  Room
+                </Label>
+                <div className="col-span-3">
+                  <RoomSearchAutocomplete
+                    value={field.state.value}
+                    onValueChange={field.handleChange}
+                    placeholder="Search room"
+                    label="Select room"
+                  />
                 </div>
               </div>
             )}

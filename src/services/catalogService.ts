@@ -27,8 +27,10 @@ import {
   ItemRateListParams,
   UpdateItemRateRequest, // Added this import based on the instruction
   CreateItemRegionRequest,
-  ItemRegion,
   ItemRegionListParams,
+  Room,
+  CreateRoomRequest,
+  UpdateRoomRequest,
 } from "@/types/catalog";
 
 export const catalogService = {
@@ -265,6 +267,33 @@ export const catalogService = {
     return fetchClient<ItemRegion[]>(API_ENDPOINTS.ITEM_LISTING.REGION.LIST, {
       method: "POST",
       body: params as unknown as Record<string, string | number | boolean>,
+    });
+  },
+  // Room
+  async createRoom(data: CreateRoomRequest) {
+    return fetchClient<Room>(API_ENDPOINTS.CATALOG.ROOM.CREATE, {
+      method: "POST",
+      body: data,
+    });
+  },
+
+  async updateRoom(data: UpdateRoomRequest) {
+    return fetchClient<Room>(API_ENDPOINTS.CATALOG.ROOM.UPDATE, {
+      method: "PATCH",
+      body: data,
+    });
+  },
+
+  async deleteRoom(id: string) {
+    return fetchClient(API_ENDPOINTS.CATALOG.ROOM.DELETE, {
+      method: "DELETE",
+      body: { id },
+    });
+  },
+
+  async getRooms() {
+    return fetchClient<Room[]>(API_ENDPOINTS.CATALOG.ROOM.LIST, {
+      method: "POST",
     });
   },
 };

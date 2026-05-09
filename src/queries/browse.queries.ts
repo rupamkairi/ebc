@@ -58,13 +58,14 @@ export interface BrowseData {
 
 export const useBrowseData = (params: BrowseParams) => {
   // Read selection from URL params
-  const { parentCategory, subCategory, type } = params;
+  const { parentCategory, subCategory, type, roomId } = params;
 
   // 1. Fetch Parent Categories (for horizontal carousel) - filtered by type
   const { data: parentCategories, isLoading: isLoadingCats } =
     useCategoriesQuery({
       isSubCategory: false,
       type: type as ITEM_TYPE, // Pass PRODUCT or SERVICE type to filter categories
+      roomId: roomId || undefined,
     });
 
   // 2. Fetch Subcategories based on selected parent category
@@ -75,6 +76,7 @@ export const useBrowseData = (params: BrowseParams) => {
             parentCategoryId: parentCategory,
             isSubCategory: true,
             type: type as ITEM_TYPE,
+            roomId: roomId || undefined,
           }
         : ({ enabled: false } as never), // Skip query if no parent selected
     );
@@ -86,15 +88,13 @@ export const useBrowseData = (params: BrowseParams) => {
   const { data: specifications } = useSpecificationsQuery({});
 
   // 5. Fetch Items - filter by selected category or subcategories
-  const categoryFilter =
-    subCategory.length > 0
-      ? subCategory[0] // API only supports single category, multi-select is client-side
-      : parentCategory || undefined;
+  const categoryFilter = parentCategory || (subCategory.length > 0 ? subCategory[0] : undefined);
 
   const { data: itemsFromCatalog, isLoading: isLoadingItems } = useItemsQuery({
     search: params.q || undefined,
     categoryId: categoryFilter,
     brandId: params.brand.length === 1 ? params.brand[0] : undefined,
+    roomId: roomId || undefined,
     type: type as ITEM_TYPE, // Pass type to filter products vs services
   });
 

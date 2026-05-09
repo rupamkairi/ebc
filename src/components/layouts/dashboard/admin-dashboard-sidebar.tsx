@@ -102,6 +102,7 @@ const data = {
           url: "/admin-dashboard/catalog/specifications",
         },
         { title: "Items", url: "/admin-dashboard/catalog/items" },
+        { title: "Rooms", url: "/admin-dashboard/catalog/rooms" },
       ],
     },
     {

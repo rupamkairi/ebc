@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/select";
 import { MediaUploader } from "@/components/shared/upload/media-uploader";
 import { CategorySearchAutocomplete } from "@/components/autocompletes/category-search-autocomplete";
+import { RoomSearchAutocomplete } from "@/components/autocompletes/room-search-autocomplete";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { CreateCategoryRequest } from "@/types/catalog";
@@ -57,6 +58,7 @@ export function CategoryForm() {
       isSubCategory: !!selectedCategory?.parentCategoryId,
       parentCategoryId: selectedCategory?.parentCategoryId || "",
       categoryIconId: selectedCategory?.categoryIconId || "",
+      roomId: selectedCategory?.roomId || "",
     },
     onSubmit: async ({ value }) => {
       const payload = {
@@ -109,6 +111,7 @@ export function CategoryForm() {
         isSubCategory: !!selectedCategory.parentCategoryId,
         parentCategoryId: selectedCategory.parentCategoryId || "",
         categoryIconId: selectedCategory.categoryIconId || "",
+        roomId: selectedCategory.roomId || "",
       });
     } else {
       form.reset({
@@ -117,6 +120,7 @@ export function CategoryForm() {
         isSubCategory: false,
         parentCategoryId: "",
         categoryIconId: "",
+        roomId: "",
       });
     }
   }, [isEditing, selectedCategory, form]);
@@ -255,6 +259,24 @@ export function CategoryForm() {
                       <SelectItem value={ITEM_TYPE.SERVICE}>Service</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+              </div>
+            )}
+          </form.Field>
+
+          <form.Field name="roomId">
+            {(field) => (
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor={field.name} className="text-right">
+                  Room
+                </Label>
+                <div className="col-span-3">
+                  <RoomSearchAutocomplete
+                    value={field.state.value}
+                    onValueChange={field.handleChange}
+                    placeholder="Select room"
+                    label="Room"
+                  />
                 </div>
               </div>
             )}

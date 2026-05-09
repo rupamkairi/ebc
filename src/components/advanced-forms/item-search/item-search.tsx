@@ -8,16 +8,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useItemsQuery } from "@/queries/catalogQueries";
-import { Item } from "@/types/catalog";
+import { ITEM_TYPE } from "@/constants/enums";
+import { ItemListParams, Item } from "@/types/catalog";
 import { Loader2, Search, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ITEM_TYPE } from "@/constants/enums";
 
 interface ItemSearchProps {
   onItemSelect?: (item: Item) => void;
   className?: string;
   type?: "PRODUCT" | "SERVICE";
   title?: string;
+  additionalParams?: Partial<ItemListParams>;
 }
 
 export function ItemSearch({
@@ -25,6 +26,7 @@ export function ItemSearch({
   className,
   type = "PRODUCT",
   title,
+  additionalParams,
 }: ItemSearchProps) {
   const [categoryId, setCategoryId] = useState<string>("");
   const [brandId, setBrandId] = useState<string>("");
@@ -43,6 +45,7 @@ export function ItemSearch({
     specificationId: specificationId || undefined,
     search: isSearchValid ? search : undefined,
     type: type as ITEM_TYPE,
+    ...additionalParams,
   });
 
   return (
@@ -71,7 +74,10 @@ export function ItemSearch({
                   value={categoryId}
                   onValueChange={setCategoryId}
                   placeholder="Select Sub Category"
-                  additionalParams={{ isSubCategory: true }}
+                  additionalParams={{ 
+                    isSubCategory: true,
+                    ...additionalParams,
+                  }}
                   className="bg-white dark:bg-white hover:bg-white dark:hover:bg-white border-none h-14 rounded-xl text-primary font-bold shadow-lg focus:ring-2 focus:ring-secondary"
                 />
               </div>

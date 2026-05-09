@@ -25,6 +25,9 @@ import {
   UpdateItemRateRequest,
   UpdateItemRequest,
   UpdateSpecificationRequest,
+  CreateRoomRequest,
+  UpdateRoomRequest,
+  RoomListParams,
 } from "@/types/catalog";
 import {
   CreateOfferRequest,
@@ -54,6 +57,7 @@ export const catalogKeys = {
     [...catalogKeys.all, "rates", params] as const,
   itemRegions: (params: ItemRegionListParams) =>
     [...catalogKeys.all, "regions", params] as const,
+  rooms: () => [...catalogKeys.all, "rooms"] as const,
 };
 
 // Categories
@@ -63,7 +67,7 @@ export function useCategoriesQuery(params: CategoryListParams = {}) {
     queryKey: catalogKeys.categories(params),
     queryFn: () => catalogService.getCategories(params),
     placeholderData: keepPreviousData,
-    enabled: !!token || (params as any).enabled !== false, // Allow public browsing if enabled is not explicitly false
+    enabled: !!token || params.enabled !== false, // Allow public browsing if enabled is not explicitly false
   });
 }
 
@@ -106,7 +110,7 @@ export function useBrandsQuery(params: BrandListParams = {}) {
     queryKey: catalogKeys.brands(params),
     queryFn: () => catalogService.getBrands(params),
     placeholderData: keepPreviousData,
-    enabled: !!token || (params as any).enabled !== false, // Allow public browsing if enabled is not explicitly false
+    enabled: !!token || params.enabled !== false, // Allow public browsing if enabled is not explicitly false
   });
 }
 
@@ -147,7 +151,7 @@ export function useSpecificationsQuery(params: SpecificationListParams = {}) {
     queryKey: catalogKeys.specifications(params),
     queryFn: () => catalogService.getSpecifications(params),
     placeholderData: keepPreviousData,
-    enabled: !!token || (params as any).enabled !== false, // Allow public browsing if enabled is not explicitly false
+    enabled: !!token || params.enabled !== false, // Allow public browsing if enabled is not explicitly false
   });
 }
 
@@ -190,7 +194,7 @@ export function useItemsQuery(params: ItemListParams = {}) {
     queryKey: catalogKeys.items(params),
     queryFn: () => catalogService.getItems(params),
     placeholderData: keepPreviousData,
-    enabled: !!token || (params as any).enabled !== false, // Allow public browsing if enabled is not explicitly false
+    enabled: !!token || params.enabled !== false, // Allow public browsing if enabled is not explicitly false
   });
 }
 
@@ -199,7 +203,7 @@ export function useItemQuery(id: string, params: ItemParams = {}) {
   return useQuery({
     queryKey: [...catalogKeys.all, "item", id],
     queryFn: () => catalogService.getItem(id),
-    enabled: !!token || (params as any).enabled !== false, // Allow public browsing if enabled is not explicitly false
+    enabled: !!token || params.enabled !== false, // Allow public browsing if enabled is not explicitly false
   });
 }
 
@@ -418,6 +422,46 @@ export function useUpdateOfferMutation() {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateOfferRequest }) =>
       conferenceHallService.updateOffer(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: catalogKeys.all });
+    },
+  });
+}
+
+// Rooms
+export function useRoomsQuery(params: RoomListParams = {}) {
+  const token = useAuthStore((state) => state.token);
+  return useQuery({
+    queryKey: catalogKeys.rooms(),
+    queryFn: () => catalogService.getRooms(),
+    enabled: !!token || params.enabled !== false,
+  });
+}
+
+export function useCreateRoomMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreateRoomRequest) => catalogService.createRoom(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: catalogKeys.all });
+    },
+  });
+}
+
+export function useUpdateRoomMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: UpdateRoomRequest) => catalogService.updateRoom(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: catalogKeys.all });
+    },
+  });
+}
+
+export function useDeleteRoomMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => catalogService.deleteRoom(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: catalogKeys.all });
     },
