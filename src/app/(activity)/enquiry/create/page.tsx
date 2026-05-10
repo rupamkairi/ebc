@@ -20,7 +20,7 @@ import { useState } from "react";
 import { Item } from "@/types/catalog";
 import { Product } from "@/queries/browse.queries";
 
-export default function CreateEnquiryPage() {
+function CreateEnquiryContent() {
   const router = useRouter();
   const { items, buyerDetails, setBuyerDetails } = useEnquiryStore();
   const { data: session } = useSessionQuery();
@@ -198,3 +198,12 @@ export default function CreateEnquiryPage() {
     </div>
   );
 }
+
+export default function CreateEnquiryPage() {
+  return (
+    <React.Suspense fallback={<div className="w-full h-screen flex items-center justify-center">Loading...</div>}>
+      <CreateEnquiryContent />
+    </React.Suspense>
+  );
+}
+

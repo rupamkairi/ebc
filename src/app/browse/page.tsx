@@ -62,16 +62,20 @@ function BrowsePageContent() {
   );
 }
 
+function BrowseFallback() {
+  const { t } = useLanguage();
+  return (
+    <div className="h-screen w-full flex items-center justify-center">
+      {t("loading")}
+    </div>
+  );
+}
+
 export default function BrowsePage() {
   return (
-    <Suspense
-      fallback={
-        <div className="h-screen w-full flex items-center justify-center">
-          {useLanguage().t("loading")}
-        </div>
-      }
-    >
+    <Suspense fallback={<BrowseFallback />}>
       <BrowsePageContent />
     </Suspense>
   );
 }
+
