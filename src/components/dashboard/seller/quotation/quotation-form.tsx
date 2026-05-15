@@ -5,6 +5,7 @@ import { CreateQuotationRequest, Enquiry, Quotation } from "@/types/activity";
 import { QUOTATION_STATUS, REF_TYPE } from "@/constants/enums";
 import { ItemListingAutocomplete } from "./item-listing-autocomplete";
 import { Input } from "@/components/ui/input";
+import { NumericInput } from "@/components/ui/numeric-input";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -423,16 +424,18 @@ export function QuotationForm({
                             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-primary text-sm font-bold">
                               ₹
                             </span>
-                            <Input
-                              type="number"
+                            <NumericInput
                               className="pl-7 border-primary/15 focus:border-primary focus:ring-primary/10 rounded-xl"
                               placeholder=""
-                              value={currentLineItem?.rate || ""}
-                              onChange={(e) =>
+                              value={currentLineItem?.rate ?? null}
+                              onValueChange={(value) =>
                                 updateLineItem(index, {
-                                  rate: parseFloat(e.target.value) || 0,
+                                  rate: value,
                                 })
                               }
+                              min={0}
+                              step="0.01"
+                              fallbackValue={0}
                               disabled={
                                 (killSwitchUpdateDisabled && isUpdate) ||
                                 disabled
@@ -449,9 +452,9 @@ export function QuotationForm({
                               ₹
                             </span>
                             <Input
-                              type="number"
+                              type="text"
                               className="pl-7 bg-gray-50 font-bold rounded-xl"
-                              value={currentLineItem?.amount || 0}
+                              value={currentLineItem?.amount ?? 0}
                               readOnly
                             />
                           </div>

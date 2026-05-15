@@ -12,6 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { NumericInput } from "@/components/ui/numeric-input";
 import { Label } from "@/components/ui/label";
 import {
   useCreateItemMutation,
@@ -33,7 +34,7 @@ import { BrandSearchAutocomplete } from "@/components/autocompletes/brand-search
 import { CategorySearchAutocomplete } from "@/components/autocompletes/category-search-autocomplete";
 import { SpecificationSearchAutocomplete } from "@/components/autocompletes/specification-search-autocomplete";
 import { RoomSearchAutocomplete } from "@/components/autocompletes/room-search-autocomplete";
-import { ITEM_TYPE, UNIT_TYPE, UNIT_TYPE_LABELS } from "@/constants/enums";
+import { ITEM_TYPE, UNIT_TYPE_LABELS } from "@/constants/enums";
 import { Checkbox } from "@/components/ui/checkbox";
 import { UNIT_TYPES, UnitType } from "@/constants/quantities";
 
@@ -122,6 +123,8 @@ export function ItemForm() {
       setCreateOpen(open);
     }
   };
+
+  const normalizeHsnCode = (value: string) => value.replace(/[^A-Za-z]/g, "");
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
@@ -236,7 +239,11 @@ export function ItemForm() {
             name="HSNCode"
             validators={{
               onChange: ({ value }) =>
-                !value ? "HSN Code is required" : undefined,
+                !value
+                  ? "HSN Code is required"
+                  : /^[A-Za-z]+$/.test(value)
+                    ? undefined
+                    : "HSN Code must contain letters only",
             }}
           >
             {(field) => (
@@ -250,7 +257,9 @@ export function ItemForm() {
                     name={field.name}
                     value={field.state.value}
                     onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
+                    onChange={(e) =>
+                      field.handleChange(normalizeHsnCode(e.target.value))
+                    }
                     className="col-span-3"
                     required
                   />
@@ -278,16 +287,15 @@ export function ItemForm() {
                   GST %
                 </Label>
                 <div className="col-span-3">
-                  <Input
+                  <NumericInput
                     id={field.name}
                     name={field.name}
-                    type="number"
                     value={field.state.value}
                     onBlur={field.handleBlur}
-                    onChange={(e) =>
-                      field.handleChange(parseFloat(e.target.value))
-                    }
+                    onValueChange={field.handleChange}
                     className="col-span-3"
+                    fallbackValue={0}
+                    min={0}
                     required
                   />
                 </div>

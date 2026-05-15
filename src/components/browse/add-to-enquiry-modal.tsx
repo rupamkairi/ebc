@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+import { NumericInput } from "@/components/ui/numeric-input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -43,16 +43,28 @@ export function AddToEnquiryModal({
   product,
   onSuccess,
 }: AddToEnquiryModalProps) {
-  const [quantity, setQuantity] = useState("1");
+  const [quantity, setQuantity] = useState(1);
   const [remarks, setRemarks] = useState("");
   const [unitType, setUnitType] = useState<UnitType>(UNIT_TYPE.Nos);
   const addItem = useEnquiryStore((state) => state.addItem);
+  const allowedUnits = useMemo(
+    () => product.acceptableUnitTypes?.filter(Boolean) || [],
+    [product.acceptableUnitTypes],
+  );
+  const hasUnitRestriction = allowedUnits.length > 0;
+  const effectiveUnitType =
+    hasUnitRestriction && !allowedUnits.includes(unitType)
+      ? allowedUnits[0]
+      : unitType;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const qty = parseInt(quantity);
-    if (isNaN(qty) || qty < 1) {
+    if (!Number.isFinite(quantity) || quantity < 1) {
       toast.error("Please enter a valid quantity");
+      return;
+    }
+    if (hasUnitRestriction && !allowedUnits.includes(effectiveUnitType)) {
+      toast.error("Please select an allowed unit for this item");
       return;
     }
 
@@ -60,9 +72,9 @@ export function AddToEnquiryModal({
       itemId: product.id,
       title: product.title,
       type: product.type,
-      quantity: qty,
+      quantity,
       remarks: remarks,
-      unitType: unitType,
+      unitType: effectiveUnitType,
       price: product.price,
       categoryId: product.categoryId,
       subCategoryId: product.subCategoryId,
@@ -72,10 +84,9 @@ export function AddToEnquiryModal({
 
     toast.success("Added to enquiry");
     onClose();
-    // Reset form
-    setQuantity("1");
+    setQuantity(1);
     setRemarks("");
-    setUnitType(UNIT_TYPE.Nos);
+    setUnitType(hasUnitRestriction ? allowedUnits[0] : UNIT_TYPE.Nos);
     onSuccess?.();
   };
 
@@ -94,16 +105,17 @@ export function AddToEnquiryModal({
               Quantity
             </Label>
             <div className="col-span-3 flex gap-2">
-              <Input
+              <NumericInput
                 id="quantity"
-                type="number"
                 min="1"
                 value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
+                onValueChange={setQuantity}
+                integer
+                fallbackValue={1}
                 className="flex-1"
               />
               <Select
-                value={unitType}
+                value={effectiveUnitType}
                 onValueChange={(val) => setUnitType(val as UnitType)}
               >
                 <SelectTrigger className="w-[140px]">
@@ -111,7 +123,11 @@ export function AddToEnquiryModal({
                 </SelectTrigger>
                 <SelectContent>
                   {UNIT_TYPES.map((u) => (
-                    <SelectItem key={u} value={u}>
+                    <SelectItem
+                      key={u}
+                      value={u}
+                      disabled={hasUnitRestriction && !allowedUnits.includes(u)}
+                    >
                       {UNIT_TYPE_LABELS[u]}
                     </SelectItem>
                   ))}

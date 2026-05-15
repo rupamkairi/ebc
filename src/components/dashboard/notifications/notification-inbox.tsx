@@ -16,10 +16,13 @@ import {
   CheckCircle2,
   GraduationCap,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent } from "@/components/ui/card";
+import { NOTIFICATION_TYPE } from "@/constants/enums";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface NotificationInboxProps {
   userType: "ADMIN" | "SELLER" | "BUYER";
@@ -29,6 +32,144 @@ interface NotificationInboxProps {
   /** Set of enquiry IDs that have already been responded to — used to update the badge label */
   respondedEnquiryIds?: Set<string>;
 }
+
+const notificationDisplay: Record<
+  NOTIFICATION_TYPE,
+  {
+    labelKey: string;
+    titleKey: string;
+    messageKey: string;
+    icon: LucideIcon;
+    badgeClassName: string;
+  }
+> = {
+  [NOTIFICATION_TYPE.ENQUIRY_SUMBIT]: {
+    labelKey: "notification_badge_enquiry_submit",
+    titleKey: "notification_title_enquiry_submit",
+    messageKey: "notification_message_enquiry_submit",
+    icon: FileText,
+    badgeClassName: "bg-blue-100 text-blue-700",
+  },
+  [NOTIFICATION_TYPE.ENQUIRY_RECEIVE]: {
+    labelKey: "notification_badge_enquiry_receive",
+    titleKey: "notification_title_enquiry_receive",
+    messageKey: "notification_message_enquiry_receive",
+    icon: FileText,
+    badgeClassName: "bg-amber-100 text-amber-700",
+  },
+  [NOTIFICATION_TYPE.ENQUIRY_REVISE_REQUEST]: {
+    labelKey: "notification_badge_enquiry_revise_request",
+    titleKey: "notification_title_enquiry_revise_request",
+    messageKey: "notification_message_enquiry_revise_request",
+    icon: CheckCircle2,
+    badgeClassName: "bg-orange-100 text-orange-700",
+  },
+  [NOTIFICATION_TYPE.QUOTATION_SUMBIT]: {
+    labelKey: "notification_badge_quotation_submit",
+    titleKey: "notification_title_quotation_submit",
+    messageKey: "notification_message_quotation_submit",
+    icon: MessageSquare,
+    badgeClassName: "bg-green-100 text-green-700",
+  },
+  [NOTIFICATION_TYPE.QUOTATION_ACCEPT]: {
+    labelKey: "notification_badge_quotation_accept",
+    titleKey: "notification_title_quotation_accept",
+    messageKey: "notification_message_quotation_accept",
+    icon: CheckCircle2,
+    badgeClassName: "bg-green-100 text-green-700",
+  },
+  [NOTIFICATION_TYPE.QUOTATION_REJECT]: {
+    labelKey: "notification_badge_quotation_reject",
+    titleKey: "notification_title_quotation_reject",
+    messageKey: "notification_message_quotation_reject",
+    icon: MessageSquare,
+    badgeClassName: "bg-red-100 text-red-700",
+  },
+  [NOTIFICATION_TYPE.APPOINTMENT_SUBMIT]: {
+    labelKey: "notification_badge_appointment_submit",
+    titleKey: "notification_title_appointment_submit",
+    messageKey: "notification_message_appointment_submit",
+    icon: Calendar,
+    badgeClassName: "bg-blue-100 text-blue-700",
+  },
+  [NOTIFICATION_TYPE.APPOINTMENT_RECEIVE]: {
+    labelKey: "notification_badge_appointment_receive",
+    titleKey: "notification_title_appointment_receive",
+    messageKey: "notification_message_appointment_receive",
+    icon: Calendar,
+    badgeClassName: "bg-amber-100 text-amber-700",
+  },
+  [NOTIFICATION_TYPE.VISIT_SUBMIT]: {
+    labelKey: "notification_badge_visit_submit",
+    titleKey: "notification_title_visit_submit",
+    messageKey: "notification_message_visit_submit",
+    icon: Calendar,
+    badgeClassName: "bg-green-100 text-green-700",
+  },
+  [NOTIFICATION_TYPE.VISIT_ACCEPT]: {
+    labelKey: "notification_badge_visit_accept",
+    titleKey: "notification_title_visit_accept",
+    messageKey: "notification_message_visit_accept",
+    icon: CheckCircle2,
+    badgeClassName: "bg-green-100 text-green-700",
+  },
+  [NOTIFICATION_TYPE.VISIT_REJECT]: {
+    labelKey: "notification_badge_visit_reject",
+    titleKey: "notification_title_visit_reject",
+    messageKey: "notification_message_visit_reject",
+    icon: Calendar,
+    badgeClassName: "bg-red-100 text-red-700",
+  },
+  [NOTIFICATION_TYPE.CHANNEL_VERIFICATION]: {
+    labelKey: "notification_badge_channel_verification",
+    titleKey: "notification_title_channel_verification",
+    messageKey: "notification_message_channel_verification",
+    icon: Bell,
+    badgeClassName: "bg-blue-100 text-blue-700",
+  },
+  [NOTIFICATION_TYPE.CONTENT_VERIFICATION]: {
+    labelKey: "notification_badge_content_verification",
+    titleKey: "notification_title_content_verification",
+    messageKey: "notification_message_content_verification",
+    icon: FileText,
+    badgeClassName: "bg-purple-100 text-purple-700",
+  },
+  [NOTIFICATION_TYPE.EVENT_VERIFICATION]: {
+    labelKey: "notification_badge_event_verification",
+    titleKey: "notification_title_event_verification",
+    messageKey: "notification_message_event_verification",
+    icon: GraduationCap,
+    badgeClassName: "bg-purple-100 text-purple-700",
+  },
+  [NOTIFICATION_TYPE.OFFER_VERIFICATION]: {
+    labelKey: "notification_badge_offer_verification",
+    titleKey: "notification_title_offer_verification",
+    messageKey: "notification_message_offer_verification",
+    icon: Briefcase,
+    badgeClassName: "bg-purple-100 text-purple-700",
+  },
+  [NOTIFICATION_TYPE.NEW_OFFER]: {
+    labelKey: "notification_badge_new_offer",
+    titleKey: "notification_title_new_offer",
+    messageKey: "notification_message_new_offer",
+    icon: Briefcase,
+    badgeClassName: "bg-green-100 text-green-700",
+  },
+  [NOTIFICATION_TYPE.NEW_EVENT]: {
+    labelKey: "notification_badge_new_event",
+    titleKey: "notification_title_new_event",
+    messageKey: "notification_message_new_event",
+    icon: GraduationCap,
+    badgeClassName: "bg-green-100 text-green-700",
+  },
+  [NOTIFICATION_TYPE.NEW_CONTENT]: {
+    labelKey: "notification_badge_new_content",
+    titleKey: "notification_title_new_content",
+    messageKey: "notification_message_new_content",
+    icon: FileText,
+    badgeClassName: "bg-green-100 text-green-700",
+  },
+};
 
 export function NotificationInbox({
   userType,
@@ -40,6 +181,7 @@ export function NotificationInbox({
   const { data: notifications = [], isLoading } = useNotificationsQuery();
   const markReadMutation = useMarkNotificationReadMutation();
   const router = useRouter();
+  const { t } = useLanguage();
 
   const handleNotificationClick = (notification: Notification) => {
     if (!notification.isRead) {
@@ -97,14 +239,14 @@ export function NotificationInbox({
     return null;
   };
 
-  const getIcon = (type: string) => {
-    if (type.includes("ENQUIRY")) return FileText;
-    if (type.includes("APPOINTMENT")) return Calendar;
-    if (type.includes("QUOTATION")) return MessageSquare;
-    if (type.includes("ENTITY")) return Briefcase;
-    if (type.includes("EVENT")) return GraduationCap;
-    return Bell;
-  };
+  const getDisplay = (notification: Notification) =>
+    notificationDisplay[notification.type] || null;
+
+  const metadataForTranslation = (notification: Notification) => ({
+    ...(notification.metadata || {}),
+    sellerName: String(notification.metadata?.sellerName || "A seller"),
+    providerName: String(notification.metadata?.providerName || "A provider"),
+  });
 
   if (isLoading) {
     return (
@@ -147,7 +289,31 @@ export function NotificationInbox({
           ) : (
             <div className="space-y-1">
               {displayedNotifications.map((notification) => {
-                const Icon = getIcon(notification.type);
+                const display = getDisplay(notification);
+                const Icon = display?.icon || Bell;
+                const metadata = metadataForTranslation(notification);
+                const title = display
+                  ? t(display.titleKey, metadata)
+                  : notification.title;
+                const message = display
+                  ? t(display.messageKey, metadata)
+                  : notification.message;
+                const enquiryId = notification.metadata?.enquiryId as
+                  | string
+                  | undefined;
+                const isResponded =
+                  userType === "SELLER" &&
+                  notification.type === NOTIFICATION_TYPE.ENQUIRY_RECEIVE &&
+                  enquiryId &&
+                  respondedEnquiryIds?.has(enquiryId);
+                const badgeLabel = isResponded
+                  ? t("notification_badge_responded")
+                  : display
+                    ? t(display.labelKey, metadata)
+                    : notification.type.replace(/_/g, " ");
+                const badgeClassName = isResponded
+                  ? "bg-green-100 text-green-700"
+                  : display?.badgeClassName || "bg-muted text-muted-foreground";
                 return (
                   <button
                     key={notification.id}
@@ -180,7 +346,7 @@ export function NotificationInbox({
                                 : "text-foreground",
                             )}
                           >
-                            {notification.title}
+                            {title}
                           </p>
                           <span className="text-[10px] whitespace-nowrap text-muted-foreground">
                             {formatDistanceToNow(
@@ -190,67 +356,20 @@ export function NotificationInbox({
                           </span>
                         </div>
                         <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
-                          {notification.message}
+                          {message}
                         </p>
 
-                        {/* Slot implementation for specific user content */}
-                        {userType === "SELLER" &&
-                          notification.type.includes("ENQUIRY") &&
-                          (() => {
-                            const enquiryId = notification.metadata
-                              ?.enquiryId as string | undefined;
-                            
-                            // 1. Explicitly check for revision requests
-                            if (notification.type === "ENQUIRY_REVISE_REQUEST") {
-                                return (
-                                  <div className="mt-2 flex items-center gap-2">
-                                     <span className="text-[10px] px-1.5 py-0.5 bg-orange-100 text-orange-700 rounded font-medium flex items-center gap-1">
-                                      <CheckCircle2 size={10} /> Revision Requested
-                                    </span>
-                                  </div>
-                                );
-                            }
-
-                            // 2. Otherwise fallback to responded/new
-                            const isResponded =
-                              enquiryId && respondedEnquiryIds?.has(enquiryId);
-                            return (
-                              <div className="mt-2 flex items-center gap-2">
-                                {isResponded ? (
-                                  <span className="text-[10px] px-1.5 py-0.5 bg-green-100 text-green-700 rounded font-medium flex items-center gap-1">
-                                    <CheckCircle2 size={10} /> Responded
-                                  </span>
-                                ) : (
-                                  <span className="text-[10px] px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded font-medium">
-                                    New Enquiry
-                                  </span>
-                                )}
-                              </div>
-                            );
-                          })()}
-
-                        {userType === "BUYER" &&
-                          notification.type.includes("QUOTATION") && (
-                            <div className="mt-2 flex items-center gap-2">
-                              <span className="text-[10px] px-1.5 py-0.5 bg-green-100 text-green-700 rounded font-medium">
-                                Quotation Ready
-                              </span>
-                              {/* {notification.metadata?.sellerName && (
-                                <span className="text-[10px] text-muted-foreground truncate italic">
-                                  from {notification.metadata.sellerName}
-                                </span>
-                              )} */}
-                            </div>
-                          )}
-
-                        {userType === "ADMIN" &&
-                          notification.type.includes("ENTITY") && (
-                            <div className="mt-2 flex items-center gap-2">
-                              <span className="text-[10px] px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded font-medium">
-                                Review Required
-                              </span>
-                            </div>
-                          )}
+                        <div className="mt-2 flex items-center gap-2">
+                          <span
+                            className={cn(
+                              "text-[10px] px-1.5 py-0.5 rounded font-medium flex items-center gap-1",
+                              badgeClassName,
+                            )}
+                          >
+                            {isResponded && <CheckCircle2 size={10} />}
+                            {badgeLabel}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </button>

@@ -19,6 +19,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { NumericInput } from "@/components/ui/numeric-input";
 import {
   useLeadPricingList,
   useUpdateLeadPricingMutation,
@@ -57,11 +58,10 @@ export default function CostsAndPackagesPage() {
   );
 
   // Pricing Handlers
-  const handleCostChange = (leadType: string, value: string) => {
-    const numValue = parseInt(value) || 0;
+  const handleCostChange = (leadType: string, value: number) => {
     setEditingConfigs((prev) => ({
       ...prev,
-      [leadType]: numValue,
+      [leadType]: value,
     }));
   };
 
@@ -201,14 +201,13 @@ export default function CostsAndPackagesPage() {
                         {config.leadType.replace(/_/g, " ")}
                       </TableCell>
                       <TableCell>
-                        <Input
-                          type="number"
+                        <NumericInput
                           value={currentValue}
-                          onChange={(e) =>
-                            handleCostChange(config.leadType, e.target.value)
-                          }
+                          onValueChange={(value) => handleCostChange(config.leadType, value)}
                           className="w-32"
+                          integer
                           min={0}
+                          fallbackValue={0}
                         />
                       </TableCell>
                       <TableCell className="text-right">
@@ -291,27 +290,31 @@ export default function CostsAndPackagesPage() {
                       />
                     </TableCell>
                     <TableCell>
-                      <Input
-                        type="number"
+                      <NumericInput
                         value={newPackage.coins}
-                        onChange={(e) =>
+                        onValueChange={(value) =>
                           setNewPackage({
                             ...newPackage,
-                            coins: parseInt(e.target.value) || 0,
+                            coins: value,
                           })
                         }
+                        integer
+                        min={0}
+                        fallbackValue={0}
                       />
                     </TableCell>
                     <TableCell>
-                      <Input
-                        type="number"
+                      <NumericInput
                         value={newPackage.priceInInr}
-                        onChange={(e) =>
+                        onValueChange={(value) =>
                           setNewPackage({
                             ...newPackage,
-                            priceInInr: parseInt(e.target.value) || 0,
+                            priceInInr: value,
                           })
                         }
+                        integer
+                        min={0}
+                        fallbackValue={0}
                       />
                     </TableCell>
                     <TableCell>
@@ -379,16 +382,18 @@ export default function CostsAndPackagesPage() {
                         />
                       </TableCell>
                       <TableCell>
-                        <Input
-                          type="number"
+                        <NumericInput
                           value={data.coins}
-                          onChange={(e) =>
+                          onValueChange={(value) =>
                             handlePackageFieldChange(
                               pkg.id,
                               "coins",
-                              parseInt(e.target.value) || 0,
+                              value,
                             )
                           }
+                          integer
+                          min={0}
+                          fallbackValue={0}
                           className={cn(
                             !isEditing &&
                               "border-transparent bg-transparent shadow-none",
@@ -396,16 +401,18 @@ export default function CostsAndPackagesPage() {
                         />
                       </TableCell>
                       <TableCell>
-                        <Input
-                          type="number"
+                        <NumericInput
                           value={data.priceInInr}
-                          onChange={(e) =>
+                          onValueChange={(value) =>
                             handlePackageFieldChange(
                               pkg.id,
                               "priceInInr",
-                              parseInt(e.target.value) || 0,
+                              value,
                             )
                           }
+                          integer
+                          min={0}
+                          fallbackValue={0}
                           className={cn(
                             !isEditing &&
                               "border-transparent bg-transparent shadow-none",

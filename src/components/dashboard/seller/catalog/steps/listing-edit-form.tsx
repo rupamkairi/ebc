@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Input } from "@/components/ui/input";
+import { NumericInput } from "@/components/ui/numeric-input";
 import {
   Select,
   SelectContent,
@@ -129,14 +129,12 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
 
   const isService = listing.item?.type === ITEM_TYPE.SERVICE;
 
-  // Derive allowed unit types from the listing's item/specification
+  // Derive allowed unit types from the listing's item-level catalog setting.
   const allowedUnits: UnitType[] | undefined = (() => {
     const item = listing.item;
     if (!item) return undefined;
     if (item.acceptableUnitTypes?.length)
       return item.acceptableUnitTypes as UnitType[];
-    if (item.specification?.acceptableUnitTypes?.length)
-      return item.specification.acceptableUnitTypes as UnitType[];
     return undefined;
   })();
 
@@ -375,12 +373,12 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
                           Min Quantity
                         </FormLabel>
                         <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            onChange={(e) =>
-                              field.onChange(Number(e.target.value))
-                            }
+                          <NumericInput
+                            value={field.value}
+                            onValueChange={field.onChange}
+                            integer
+                            min={1}
+                            fallbackValue={1}
                           />
                         </FormControl>
                         <FormMessage />
@@ -398,13 +396,12 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
                           Price
                         </FormLabel>
                         <FormControl>
-                          <Input
-                            type="number"
+                          <NumericInput
+                            value={field.value}
+                            onValueChange={field.onChange}
                             step="0.01"
-                            {...field}
-                            onChange={(e) =>
-                              field.onChange(Number(e.target.value))
-                            }
+                            min={0}
+                            fallbackValue={0}
                           />
                         </FormControl>
                         <FormDescription className="text-[10px]">

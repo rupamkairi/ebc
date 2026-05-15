@@ -9,49 +9,49 @@ export default function AdminReportsPage() {
       title: "Platform Overview",
       description:
         "Daily health summary tracking User registrations, active sessions, Enquiries, Appointments, and Wallet Transactions.",
-      onDownload: reportService.admin.downloadPlatformOverview,
+      onPreview: reportService.admin.fetchPlatformOverview,
     },
     {
       title: "Enquiries Report",
       description:
         "Monitors marketplace core product transaction engine. Tracks Enquiries, Entity matches, and Quotation acceptance rates.",
-      onDownload: reportService.admin.downloadEnquiries,
+      onPreview: reportService.admin.fetchEnquiries,
     },
     {
       title: "Appointments Report",
       description:
         "Tracks service-provider interactions. Monitors Appointment requests, Visit confirmations, and completion rates.",
-      onDownload: reportService.admin.downloadAppointments,
+      onPreview: reportService.admin.fetchAppointments,
     },
     {
       title: "Entities Report",
       description:
         "Evaluates marketplace quality per Entity. Compares Activity leads against Quotations submitted or Appointments confirmed.",
-      onDownload: reportService.admin.downloadEntities,
+      onPreview: reportService.admin.fetchEntities,
     },
     {
       title: "Wallet Transactions",
       description:
         "Protects monetization by tracking total Coins altered across Wallets. Details transactions, reasons, and INR equivalents.",
-      onDownload: reportService.admin.downloadWalletTransactions,
+      onPreview: reportService.admin.fetchWalletTransactions,
     },
     {
       title: "Conference Discussions",
       description:
         "Measures trust-building engine by tracking Discussion posts, Event participation, and engagement metrics.",
-      onDownload: reportService.admin.downloadConferenceDiscussions,
+      onPreview: reportService.admin.fetchConferenceDiscussions,
     },
     {
       title: "Support Queries",
       description:
         "Logs system complaints routing them by Category to Support Queries. Measures resolution time and status.",
-      onDownload: reportService.admin.downloadSupportQueries,
+      onPreview: reportService.admin.fetchSupportQueries,
     },
     // {
     //   title: "System Health",
     //   description:
     //     "Technical monitoring for platform reliability. Tracks failed Orders, failed Notification deliveries, and system bottlenecks.",
-    //   onDownload: reportService.admin.downloadSystemHealth,
+    //   onPreview: reportService.admin.fetchSystemHealth,
     // },
   ];
 
@@ -67,13 +67,13 @@ export default function AdminReportsPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-6">
         {adminReports.map((report) => (
           <ReportDownloadCard
             key={report.title}
             title={report.title}
             description={report.description}
-            onDownload={report.onDownload}
+            onPreview={report.onPreview}
           />
         ))}
       </div>

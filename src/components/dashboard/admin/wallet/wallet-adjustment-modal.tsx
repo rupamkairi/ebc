@@ -26,7 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
+import { NumericInput } from "@/components/ui/numeric-input";
 import { Button } from "@/components/ui/button";
 import { useAdjustWalletMutation } from "@/queries/walletQueries";
 import { toast } from "sonner";
@@ -130,15 +130,12 @@ export function WalletAdjustmentModal({
                 <FormItem>
                   <FormLabel>Amount (Coins)</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
+                    <NumericInput
                       placeholder="Enter amount"
-                      {...field}
-                      onChange={(e) =>
-                        field.onChange(
-                          e.target.value === "" ? 0 : Number(e.target.value),
-                        )
-                      }
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      min={1}
+                      fallbackValue={1}
                     />
                   </FormControl>
                   <FormMessage />

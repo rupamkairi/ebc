@@ -56,7 +56,6 @@ export interface Specification {
   id: string;
   name: string;
   description?: string | null;
-  acceptableUnitTypes?: UnitType[] | null;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -145,14 +144,12 @@ export interface BrandListParams {
 export interface CreateSpecificationRequest {
   name: string;
   description?: string;
-  acceptableUnitTypes?: UnitType[];
 }
 
 export interface UpdateSpecificationRequest {
   id: string;
   name?: string;
   description?: string;
-  acceptableUnitTypes?: UnitType[];
 }
 
 export interface SpecificationListParams {

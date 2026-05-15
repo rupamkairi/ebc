@@ -6,6 +6,7 @@ import {
   useSpecificationsQuery,
 } from "./catalogQueries";
 import { ITEM_TYPE } from "@/constants/enums";
+import { UnitType } from "@/constants/quantities";
 
 // UI Types
 export interface BrowseItem {
@@ -20,6 +21,7 @@ export interface BrowseItem {
   subCategoryId?: string;
   brand: string;
   type: string;
+  acceptableUnitTypes?: UnitType[] | null;
 }
 
 export type Product = BrowseItem & {
@@ -166,6 +168,7 @@ export const useBrowseData = (params: BrowseParams) => {
       categoryId: categoryId,
       subCategoryId: subCategoryId,
       brand: brandMap.get(item.brandId)?.name || "Generic",
+      acceptableUnitTypes: item.acceptableUnitTypes,
       // rating: 4.5,
       type: item.type,
     };

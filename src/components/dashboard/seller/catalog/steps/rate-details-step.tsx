@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Item } from "@/types/catalog";
-import { Input } from "@/components/ui/input";
+import { NumericInput } from "@/components/ui/numeric-input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -150,11 +150,12 @@ export function RateDetailsStep({
             <Package size={13} className="text-primary" />
             Min Order Quantity
           </Label>
-          <Input
-            type="number"
+          <NumericInput
             value={minQuantity}
-            onChange={(e) => setMinQuantity(Number(e.target.value))}
+            onValueChange={setMinQuantity}
+            integer
             min={1}
+            fallbackValue={1}
           />
         </div>
 
@@ -166,12 +167,12 @@ export function RateDetailsStep({
               (per {UNIT_TYPE_LABELS[unitType]})
             </span>
           </Label>
-          <Input
-            type="number"
+          <NumericInput
             value={rate}
-            onChange={(e) => setRate(Number(e.target.value))}
+            onValueChange={setRate}
             min={0}
             step="0.01"
+            fallbackValue={0}
           />
         </div>
 

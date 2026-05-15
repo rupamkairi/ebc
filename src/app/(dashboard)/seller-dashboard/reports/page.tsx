@@ -16,17 +16,17 @@ export default function SellerReportsPage() {
     {
       title: "Enquiries Report",
       description: "Exports your assigned Enquiries tracking Buyer pincodes, your submitted Quotations, and conversion outcomes.",
-      onDownload: reportService.productSeller.downloadEnquiries,
+      onPreview: reportService.productSeller.fetchEnquiries,
     },
     {
       title: "Self Performance Metrics",
       description: "Summarizes total Activity lead intake, quoting responsiveness, and your average Buyer Ratings.",
-      onDownload: reportService.productSeller.downloadEntityMetrics,
+      onPreview: reportService.productSeller.fetchEntityMetrics,
     },
     {
       title: "Wallet Transactions Ledger",
       description: "Exports ledger of all Coin deductions/credits and closing balances specifically for your Wallet.",
-      onDownload: reportService.productSeller.downloadWalletTransactions,
+      onPreview: reportService.productSeller.fetchWalletTransactions,
     },
   ], []);
 
@@ -34,17 +34,17 @@ export default function SellerReportsPage() {
     {
       title: "Appointments Report",
       description: "Exports Appointment requests dispatched to you, monitoring Visit tracking, cancellations, and ratings.",
-      onDownload: reportService.serviceProvider.downloadAppointments,
+      onPreview: reportService.serviceProvider.fetchAppointments,
     },
     {
       title: "Self Performance Metrics",
       description: "Summarizes appointment requests, your Visit confirm variations, completion rates, and average Buyer Ratings.",
-      onDownload: reportService.serviceProvider.downloadEntityMetrics,
+      onPreview: reportService.serviceProvider.fetchEntityMetrics,
     },
     {
       title: "Wallet Transactions Ledger",
       description: "Exports ledger of all Coin deductions/credits and closing balances specifically for your Wallet.",
-      onDownload: reportService.serviceProvider.downloadWalletTransactions,
+      onPreview: reportService.serviceProvider.fetchWalletTransactions,
     },
   ], []);
 
@@ -67,13 +67,13 @@ export default function SellerReportsPage() {
         </AlertDescription>
       </Alert>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+      <div className="grid grid-cols-1 gap-6 mt-4">
         {reportsToRender.map((report) => (
           <ReportDownloadCard
             key={report.title}
             title={report.title}
             description={report.description}
-            onDownload={report.onDownload}
+            onPreview={report.onPreview}
           />
         ))}
       </div>

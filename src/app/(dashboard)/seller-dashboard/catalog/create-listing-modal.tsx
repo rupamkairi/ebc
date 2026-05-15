@@ -71,17 +71,12 @@ export function CreateListingModal({
   const isService = itemType === ITEM_TYPE.SERVICE;
 
   /**
-   * Resolve allowed unit types from a full item response.
-   * Checks item.acceptableUnitTypes first, then item.specification.acceptableUnitTypes.
+   * Resolve allowed unit types from the item-level catalog setting.
    */
   const resolveAllowedUnits = (item: Item): UnitType[] | undefined => {
-    const units =
-      item.acceptableUnitTypes?.length
-        ? item.acceptableUnitTypes
-        : item.specification?.acceptableUnitTypes?.length
-          ? item.specification.acceptableUnitTypes
-          : undefined;
-    return units ?? undefined;
+    return item.acceptableUnitTypes?.length
+      ? item.acceptableUnitTypes
+      : undefined;
   };
 
   /**
@@ -113,7 +108,7 @@ export function CreateListingModal({
       return;
     }
 
-    // Fallback: fetch the full item detail which includes nested specification data
+    // Fallback: fetch the full item detail in case the list response omitted item-level unit settings.
     if (!isService) {
       setIsLoadingItemDetails(true);
       try {
