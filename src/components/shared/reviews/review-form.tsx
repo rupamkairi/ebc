@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateReviewMutation } from "@/queries/reviewQueries";
 import { MediaUploader } from "@/components/shared/upload/media-uploader";
+import { useAuthStore } from "@/store/authStore";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import {
@@ -49,10 +50,17 @@ export function ReviewForm({
   const [attachmentIds, setAttachmentIds] = useState<string[]>([]);
   const [uploadedMedias, setUploadedMedias] = useState<Media[]>([]);
 
+  const { user } = useAuthStore();
+  const isBanned = user?.username === "review_banned";
+
   const createMutation = useCreateReviewMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isBanned) {
+      toast.error("Your review posting privilege has been suspended.");
+      return;
+    }
     if (rating === 0) {
       toast.error("Please provide a rating");
       return;
@@ -114,8 +122,23 @@ export function ReviewForm({
             </p>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="flex flex-col items-center justify-center p-6 bg-white/50 border rounded-3xl shadow-sm">
+          {isBanned ? (
+            <div className="p-8 text-center bg-amber-500/10 border border-amber-500/20 rounded-3xl flex flex-col items-center gap-4">
+              <div className="h-16 w-16 rounded-full bg-amber-500/20 flex items-center justify-center">
+                <Star className="h-8 w-8 text-amber-600 animate-pulse" />
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-xl font-black tracking-tight text-amber-800">
+                  Review Privilege Suspended
+                </h3>
+                <p className="text-amber-700 font-medium text-sm leading-relaxed max-w-sm">
+                  Your ability to post reviews and ratings has been restricted due to automated anti-spam compliance or moderation guidelines.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="flex flex-col items-center justify-center p-6 bg-white/50 border rounded-3xl shadow-sm">
               <span className="text-xs font-black  tracking-[0.2em] text-muted-foreground mb-4">
                 Rate your experience
               </span>
@@ -248,7 +271,8 @@ export function ReviewForm({
               Submit Experience
             </Button>
           </form>
-        </div>
+        )}
+      </div>
       </DialogContent>
     </Dialog>
   );

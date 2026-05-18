@@ -24,12 +24,15 @@ import {
   User2,
   FileText,
   ExternalLink,
+  Star,
 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { USER_ROLE_LABELS, ENTITY_TYPE_LABELS } from "@/constants/roles";
 import { VERIFICATION_STATUS } from "@/constants/enums";
 import { DocumentPreview } from "@/components/shared/document-preview";
+import { useEntityReviewsFullQuery, useToggleHideReviewMutation } from "@/queries/reviewQueries";
+import { useUpdateUserMutation } from "@/queries/adminQueries";
 
 interface UserDetailsModalProps {
   user: AdminUser | null;
@@ -43,10 +46,14 @@ export function UserDetailsModal({
   onOpenChange,
 }: UserDetailsModalProps) {
   const verifyMutation = useVerifyEntityMutation();
+  const toggleHideMutation = useToggleHideReviewMutation();
+  const updateUserMutation = useUpdateUserMutation();
+
+  const entity = user?.createdEntities?.[0] || user?.staffAt;
+  const { data: reviews = [], isLoading: isLoadingReviews } = useEntityReviewsFullQuery(entity?.id || "");
 
   if (!user) return null;
 
-  const entity = user.createdEntities?.[0] || user.staffAt;
   const isPending = entity?.verificationStatus === "PENDING";
 
   const handleVerify = async (status: "APPROVED" | "REJECTED" | "PAUSED") => {
@@ -235,10 +242,12 @@ export function UserDetailsModal({
                       {entity.entityAttachments &&
                       entity.entityAttachments.filter((a) => a.document)
                         .length > 0 ? (
-                        entity.entityAttachments
+                         entity.entityAttachments
                           .filter((a) => a.document)
                           .map((attachment, idx) => {
                             const doc = attachment.document;
+                            if (!doc) return null;
+                            const fileType = doc.mimeType?.split("/").pop() || "pdf";
                             const fileName =
                               doc.name ||
                               doc.key
@@ -258,7 +267,7 @@ export function UserDetailsModal({
                                 key={attachment.id}
                                 url={doc.url}
                                 name={fileName}
-                                fileType={doc.fileType || "pdf"}
+                                fileType={fileType}
                               >
                                 <a
                                   href={doc.url}
@@ -301,6 +310,182 @@ export function UserDetailsModal({
                     No associated business entity found.
                   </p>
                 </div>
+              )}
+
+              {/* Ratings & Reviews for Business */}
+              {entity && (
+                <section className="space-y-4">
+                  <h3 className="text-lg font-semibold border-b pb-2 flex items-center gap-2">
+                    <Star className="size-5 text-yellow-500 fill-yellow-500" />
+                    Ratings & Reviews Audit
+                  </h3>
+                  {isLoadingReviews ? (
+                    <div className="flex items-center justify-center p-6 bg-muted/10 rounded-lg">
+                      <Loader2 className="size-6 animate-spin text-primary" />
+                    </div>
+                  ) : reviews.length === 0 ? (
+                    <p className="text-xs text-muted-foreground italic bg-muted/20 p-4 rounded-lg text-center">
+                      No ratings or reviews found for this business.
+                    </p>
+                  ) : (
+                    <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2">
+                      {reviews.map((review) => (
+                        <div
+                          key={review.id}
+                          className={cn(
+                            "p-4 border rounded-xl transition-all shadow-xs relative",
+                            review.isHidden
+                              ? "bg-amber-500/5 border-amber-500/20 text-muted-foreground"
+                              : "bg-white border-black/5"
+                          )}
+                        >
+                          <div className="flex items-start justify-between gap-4">
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2">
+                                <div className="flex">
+                                  {[1, 2, 3, 4, 5].map((s) => (
+                                    <Star
+                                      key={s}
+                                      className={cn(
+                                        "size-3.5",
+                                        s <= review.rating
+                                          ? "fill-yellow-400 text-yellow-400"
+                                          : "text-muted/20"
+                                      )}
+                                    />
+                                  ))}
+                                </div>
+                                {review.isVerified && (
+                                  <Badge className="bg-emerald-500/10 text-emerald-700 hover:bg-emerald-500/20 border-none text-[8px] px-1.5 py-0">
+                                    Verified
+                                  </Badge>
+                                )}
+                                {review.isHidden && (
+                                  <Badge className="bg-amber-500/10 text-amber-700 hover:bg-amber-500/20 border-none text-[8px] px-1.5 py-0">
+                                    Hidden
+                                  </Badge>
+                                )}
+                              </div>
+                              {review.title && (
+                                <h5 className="text-xs font-black tracking-tight mt-1">
+                                  {review.title}
+                                </h5>
+                              )}
+                              {review.description && (
+                                <p className="text-xs text-muted-foreground leading-normal max-w-lg mt-0.5">
+                                  {review.description}
+                                </p>
+                              )}
+                              <div className="text-[10px] text-muted-foreground mt-2 flex items-center gap-1 font-medium">
+                                <span>By: {review.createdBy?.name || "Anonymous"}</span>
+                                {review.createdBy?.phone && (
+                                  <span className="opacity-60">({review.createdBy.phone})</span>
+                                )}
+                                <span className="opacity-40">•</span>
+                                <span>{format(new Date(review.createdAt), "PPP")}</span>
+                              </div>
+                            </div>
+
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className={cn(
+                                "rounded-xl text-[10px] font-black h-8 px-3 shrink-0 transition-colors",
+                                review.isHidden
+                                  ? "hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200"
+                                  : "hover:bg-rose-50 hover:text-rose-700 hover:border-rose-200"
+                              )}
+                              disabled={toggleHideMutation.isPending}
+                              onClick={async () => {
+                                try {
+                                  await toggleHideMutation.mutateAsync({
+                                    reviewId: review.id,
+                                    entityId: entity.id,
+                                    isHidden: !review.isHidden,
+                                  });
+                                  toast.success(
+                                    review.isHidden
+                                      ? "Review restored and visible publicly"
+                                      : "Review hidden from public view"
+                                  );
+                                } catch (error) {
+                                  toast.error("Failed to update review status");
+                                }
+                              }}
+                            >
+                              {toggleHideMutation.isPending ? (
+                                <Loader2 className="size-3 animate-spin mr-1" />
+                              ) : review.isHidden ? (
+                                "Restore"
+                              ) : (
+                                "Hide Review"
+                              )}
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </section>
+              )}
+
+              {/* Spam Moderation for Buyers */}
+              {user.role === "USER_BUYER_ADMIN" && (
+                <section className="space-y-4">
+                  <h3 className="text-lg font-semibold border-b pb-2 flex items-center gap-2">
+                    <Building2 className="size-5 text-amber-500" />
+                    Account Safety & Compliance
+                  </h3>
+                  <div className="p-4 border border-amber-500/20 bg-amber-500/5 rounded-xl flex items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <h4 className="text-sm font-black text-amber-800">
+                        Review Restriction (Spam Guard)
+                      </h4>
+                      <p className="text-xs text-amber-700 font-medium leading-relaxed max-w-md">
+                        {user.username === "review_banned"
+                          ? "This buyer is currently restricted from leaving reviews and ratings on product listings or service providers."
+                          : "Restrict this buyer from leaving review ratings on product listings or service providers if they are flagged for posting spam."}
+                      </p>
+                    </div>
+
+                    <Button
+                      variant={user.username === "review_banned" ? "emerald" as any : "destructive"}
+                      className={cn(
+                        "rounded-xl text-xs font-black h-9 px-4 shrink-0 transition-colors",
+                        user.username === "review_banned"
+                          ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                          : "bg-rose-600 hover:bg-rose-700 text-white"
+                      )}
+                      disabled={updateUserMutation.isPending}
+                      onClick={async () => {
+                        const isCurrentlyBanned = user.username === "review_banned";
+                        try {
+                          await updateUserMutation.mutateAsync({
+                            id: user.id,
+                            data: {
+                              username: isCurrentlyBanned ? null : "review_banned",
+                            },
+                          });
+                          toast.success(
+                            isCurrentlyBanned
+                              ? "Buyer's review privilege restored successfully."
+                              : "Buyer restricted from posting reviews successfully."
+                          );
+                        } catch (error) {
+                          toast.error("Failed to update buyer restriction status.");
+                        }
+                      }}
+                    >
+                      {updateUserMutation.isPending ? (
+                        <Loader2 className="size-4 animate-spin mr-1" />
+                      ) : user.username === "review_banned" ? (
+                        "Restore Access"
+                      ) : (
+                        "Restrict Reviews"
+                      )}
+                    </Button>
+                  </div>
+                </section>
               )}
             </div>
           </ScrollArea>

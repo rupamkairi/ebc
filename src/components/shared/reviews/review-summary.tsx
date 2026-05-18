@@ -1,16 +1,46 @@
-"use client";
-
-import { useReviewSummaryQuery } from "@/queries/reviewQueries";
+import { useEntityReviewsQuery } from "@/queries/reviewQueries";
 import { Star, ShieldCheck, Loader2 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
+import { useMemo } from "react";
 
 interface ReviewSummaryProps {
   entityId: string;
 }
 
 export function ReviewSummary({ entityId }: ReviewSummaryProps) {
-  const { data: summary, isLoading } = useReviewSummaryQuery(entityId);
+  const { data: reviews = [], isLoading } = useEntityReviewsQuery(entityId);
+
+  const summary = useMemo(() => {
+    if (!reviews || reviews.length === 0) return null;
+
+    const total = reviews.length;
+    let totalRating = 0;
+    let verifiedCount = 0;
+    const distribution = {
+      5: 0,
+      4: 0,
+      3: 0,
+      2: 0,
+      1: 0,
+    };
+
+    reviews.forEach((r) => {
+      totalRating += r.rating;
+      if (r.isVerified) verifiedCount++;
+      const rating = r.rating as keyof typeof distribution;
+      if (distribution[rating] !== undefined) {
+        distribution[rating]++;
+      }
+    });
+
+    return {
+      total,
+      average: totalRating / total,
+      distribution,
+      verifiedCount,
+    };
+  }, [reviews]);
 
   if (isLoading) {
     return (
@@ -81,7 +111,7 @@ export function ReviewSummary({ entityId }: ReviewSummaryProps) {
           Star Distribution
         </p>
         {[5, 4, 3, 2, 1].map((star) => {
-          const count = summary.distribution[star] || 0;
+          const count = summary.distribution[star as keyof typeof summary.distribution] || 0;
           const percentage =
             summary.total > 0 ? (count / summary.total) * 100 : 0;
 

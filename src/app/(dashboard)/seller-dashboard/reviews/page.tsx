@@ -3,7 +3,6 @@
 import { useAuthStore } from "@/store/authStore";
 import { useEntitiesQuery } from "@/queries/entityQueries";
 import {
-  useReviewSummaryQuery,
   useEntityReviewsFullQuery,
   useTogglePinReviewMutation,
   useToggleHideReviewMutation,
@@ -191,12 +190,10 @@ export default function ReviewsPage() {
   const { data: entities, isLoading: loadingEntities } = useEntitiesQuery();
   const entityId = user?.staffAtEntityId || entities?.[0]?.id || "";
 
-  const { data: summary, isLoading: loadingSummary } =
-    useReviewSummaryQuery(entityId);
   const { data: reviews = [], isLoading: loadingReviews } =
     useEntityReviewsFullQuery(entityId);
 
-  const isLoading = loadingEntities || loadingSummary || loadingReviews;
+  const isLoading = loadingEntities || loadingReviews;
 
   if (isLoading) {
     return (
@@ -210,10 +207,30 @@ export default function ReviewsPage() {
   }
 
   const validReviews = reviews.filter((r) => !r.isHidden);
-  const avgRating = summary?.average ?? 0;
   const totalFeedbacks = validReviews.length;
+  const avgRating = totalFeedbacks > 0 ? validReviews.reduce((acc, r) => acc + r.rating, 0) / totalFeedbacks : 0;
   const pinnedCount = reviews.filter((r) => r.isPinned).length;
-  const distribution = summary?.distribution ?? {};
+
+  const distribution = {
+    5: 0,
+    4: 0,
+    3: 0,
+    2: 0,
+    1: 0,
+  };
+
+  validReviews.forEach((r) => {
+    const rating = r.rating as keyof typeof distribution;
+    if (distribution[rating] !== undefined) {
+      distribution[rating]++;
+    }
+  });
+
+  const summary = {
+    total: totalFeedbacks,
+    average: avgRating,
+    distribution,
+  };
 
   return (
     <div className="flex flex-col gap-8">
@@ -265,7 +282,7 @@ export default function ReviewsPage() {
             {/* Right: distribution bars */}
             <div className="space-y-2.5">
               {[5, 4, 3, 2, 1].map((star) => {
-                const count = distribution[star] || 0;
+                const count = distribution[star as keyof typeof distribution] || 0;
                 const pct =
                   summary.total > 0 ? (count / summary.total) * 100 : 0;
                 return (

@@ -1,6 +1,4 @@
-"use client";
-
-import { useReviewSummaryQuery } from "@/queries/reviewQueries";
+import { useEntityReviewsQuery } from "@/queries/reviewQueries";
 import { Star, ChevronRight, ShieldCheck } from "lucide-react";
 import {
   Dialog,
@@ -13,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { ReviewSummary } from "./review-summary";
 import { ReviewList } from "./review-list";
 import { cn } from "@/lib/utils";
+import { useMemo } from "react";
 
 interface ReviewSnapshotProps {
   entityId: string;
@@ -21,7 +20,26 @@ interface ReviewSnapshotProps {
 }
 
 export function ReviewSnapshot({ entityId, entityName, className }: ReviewSnapshotProps) {
-  const { data: summary, isLoading } = useReviewSummaryQuery(entityId);
+  const { data: reviews = [], isLoading } = useEntityReviewsQuery(entityId);
+
+  const summary = useMemo(() => {
+    if (!reviews || reviews.length === 0) return null;
+
+    const total = reviews.length;
+    let totalRating = 0;
+    let verifiedCount = 0;
+
+    reviews.forEach((r) => {
+      totalRating += r.rating;
+      if (r.isVerified) verifiedCount++;
+    });
+
+    return {
+      total,
+      average: totalRating / total,
+      verifiedCount,
+    };
+  }, [reviews]);
 
   if (isLoading) {
     return <div className="h-10 w-32 bg-muted/20 animate-pulse rounded-full" />;
