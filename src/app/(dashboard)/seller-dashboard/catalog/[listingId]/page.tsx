@@ -30,6 +30,7 @@ import {
   Download,
 } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
+import { DocumentPreview } from "@/components/shared/document-preview";
 
 export interface OfferListParams {
   itemListingId?: string;
@@ -178,31 +179,37 @@ export default function ListingDetailsPage() {
                         </a>
                       );
                     }
-                    if (att.document) {
+                     if (att.document) {
                       return (
-                        <a
+                        <DocumentPreview
                           key={att.id}
-                          href={att.document.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="flex items-center gap-3 w-[250px] p-3 rounded-xl border border-border hover:bg-muted/30 transition-colors"
+                          url={att.document.url}
+                          name={att.document.name || "Document"}
+                          fileType={att.document.fileType || "pdf"}
                         >
-                          <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                            <FileTextIcon className="h-5 w-5 text-primary" />
-                          </div>
-                          <div className="truncate flex-1">
-                            <p
-                              className="text-sm font-bold text-primary truncate"
-                              title={att.document.name || "Document"}
-                            >
-                              {att.document.name || "Document"}
-                            </p>
-                            <p className="text-[10px] font-bold text-muted-foreground ">
-                              {att.document.fileType || "PDF"}
-                            </p>
-                          </div>
-                          <Download className="h-4 w-4 text-muted-foreground shrink-0" />
-                        </a>
+                          <a
+                            href={att.document.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex items-center gap-3 w-[250px] p-3 rounded-xl border border-border hover:bg-muted/30 transition-colors"
+                          >
+                            <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                              <FileTextIcon className="h-5 w-5 text-primary" />
+                            </div>
+                            <div className="truncate flex-1">
+                              <p
+                                className="text-sm font-bold text-primary truncate"
+                                title={att.document.name || "Document"}
+                              >
+                                {att.document.name || "Document"}
+                              </p>
+                              <p className="text-[10px] font-bold text-muted-foreground ">
+                                {att.document.fileType || "PDF"}
+                              </p>
+                            </div>
+                            <Download className="h-4 w-4 text-muted-foreground shrink-0" />
+                          </a>
+                        </DocumentPreview>
                       );
                     }
                     return null;

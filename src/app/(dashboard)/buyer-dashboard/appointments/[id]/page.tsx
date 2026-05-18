@@ -36,6 +36,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/hooks/useLanguage";
+import { DocumentPreview } from "@/components/shared/document-preview";
 
 export default function BuyerAppointmentDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -477,23 +478,29 @@ function VisitListItem({
                         }
                         if (att.document) {
                           return (
-                            <a
+                            <DocumentPreview
                               key={att.id}
-                              href={att.document.url}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="flex items-center gap-2 max-w-[160px] p-2 rounded-lg border border-border hover:bg-muted/30 transition-colors"
+                              url={att.document.url}
+                              name={att.document.name || "Document"}
+                              fileType={att.document.fileType || "pdf"}
                             >
-                              <div className="h-6 w-6 rounded bg-primary/10 flex items-center justify-center shrink-0">
-                                <FileTextIcon className="h-3 w-3 text-primary" />
-                              </div>
-                              <div className="truncate flex-1">
-                                <p className="text-[10px] font-bold text-primary truncate">
-                                  {att.document.name || "Document"}
-                                </p>
-                              </div>
-                              <Download className="h-3 w-3 text-muted-foreground shrink-0" />
-                            </a>
+                              <a
+                                href={att.document.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="flex items-center gap-2 max-w-[160px] p-2 rounded-lg border border-border hover:bg-muted/30 transition-colors"
+                              >
+                                <div className="h-6 w-6 rounded bg-primary/10 flex items-center justify-center shrink-0">
+                                  <FileTextIcon className="h-3 w-3 text-primary" />
+                                </div>
+                                <div className="truncate flex-1">
+                                  <p className="text-[10px] font-bold text-primary truncate">
+                                    {att.document.name || "Document"}
+                                  </p>
+                                </div>
+                                <Download className="h-3 w-3 text-muted-foreground shrink-0" />
+                              </a>
+                            </DocumentPreview>
                           );
                         }
                         return null;

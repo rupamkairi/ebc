@@ -29,6 +29,7 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { USER_ROLE_LABELS, ENTITY_TYPE_LABELS } from "@/constants/roles";
 import { VERIFICATION_STATUS } from "@/constants/enums";
+import { DocumentPreview } from "@/components/shared/document-preview";
 
 interface UserDetailsModalProps {
   user: AdminUser | null;
@@ -252,27 +253,33 @@ export function UserDetailsModal({
                               parseInt(doc.sizeBytes) / 1024
                             ).toFixed(1);
 
-                            return (
-                              <a
+                             return (
+                              <DocumentPreview
                                 key={attachment.id}
-                                href={doc.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors group"
+                                url={doc.url}
+                                name={fileName}
+                                fileType={doc.fileType || "pdf"}
                               >
-                                <div className="flex items-center gap-2 overflow-hidden">
-                                  <FileText className="size-4 text-primary shrink-0" />
-                                  <div className="flex flex-col">
-                                    <span className="text-xs font-medium truncate max-w-[180px]">
-                                      {decodeURIComponent(fileName)}
-                                    </span>
-                                    <span className="text-[10px] text-muted-foreground">
-                                      {sizeInKb} KB
-                                    </span>
+                                <a
+                                  href={doc.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors group"
+                                >
+                                  <div className="flex items-center gap-2 overflow-hidden">
+                                    <FileText className="size-4 text-primary shrink-0" />
+                                    <div className="flex flex-col">
+                                      <span className="text-xs font-medium truncate max-w-[180px]">
+                                        {decodeURIComponent(fileName)}
+                                      </span>
+                                      <span className="text-[10px] text-muted-foreground">
+                                        {sizeInKb} KB
+                                      </span>
+                                    </div>
                                   </div>
-                                </div>
-                                <ExternalLink className="size-3 text-muted-foreground group-hover:text-primary" />
-                              </a>
+                                  <ExternalLink className="size-3 text-muted-foreground group-hover:text-primary" />
+                                </a>
+                              </DocumentPreview>
                             );
                           })
                       ) : (

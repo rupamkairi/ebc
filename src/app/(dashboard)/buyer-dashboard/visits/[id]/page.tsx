@@ -24,6 +24,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { ReviewSnapshot } from "@/components/shared/reviews";
 import { useVisitQuery, useAppointmentQuery } from "@/queries/activityQueries";
+import { DocumentPreview } from "@/components/shared/document-preview";
 
 function SeparatorComponent() {
   return <div className="h-px bg-muted w-full" />;
@@ -232,35 +233,41 @@ export default function BuyerVisitDetailsPage() {
                                       </a>
                                     );
                                   }
-                                  if (att.document) {
+                                   if (att.document) {
                                     return (
-                                      <a
+                                      <DocumentPreview
                                         key={att.id}
-                                        href={att.document.url}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="flex items-center gap-2 max-w-[200px] p-2 pr-4 rounded-xl border border-border hover:bg-muted/30 transition-colors"
+                                        url={att.document.url}
+                                        name={att.document.name || "Document"}
+                                        fileType={att.document.mimeType?.split("/")[1] || "pdf"}
                                       >
-                                        <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                                          <FileTextIcon className="h-4 w-4 text-primary" />
-                                        </div>
-                                        <div className="truncate flex-1">
-                                          <p
-                                            className="text-xs font-bold text-primary truncate"
-                                            title={
-                                              att.document.name || "Document"
-                                            }
-                                          >
-                                            {att.document.name || "Document"}
-                                          </p>
-                                          <p className="text-[9px] font-bold text-muted-foreground ">
-                                            {att.document.mimeType?.split(
-                                              "/",
-                                            )[1] || "FILE"}
-                                          </p>
-                                        </div>
-                                        <Download className="h-3 w-3 text-muted-foreground shrink-0" />
-                                      </a>
+                                        <a
+                                          href={att.document.url}
+                                          target="_blank"
+                                          rel="noreferrer"
+                                          className="flex items-center gap-2 max-w-[200px] p-2 pr-4 rounded-xl border border-border hover:bg-muted/30 transition-colors"
+                                        >
+                                          <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                                            <FileTextIcon className="h-4 w-4 text-primary" />
+                                          </div>
+                                          <div className="truncate flex-1">
+                                            <p
+                                              className="text-xs font-bold text-primary truncate"
+                                              title={
+                                                att.document.name || "Document"
+                                              }
+                                            >
+                                              {att.document.name || "Document"}
+                                            </p>
+                                            <p className="text-[9px] font-bold text-muted-foreground ">
+                                              {att.document.mimeType?.split(
+                                                "/",
+                                              )[1] || "FILE"}
+                                            </p>
+                                          </div>
+                                          <Download className="h-3 w-3 text-muted-foreground shrink-0" />
+                                        </a>
+                                      </DocumentPreview>
                                     );
                                   }
                                   return null;

@@ -37,6 +37,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DocumentPreview } from "@/components/shared/document-preview";
 
 interface EventVerificationModalProps {
   event: ConferenceHallEvent | null;
@@ -176,24 +177,30 @@ export function EventVerificationModal({
 
                       const fileName = doc.name || `Attachment ${idx + 1}`;
 
-                      return (
-                        <a
+                       return (
+                        <DocumentPreview
                           key={attachment.id}
-                          href={doc.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors group"
+                          url={doc.url}
+                          name={fileName}
+                          fileType={"fileType" in doc ? doc.fileType : "pdf"}
                         >
-                          <div className="flex items-center gap-2 overflow-hidden">
-                            <FileText className="size-4 text-primary shrink-0" />
-                            <div className="flex flex-col">
-                              <span className="text-xs font-medium truncate max-w-[180px]">
-                                {decodeURIComponent(fileName)}
-                              </span>
+                          <a
+                            href={doc.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors group"
+                          >
+                            <div className="flex items-center gap-2 overflow-hidden">
+                              <FileText className="size-4 text-primary shrink-0" />
+                              <div className="flex flex-col">
+                                <span className="text-xs font-medium truncate max-w-[180px]">
+                                  {decodeURIComponent(fileName)}
+                                </span>
+                              </div>
                             </div>
-                          </div>
-                          <ExternalLink className="size-3 text-muted-foreground group-hover:text-primary" />
-                        </a>
+                            <ExternalLink className="size-3 text-muted-foreground group-hover:text-primary" />
+                          </a>
+                        </DocumentPreview>
                       );
                     })
                   ) : (
