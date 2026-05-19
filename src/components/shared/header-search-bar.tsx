@@ -56,10 +56,11 @@ export function HeaderSearchBar() {
       <form
         onSubmit={handleSubmit}
         className={cn(
-          "hidden md:flex relative items-center h-11 rounded-full border border-slate-200 bg-slate-50/70 transition-all duration-300 ease-out",
+          "hidden md:flex relative items-center h-11 rounded-full border border-slate-200 bg-slate-50/70 transition-all duration-200 ease-out",
+          "w-60 lg:w-72",
           isFocused
-            ? "w-72 lg:w-80 bg-white border-secondary/50 shadow-md ring-4 ring-secondary/5"
-            : "w-44 hover:bg-slate-100/60"
+            ? "bg-white border-secondary/50 shadow-md ring-4 ring-secondary/5"
+            : "hover:bg-slate-100/60"
         )}
       >
         <Search className={cn(
