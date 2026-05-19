@@ -16,15 +16,16 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { UnifiedHeader } from "@/components/shared/unified-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Header } from "@/components/shared/header";
+import { FooterSection } from "@/components/landing/footer-section";
 
 export default function SellerHowItHelps() {
   const { t } = useLanguage();
 
   return (
-    <div className="flex min-h-screen flex-col bg-background pb-20">
-      <UnifiedHeader />
+    <div className="flex min-h-screen flex-col bg-background">
+      <Header />
 
       <main className="flex-1">
         {/* Breadcrumb Header */}
@@ -278,9 +279,7 @@ export default function SellerHowItHelps() {
         </section>
       </main>
 
-      <footer className="mt-auto py-6 border-t border-border bg-white text-center text-sm text-foreground/50">
-        <p>&copy; {new Date().getFullYear()} EBC. All Rights Reserved.</p>
-      </footer>
+      <FooterSection />
     </div>
   );
 }
