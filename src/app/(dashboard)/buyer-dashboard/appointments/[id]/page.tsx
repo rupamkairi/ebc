@@ -540,13 +540,20 @@ function VisitListItem({
                 />
               )
             ) : v.isAccepted ? (
-              <Button
-                className="w-full h-14 rounded-3xl bg-emerald-500/10 text-emerald-600 border border-emerald-200 font-black gap-2"
-                disabled
-              >
-                <CheckCircle2 className="h-5 w-5" />
-                {t("confirmed_label")}
-              </Button>
+              isAppointmentClosed ? (
+                <div className="flex flex-col items-center gap-2 p-4 rounded-3xl bg-amber-50 border border-amber-100 italic font-black text-amber-700 text-[10px] text-center w-full">
+                  <Clock className="h-4 w-4 animate-pulse" />
+                  {t("awaiting_provider_completion", "Awaiting Service Provider Completion")}
+                </div>
+              ) : (
+                <Button
+                  className="w-full h-14 rounded-3xl bg-emerald-500/10 text-emerald-600 border border-emerald-200 font-black gap-2"
+                  disabled
+                >
+                  <CheckCircle2 className="h-5 w-5" />
+                  {t("confirmed_label")}
+                </Button>
+              )
             ) : (
               <Button
                 className="w-full h-14 rounded-3xl font-black shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform"

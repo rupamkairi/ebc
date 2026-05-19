@@ -216,19 +216,19 @@ export default function VisitDetailsPage() {
                   <span
                     className={cn(
                       "px-4 py-1 rounded-full text-xs font-black  text-white",
-                      isAppointmentCompleted
-                        ? "bg-blue-600"
-                        : isCompleted
-                          ? "bg-green-600"
+                      isCompleted
+                        ? "bg-green-600"
+                        : isAppointmentCompleted
+                          ? "bg-blue-600"
                           : isAcceptedByBuyer
                             ? "bg-emerald-600"
                             : "bg-primary",
                     )}
                   >
-                    {isAppointmentCompleted
-                      ? t("closed_by_buyer_label", "Closed by Buyer")
-                      : isCompleted
-                        ? t("completed_label")
+                    {isCompleted
+                      ? t("completed_label")
+                      : isAppointmentCompleted
+                        ? t("closed_by_buyer_label", "Closed by Buyer")
                         : isAcceptedByBuyer
                           ? t("confirmed_label")
                           : isPaidResponse
@@ -407,48 +407,26 @@ export default function VisitDetailsPage() {
 
             {isAcceptedByBuyer && !isCompleted && (
               <ActivityActionCard
-                isPending={!isAppointmentCompleted}
-                actionLabel={
-                  isAppointmentCompleted
-                    ? ""
-                    : t("complete_visit_btn", "Mark as Completed")
-                }
-                onAction={isAppointmentCompleted ? () => {} : handleComplete}
-                actionIcon={
-                  isAppointmentCompleted ? (
-                    <PackageCheck className="h-4 w-4" />
-                  ) : (
-                    <PackageCheck className="h-4 w-4" />
-                  )
-                }
+                isPending={true}
+                actionLabel={t("complete_visit_btn", "Mark as Completed")}
+                onAction={handleComplete}
+                actionIcon={<PackageCheck className="h-4 w-4" />}
                 actionDescription={
                   isAppointmentCompleted
                     ? t(
-                        "closed_by_buyer_msg",
-                        "The buyer has marked the entire appointment as complete. This visit is now closed.",
+                        "appointment_closed_complete_visit_desc",
+                        "The buyer has closed this appointment. Please mark this visit as completed to allow the buyer to review your service.",
                       )
                     : t(
                         "mark_as_completed_btn",
                         "Mark this visit as finished after the onsite consultation.",
                       )
                 }
-                respondedLabel={
-                  isAppointmentCompleted
-                    ? t("closed_by_buyer", "Closed by Buyer")
-                    : ""
-                }
-                respondedDescription={
-                  isAppointmentCompleted
-                    ? t(
-                        "closed_by_buyer_msg",
-                        "The buyer has marked the entire appointment as complete. This visit is now closed.",
-                      )
-                    : ""
-                }
+                respondedLabel=""
+                respondedDescription=""
                 backHref="/seller-dashboard/visits"
                 backLabel={t("back_to_visits", "Back to Visits")}
                 isProcessing={isCompleting}
-                variant={isAppointmentCompleted ? "gray" : "green"}
               />
             )}
 
