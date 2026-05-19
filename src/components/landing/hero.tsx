@@ -3,25 +3,12 @@
 import Container from "@/components/ui/containers";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/hooks/useLanguage";
-import { Search, UserRound, Scale, CheckCircle2 } from "lucide-react";
+import { UserRound, Scale, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 import Link from "next/link";
 
 export function Hero() {
   const { t } = useLanguage();
-  const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/browse?q=${encodeURIComponent(searchQuery.trim())}`);
-    } else {
-      router.push("/browse");
-    }
-  };
 
   const trustFeatures = [
     { key: "verified_seller" },
@@ -29,28 +16,6 @@ export function Hero() {
     { key: "transparent_pricing" },
     { key: "engineer_support" },
   ];
-
-  const SearchBar = (
-    <div className="w-full flex justify-center mb-6 md:mb-12 mt-2 md:mt-0">
-      <div className="w-full max-w-2xl px-2 md:px-4">
-        <form onSubmit={handleSearch} className="relative group">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t("search_placeholder")}
-            className="w-full h-12 md:h-14 pl-6 pr-14 rounded-full border border-slate-200 bg-white/95 backdrop-blur-md shadow-xl focus:outline-none focus:ring-2 focus:ring-secondary/40 transition-all text-slate-700 text-base md:text-lg"
-          />
-          <button
-            type="submit"
-            className="absolute right-1.5 top-1.5 h-9 w-9 md:h-11 md:w-11 flex items-center justify-center bg-secondary hover:bg-secondary/90 rounded-full text-white transition-all shadow-md active:scale-95"
-          >
-            <Search className="size-4 md:size-5" />
-          </button>
-        </form>
-      </div>
-    </div>
-  );
 
   const Heading = (
     <div className="w-full text-center max-w-6xl mb-4 md:mb-12 mx-auto px-2">
@@ -125,10 +90,6 @@ export function Hero() {
     <>
       {/* MOBILE LAYOUT (Flows cleanly from top to bottom) */}
       <section className="flex flex-col md:hidden w-full bg-white pt-6 pb-0 shadow-sm relative z-0">
-        <Container size="xl" className="px-2 relative z-20">
-          {SearchBar}
-        </Container>
-
         {/* Stretched Mobile Image with Heading Overlay */}
         <div className="w-full relative h-[380px] sm:h-[480px] mt-1 z-10 flex flex-col justify-start">
           <Image
@@ -173,7 +134,6 @@ export function Hero() {
           size="xl"
           className="relative z-10 flex flex-col items-start h-full grow w-full"
         >
-          {SearchBar}
           {Heading}
           <div className="w-full flex justify-start my-auto">{CTAButtons}</div>
         </Container>
