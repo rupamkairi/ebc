@@ -175,13 +175,6 @@ function CreateQuotationContent() {
   }
 
   const handleSubmit = (data: CreateQuotationRequest) => {
-    setPendingData(data);
-    setShowDeductionModal(true);
-  };
-
-  const handleConfirmDeduction = () => {
-    if (!pendingData) return;
-
     if (revisionId) {
       // Calculate price change type
       let priceChangeType: "INCREASED" | "DECREASED" | "MAINTAINED" =
@@ -191,7 +184,7 @@ function CreateQuotationContent() {
           (sum, li) => sum + (li.amount || 0),
           0,
         );
-        const newTotal = pendingData.lineItems.reduce(
+        const newTotal = data.lineItems.reduce(
           (sum, li) => sum + (li.amount || 0),
           0,
         );
@@ -204,7 +197,7 @@ function CreateQuotationContent() {
         {
           id: revisionId,
           data: {
-            ...pendingData,
+            ...data,
             hasBeenRevised: true,
             priceChangeType,
           },
@@ -227,22 +220,28 @@ function CreateQuotationContent() {
           },
           onError: (error: Error) => {
             toast.error(error.message || "Failed to update quotation.");
-            setShowDeductionModal(false);
           },
         },
       );
     } else {
-      createQuotation(pendingData, {
-        onSuccess: () => {
-          toast.success("Quotation submitted successfully!");
-          router.push("/seller-dashboard/quotations");
-        },
-        onError: (error: Error) => {
-          toast.error(error.message || "Failed to submit quotation.");
-          setShowDeductionModal(false);
-        },
-      });
+      setPendingData(data);
+      setShowDeductionModal(true);
     }
+  };
+
+  const handleConfirmDeduction = () => {
+    if (!pendingData) return;
+
+    createQuotation(pendingData, {
+      onSuccess: () => {
+        toast.success("Quotation submitted successfully!");
+        router.push("/seller-dashboard/quotations");
+      },
+      onError: (error: Error) => {
+        toast.error(error.message || "Failed to submit quotation.");
+        setShowDeductionModal(false);
+      },
+    });
   };
 
   return (
