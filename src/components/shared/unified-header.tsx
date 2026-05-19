@@ -25,6 +25,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuthStore } from "@/store/authStore";
 import { LogOut, Settings, LayoutDashboard } from "lucide-react";
+import { HeaderSearchBar } from "./header-search-bar";
+import { Suspense } from "react";
 
 interface UnifiedHeaderProps {
   variant?: "public" | "buyer" | "seller";
@@ -112,6 +114,12 @@ export function UnifiedHeader({
           </div>
 
           <div className="flex items-center gap-3">
+            {mounted && (
+              <Suspense fallback={<div className="w-10 h-10 rounded-full bg-slate-100 animate-pulse" />}>
+                <HeaderSearchBar />
+              </Suspense>
+            )}
+
             <div className="hidden lg:flex items-center gap-3">
               {rightContent}
 
