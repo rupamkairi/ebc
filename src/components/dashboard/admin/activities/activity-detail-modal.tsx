@@ -31,7 +31,6 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ActivityDetailModalProps {
   activity: Enquiry | Appointment | null;
@@ -57,7 +56,7 @@ export function ActivityDetailModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-3xl max-h-[90vh] p-0 overflow-hidden flex flex-col">
+      <DialogContent className="max-w-[calc(100%-2rem)] md:max-w-3xl max-h-[90vh] p-0 overflow-hidden flex flex-col">
         <DialogHeader className="p-6 pb-4 bg-slate-50/50 border-b">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
@@ -74,7 +73,7 @@ export function ActivityDetailModal({
           </div>
         </DialogHeader>
 
-        <ScrollArea className="flex-1">
+        <div className="flex-1 overflow-y-auto min-h-0">
           <div className="p-6 space-y-8">
             {/* User Info Section */}
             <section className="space-y-4">
@@ -352,7 +351,7 @@ export function ActivityDetailModal({
               )}
             </section>
           </div>
-        </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   );
