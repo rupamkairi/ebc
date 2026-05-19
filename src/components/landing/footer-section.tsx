@@ -3,6 +3,7 @@
 import Container from "@/components/ui/containers";
 import { useLanguage } from "@/hooks/useLanguage";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import Link from "next/link";
 
 export function FooterSection() {
   const { t } = useLanguage();
@@ -74,39 +75,39 @@ export function FooterSection() {
             </h4>
             <ul className="space-y-2 text-[13px] font-medium text-white/90">
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <Link href="/calculator" className="hover:text-white transition-colors">
                   {t("footer_ai_calculator")}
-                </a>
+                </Link>
               </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
+              {/* <li>
+                <Link href="/estimate-cost" className="hover:text-white transition-colors">
                   {t("footer_compare_prices")}
-                </a>
-              </li>
+                </Link>
+              </li> */}
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <Link href="/buyer-dashboard" className="hover:text-white transition-colors">
                   {t("footer_request_quote")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <Link href="/buyer-dashboard" className="hover:text-white transition-colors">
                   {t("footer_experts")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <Link href="/conference-hall" className="hover:text-white transition-colors">
                   {t("conference_hall")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <Link href="/buyer-dashboard" className="hover:text-white transition-colors">
                   {t("footer_find_sellers")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <Link href="/buyer-dashboard" className="hover:text-white transition-colors">
                   {t("footer_find_workers")}
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -118,24 +119,24 @@ export function FooterSection() {
             </h4>
             <ul className="space-y-2 text-[13px] font-medium text-white/90">
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <Link href="/how-it-helps" className="hover:text-white transition-colors">
                   {t("footer_how_ebc_helps")}
-                </a>
+                </Link>
               </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
+              {/* <li>
+                <Link href="/planning" className="hover:text-white transition-colors">
                   {t("footer_planning")}
-                </a>
-              </li>
+                </Link>
+              </li> */}
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <Link href="/calculator" className="hover:text-white transition-colors">
                   {t("footer_cost_guide")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <Link href="#faq" className="hover:text-white transition-colors">
                   {t("footer_faq_builders")}
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -147,24 +148,29 @@ export function FooterSection() {
             </h4>
             <ul className="space-y-2 text-[13px] font-medium text-white/90">
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <Link href="/calculator" className="hover:text-white transition-colors">
                   {t("footer_estimate_cost")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a
+                  href="https://wa.me/+919564429300"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white transition-colors"
+                >
                   {t("footer_talk_expert")}
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <Link href="/calculator" className="hover:text-white transition-colors">
                   {t("footer_cost_guide")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <Link href="/how-it-helps" className="hover:text-white transition-colors">
                   {t("footer_compare_prices")}
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -176,39 +182,44 @@ export function FooterSection() {
             </h4>
             <ul className="space-y-2 text-[13px] font-medium text-white/90">
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <Link href="/how-it-helps" className="hover:text-white transition-colors">
                   {t("footer_about")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <Link href="/how-it-works" className="hover:text-white transition-colors">
                   {t("footer_how_works")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a
+                  href="https://wa.me/+919564429300"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white transition-colors"
+                >
                   {t("footer_contact_support")}
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <Link href="/#faq" className="hover:text-white transition-colors">
                   {t("footer_help_faq")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <Link href="/#faq" className="hover:text-white transition-colors">
                   {t("privacy_policy")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <Link href="/how-it-helps/seller" className="hover:text-white transition-colors">
                   {t("footer_seller_agreement")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <Link href="/how-it-helps/buyer" className="hover:text-white transition-colors">
                   {t("footer_consumer_safety")}
-                </a>
+                </Link>
               </li>
               <li>
                 <a

@@ -59,7 +59,7 @@ export function FaqSection() {
   ];
 
   return (
-    <section className="py-responsive">
+    <section id="faq" className="py-responsive">
       <div className="text-center">
         <TypographyH1>{t("faq_title")}</TypographyH1>
         <Break size="sm" />
