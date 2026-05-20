@@ -73,7 +73,7 @@ export interface Item {
   name: string;
   description: string;
   type: ITEM_TYPE;
-  HSNCode: string;
+  HSNCode?: string | null;
   GSTPercentage: number;
   categoryId: string;
   brandId: string;
@@ -165,7 +165,7 @@ export interface CreateItemRequest {
   name: string;
   description: string;
   type: ITEM_TYPE;
-  HSNCode: string;
+  HSNCode?: string | null;
   GSTPercentage: number;
   categoryId: string;
   brandId: string;
@@ -179,7 +179,7 @@ export interface UpdateItemRequest {
   name?: string;
   description?: string;
   type?: ITEM_TYPE;
-  HSNCode?: string;
+  HSNCode?: string | null;
   GSTPercentage?: number;
   categoryId?: string;
   brandId?: string;

@@ -62,14 +62,20 @@ export function ItemForm() {
       acceptableUnitTypes: (selectedItem?.acceptableUnitTypes as UnitType[]) || [],
     },
     onSubmit: async ({ value }) => {
+      const normalizedHSNCode = normalizeHsnCode(value.HSNCode);
+      const payload = {
+        ...value,
+        HSNCode: normalizedHSNCode.length > 0 ? normalizedHSNCode : null,
+      };
+
       try {
         if (isEditing) {
-          await updateMutation.mutateAsync({ ...value, id: selectedItem.id });
+          await updateMutation.mutateAsync({ ...payload, id: selectedItem.id });
           setEditOpen(false);
           form.reset();
           toast.success("Item updated successfully");
         } else {
-          await createMutation.mutateAsync(value);
+          await createMutation.mutateAsync(payload);
           setCreateOpen(false);
           form.reset();
           toast.success("Item created successfully");
@@ -92,7 +98,7 @@ export function ItemForm() {
         name: selectedItem.name,
         description: selectedItem.description,
         type: selectedItem.type,
-        HSNCode: selectedItem.HSNCode,
+        HSNCode: selectedItem.HSNCode || "",
         GSTPercentage: selectedItem.GSTPercentage,
         categoryId: selectedItem.categoryId,
         brandId: selectedItem.brandId,
@@ -124,7 +130,7 @@ export function ItemForm() {
     }
   };
 
-  const normalizeHsnCode = (value: string) => value.replace(/[^A-Za-z]/g, "");
+  const normalizeHsnCode = (value: string) => value.replace(/\D/g, "");
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
@@ -235,43 +241,50 @@ export function ItemForm() {
           </form.Field>
 
           {/* HSN Code */}
-          <form.Field
-            name="HSNCode"
-            validators={{
-              onChange: ({ value }) =>
-                !value
-                  ? "HSN Code is required"
-                  : /^[A-Za-z]+$/.test(value)
-                    ? undefined
-                    : "HSN Code must contain letters only",
-            }}
-          >
-            {(field) => (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor={field.name} className="text-right">
-                  HSN Code
-                </Label>
-                <div className="col-span-3">
-                  <Input
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) =>
-                      field.handleChange(normalizeHsnCode(e.target.value))
+          <form.Subscribe selector={(state) => [state.values.type]}>
+            {([itemType]) => (
+              <form.Field
+                name="HSNCode"
+                validators={{
+                  onChange: ({ value }) => {
+                    if (itemType === ITEM_TYPE.PRODUCT && !value) {
+                      return "HSN Code is required for products";
                     }
-                    className="col-span-3"
-                    required
-                  />
-                  {field.state.meta.errors ? (
-                    <p className="text-sm text-red-500 mt-1">
-                      {field.state.meta.errors.join(", ")}
-                    </p>
-                  ) : null}
-                </div>
-              </div>
+                    if (!value) return undefined;
+                    return /^\d+$/.test(value)
+                      ? undefined
+                      : "HSN Code must contain numbers only";
+                  },
+                }}
+              >
+                {(field) => (
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor={field.name} className="text-right">
+                      HSN Code
+                    </Label>
+                    <div className="col-span-3">
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) =>
+                          field.handleChange(normalizeHsnCode(e.target.value))
+                        }
+                        className="col-span-3"
+                        required={itemType === ITEM_TYPE.PRODUCT}
+                      />
+                      {field.state.meta.errors ? (
+                        <p className="text-sm text-red-500 mt-1">
+                          {field.state.meta.errors.join(", ")}
+                        </p>
+                      ) : null}
+                    </div>
+                  </div>
+                )}
+              </form.Field>
             )}
-          </form.Field>
+          </form.Subscribe>
 
           {/* GST Percentage */}
           <form.Field

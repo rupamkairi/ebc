@@ -85,6 +85,8 @@ export enum UNIT_TYPE {
   SquareFeet = "SquareFeet",
   CubicMeter = "CubicMeter",
   CubicFeet = "CubicFeet",
+  Pouch = "Pouch",
+  Box = "Box",
   Bag_50_KG = "Bag_50_KG",
 }
 
@@ -98,6 +100,8 @@ export const UNIT_TYPE_LABELS: Record<UNIT_TYPE, string> = {
   [UNIT_TYPE.SquareFeet]: "Square Feet",
   [UNIT_TYPE.CubicMeter]: "Cubic Meter",
   [UNIT_TYPE.CubicFeet]: "Cubic Feet",
+  [UNIT_TYPE.Pouch]: "Pouch",
+  [UNIT_TYPE.Box]: "Box",
   [UNIT_TYPE.Bag_50_KG]: "Bag (50 kg)",
 };
 
