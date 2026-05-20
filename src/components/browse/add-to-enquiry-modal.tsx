@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/select";
 import { useEnquiryStore } from "@/store/enquiryStore";
 import { Product } from "@/queries/browse.queries";
+import { useItemQuery } from "@/queries/catalogQueries";
 import { toast } from "sonner";
 import {
   UNIT_TYPE,
@@ -47,14 +48,50 @@ export function AddToEnquiryModal({
   const [remarks, setRemarks] = useState("");
   const [unitType, setUnitType] = useState<UnitType>(UNIT_TYPE.Nos);
   const addItem = useEnquiryStore((state) => state.addItem);
+  const {
+    data: latestItem,
+    isFetching: isFetchingLatestItem,
+    refetch: refetchLatestItem,
+  } = useItemQuery(product.id, { enabled: isOpen });
+  React.useEffect(() => {
+    if (isOpen) {
+      void refetchLatestItem();
+    }
+  }, [isOpen, product.id, refetchLatestItem]);
+
+  const fetchedUnitTypes = latestItem?.acceptableUnitTypes;
+  const rawAllowedUnits =
+    fetchedUnitTypes !== undefined
+      ? fetchedUnitTypes
+      : product.acceptableUnitTypes;
   const allowedUnits = useMemo(
-    () => product.acceptableUnitTypes?.filter(Boolean) || [],
-    [product.acceptableUnitTypes],
+    () =>
+      (rawAllowedUnits ?? []).filter(
+        (unit): unit is UnitType => Boolean(unit),
+      ),
+    [rawAllowedUnits],
   );
+  const isWaitingForLatestUnits = isOpen && !latestItem && isFetchingLatestItem;
   const hasUnitRestriction = allowedUnits.length > 0;
+  const visibleUnits = useMemo(
+    () =>
+      isWaitingForLatestUnits
+        ? []
+        : hasUnitRestriction
+          ? UNIT_TYPES.filter((unit) => allowedUnits.includes(unit))
+          : UNIT_TYPES,
+    [allowedUnits, hasUnitRestriction, isWaitingForLatestUnits],
+  );
+  const selectableUnits = useMemo(
+    () =>
+      hasUnitRestriction
+        ? UNIT_TYPES.filter((unit) => allowedUnits.includes(unit))
+        : UNIT_TYPES,
+    [allowedUnits, hasUnitRestriction],
+  );
   const effectiveUnitType =
-    hasUnitRestriction && !allowedUnits.includes(unitType)
-      ? allowedUnits[0]
+    !selectableUnits.includes(unitType) && selectableUnits.length > 0
+      ? selectableUnits[0]
       : unitType;
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -63,7 +100,10 @@ export function AddToEnquiryModal({
       toast.error("Please enter a valid quantity");
       return;
     }
-    if (hasUnitRestriction && !allowedUnits.includes(effectiveUnitType)) {
+    if (
+      isWaitingForLatestUnits ||
+      !selectableUnits.includes(effectiveUnitType)
+    ) {
       toast.error("Please select an allowed unit for this item");
       return;
     }
@@ -86,7 +126,7 @@ export function AddToEnquiryModal({
     onClose();
     setQuantity(1);
     setRemarks("");
-    setUnitType(hasUnitRestriction ? allowedUnits[0] : UNIT_TYPE.Nos);
+    setUnitType(selectableUnits[0] ?? UNIT_TYPE.Nos);
     onSuccess?.();
   };
 
@@ -117,17 +157,16 @@ export function AddToEnquiryModal({
               <Select
                 value={effectiveUnitType}
                 onValueChange={(val) => setUnitType(val as UnitType)}
+                disabled={isWaitingForLatestUnits}
               >
                 <SelectTrigger className="w-[140px]">
-                  <SelectValue placeholder="Unit" />
+                  <SelectValue
+                    placeholder={isWaitingForLatestUnits ? "Loading..." : "Unit"}
+                  />
                 </SelectTrigger>
                 <SelectContent>
-                  {UNIT_TYPES.map((u) => (
-                    <SelectItem
-                      key={u}
-                      value={u}
-                      disabled={hasUnitRestriction && !allowedUnits.includes(u)}
-                    >
+                  {visibleUnits.map((u) => (
+                    <SelectItem key={u} value={u}>
                       {UNIT_TYPE_LABELS[u]}
                     </SelectItem>
                   ))}

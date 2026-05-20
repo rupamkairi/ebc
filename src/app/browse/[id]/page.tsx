@@ -72,6 +72,7 @@ export default function ItemDetailsPage() {
         type: item.type,
         price: undefined,
         rating: undefined,
+        acceptableUnitTypes: item.acceptableUnitTypes,
       }
     : null;
 

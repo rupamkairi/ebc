@@ -62,6 +62,7 @@ function CreateEnquiryContent() {
       type: (item.type?.toLowerCase() === "service" ? "service" : "product") as
         | "product"
         | "service",
+      acceptableUnitTypes: item.acceptableUnitTypes,
     };
 
     setSelectedProduct(product);
@@ -206,4 +207,3 @@ export default function CreateEnquiryPage() {
     </React.Suspense>
   );
 }
-

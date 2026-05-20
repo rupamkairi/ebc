@@ -6,9 +6,78 @@ export type ReportRow = Record<string, string | number | boolean | null | undefi
 
 export interface ReportResponse {
   filename: string;
+  columns: string[];
   rows: ReportRow[];
   total: number;
 }
+
+const parseCsv = (csv: string) => {
+  const records: string[][] = [];
+  let row: string[] = [];
+  let field = "";
+  let inQuotes = false;
+
+  for (let index = 0; index < csv.length; index += 1) {
+    const char = csv[index];
+    const nextChar = csv[index + 1];
+
+    if (char === '"') {
+      if (inQuotes && nextChar === '"') {
+        field += '"';
+        index += 1;
+      } else {
+        inQuotes = !inQuotes;
+      }
+      continue;
+    }
+
+    if (char === "," && !inQuotes) {
+      row.push(field);
+      field = "";
+      continue;
+    }
+
+    if ((char === "\n" || char === "\r") && !inQuotes) {
+      if (char === "\r" && nextChar === "\n") index += 1;
+      row.push(field);
+      records.push(row);
+      row = [];
+      field = "";
+      continue;
+    }
+
+    field += char;
+  }
+
+  if (field.length > 0 || row.length > 0) {
+    row.push(field);
+    records.push(row);
+  }
+
+  const [headerRow, ...bodyRows] = records;
+  if (!headerRow || headerRow.length === 0) {
+    return { columns: [], rows: [] as ReportRow[] };
+  }
+
+  const columns = headerRow.map((column, index) => column || `Column ${index + 1}`);
+  const rows = bodyRows
+    .filter((record) => record.some((value) => value.trim().length > 0))
+    .map((record) =>
+      columns.reduce<ReportRow>((acc, column, index) => {
+        acc[column] = record[index] ?? "";
+        return acc;
+      }, {}),
+    );
+
+  return { columns, rows };
+};
+
+const withDates = (startDate: string, endDate: string) => ({
+  startDate,
+  endDate,
+});
+
+const dateToParam = (date: Date) => date.toISOString();
 
 const fetchReport = async (
   endpoint: string,
@@ -16,16 +85,14 @@ const fetchReport = async (
   filename: string,
 ): Promise<ReportResponse> => {
   const token = useAuthStore.getState().token;
-  const queryString = new URLSearchParams({
-    ...params,
-    format: "json",
-  }).toString();
+  const queryString = new URLSearchParams(params).toString();
   const url = `${BASE_URL}/report${endpoint}?${queryString}`;
 
   const response = await fetch(url, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
+      Accept: "text/csv",
     },
   });
 
@@ -40,18 +107,16 @@ const fetchReport = async (
     throw new Error(errorMessage);
   }
 
-  const data = await response.json();
+  const csv = await response.text();
+  const { columns, rows } = parseCsv(csv);
+
   return {
-    filename: data.filename || filename,
-    rows: Array.isArray(data.rows) ? data.rows : [],
-    total: typeof data.total === "number" ? data.total : data.rows?.length || 0,
+    filename,
+    columns,
+    rows,
+    total: rows.length,
   };
 };
-
-const withDates = (start: Date, end: Date) => ({
-  startDate: start.toISOString(),
-  endDate: end.toISOString(),
-});
 
 const escapeCsvValue = (value: ReportRow[string]) => {
   const stringValue = value === null || value === undefined ? "" : String(value);
@@ -61,21 +126,30 @@ const escapeCsvValue = (value: ReportRow[string]) => {
   return stringValue;
 };
 
-const rowsToCsv = (rows: ReportRow[]) => {
-  if (rows.length === 0) return "";
-  const columns = Array.from(
-    rows.reduce((set, row) => {
-      Object.keys(row).forEach((key) => set.add(key));
-      return set;
-    }, new Set<string>()),
+const rowsToCsv = (rows: ReportRow[], columns?: string[]) => {
+  const csvColumns =
+    columns && columns.length > 0
+      ? columns
+      : Array.from(
+          rows.reduce((set, row) => {
+            Object.keys(row).forEach((key) => set.add(key));
+            return set;
+          }, new Set<string>()),
+        );
+
+  if (csvColumns.length === 0) return "";
+
+  const header = csvColumns.map(escapeCsvValue).join(",");
+  const body = rows.map((row) =>
+    csvColumns.map((column) => escapeCsvValue(row[column])).join(","),
   );
-  const header = columns.map(escapeCsvValue).join(",");
-  const body = rows.map((row) => columns.map((column) => escapeCsvValue(row[column])).join(","));
   return [header, ...body].join("\n");
 };
 
-const downloadRows = (rows: ReportRow[], filename: string) => {
-  const blob = new Blob([rowsToCsv(rows)], { type: "text/csv;charset=utf-8" });
+const downloadRows = (rows: ReportRow[], filename: string, columns?: string[]) => {
+  const blob = new Blob([rowsToCsv(rows, columns)], {
+    type: "text/csv;charset=utf-8",
+  });
   const blobUrl = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = blobUrl;
@@ -86,48 +160,73 @@ const downloadRows = (rows: ReportRow[], filename: string) => {
   URL.revokeObjectURL(blobUrl);
 };
 
+const fetchReportByDateStrings = (
+  endpoint: string,
+  filename: string,
+  startDate: string,
+  endDate: string,
+) => fetchReport(endpoint, withDates(startDate, endDate), filename);
+
+const fetchReportByDates = (endpoint: string, filename: string) => (
+  start: Date,
+  end: Date,
+) =>
+  fetchReport(endpoint, withDates(dateToParam(start), dateToParam(end)), filename);
+
 export const reportService = {
   downloadRows,
+  fetchReport: fetchReportByDateStrings,
   admin: {
-    fetchPlatformOverview: (start: Date, end: Date) =>
-      fetchReport("/admin/platform-overview", withDates(start, end), "platform-overview.csv"),
-    fetchEnquiries: (start: Date, end: Date) =>
-      fetchReport("/admin/enquiries", withDates(start, end), "enquiries.csv"),
-    fetchAppointments: (start: Date, end: Date) =>
-      fetchReport("/admin/appointments", withDates(start, end), "appointments.csv"),
-    fetchEntities: (start: Date, end: Date) =>
-      fetchReport("/admin/entities", withDates(start, end), "entities-performance.csv"),
-    fetchWalletTransactions: (start: Date, end: Date) =>
-      fetchReport("/admin/wallet-transactions", withDates(start, end), "wallet-transactions.csv"),
-    fetchConferenceDiscussions: (start: Date, end: Date) =>
-      fetchReport("/admin/conference-discussions", withDates(start, end), "conference-discussions.csv"),
-    fetchSupportQueries: (start: Date, end: Date) =>
-      fetchReport("/admin/support-queries", withDates(start, end), "support-queries.csv"),
-    fetchSystemHealth: (start: Date, end: Date) =>
-      fetchReport("/admin/system-health", withDates(start, end), "system-health.csv"),
+    fetchPlatformOverview: fetchReportByDates(
+      "/admin/platform-overview",
+      "platform-overview.csv",
+    ),
+    fetchEnquiries: fetchReportByDates("/admin/enquiries", "enquiries.csv"),
+    fetchAppointments: fetchReportByDates("/admin/appointments", "appointments.csv"),
+    fetchEntities: fetchReportByDates(
+      "/admin/entities",
+      "entities-performance.csv",
+    ),
+    fetchWalletTransactions: fetchReportByDates(
+      "/admin/wallet-transactions",
+      "wallet-transactions.csv",
+    ),
+    fetchConferenceDiscussions: fetchReportByDates(
+      "/admin/conference-discussions",
+      "conference-discussions.csv",
+    ),
+    fetchSupportQueries: fetchReportByDates(
+      "/admin/support-queries",
+      "support-queries.csv",
+    ),
+    fetchSystemHealth: fetchReportByDates("/admin/system-health", "system-health.csv"),
   },
   productSeller: {
-    fetchEnquiries: (start: Date, end: Date) =>
-      fetchReport("/product-seller/enquiries", withDates(start, end), "seller-enquiries.csv"),
-    fetchEntityMetrics: (start: Date, end: Date) =>
-      fetchReport("/product-seller/entity-metrics", withDates(start, end), "seller-metrics.csv"),
-    fetchWalletTransactions: (start: Date, end: Date) =>
-      fetchReport(
-        "/product-seller/wallet-transactions",
-        withDates(start, end),
-        "seller-wallet-transactions.csv",
-      ),
+    fetchEnquiries: fetchReportByDates(
+      "/product-seller/enquiries",
+      "seller-enquiries.csv",
+    ),
+    fetchEntityMetrics: fetchReportByDates(
+      "/product-seller/entity-metrics",
+      "seller-metrics.csv",
+    ),
+    fetchWalletTransactions: fetchReportByDates(
+      "/product-seller/wallet-transactions",
+      "seller-wallet-transactions.csv",
+    ),
   },
   serviceProvider: {
-    fetchAppointments: (start: Date, end: Date) =>
-      fetchReport("/service-provider/appointments", withDates(start, end), "provider-appointments.csv"),
-    fetchEntityMetrics: (start: Date, end: Date) =>
-      fetchReport("/service-provider/entity-metrics", withDates(start, end), "provider-metrics.csv"),
-    fetchWalletTransactions: (start: Date, end: Date) =>
-      fetchReport(
-        "/service-provider/wallet-transactions",
-        withDates(start, end),
-        "provider-wallet-transactions.csv",
-      ),
+    fetchAppointments: fetchReportByDates(
+      "/service-provider/appointments",
+      "provider-appointments.csv",
+    ),
+    fetchEntityMetrics: fetchReportByDates(
+      "/service-provider/entity-metrics",
+      "provider-metrics.csv",
+    ),
+    fetchWalletTransactions: fetchReportByDates(
+      "/service-provider/wallet-transactions",
+      "provider-wallet-transactions.csv",
+    ),
   },
 };

@@ -199,11 +199,10 @@ export function useItemsQuery(params: ItemListParams = {}) {
 }
 
 export function useItemQuery(id: string, params: ItemParams = {}) {
-  const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: [...catalogKeys.all, "item", id],
     queryFn: () => catalogService.getItem(id),
-    enabled: !!token || params.enabled !== false, // Allow public browsing if enabled is not explicitly false
+    enabled: params.enabled !== false, // Allow public browsing if enabled is not explicitly false
   });
 }
 
