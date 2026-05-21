@@ -23,7 +23,6 @@ import {
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/authStore";
 import { cn } from "@/lib/utils";
-import { ImageCropper } from "./image-cropper";
 
 interface UploadFileItem {
   file: File | Blob;
@@ -74,7 +73,6 @@ interface FileUploaderProps {
   variant?: "single" | "multiple";
   buttonVariant?: "default" | "outline" | "ghost" | "secondary";
   showTrigger?: boolean;
-  crop?: boolean;
   type?: "media" | "document";
   entityId?: string;
   disabled?: boolean;
@@ -88,7 +86,6 @@ export function FileUploader({
   variant = "single",
   buttonVariant = "outline",
   showTrigger = true,
-  crop = variant === "single",
   type = "media",
   entityId,
   disabled = false,
@@ -106,9 +103,8 @@ export function FileUploader({
   const [overallProgress, setOverallProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Cropping state (only for images)
-  const [cropSrc, setCropSrc] = useState<string | null>(null);
-  const [isCropOpen, setIsCropOpen] = useState(false);
+  const [overallProgress, setOverallProgress] = useState(0);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -123,43 +119,16 @@ export function FileUploader({
       }
 
       const file = selectedFiles[0];
-      if (
-        type === "media" &&
-        isSingle &&
-        crop &&
-        file.type.startsWith("image/")
-      ) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          setCropSrc(reader.result as string);
-          setIsCropOpen(true);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        const newFiles = selectedFiles.map((file) => ({
-          file,
-          name: file.name,
-          progress: 0,
-          status: "idle" as const,
-          id: Math.random().toString(36).substring(7),
-        }));
-        setFiles((prev) => [...prev, ...newFiles]);
-      }
+      const newFiles = selectedFiles.map((file) => ({
+        file,
+        name: file.name,
+        progress: 0,
+        status: "idle" as const,
+        id: Math.random().toString(36).substring(7),
+      }));
+      setFiles((prev) => [...prev, ...newFiles]);
     }
     if (fileInputRef.current) fileInputRef.current.value = "";
-  };
-
-  const onCropComplete = (blob: Blob) => {
-    const newFile: UploadFileItem = {
-      file: blob,
-      name: `cropped-${Date.now()}.jpg`,
-      progress: 0,
-      status: "idle" as const,
-      id: Math.random().toString(36).substring(7),
-    };
-    setFiles([newFile]); // For single, always replace
-    setIsCropOpen(false);
-    setCropSrc(null);
   };
 
   const removeFile = (id: string) => {
@@ -524,14 +493,6 @@ export function FileUploader({
           </div>
         </DialogContent>
       </Dialog>
-
-      <ImageCropper
-        open={isCropOpen}
-        onOpenChange={setIsCropOpen}
-        imageSrc={cropSrc}
-        onCropComplete={onCropComplete}
-        aspect={1}
-      />
     </>
   );
 }

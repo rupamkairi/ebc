@@ -217,14 +217,25 @@ export function CategoryForm() {
                   )}
                   <div className="flex flex-col gap-2">
                     <MediaUploader
-                      onUploadSuccess={(uploadedFiles) => {
+                      onUploadSuccess={async (uploadedFiles) => {
                         if (uploadedFiles.length > 0) {
-                          field.handleChange(uploadedFiles[0].id);
-                          setPreviewUrl(uploadedFiles[0].url);
+                          const fileId = uploadedFiles[0].id;
+                          field.handleChange(fileId);
+                          try {
+                            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:10000/api";
+                            const res = await fetch(`${baseUrl}/attachment/media/url/${fileId}`);
+                            if (res.ok) {
+                              const data = await res.json();
+                              setPreviewUrl(data.url);
+                            } else {
+                              setPreviewUrl(uploadedFiles[0].url);
+                            }
+                          } catch {
+                            setPreviewUrl(uploadedFiles[0].url);
+                          }
                         }
                       }}
                       variant="single"
-                      crop={true}
                       label={field.state.value ? "Change Icon" : "Upload Icon"}
                     />
                   </div>
