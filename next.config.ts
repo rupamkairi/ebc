@@ -12,6 +12,16 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "ebc-001.s3.ap-south-1.amazonaws.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "s3.ap-south-1.amazonaws.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "images.unsplash.com",
         pathname: "/**",
       },
