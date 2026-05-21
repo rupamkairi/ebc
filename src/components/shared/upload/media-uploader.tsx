@@ -103,9 +103,6 @@ export function FileUploader({
   const [overallProgress, setOverallProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [overallProgress, setOverallProgress] = useState(0);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const selectedFiles = Array.from(e.target.files).slice(
