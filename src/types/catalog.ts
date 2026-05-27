@@ -76,7 +76,7 @@ export interface Item {
   HSNCode?: string | null;
   GSTPercentage: number;
   categoryId: string;
-  brandId: string;
+  brandId?: string | null;
   specificationId: string;
   createdAt?: string;
   updatedAt?: string;
@@ -168,9 +168,9 @@ export interface CreateItemRequest {
   HSNCode?: string | null;
   GSTPercentage: number;
   categoryId: string;
-  brandId: string;
+  brandId?: string | null;
   specificationId: string;
-  roomId?: string;
+  roomId?: string | null;
   acceptableUnitTypes?: UnitType[];
 }
 
@@ -182,7 +182,7 @@ export interface UpdateItemRequest {
   HSNCode?: string | null;
   GSTPercentage?: number;
   categoryId?: string;
-  brandId?: string;
+  brandId?: string | null;
   specificationId?: string;
   roomId?: string | null;
   acceptableUnitTypes?: UnitType[];

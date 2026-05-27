@@ -63,9 +63,12 @@ export function ItemForm() {
     },
     onSubmit: async ({ value }) => {
       const normalizedHSNCode = normalizeHsnCode(value.HSNCode);
+      const isService = value.type === ITEM_TYPE.SERVICE;
       const payload = {
         ...value,
         HSNCode: normalizedHSNCode.length > 0 ? normalizedHSNCode : null,
+        brandId: isService ? (value.brandId || null) : value.brandId,
+        roomId: isService ? (value.roomId || null) : value.roomId,
       };
 
       try {
@@ -101,7 +104,7 @@ export function ItemForm() {
         HSNCode: selectedItem.HSNCode || "",
         GSTPercentage: selectedItem.GSTPercentage,
         categoryId: selectedItem.categoryId,
-        brandId: selectedItem.brandId,
+        brandId: selectedItem.brandId || "",
         specificationId: selectedItem.specificationId,
         roomId: selectedItem.roomId || "",
         acceptableUnitTypes: (selectedItem.acceptableUnitTypes as UnitType[]) || [],

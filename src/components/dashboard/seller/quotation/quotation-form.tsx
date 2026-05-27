@@ -373,7 +373,7 @@ export function QuotationForm({
                           <ItemListingAutocomplete
                             entityId={sellerEntityId}
                             categoryId={eli.item?.categoryId}
-                            brandId={eli.item?.brandId}
+                            brandId={eli.item?.brandId || undefined}
                             specificationId={eli.item?.specificationId}
                             flexibleWithBrands={eli.flexibleWithBrands}
                             value={currentLineItem?.itemListingId}
