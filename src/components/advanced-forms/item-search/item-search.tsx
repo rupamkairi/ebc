@@ -137,17 +137,17 @@ export function ItemSearch({
             {items.map((item) => (
               <div
                 key={item.id}
-                className="group flex items-center justify-between gap-4 p-5 rounded-2xl bg-white shadow-sm ring-1 ring-primary/5 hover:ring-secondary/50 hover:shadow-xl transition-all animate-in fade-in slide-in-from-bottom-2 duration-300"
+                className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-white shadow-sm ring-1 ring-primary/5 hover:ring-secondary/50 hover:shadow-xl transition-all animate-in fade-in slide-in-from-bottom-2 duration-300"
               >
-                <div className="flex items-center gap-4">
-                  <div className="bg-primary/5 p-3 rounded-xl group-hover:bg-secondary group-hover:text-white transition-all duration-300">
+                <div className="flex items-center gap-4 min-w-0">
+                  <div className="bg-primary/5 p-3 rounded-xl group-hover:bg-secondary group-hover:text-white transition-all duration-300 shrink-0">
                     <Package className="size-6" />
                   </div>
-                  <div className="flex flex-col">
-                    <h4 className="font-bold text-primary text-lg leading-tight">
+                  <div className="flex flex-col min-w-0">
+                    <h4 className="font-bold text-primary text-lg leading-tight truncate">
                       {item.name}
                     </h4>
-                    <div className="flex items-center gap-3 text-xs font-semibold text-muted-foreground mt-1">
+                    <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-muted-foreground mt-1">
                       {item.brand && (
                         <span className="flex items-center gap-1 bg-primary/5 px-2 py-0.5 rounded-md">
                           {item.brand.name}
@@ -163,7 +163,7 @@ export function ItemSearch({
                 </div>
                 <Button
                   onClick={() => handleSelectItem(item)}
-                  className="rounded-xl bg-primary hover:bg-secondary text-white font-bold h-11 px-6 shadow-lg shadow-primary/10 hover:shadow-secondary/20 transition-all duration-300 transform group-hover:scale-105 active:scale-95"
+                  className="w-full sm:w-auto rounded-xl bg-primary hover:bg-secondary text-white font-bold h-11 px-6 shadow-lg shadow-primary/10 hover:shadow-secondary/20 transition-all duration-300 transform group-hover:scale-105 active:scale-95"
                 >
                   Select
                 </Button>

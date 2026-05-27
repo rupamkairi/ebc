@@ -167,8 +167,8 @@ export function ItemForm() {
             }}
           >
             {(field) => (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor={field.name} className="text-right">
+              <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
+                <Label htmlFor={field.name} className="sm:text-right">
                   Name
                 </Label>
                 <div className="col-span-3">
@@ -194,8 +194,8 @@ export function ItemForm() {
           {/* Description */}
           <form.Field name="description">
             {(field) => (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor={field.name} className="text-right">
+              <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
+                <Label htmlFor={field.name} className="sm:text-right">
                   Description
                 </Label>
                 <div className="col-span-3">
@@ -216,8 +216,8 @@ export function ItemForm() {
           {/* Type */}
           <form.Field name="type">
             {(field) => (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor={field.name} className="text-right">
+              <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
+                <Label htmlFor={field.name} className="sm:text-right">
                   Type
                 </Label>
                 <div className="col-span-3">
@@ -258,8 +258,8 @@ export function ItemForm() {
                 }}
               >
                 {(field) => (
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor={field.name} className="text-right">
+                  <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
+                    <Label htmlFor={field.name} className="sm:text-right">
                       HSN Code
                     </Label>
                     <div className="col-span-3">
@@ -295,8 +295,8 @@ export function ItemForm() {
             }}
           >
             {(field) => (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor={field.name} className="text-right">
+              <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
+                <Label htmlFor={field.name} className="sm:text-right">
                   GST %
                 </Label>
                 <div className="col-span-3">
@@ -325,8 +325,8 @@ export function ItemForm() {
             }}
           >
             {(field) => (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor={field.name} className="text-right">
+              <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
+                <Label htmlFor={field.name} className="sm:text-right">
                   Category
                 </Label>
                 <div className="col-span-3">
@@ -355,8 +355,8 @@ export function ItemForm() {
             }}
           >
             {(field) => (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor={field.name} className="text-right">
+              <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
+                <Label htmlFor={field.name} className="sm:text-right">
                   Brand
                 </Label>
                 <div className="col-span-3">
@@ -385,8 +385,8 @@ export function ItemForm() {
             }}
           >
             {(field) => (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor={field.name} className="text-right">
+              <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
+                <Label htmlFor={field.name} className="sm:text-right">
                   Specification
                 </Label>
                 <div className="col-span-3">
@@ -409,8 +409,8 @@ export function ItemForm() {
           {/* Room */}
           <form.Field name="roomId">
             {(field) => (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor={field.name} className="text-right">
+              <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
+                <Label htmlFor={field.name} className="sm:text-right">
                   Room
                 </Label>
                 <div className="col-span-3">

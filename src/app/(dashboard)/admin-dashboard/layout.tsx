@@ -19,11 +19,11 @@ export default function AdminDashboardLayout({
   return (
     <LayoutProvider>
       <DashboardGuard allowedRoles={ADMIN_ROLES} loginPath="/auth/admin-login">
-        <div className="font-open-sans flex min-h-screen w-full">
+        <div className="font-open-sans flex min-h-screen w-full max-w-full overflow-x-hidden">
           <AdminDashboardSidebar />
-          <SidebarInset>
+          <SidebarInset className="w-0 min-w-0">
             <AdminDashboardHeader />
-            <main>{children}</main>
+            <main className="flex-1 min-w-0 w-full overflow-x-hidden">{children}</main>
           </SidebarInset>
         </div>
       </DashboardGuard>
