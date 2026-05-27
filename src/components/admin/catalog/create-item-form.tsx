@@ -347,34 +347,42 @@ export function ItemForm() {
           </form.Field>
 
           {/* Brand */}
-          <form.Field
-            name="brandId"
-            validators={{
-              onChange: ({ value }) =>
-                !value ? "Brand is required" : undefined,
-            }}
-          >
-            {(field) => (
-              <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
-                <Label htmlFor={field.name} className="sm:text-right">
-                  Brand
-                </Label>
-                <div className="col-span-3">
-                  <BrandSearchAutocomplete
-                    value={field.state.value}
-                    onValueChange={field.handleChange}
-                    placeholder="Search brand"
-                    label="Select brand"
-                  />
-                  {field.state.meta.errors ? (
-                    <p className="text-sm text-red-500 mt-1">
-                      {field.state.meta.errors.join(", ")}
-                    </p>
-                  ) : null}
-                </div>
-              </div>
+          <form.Subscribe selector={(state) => [state.values.type]}>
+            {([itemType]) => (
+              <form.Field
+                name="brandId"
+                validators={{
+                  onChange: ({ value }) => {
+                    if (itemType === ITEM_TYPE.PRODUCT && !value) {
+                      return "Brand is required";
+                    }
+                    return undefined;
+                  },
+                }}
+              >
+                {(field) => (
+                  <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
+                    <Label htmlFor={field.name} className="sm:text-right">
+                      Brand {itemType === ITEM_TYPE.PRODUCT && <span className="text-red-500">*</span>}
+                    </Label>
+                    <div className="col-span-3">
+                      <BrandSearchAutocomplete
+                        value={field.state.value}
+                        onValueChange={field.handleChange}
+                        placeholder="Search brand"
+                        label="Select brand"
+                      />
+                      {field.state.meta.errors ? (
+                        <p className="text-sm text-red-500 mt-1">
+                          {field.state.meta.errors.join(", ")}
+                        </p>
+                      ) : null}
+                    </div>
+                  </div>
+                )}
+              </form.Field>
             )}
-          </form.Field>
+          </form.Subscribe>
 
           {/* Specification */}
           <form.Field
