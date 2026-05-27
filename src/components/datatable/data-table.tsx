@@ -61,6 +61,13 @@ export function DataTable<TData, TValue>({
   const handlePaginationChange = React.useCallback<OnChangeFn<PaginationState>>(
     (updater) => {
       const next = typeof updater === "function" ? updater(activePagination) : updater;
+      
+      // If the page size has changed, automatically reset the page index back to 0
+      // to avoid out-of-bounds page indexes and stale update races.
+      if (next.pageSize !== activePagination.pageSize) {
+        next.pageIndex = 0;
+      }
+
       if (onPaginationChange) {
         onPaginationChange(next);
       } else {
@@ -183,7 +190,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      <DataTablePagination table={table} totalItems={data.length} />
     </div>
   );
 }

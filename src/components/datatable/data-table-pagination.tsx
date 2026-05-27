@@ -13,10 +13,12 @@ import { Button } from "@/components/ui/button";
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
+  totalItems?: number;
 }
 
 export function DataTablePagination<TData>({
   table,
+  totalItems = 0,
 }: DataTablePaginationProps<TData>) {
   const [localPageSize, setLocalPageSize] = useState(
     table.getState().pagination.pageSize
@@ -34,7 +36,10 @@ export function DataTablePagination<TData>({
     setLocalPageIndex(table.getState().pagination.pageIndex);
   }, [table.getState().pagination.pageIndex]);
 
-  const pageCount = table.getPageCount();
+  const pageCount =
+    table.getPageCount() > 0 && table.getPageCount() !== -1
+      ? table.getPageCount()
+      : Math.ceil(totalItems / localPageSize) || 1;
 
   const handleFirstPage = () => {
     setLocalPageIndex(0);
@@ -73,6 +78,7 @@ export function DataTablePagination<TData>({
             onChange={(e) => {
               const val = Number(e.target.value);
               setLocalPageSize(val);
+              setLocalPageIndex(0);
               table.setPageSize(val);
             }}
             className="h-8 w-[70px] rounded-md border border-input bg-background dark:bg-input/30 px-2 py-1 text-sm shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
