@@ -8,7 +8,7 @@ import Link from "next/link";
 export function FooterSection() {
   const { t } = useLanguage();
   return (
-    <footer className="bg-linear-to-b from-primary to-primary/50 text-white pt-10 pb-6">
+    <footer className="bg-primary text-white pt-10 pb-6">
       <Container size="xl">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-8 mb-8 px-2">
           {/* Brand Column */}
