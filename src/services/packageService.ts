@@ -15,4 +15,10 @@ export const packageService = {
       body: data,
     });
   },
+
+  deletePackage: async (id: string): Promise<void> => {
+    return fetchClient<void>(`${API_ENDPOINTS.WALLET.PACKAGES}/${id}`, {
+      method: "DELETE",
+    });
+  },
 };

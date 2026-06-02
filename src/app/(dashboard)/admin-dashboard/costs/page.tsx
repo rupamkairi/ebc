@@ -27,6 +27,7 @@ import {
 import {
   useCoinPackagesList,
   useCreateUpdateCoinPackageMutation,
+  useDeleteCoinPackageMutation,
 } from "@/queries/packageQueries";
 import { useAuthStore } from "@/store/authStore";
 import { Loader2, Save, IndianRupee, Plus, Trash2 } from "lucide-react";
@@ -50,6 +51,7 @@ export default function CostsAndPackagesPage() {
   const { data: coinPackages, isLoading: isLoadingPackages } =
     useCoinPackagesList();
   const createUpdatePackage = useCreateUpdateCoinPackageMutation();
+  const deletePackage = useDeleteCoinPackageMutation();
   const [editingPackages, setEditingPackages] = useState<
     Record<string, Partial<CoinPackage>>
   >({});
@@ -126,6 +128,19 @@ export default function CostsAndPackagesPage() {
         toast.error(
           id ? "Failed to update package" : "Failed to create package",
         );
+      },
+    });
+  };
+
+  const handleDeletePackage = (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this package?")) return;
+
+    deletePackage.mutate(id, {
+      onSuccess: () => {
+        toast.success("Package deleted successfully");
+      },
+      onError: () => {
+        toast.error("Failed to delete package");
       },
     });
   };
@@ -272,7 +287,7 @@ export default function CostsAndPackagesPage() {
                   <TableHead className="w-[120px]">Coins</TableHead>
                   <TableHead className="w-[150px]">Price (INR)</TableHead>
                   <TableHead>Description</TableHead>
-                  <TableHead className="text-right w-[100px]">
+                  <TableHead className="text-right w-[120px]">
                     Actions
                   </TableHead>
                 </TableRow>
@@ -438,20 +453,35 @@ export default function CostsAndPackagesPage() {
                         />
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button
-                          size="sm"
-                          disabled={!isEditing || createUpdatePackage.isPending}
-                          onClick={() =>
-                            handleSavePackage(pkg.id, editingPackages[pkg.id])
-                          }
-                        >
-                          {createUpdatePackage.isPending && isEditing ? (
-                            <Loader2 className="mr-1 h-4 w-4 animate-spin" />
-                          ) : (
-                            <Save className="mr-1 h-4 w-4" />
-                          )}
-                          Save
-                        </Button>
+                        <div className="flex justify-end gap-2">
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-8 w-8"
+                            disabled={deletePackage.isPending}
+                            onClick={() => handleDeletePackage(pkg.id)}
+                          >
+                            {deletePackage.isPending ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="h-4 w-4 text-destructive" />
+                            )}
+                          </Button>
+                          <Button
+                            size="icon"
+                            className="h-8 w-8"
+                            disabled={!isEditing || createUpdatePackage.isPending}
+                            onClick={() =>
+                              handleSavePackage(pkg.id, editingPackages[pkg.id])
+                            }
+                          >
+                            {createUpdatePackage.isPending && isEditing ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Save className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   );
