@@ -74,7 +74,7 @@ export function HeaderSearchBar() {
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setTimeout(() => setIsFocused(false), 200)}
-          placeholder={isFocused ? "Search services & materials..." : "Search..."}
+          placeholder="Search services & materials..."
           className="w-full h-full pl-10 pr-10 bg-transparent text-sm font-semibold focus:outline-none placeholder-slate-400 text-slate-700"
         />
         {query && (
