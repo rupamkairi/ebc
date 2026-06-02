@@ -3,6 +3,8 @@
 import Container from "@/components/ui/containers";
 import Image from "next/image";
 import { useLanguage } from "@/hooks/useLanguage";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import {
   Wallet,
   PersonStanding,
@@ -136,10 +138,15 @@ export function ProblemSection() {
         </div>
 
         {/* Bottom Tagline */}
-        <div className="mt-20 text-center">
+        <div className="mt-20 text-center flex flex-col items-center gap-6">
           <p className="text-white text-xl md:text-2xl lg:text-4xl font-bold tracking-tight drop-shadow-md">
             {t("gamble_text")}
           </p>
+          <Link href="/browse">
+            <Button className="bg-secondary hover:bg-secondary/90 text-white font-black px-10 py-6 rounded-full text-lg md:text-xl shadow-2xl border-none transform hover:scale-105 active:scale-95 transition-all duration-300">
+              Let's Solve
+            </Button>
+          </Link>
         </div>
       </Container>
     </section>
