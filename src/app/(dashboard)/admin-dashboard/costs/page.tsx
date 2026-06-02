@@ -106,7 +106,8 @@ export default function CostsAndPackagesPage() {
     id: string | undefined,
     data: Partial<CoinPackage>,
   ) => {
-    createUpdatePackage.mutate(data, {
+    const payload = id ? { ...data, id } : data;
+    createUpdatePackage.mutate(payload, {
       onSuccess: () => {
         toast.success(
           id ? "Package updated successfully" : "Package created successfully",
