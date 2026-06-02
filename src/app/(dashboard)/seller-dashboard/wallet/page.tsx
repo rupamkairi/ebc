@@ -8,6 +8,8 @@ import {
   ArrowUpRight,
   Wallet as WalletIcon,
   Clock,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,6 +25,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 export default function WalletPage() {
   const { t } = useLanguage();
   const [isRechargeOpen, setIsRechargeOpen] = useState(false);
+  const [showAll, setShowAll] = useState(false);
   const { data: entities } = useEntitiesQuery();
   const entityId = entities?.[0]?.id;
   const { data: wallet, isLoading } = useWalletDetails(entityId);
@@ -119,88 +122,118 @@ export default function WalletPage() {
                     <p className="font-bold">{t("no_transactions_found")}</p>
                   </div>
                 ) : (
-                  transactions.map((txn) => {
-                    const isTopup = txn.type === 'CREDIT';
-                    return (
-                      <div 
-                        key={txn.id} 
-                        className="border border-gray-100 rounded-xl p-3 sm:p-4 transition-all duration-300 flex items-start sm:items-center justify-between gap-3 hover:border-accent hover:bg-accent/10 shadow-xs"
-                      >
-                        <div className="flex items-start sm:items-center gap-3 sm:gap-4 flex-1 min-w-0">
-                          <div className={cn(
-                            "size-9 sm:size-11 rounded-lg flex items-center justify-center shrink-0 border",
-                            isTopup 
-                              ? "bg-emerald-50 border-emerald-100 text-emerald-600" 
-                              : "bg-rose-50 border-rose-100 text-rose-600"
-                          )}>
-                            {isTopup ? <ArrowUpRight size={16} className="sm:size-5" /> : <ArrowDownLeft size={16} className="sm:size-5" />}
-                          </div>
+                  <>
+                    <div 
+                      className={cn(
+                        "space-y-3 pr-1 transition-all duration-300",
+                        showAll ? "max-h-[480px] overflow-y-auto" : ""
+                      )}
+                    >
+                      {(showAll ? transactions : transactions.slice(0, 5)).map((txn) => {
+                        const isTopup = txn.type === 'CREDIT';
+                        return (
+                          <div 
+                            key={txn.id} 
+                            className="border border-gray-100 rounded-xl p-3 sm:p-4 transition-all duration-300 flex items-start sm:items-center justify-between gap-3 hover:border-accent hover:bg-accent/10 shadow-xs"
+                          >
+                            <div className="flex items-start sm:items-center gap-3 sm:gap-4 flex-1 min-w-0">
+                              <div className={cn(
+                                "size-9 sm:size-11 rounded-lg flex items-center justify-center shrink-0 border",
+                                isTopup 
+                                  ? "bg-emerald-50 border-emerald-100 text-emerald-600" 
+                                  : "bg-rose-50 border-rose-100 text-rose-600"
+                              )}>
+                                {isTopup ? <ArrowUpRight size={16} className="sm:size-5" /> : <ArrowDownLeft size={16} className="sm:size-5" />}
+                              </div>
 
-                          <div className="flex-1 min-w-0 space-y-1">
-                            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                              <h4 className="font-bold text-primary text-xs sm:text-sm md:text-base leading-snug truncate max-w-[160px] sm:max-w-none">
-                                {REASON_LABELS[txn.reason] || txn.reason.replace(/_/g, ' ')}
-                              </h4>
-                              <Badge 
-                                variant="outline" 
-                                className={cn(
-                                  "text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full uppercase tracking-wider shrink-0",
-                                  isTopup 
-                                    ? txn.reason === 'REFUND'
-                                      ? "bg-blue-50 text-blue-700 border-blue-200"
-                                      : txn.reason === 'BONUS'
-                                        ? "bg-amber-50 text-amber-700 border-amber-200"
-                                        : "bg-emerald-50 text-emerald-700 border-emerald-200"
-                                    : "bg-rose-50 text-rose-700 border-rose-200"
-                                )}
-                              >
-                                {isTopup 
-                                  ? txn.reason === 'REFUND' 
-                                    ? "Refund" 
-                                    : txn.reason === 'BONUS' 
-                                      ? "Bonus" 
-                                      : "Recharge" 
-                                  : "Deduction"}
-                              </Badge>
-                            </div>
+                              <div className="flex-1 min-w-0 space-y-1">
+                                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                                  <h4 className="font-bold text-primary text-xs sm:text-sm md:text-base leading-snug truncate max-w-[160px] sm:max-w-none">
+                                    {REASON_LABELS[txn.reason] || txn.reason.replace(/_/g, ' ')}
+                                  </h4>
+                                  <Badge 
+                                    variant="outline" 
+                                    className={cn(
+                                      "text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full uppercase tracking-wider shrink-0",
+                                      isTopup 
+                                        ? txn.reason === 'REFUND'
+                                          ? "bg-blue-50 text-blue-700 border-blue-200"
+                                          : txn.reason === 'BONUS'
+                                            ? "bg-amber-50 text-amber-700 border-amber-200"
+                                            : "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                        : "bg-rose-50 text-rose-700 border-rose-200"
+                                    )}
+                                  >
+                                    {isTopup 
+                                      ? txn.reason === 'REFUND' 
+                                        ? "Refund" 
+                                        : txn.reason === 'BONUS' 
+                                          ? "Bonus" 
+                                          : "Recharge" 
+                                      : "Deduction"}
+                                  </Badge>
+                                </div>
 
-                            <div className="flex flex-wrap items-center gap-x-1.5 sm:gap-x-2 gap-y-1 text-[10px] sm:text-xs text-muted-foreground">
-                              <span className="font-semibold text-[9px] sm:text-[11px] bg-slate-100 px-1 sm:px-1.5 py-0.5 rounded text-slate-600 uppercase tracking-tighter">
-                                ID: {txn.id.slice(0, 8)}
-                              </span>
-                              {txn.refId && (
-                                <>
-                                  <span className="text-slate-300">•</span>
-                                  <span className="font-semibold bg-blue-50 text-blue-600 border border-blue-100 px-1 sm:px-1.5 py-0.5 rounded text-[9px] sm:text-[10px] uppercase">
-                                    Ref: {REF_TYPE_LABELS[txn.refType || ''] || txn.refType || 'ID'} ({txn.refId.slice(0, 8)})
+                                <div className="flex flex-wrap items-center gap-x-1.5 sm:gap-x-2 gap-y-1 text-[10px] sm:text-xs text-muted-foreground">
+                                  <span className="font-semibold text-[9px] sm:text-[11px] bg-slate-100 px-1 sm:px-1.5 py-0.5 rounded text-slate-600 uppercase tracking-tighter">
+                                    ID: {txn.id.slice(0, 8)}
                                   </span>
-                                </>
-                              )}
-                              <span className="text-slate-300">•</span>
-                              <span className="font-medium flex items-center gap-1 shrink-0">
-                                <Clock className="size-2.5 sm:size-3 text-muted-foreground/75" />
-                                {format(new Date(txn.createdAt), "dd MMM yyyy • hh:mm a")}
-                              </span>
+                                  {txn.refId && (
+                                    <>
+                                      <span className="text-slate-300">•</span>
+                                      <span className="font-semibold bg-blue-50 text-blue-600 border border-blue-100 px-1 sm:px-1.5 py-0.5 rounded text-[9px] sm:text-[10px] uppercase">
+                                        Ref: {REF_TYPE_LABELS[txn.refType || ''] || txn.refType || 'ID'} ({txn.refId.slice(0, 8)})
+                                      </span>
+                                    </>
+                                  )}
+                                  <span className="text-slate-300">•</span>
+                                  <span className="font-medium flex items-center gap-1 shrink-0">
+                                    <Clock className="size-2.5 sm:size-3 text-muted-foreground/75" />
+                                    {format(new Date(txn.createdAt), "dd MMM yyyy • hh:mm a")}
+                                  </span>
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </div>
 
-                        <div className="text-right shrink-0 flex flex-col items-end gap-0.5 self-start sm:self-center">
-                          <div className={cn(
-                            "text-sm sm:text-base md:text-lg font-extrabold tracking-tight",
-                            isTopup ? "text-emerald-600" : "text-rose-600"
-                          )}>
-                            {isTopup ? '+' : '-'}{txn.cost.toLocaleString()} {t("coins")}
-                          </div>
-                          {isTopup && txn.amountInInr !== undefined && txn.amountInInr !== null && (
-                            <div className="text-[9px] sm:text-[11px] bg-emerald-50 text-emerald-700 border border-emerald-100 font-bold px-1.5 sm:px-2 py-0.5 rounded-md mt-0.5">
-                              Paid: ₹{txn.amountInInr.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            <div className="text-right shrink-0 flex flex-col items-end gap-0.5 self-start sm:self-center">
+                              <div className={cn(
+                                "text-sm sm:text-base md:text-lg font-extrabold tracking-tight",
+                                isTopup ? "text-emerald-600" : "text-rose-600"
+                              )}>
+                                {isTopup ? '+' : '-'}{txn.cost.toLocaleString()} {t("coins")}
+                              </div>
+                              {isTopup && txn.amountInInr !== undefined && txn.amountInInr !== null && (
+                                <div className="text-[9px] sm:text-[11px] bg-emerald-50 text-emerald-700 border border-emerald-100 font-bold px-1.5 sm:px-2 py-0.5 rounded-md mt-0.5">
+                                  Paid: ₹{txn.amountInInr.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </div>
+                              )}
                             </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {transactions.length > 5 && (
+                      <div className="flex justify-center pt-2 border-t border-gray-50 mt-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setShowAll(!showAll)}
+                          className="font-bold text-xs text-primary hover:text-primary/80 hover:bg-primary/5 gap-1 rounded-lg h-9 px-4"
+                        >
+                          {showAll ? (
+                            <>
+                              Show Less <ChevronUp className="h-3.5 w-3.5" />
+                            </>
+                          ) : (
+                            <>
+                              Show More ({transactions.length - 5} more) <ChevronDown className="h-3.5 w-3.5" />
+                            </>
                           )}
-                        </div>
+                        </Button>
                       </div>
-                    );
-                  })
+                    )}
+                  </>
                 )}
               </div>
             </CardContent>
