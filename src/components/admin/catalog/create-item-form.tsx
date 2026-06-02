@@ -172,7 +172,7 @@ export function ItemForm() {
             {(field) => (
               <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
                 <Label htmlFor={field.name} className="sm:text-right">
-                  Name
+                  Name <span className="text-red-500">*</span>
                 </Label>
                 <div className="col-span-3">
                   <Input
@@ -199,7 +199,7 @@ export function ItemForm() {
             {(field) => (
               <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
                 <Label htmlFor={field.name} className="sm:text-right">
-                  Description
+                  Description <span className="text-red-500">*</span>
                 </Label>
                 <div className="col-span-3">
                   <Textarea
@@ -250,20 +250,26 @@ export function ItemForm() {
                 name="HSNCode"
                 validators={{
                   onChange: ({ value }) => {
-                    if (itemType === ITEM_TYPE.PRODUCT && !value) {
-                      return "HSN Code is required for products";
+                    if (itemType === ITEM_TYPE.SERVICE && !value) {
+                      return "SAC Code is required for services";
                     }
                     if (!value) return undefined;
                     return /^\d+$/.test(value)
                       ? undefined
-                      : "HSN Code must contain numbers only";
+                      : `${itemType === ITEM_TYPE.SERVICE ? "SAC Code" : "HSN Code"} must contain numbers only`;
                   },
                 }}
               >
                 {(field) => (
                   <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
                     <Label htmlFor={field.name} className="sm:text-right">
-                      HSN Code
+                      {itemType === ITEM_TYPE.SERVICE ? (
+                        <>
+                          SAC Code <span className="text-red-500">*</span>
+                        </>
+                      ) : (
+                        "HSN Code"
+                      )}
                     </Label>
                     <div className="col-span-3">
                       <Input
@@ -275,7 +281,7 @@ export function ItemForm() {
                           field.handleChange(normalizeHsnCode(e.target.value))
                         }
                         className="col-span-3"
-                        required={itemType === ITEM_TYPE.PRODUCT}
+                        required={itemType === ITEM_TYPE.SERVICE}
                       />
                       {field.state.meta.errors ? (
                         <p className="text-sm text-red-500 mt-1">
@@ -300,7 +306,7 @@ export function ItemForm() {
             {(field) => (
               <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
                 <Label htmlFor={field.name} className="sm:text-right">
-                  GST %
+                  GST % <span className="text-red-500">*</span>
                 </Label>
                 <div className="col-span-3">
                   <NumericInput
@@ -330,7 +336,7 @@ export function ItemForm() {
             {(field) => (
               <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
                 <Label htmlFor={field.name} className="sm:text-right">
-                  Category
+                  Category <span className="text-red-500">*</span>
                 </Label>
                 <div className="col-span-3">
                   <CategorySearchAutocomplete
@@ -398,7 +404,7 @@ export function ItemForm() {
             {(field) => (
               <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
                 <Label htmlFor={field.name} className="sm:text-right">
-                  Specification
+                  Specification <span className="text-red-500">*</span>
                 </Label>
                 <div className="col-span-3">
                   <SpecificationSearchAutocomplete
