@@ -130,10 +130,15 @@ export function Header() {
   );
 
   return (
-    <UnifiedHeader
-      variant="public"
-      centerContent={centerContent}
-      mobileMenu={mobileMenu}
-    />
+    <>
+      <div className="h-24 w-full shrink-0" />
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <UnifiedHeader
+          variant="public"
+          centerContent={centerContent}
+          mobileMenu={mobileMenu}
+        />
+      </div>
+    </>
   );
 }
