@@ -7,6 +7,7 @@ import {
   ArrowDownLeft,
   ArrowUpRight,
   Wallet as WalletIcon,
+  Clock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -47,8 +48,26 @@ export default function WalletPage() {
 
   const REASON_LABELS: Record<string, string> = {
     VISIT_SUBMIT: "SITE VISIT LEADS UNLOCK",
-    QUOTATION_SUBMIT: "PRODUCT LEADS UNLOCK",
-    CREDIT_RECHARGE: "WALLET TOPUP",
+    QUOTATION_SUMBIT: "PRODUCT LEADS UNLOCK",
+    WALLET_TOPUP: "WALLET RECHARGE",
+    MANUAL_ADJUSTMENT: "MANUAL WALLET ADJUSTMENT",
+    REFUND: "REFUNDED COINS",
+    BONUS: "BONUS COINS",
+    OFFER_PUBLISH: "OFFER PUBLISH COST",
+    EVENT_PUBLISH: "EVENT PUBLISH COST",
+    EVENT_JOIN: "EVENT JOIN COST",
+    CONTENT_PUBLISH: "CONTENT PUBLISH COST",
+  };
+
+  const REF_TYPE_LABELS: Record<string, string> = {
+    ENQUIRY: "Enquiry",
+    QUOTATION: "Quotation",
+    APPOINTMENT: "Appointment",
+    OFFER: "Offer",
+    EVENT: "Event",
+    EVENT_PARTICIPANT: "Event Participant",
+    VISIT: "Site Visit",
+    CONTENT: "Content",
   };
 
   return (
@@ -87,7 +106,7 @@ export default function WalletPage() {
         {/* Left Column: Transaction History */}
         <div className="lg:col-span-7">
           <Card className="rounded-2xl shadow-sm border border-gray-100">
-            <CardContent className="p-6 space-y-6">
+            <CardContent className="p-4 sm:p-6 space-y-4 sm:space-y-6">
               <div className="flex items-center gap-3">
                 <History className="h-5 w-5 text-primary" />
                 <h3 className="text-lg font-bold text-primary">{t("transaction_history")}</h3>
@@ -103,34 +122,81 @@ export default function WalletPage() {
                   transactions.map((txn) => {
                     const isTopup = txn.type === 'CREDIT';
                     return (
-                      <div key={txn.id} className="border border-gray-100 rounded-xl p-4 transition-all duration-300 flex items-center gap-4 hover:border-orange-100">
-                        <div className={cn(
-                          "size-10 md:size-12 rounded-lg flex items-center justify-center shrink-0",
-                          isTopup 
-                            ? "bg-orange-50 text-secondary" 
-                            : "bg-slate-50 text-primary"
-                        )}>
-                          {isTopup ? <ArrowUpRight size={18} className="md:size-5" /> : <ArrowDownLeft size={18} className="md:size-5" />}
-                        </div>
+                      <div 
+                        key={txn.id} 
+                        className="border border-gray-100 rounded-xl p-3 sm:p-4 transition-all duration-300 flex items-start sm:items-center justify-between gap-3 hover:border-accent hover:bg-accent/10 shadow-xs"
+                      >
+                        <div className="flex items-start sm:items-center gap-3 sm:gap-4 flex-1 min-w-0">
+                          <div className={cn(
+                            "size-9 sm:size-11 rounded-lg flex items-center justify-center shrink-0 border",
+                            isTopup 
+                              ? "bg-emerald-50 border-emerald-100 text-emerald-600" 
+                              : "bg-rose-50 border-rose-100 text-rose-600"
+                          )}>
+                            {isTopup ? <ArrowUpRight size={16} className="sm:size-5" /> : <ArrowDownLeft size={16} className="sm:size-5" />}
+                          </div>
 
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold text-primary text-sm mb-0.5 truncate">
-                            {REASON_LABELS[txn.reason] || txn.reason.replace(/_/g, ' ')}
-                          </h4>
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <span className="font-medium">ID: {txn.id.slice(0, 8)}...</span>
-                            <span>•</span>
-                            <span className="font-medium">
-                              {format(new Date(txn.createdAt), "dd MMM yyyy")}
-                            </span>
+                          <div className="flex-1 min-w-0 space-y-1">
+                            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                              <h4 className="font-bold text-primary text-xs sm:text-sm md:text-base leading-snug truncate max-w-[160px] sm:max-w-none">
+                                {REASON_LABELS[txn.reason] || txn.reason.replace(/_/g, ' ')}
+                              </h4>
+                              <Badge 
+                                variant="outline" 
+                                className={cn(
+                                  "text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full uppercase tracking-wider shrink-0",
+                                  isTopup 
+                                    ? txn.reason === 'REFUND'
+                                      ? "bg-blue-50 text-blue-700 border-blue-200"
+                                      : txn.reason === 'BONUS'
+                                        ? "bg-amber-50 text-amber-700 border-amber-200"
+                                        : "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                    : "bg-rose-50 text-rose-700 border-rose-200"
+                                )}
+                              >
+                                {isTopup 
+                                  ? txn.reason === 'REFUND' 
+                                    ? "Refund" 
+                                    : txn.reason === 'BONUS' 
+                                      ? "Bonus" 
+                                      : "Recharge" 
+                                  : "Deduction"}
+                              </Badge>
+                            </div>
+
+                            <div className="flex flex-wrap items-center gap-x-1.5 sm:gap-x-2 gap-y-1 text-[10px] sm:text-xs text-muted-foreground">
+                              <span className="font-semibold text-[9px] sm:text-[11px] bg-slate-100 px-1 sm:px-1.5 py-0.5 rounded text-slate-600 uppercase tracking-tighter">
+                                ID: {txn.id.slice(0, 8)}
+                              </span>
+                              {txn.refId && (
+                                <>
+                                  <span className="text-slate-300">•</span>
+                                  <span className="font-semibold bg-blue-50 text-blue-600 border border-blue-100 px-1 sm:px-1.5 py-0.5 rounded text-[9px] sm:text-[10px] uppercase">
+                                    Ref: {REF_TYPE_LABELS[txn.refType || ''] || txn.refType || 'ID'} ({txn.refId.slice(0, 8)})
+                                  </span>
+                                </>
+                              )}
+                              <span className="text-slate-300">•</span>
+                              <span className="font-medium flex items-center gap-1 shrink-0">
+                                <Clock className="size-2.5 sm:size-3 text-muted-foreground/75" />
+                                {format(new Date(txn.createdAt), "dd MMM yyyy • hh:mm a")}
+                              </span>
+                            </div>
                           </div>
                         </div>
 
-                        <div className={cn(
-                          "text-lg md:text-xl font-bold shrink-0",
-                          isTopup ? "text-secondary" : "text-primary"
-                        )}>
-                          {isTopup ? '+' : '-'}{txn.amount}
+                        <div className="text-right shrink-0 flex flex-col items-end gap-0.5 self-start sm:self-center">
+                          <div className={cn(
+                            "text-sm sm:text-base md:text-lg font-extrabold tracking-tight",
+                            isTopup ? "text-emerald-600" : "text-rose-600"
+                          )}>
+                            {isTopup ? '+' : '-'}{txn.cost.toLocaleString()} {t("coins")}
+                          </div>
+                          {isTopup && txn.amountInInr !== undefined && txn.amountInInr !== null && (
+                            <div className="text-[9px] sm:text-[11px] bg-emerald-50 text-emerald-700 border border-emerald-100 font-bold px-1.5 sm:px-2 py-0.5 rounded-md mt-0.5">
+                              Paid: ₹{txn.amountInInr.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            </div>
+                          )}
                         </div>
                       </div>
                     );

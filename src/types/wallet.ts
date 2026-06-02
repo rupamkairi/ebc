@@ -16,7 +16,9 @@ export interface WalletTransaction {
   id: string;
   walletId: string;
   reason: TRANSACTION_REASON;
-  amount: number;
+  cost: number;
+  amount?: number;
+  amountInInr?: number;
   type: "CREDIT" | "DEBIT";
   refType?: REF_TYPE;
   refId?: string;
