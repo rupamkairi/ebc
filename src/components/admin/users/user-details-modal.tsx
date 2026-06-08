@@ -223,8 +223,11 @@ export function UserDetailsModal({
                             {entity.addressLine2 && `, ${entity.addressLine2}`}
                             <br />
                             {entity.city && `${entity.city}, `}
-                            {entity.pincodeId &&
-                              `Pincode ID: ${entity.pincodeId}`}
+                            {entity.pincode?.pincode ? (
+                              `Pincode: ${entity.pincode.pincode}`
+                            ) : entity.pincodeId ? (
+                              `Pincode ID: ${entity.pincodeId}`
+                            ) : null}
                           </>
                         ) : (
                           "No address provided."
