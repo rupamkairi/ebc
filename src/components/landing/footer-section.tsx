@@ -268,7 +268,7 @@ export function FooterSection() {
                 </svg>
               </div>
               <span className="text-[10px] md:text-[11px] font-medium ">
-                <a href="mailto:[EMAIL_ADDRESS]">{t("footer_email")}</a>
+                <a href={`mailto:${t("footer_email")}`}>{t("footer_email")}</a>
               </span>
             </div>
           </div>
