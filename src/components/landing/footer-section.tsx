@@ -291,7 +291,7 @@ export function FooterSection() {
               </svg>
             </a>
             <a
-              href="https://facebook.com/econprecastsystem/"
+              href="https://facebook.com/econbuildingcentre/"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-white p-1.5 md:p-2 rounded-full hover:bg-white/90 transition-all shadow-sm"
