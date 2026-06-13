@@ -39,7 +39,7 @@ export function HowItWorksSection() {
         </div>
 
         <div className="flex justify-center">
-          <Link href="/auth/register?role=BUYER">
+          <Link href="/browse">
             <Button variant="glow" size="action" className="group">
               {t("home_journey_cta")}
               <ArrowRight className="size-6 group-hover:translate-x-1 transition-transform" />

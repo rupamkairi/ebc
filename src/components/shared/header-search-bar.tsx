@@ -3,12 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { RefObject } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import {
-  ArrowLeft,
-  Loader2,
-  Search,
-  X,
-} from "lucide-react";
+import { ArrowLeft, Loader2, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -220,7 +215,9 @@ export function HeaderSearchBar() {
 
   const submitSearch = () => {
     const trimmed = query.trim();
-    router.push(trimmed ? `/browse?q=${encodeURIComponent(trimmed)}` : "/browse");
+    router.push(
+      trimmed ? `/browse?q=${encodeURIComponent(trimmed)}` : "/browse",
+    );
     closeSearch();
   };
 
@@ -294,7 +291,10 @@ export function HeaderSearchBar() {
 
   return (
     <>
-      <Popover open={resultsOpen} onOpenChange={(open) => !open && closeSearch()}>
+      <Popover
+        open={resultsOpen}
+        onOpenChange={(open) => !open && closeSearch()}
+      >
         <PopoverAnchor asChild>
           <div className="hidden md:block">
             <SearchInput
@@ -333,7 +333,10 @@ export function HeaderSearchBar() {
             <ArrowLeft className="h-5 w-5" />
           </button>
 
-          <Popover open={resultsOpen} onOpenChange={(open) => !open && closeSearch()}>
+          <Popover
+            open={resultsOpen}
+            onOpenChange={(open) => !open && closeSearch()}
+          >
             <PopoverAnchor asChild>
               <div className="flex flex-1">
                 <SearchInput

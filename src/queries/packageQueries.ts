@@ -25,3 +25,14 @@ export const useCreateUpdateCoinPackageMutation = () => {
     },
   });
 };
+
+export const useDeleteCoinPackageMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => packageService.deletePackage(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: packageKeys.lists() });
+    },
+  });
+};

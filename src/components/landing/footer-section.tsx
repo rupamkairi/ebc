@@ -9,7 +9,7 @@ import { EBC_CONTACT, getEbcWhatsappUrl } from "@/constants/contact";
 export function FooterSection() {
   const { t } = useLanguage();
   return (
-    <footer className="bg-linear-to-b from-primary to-primary/50 text-white pt-10 pb-6">
+    <footer className="bg-primary text-white pt-10 pb-6">
       <Container size="xl">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-8 mb-8 px-2">
           {/* Brand Column */}
@@ -76,7 +76,10 @@ export function FooterSection() {
             </h4>
             <ul className="space-y-2 text-[13px] font-medium text-white/90">
               <li>
-                <Link href="/calculator" className="hover:text-white transition-colors">
+                <Link
+                  href="/calculator"
+                  className="hover:text-white transition-colors"
+                >
                   {t("footer_ai_calculator")}
                 </Link>
               </li>
@@ -86,27 +89,42 @@ export function FooterSection() {
                 </Link>
               </li> */}
               <li>
-                <Link href="/buyer-dashboard" className="hover:text-white transition-colors">
+                <Link
+                  href="/buyer-dashboard"
+                  className="hover:text-white transition-colors"
+                >
                   {t("footer_request_quote")}
                 </Link>
               </li>
               <li>
-                <Link href="/buyer-dashboard" className="hover:text-white transition-colors">
+                <Link
+                  href="/buyer-dashboard"
+                  className="hover:text-white transition-colors"
+                >
                   {t("footer_experts")}
                 </Link>
               </li>
               <li>
-                <Link href="/conference-hall" className="hover:text-white transition-colors">
+                <Link
+                  href="/conference-hall"
+                  className="hover:text-white transition-colors"
+                >
                   {t("conference_hall")}
                 </Link>
               </li>
               <li>
-                <Link href="/buyer-dashboard" className="hover:text-white transition-colors">
+                <Link
+                  href="/buyer-dashboard"
+                  className="hover:text-white transition-colors"
+                >
                   {t("footer_find_sellers")}
                 </Link>
               </li>
               <li>
-                <Link href="/buyer-dashboard" className="hover:text-white transition-colors">
+                <Link
+                  href="/buyer-dashboard"
+                  className="hover:text-white transition-colors"
+                >
                   {t("footer_find_workers")}
                 </Link>
               </li>
@@ -120,7 +138,10 @@ export function FooterSection() {
             </h4>
             <ul className="space-y-2 text-[13px] font-medium text-white/90">
               <li>
-                <Link href="/how-it-helps" className="hover:text-white transition-colors">
+                <Link
+                  href="/how-it-helps"
+                  className="hover:text-white transition-colors"
+                >
                   {t("footer_how_ebc_helps")}
                 </Link>
               </li>
@@ -130,12 +151,18 @@ export function FooterSection() {
                 </Link>
               </li> */}
               <li>
-                <Link href="/calculator" className="hover:text-white transition-colors">
+                <Link
+                  href="/calculator"
+                  className="hover:text-white transition-colors"
+                >
                   {t("footer_cost_guide")}
                 </Link>
               </li>
               <li>
-                <Link href="#faq" className="hover:text-white transition-colors">
+                <Link
+                  href="#faq"
+                  className="hover:text-white transition-colors"
+                >
                   {t("footer_faq_builders")}
                 </Link>
               </li>
@@ -149,7 +176,10 @@ export function FooterSection() {
             </h4>
             <ul className="space-y-2 text-[13px] font-medium text-white/90">
               <li>
-                <Link href="/calculator" className="hover:text-white transition-colors">
+                <Link
+                  href="/calculator"
+                  className="hover:text-white transition-colors"
+                >
                   {t("footer_estimate_cost")}
                 </Link>
               </li>
@@ -164,12 +194,18 @@ export function FooterSection() {
                 </a>
               </li>
               <li>
-                <Link href="/calculator" className="hover:text-white transition-colors">
+                <Link
+                  href="/calculator"
+                  className="hover:text-white transition-colors"
+                >
                   {t("footer_cost_guide")}
                 </Link>
               </li>
               <li>
-                <Link href="/how-it-helps" className="hover:text-white transition-colors">
+                <Link
+                  href="/how-it-helps"
+                  className="hover:text-white transition-colors"
+                >
                   {t("footer_compare_prices")}
                 </Link>
               </li>
@@ -183,12 +219,18 @@ export function FooterSection() {
             </h4>
             <ul className="space-y-2 text-[13px] font-medium text-white/90">
               <li>
-                <Link href="/how-it-helps" className="hover:text-white transition-colors">
+                <Link
+                  href="/how-it-helps"
+                  className="hover:text-white transition-colors"
+                >
                   {t("footer_about")}
                 </Link>
               </li>
               <li>
-                <Link href="/how-it-works" className="hover:text-white transition-colors">
+                <Link
+                  href="/how-it-works"
+                  className="hover:text-white transition-colors"
+                >
                   {t("footer_how_works")}
                 </Link>
               </li>
@@ -203,22 +245,34 @@ export function FooterSection() {
                 </a>
               </li>
               <li>
-                <Link href="/#faq" className="hover:text-white transition-colors">
+                <Link
+                  href="/#faq"
+                  className="hover:text-white transition-colors"
+                >
                   {t("footer_help_faq")}
                 </Link>
               </li>
               <li>
-                <Link href="/#faq" className="hover:text-white transition-colors">
+                <Link
+                  href="/#faq"
+                  className="hover:text-white transition-colors"
+                >
                   {t("privacy_policy")}
                 </Link>
               </li>
               <li>
-                <Link href="/how-it-helps/seller" className="hover:text-white transition-colors">
+                <Link
+                  href="/how-it-helps/seller"
+                  className="hover:text-white transition-colors"
+                >
                   {t("footer_seller_agreement")}
                 </Link>
               </li>
               <li>
-                <Link href="/how-it-helps/buyer" className="hover:text-white transition-colors">
+                <Link
+                  href="/how-it-helps/buyer"
+                  className="hover:text-white transition-colors"
+                >
                   {t("footer_consumer_safety")}
                 </Link>
               </li>
@@ -258,7 +312,7 @@ export function FooterSection() {
             <div className="flex items-center gap-2.5">
               <div className="bg-white p-1.5 rounded-full shadow-sm">
                 <svg
-                  className="h-[14px] w-[14px] text-secondary"
+                  className="w-3.5 h-3.5 text-secondary"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -301,6 +355,7 @@ export function FooterSection() {
               rel="noopener noreferrer"
               aria-label="E-CON Building Centre on Facebook"
               className="bg-white p-1.5 md:p-2 rounded-full hover:bg-white/90 transition-all shadow-sm"
+              title="Facebook"
             >
               <svg
                 className="h-[14px] w-[14px] md:h-4 md:w-4 text-primary"

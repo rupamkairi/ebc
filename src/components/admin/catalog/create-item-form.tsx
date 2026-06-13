@@ -63,9 +63,12 @@ export function ItemForm() {
     },
     onSubmit: async ({ value }) => {
       const normalizedHSNCode = normalizeHsnCode(value.HSNCode);
+      const isService = value.type === ITEM_TYPE.SERVICE;
       const payload = {
         ...value,
         HSNCode: normalizedHSNCode.length > 0 ? normalizedHSNCode : null,
+        brandId: isService ? (value.brandId || null) : value.brandId,
+        roomId: isService ? (value.roomId || null) : value.roomId,
       };
 
       try {
@@ -101,7 +104,7 @@ export function ItemForm() {
         HSNCode: selectedItem.HSNCode || "",
         GSTPercentage: selectedItem.GSTPercentage,
         categoryId: selectedItem.categoryId,
-        brandId: selectedItem.brandId,
+        brandId: selectedItem.brandId || "",
         specificationId: selectedItem.specificationId,
         roomId: selectedItem.roomId || "",
         acceptableUnitTypes: (selectedItem.acceptableUnitTypes as UnitType[]) || [],
@@ -167,9 +170,9 @@ export function ItemForm() {
             }}
           >
             {(field) => (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor={field.name} className="text-right">
-                  Name
+              <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
+                <Label htmlFor={field.name} className="sm:text-right">
+                  Name <span className="text-red-500">*</span>
                 </Label>
                 <div className="col-span-3">
                   <Input
@@ -194,9 +197,9 @@ export function ItemForm() {
           {/* Description */}
           <form.Field name="description">
             {(field) => (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor={field.name} className="text-right">
-                  Description
+              <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
+                <Label htmlFor={field.name} className="sm:text-right">
+                  Description <span className="text-red-500">*</span>
                 </Label>
                 <div className="col-span-3">
                   <Textarea
@@ -216,8 +219,8 @@ export function ItemForm() {
           {/* Type */}
           <form.Field name="type">
             {(field) => (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor={field.name} className="text-right">
+              <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
+                <Label htmlFor={field.name} className="sm:text-right">
                   Type
                 </Label>
                 <div className="col-span-3">
@@ -247,20 +250,26 @@ export function ItemForm() {
                 name="HSNCode"
                 validators={{
                   onChange: ({ value }) => {
-                    if (itemType === ITEM_TYPE.PRODUCT && !value) {
-                      return "HSN Code is required for products";
+                    if (itemType === ITEM_TYPE.SERVICE && !value) {
+                      return "SAC Code is required for services";
                     }
                     if (!value) return undefined;
                     return /^\d+$/.test(value)
                       ? undefined
-                      : "HSN Code must contain numbers only";
+                      : `${itemType === ITEM_TYPE.SERVICE ? "SAC Code" : "HSN Code"} must contain numbers only`;
                   },
                 }}
               >
                 {(field) => (
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor={field.name} className="text-right">
-                      HSN Code
+                  <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
+                    <Label htmlFor={field.name} className="sm:text-right">
+                      {itemType === ITEM_TYPE.SERVICE ? (
+                        <>
+                          SAC Code <span className="text-red-500">*</span>
+                        </>
+                      ) : (
+                        "HSN Code"
+                      )}
                     </Label>
                     <div className="col-span-3">
                       <Input
@@ -272,7 +281,7 @@ export function ItemForm() {
                           field.handleChange(normalizeHsnCode(e.target.value))
                         }
                         className="col-span-3"
-                        required={itemType === ITEM_TYPE.PRODUCT}
+                        required={itemType === ITEM_TYPE.SERVICE}
                       />
                       {field.state.meta.errors ? (
                         <p className="text-sm text-red-500 mt-1">
@@ -295,9 +304,9 @@ export function ItemForm() {
             }}
           >
             {(field) => (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor={field.name} className="text-right">
-                  GST %
+              <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
+                <Label htmlFor={field.name} className="sm:text-right">
+                  GST % <span className="text-red-500">*</span>
                 </Label>
                 <div className="col-span-3">
                   <NumericInput
@@ -325,9 +334,9 @@ export function ItemForm() {
             }}
           >
             {(field) => (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor={field.name} className="text-right">
-                  Category
+              <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
+                <Label htmlFor={field.name} className="sm:text-right">
+                  Category <span className="text-red-500">*</span>
                 </Label>
                 <div className="col-span-3">
                   <CategorySearchAutocomplete
@@ -347,34 +356,42 @@ export function ItemForm() {
           </form.Field>
 
           {/* Brand */}
-          <form.Field
-            name="brandId"
-            validators={{
-              onChange: ({ value }) =>
-                !value ? "Brand is required" : undefined,
-            }}
-          >
-            {(field) => (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor={field.name} className="text-right">
-                  Brand
-                </Label>
-                <div className="col-span-3">
-                  <BrandSearchAutocomplete
-                    value={field.state.value}
-                    onValueChange={field.handleChange}
-                    placeholder="Search brand"
-                    label="Select brand"
-                  />
-                  {field.state.meta.errors ? (
-                    <p className="text-sm text-red-500 mt-1">
-                      {field.state.meta.errors.join(", ")}
-                    </p>
-                  ) : null}
-                </div>
-              </div>
+          <form.Subscribe selector={(state) => [state.values.type]}>
+            {([itemType]) => (
+              <form.Field
+                name="brandId"
+                validators={{
+                  onChange: ({ value }) => {
+                    if (itemType === ITEM_TYPE.PRODUCT && !value) {
+                      return "Brand is required";
+                    }
+                    return undefined;
+                  },
+                }}
+              >
+                {(field) => (
+                  <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
+                    <Label htmlFor={field.name} className="sm:text-right">
+                      Brand {itemType === ITEM_TYPE.PRODUCT && <span className="text-red-500">*</span>}
+                    </Label>
+                    <div className="col-span-3">
+                      <BrandSearchAutocomplete
+                        value={field.state.value}
+                        onValueChange={field.handleChange}
+                        placeholder="Search brand"
+                        label="Select brand"
+                      />
+                      {field.state.meta.errors ? (
+                        <p className="text-sm text-red-500 mt-1">
+                          {field.state.meta.errors.join(", ")}
+                        </p>
+                      ) : null}
+                    </div>
+                  </div>
+                )}
+              </form.Field>
             )}
-          </form.Field>
+          </form.Subscribe>
 
           {/* Specification */}
           <form.Field
@@ -385,9 +402,9 @@ export function ItemForm() {
             }}
           >
             {(field) => (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor={field.name} className="text-right">
-                  Specification
+              <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
+                <Label htmlFor={field.name} className="sm:text-right">
+                  Specification <span className="text-red-500">*</span>
                 </Label>
                 <div className="col-span-3">
                   <SpecificationSearchAutocomplete
@@ -409,8 +426,8 @@ export function ItemForm() {
           {/* Room */}
           <form.Field name="roomId">
             {(field) => (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor={field.name} className="text-right">
+              <div className="flex flex-col gap-1 sm:grid sm:grid-cols-4 sm:items-center sm:gap-4">
+                <Label htmlFor={field.name} className="sm:text-right">
                   Room
                 </Label>
                 <div className="col-span-3">

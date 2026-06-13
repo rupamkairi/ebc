@@ -168,7 +168,7 @@ export const useBrowseData = (params: BrowseParams) => {
         : undefined,
       categoryId: categoryId,
       subCategoryId: subCategoryId,
-      brand: brandMap.get(item.brandId)?.name || "Generic",
+      brand: (item.brandId ? brandMap.get(item.brandId) : null)?.name || "Generic",
       acceptableUnitTypes: item.acceptableUnitTypes,
       // rating: 4.5,
       type: item.type,
