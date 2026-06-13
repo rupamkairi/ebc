@@ -14,6 +14,8 @@ import { format } from "date-fns";
 
 import { ActionColumn } from "./action-column";
 import { useSpecificationStore } from "@/store/specificationStore";
+import { AdminTableToolbar } from "@/components/admin/admin-table-toolbar";
+import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,13 +34,16 @@ export function SpecificationTable() {
     pageSize: 10,
   });
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [search, setSearch] = useState("");
   const [specificationToDelete, setSpecificationToDelete] =
     useState<Specification | null>(null);
+  const debouncedSearch = useDebouncedValue(search);
   const { setEditOpen } = useSpecificationStore();
 
   const deleteMutation = useDeleteSpecificationMutation();
 
   const { data, isLoading } = useSpecificationsQuery({
+    search: debouncedSearch.trim() || undefined,
     page: pagination.pageIndex + 1,
     perPage: pagination.pageSize,
     sort: sorting[0]?.id,
@@ -46,6 +51,10 @@ export function SpecificationTable() {
   });
 
   const specifications = data || [];
+
+  const resetPagination = () => {
+    setPagination((current) => ({ ...current, pageIndex: 0 }));
+  };
 
   const handleDelete = async () => {
     if (!specificationToDelete) return;
@@ -96,6 +105,20 @@ export function SpecificationTable() {
 
   return (
     <>
+      <div className="mb-4">
+        <AdminTableToolbar
+          searchValue={search}
+          onSearchChange={(value) => {
+            setSearch(value);
+            resetPagination();
+          }}
+          searchPlaceholder="Search specifications..."
+          onClear={() => {
+            setSearch("");
+            resetPagination();
+          }}
+        />
+      </div>
       <DataTable
         columns={columns}
         data={specifications}

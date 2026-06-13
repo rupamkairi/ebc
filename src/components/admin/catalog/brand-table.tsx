@@ -14,6 +14,8 @@ import { format } from "date-fns";
 
 import { ActionColumn } from "./action-column";
 import { useBrandStore } from "@/store/brandStore";
+import { AdminTableToolbar } from "@/components/admin/admin-table-toolbar";
+import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,12 +34,15 @@ export function BrandTable() {
     pageSize: 10,
   });
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [search, setSearch] = useState("");
   const [brandToDelete, setBrandToDelete] = useState<Brand | null>(null);
+  const debouncedSearch = useDebouncedValue(search);
   const { setEditOpen } = useBrandStore();
 
   const deleteMutation = useDeleteBrandMutation();
 
   const { data, isLoading } = useBrandsQuery({
+    search: debouncedSearch.trim() || undefined,
     page: pagination.pageIndex + 1,
     perPage: pagination.pageSize,
     sort: sorting[0]?.id,
@@ -45,6 +50,10 @@ export function BrandTable() {
   });
 
   const brands = data || [];
+
+  const resetPagination = () => {
+    setPagination((current) => ({ ...current, pageIndex: 0 }));
+  };
 
   const handleDelete = async () => {
     if (!brandToDelete) return;
@@ -90,6 +99,20 @@ export function BrandTable() {
 
   return (
     <>
+      <div className="mb-4">
+        <AdminTableToolbar
+          searchValue={search}
+          onSearchChange={(value) => {
+            setSearch(value);
+            resetPagination();
+          }}
+          searchPlaceholder="Search brands..."
+          onClear={() => {
+            setSearch("");
+            resetPagination();
+          }}
+        />
+      </div>
       <DataTable
         columns={columns}
         data={brands}

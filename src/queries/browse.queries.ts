@@ -1,4 +1,4 @@
-import { BrowseParams } from "@/hooks/useBrowseParams";
+import { BrowseParams, isSpecificBrowseType } from "@/hooks/useBrowseParams";
 import {
   useBrandsQuery,
   useCategoriesQuery,
@@ -61,12 +61,13 @@ export interface BrowseData {
 export const useBrowseData = (params: BrowseParams) => {
   // Read selection from URL params
   const { parentCategory, subCategory, type, roomId } = params;
+  const itemType = isSpecificBrowseType(type) ? (type as ITEM_TYPE) : undefined;
 
-  // 1. Fetch Parent Categories (for horizontal carousel) - filtered by type
+  // 1. Fetch Parent Categories (for horizontal carousel)
   const { data: parentCategories, isLoading: isLoadingCats } =
     useCategoriesQuery({
       isSubCategory: false,
-      type: type as ITEM_TYPE, // Pass PRODUCT or SERVICE type to filter categories
+      type: itemType,
       roomId: roomId || undefined,
     });
 
@@ -77,7 +78,7 @@ export const useBrowseData = (params: BrowseParams) => {
         ? {
             parentCategoryId: parentCategory,
             isSubCategory: true,
-            type: type as ITEM_TYPE,
+            type: itemType,
             roomId: roomId || undefined,
           }
         : ({ enabled: false } as never), // Skip query if no parent selected
@@ -97,7 +98,7 @@ export const useBrowseData = (params: BrowseParams) => {
     categoryId: categoryFilter,
     brandId: params.brand.length === 1 ? params.brand[0] : undefined,
     roomId: roomId || undefined,
-    type: type as ITEM_TYPE, // Pass type to filter products vs services
+    type: itemType,
   });
 
   const isLoading = isLoadingCats || isLoadingSubCats || isLoadingItems;
@@ -106,7 +107,7 @@ export const useBrowseData = (params: BrowseParams) => {
   const allItems = itemsFromCatalog || [];
   const filteredItems = allItems.filter((item) => {
     // Filter by Type
-    if (type && item.type !== type) return false;
+    if (itemType && item.type !== itemType) return false;
 
     // Filter by Subcategories (if any selected)
     if (subCategory.length > 0) {

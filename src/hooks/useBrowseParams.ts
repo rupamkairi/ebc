@@ -5,7 +5,12 @@ import { useCallback, useMemo } from "react";
 
 export type SortOption = "relevance" | "price_asc" | "price_desc" | "newest";
 
-export type BrowseType = "PRODUCT" | "SERVICE";
+export type BrowseType = "ALL" | "PRODUCT" | "SERVICE";
+
+export const isSpecificBrowseType = (
+  type: BrowseType,
+): type is Exclude<BrowseType, "ALL"> =>
+  type === "PRODUCT" || type === "SERVICE";
 
 export interface BrowseParams {
   q: string;
@@ -26,10 +31,13 @@ export const useBrowseParams = () => {
 
   // Parse current params from URL
   const params: BrowseParams = useMemo(() => {
+    const typeParam = searchParams.get("type")?.toUpperCase();
+    const type: BrowseType =
+      typeParam === "PRODUCT" || typeParam === "SERVICE" ? typeParam : "ALL";
+
     return {
       q: searchParams.get("q") || "",
-      type:
-        (searchParams.get("type")?.toUpperCase() as BrowseType) || "PRODUCT",
+      type,
       parentCategory: searchParams.get("parentCategory") || null,
       subCategory: [
         ...searchParams.getAll("subCategory"),
@@ -58,9 +66,10 @@ export const useBrowseParams = () => {
         else current.delete("q");
       }
 
-      // Type (PRODUCT/SERVICE)
+      // Type (ALL/PRODUCT/SERVICE)
       if (newParams.type !== undefined) {
-        current.set("type", newParams.type);
+        if (newParams.type === "ALL") current.delete("type");
+        else current.set("type", newParams.type);
         // Reset category/subcategory when type changes
         current.delete("parentCategory");
         current.delete("subCategory");

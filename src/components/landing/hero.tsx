@@ -32,12 +32,12 @@ export function Hero() {
 
   const CTAButtons = (
     <div className="flex flex-col gap-3.5 md:gap-4 w-full md:w-auto">
-      {/* CTA 1: Consult with Expert - Service Browse */}
+      {/* CTA 1: Consult with Expert */}
       <Button
         className="group h-[54px] md:h-[60px] pl-1.5 pr-6 md:pr-8 py-0 bg-primary hover:bg-primary/90 text-white rounded-full flex items-center gap-4 transition-all duration-300 shadow-xl border-none w-full md:w-auto"
         asChild
       >
-        <Link href="/browse?type=SERVICE">
+        <Link href="/browse">
           <div className="h-10 w-10 md:h-11 md:w-11 shrink-0 rounded-full bg-secondary flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
             <UserRound className="size-5 md:size-6 text-white" />
           </div>
@@ -47,12 +47,12 @@ export function Hero() {
         </Link>
       </Button>
 
-      {/* CTA 2: Compare Material Rate - Product Browse*/}
+      {/* CTA 2: Compare Material Rate */}
       <Button
         className="group h-[54px] md:h-[60px] pl-1.5 pr-6 md:pr-8 py-0 bg-primary hover:bg-primary/90 text-white rounded-full flex items-center gap-4 transition-all duration-300 shadow-xl border-none w-full md:w-auto"
         asChild
       >
-        <Link href="/browse?type=PRODUCT">
+        <Link href="/browse">
           <div className="h-10 w-10 md:h-11 md:w-11 shrink-0 rounded-full bg-secondary flex items-center justify-center shadow-lg group-hover:-rotate-12 transition-transform">
             <Scale className="size-5 md:size-6 text-white" />
           </div>

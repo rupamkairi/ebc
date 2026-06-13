@@ -10,18 +10,14 @@ import { DataTable } from "@/components/datatable/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/datatable/data-table-column-header";
 import { Category } from "@/types/catalog";
+import { ITEM_TYPE } from "@/constants/enums";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 
 import { ActionColumn } from "./action-column";
 import { useCategoryStore } from "@/store/categoryStore";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { AdminTableToolbar } from "@/components/admin/admin-table-toolbar";
+import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -41,9 +37,12 @@ export function CategoryTable() {
   });
   const [sorting, setSorting] = useState<SortingState>([]);
   const [levelFilter, setLevelFilter] = useState<"ALL" | "TOP" | "SUB">("ALL");
+  const [typeFilter, setTypeFilter] = useState("ALL");
+  const [search, setSearch] = useState("");
   const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(
     null
   );
+  const debouncedSearch = useDebouncedValue(search);
   const { setEditOpen } = useCategoryStore();
 
   const deleteMutation = useDeleteCategoryMutation();
@@ -53,6 +52,8 @@ export function CategoryTable() {
 
   const { data, isLoading } = useCategoriesQuery({
     isSubCategory: isSubCategoryParam,
+    type: typeFilter === "ALL" ? undefined : (typeFilter as ITEM_TYPE),
+    search: debouncedSearch.trim() || undefined,
     page: pagination.pageIndex + 1,
     perPage: pagination.pageSize,
     sort: sorting[0]?.id,
@@ -60,6 +61,10 @@ export function CategoryTable() {
   });
 
   const categories = data || [];
+
+  const resetPagination = () => {
+    setPagination((current) => ({ ...current, pageIndex: 0 }));
+  };
 
   const handleDelete = async () => {
     if (!categoryToDelete) return;
@@ -115,26 +120,52 @@ export function CategoryTable() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">Showing: </span>
-          <Select
-            value={levelFilter}
-            onValueChange={(value: "ALL" | "TOP" | "SUB") =>
-              setLevelFilter(value)
-            }
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select level" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="ALL">All</SelectItem>
-              <SelectItem value="TOP">Categories Only</SelectItem>
-              <SelectItem value="SUB">Sub Categories Only</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+      <AdminTableToolbar
+        searchValue={search}
+        onSearchChange={(value) => {
+          setSearch(value);
+          resetPagination();
+        }}
+        searchPlaceholder="Search categories..."
+        filters={[
+          {
+            key: "level",
+            label: "Level",
+            value: levelFilter,
+            placeholder: "Category level",
+            onChange: (value) => {
+              setLevelFilter(value as "ALL" | "TOP" | "SUB");
+              resetPagination();
+            },
+            options: [
+              { label: "All levels", value: "ALL" },
+              { label: "Categories only", value: "TOP" },
+              { label: "Sub categories only", value: "SUB" },
+            ],
+          },
+          {
+            key: "type",
+            label: "Type",
+            value: typeFilter,
+            placeholder: "Category type",
+            onChange: (value) => {
+              setTypeFilter(value);
+              resetPagination();
+            },
+            options: [
+              { label: "All types", value: "ALL" },
+              { label: "Products", value: ITEM_TYPE.PRODUCT },
+              { label: "Services", value: ITEM_TYPE.SERVICE },
+            ],
+          },
+        ]}
+        onClear={() => {
+          setSearch("");
+          setLevelFilter("ALL");
+          setTypeFilter("ALL");
+          resetPagination();
+        }}
+      />
       <DataTable
         columns={columns}
         data={categories}

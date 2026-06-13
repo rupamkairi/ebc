@@ -189,12 +189,11 @@ export function useDeleteSpecificationMutation() {
 
 // Items
 export function useItemsQuery(params: ItemListParams = {}) {
-  const token = useAuthStore((state) => state.token);
   return useQuery({
     queryKey: catalogKeys.items(params),
     queryFn: () => catalogService.getItems(params),
     placeholderData: keepPreviousData,
-    enabled: !!token || params.enabled !== false, // Allow public browsing if enabled is not explicitly false
+    enabled: params.enabled !== false, // Allow public browsing unless explicitly disabled
   });
 }
 

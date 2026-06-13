@@ -47,7 +47,18 @@ export function Results({ isLoading }: ResultsProps) {
     );
   }
 
-  const pageTitle = type === "SERVICE" ? "Browse Services" : "Browse Products";
+  const pageTitle =
+    type === "PRODUCT"
+      ? "Construction Materials"
+      : type === "SERVICE"
+        ? "Construction Services"
+        : "Explore Categories";
+  const resultLabel =
+    type === "PRODUCT"
+      ? "materials"
+      : type === "SERVICE"
+        ? "services"
+        : "results";
 
   return (
     <div className="space-y-6">
@@ -71,29 +82,30 @@ export function Results({ isLoading }: ResultsProps) {
 
       {/* 4. Results Breadcrumb/Line */}
       <div className="border-b border-slate-200 pb-2">
-         <p className="text-sm font-bold text-slate-400">
-           Result : <span className="text-primary">
-             {categories.find(c => c.id === parentCategory)?.name || (parentCategory ? "Loading..." : "All Materials")}
-           </span> 
-           {subCategory.length > 0 && " > "}
-           <span className="text-slate-500">
-             {subCategories
-               .filter(s => subCategory.includes(s.id))
-               .map(s => s.name)
-               .join(", ")}
-           </span>
-         </p>
+        <p className="text-sm font-bold text-slate-400">
+          Result :{" "}
+          <span className="text-primary">
+            {categories.find((c) => c.id === parentCategory)?.name ||
+              (parentCategory ? "Loading..." : "All results")}
+          </span>
+          {subCategory.length > 0 && " > "}
+          <span className="text-slate-500">
+            {subCategories
+              .filter((s) => subCategory.includes(s.id))
+              .map((s) => s.name)
+              .join(", ")}
+          </span>
+        </p>
       </div>
 
       {/* 5. Results Count */}
       <div className="flex items-center justify-between text-sm text-muted-foreground">
         <p className="font-bold text-slate-500">
-          Showing {items.length} of {total}{" "}
-          {type === "SERVICE" ? "services" : "products"}
+          Showing {items.length} of {total} {resultLabel}
         </p>
       </div>
 
-      {/* 5. Product Grid or Empty State */}
+      {/* 5. Results Grid or Empty State */}
       {items.length > 0 ? (
         <ItemCardGrid items={items} />
       ) : (

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { IconBrandWhatsapp } from "@tabler/icons-react";
 import { TypographyResponsiveSmall } from "@/components/ui/typography";
 import { useLanguage } from "@/hooks/useLanguage";
+import { EBC_CONTACT, getEbcWhatsappUrl } from "@/constants/contact";
 
 interface WhatsAppButtonProps {
   phoneNumber?: string;
@@ -12,7 +13,7 @@ interface WhatsAppButtonProps {
 }
 
 export function WhatsAppButton({ 
-  phoneNumber = "+911234567890", 
+  phoneNumber = EBC_CONTACT.phone, 
   message,
   label
 }: WhatsAppButtonProps) {
@@ -21,7 +22,11 @@ export function WhatsAppButton({
   const whatsappMessage = message || t("whatsapp_default_message");
   const buttonLabel = label || t("whatsapp_help_label");
   const handleWhatsAppClick = () => {
-    const url = `https://wa.me/${phoneNumber.replace(/\+/g, "")}?text=${encodeURIComponent(whatsappMessage)}`;
+    const normalizedNumber = phoneNumber.replace(/\D/g, "");
+    const url =
+      normalizedNumber === EBC_CONTACT.whatsappNumber
+        ? getEbcWhatsappUrl(whatsappMessage)
+        : `https://wa.me/${normalizedNumber}?text=${encodeURIComponent(whatsappMessage)}`;
     window.open(url, "_blank");
   };
 

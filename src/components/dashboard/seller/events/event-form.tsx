@@ -100,10 +100,16 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
             } else {
               // Otherwise use update mutation, but filter fields if approved to avoid backend errors
               const { targetRegions, ...restValue } = value;
+              const normalizedMeetingUrl = value.meetingUrl.trim() || null;
               const payload = isApproved
-                ? { isPublic: value.isPublic, isActive: initialData.isActive }
+                ? {
+                    isPublic: value.isPublic,
+                    isActive: initialData.isActive,
+                    meetingUrl: normalizedMeetingUrl,
+                  }
                 : {
                     ...restValue,
+                    meetingUrl: normalizedMeetingUrl,
                     targetRegions: targetRegions.map((r) => ({
                       pincodeId: r.pincodeId,
                     })),
@@ -119,6 +125,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
             const { targetRegions, ...restValue } = value;
             await createEventMutation.mutateAsync({
               ...restValue,
+              meetingUrl: value.meetingUrl.trim() || undefined,
               targetRegions: targetRegions.map((r) => ({
                 pincodeId: r.pincodeId,
               })),
@@ -181,7 +188,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
               VERIFICATION_STATUS.APPROVED && (
               <div className="mt-2 text-xs opacity-90">
                 This event is approved. You can only change its active
-                status/mode or delete it.
+                status/mode, meeting link, or delete it.
               </div>
             )}
           </AlertDescription>
@@ -446,7 +453,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                                   onChange={(e) =>
                                     field.handleChange(e.target.value)
                                   }
-                                  disabled={isApproved}
+                                  disabled={false}
                                   placeholder="https://meet.google.com/..."
                                 />
                                 <p className="text-[10px] text-muted-foreground italic">

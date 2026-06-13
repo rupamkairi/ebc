@@ -78,3 +78,15 @@ export function useUpdateUserMutation() {
     },
   });
 }
+
+export function useDeleteUserMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => adminService.deleteAdminUser(id),
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.all });
+      queryClient.invalidateQueries({ queryKey: [...adminKeys.all, "user", id] });
+    },
+  });
+}

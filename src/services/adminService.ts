@@ -53,4 +53,10 @@ export const adminService = {
       body: data,
     });
   },
+
+  async deleteAdminUser(id: string) {
+    return fetchClient<AdminUser>(`${API_ENDPOINTS.AUTH.ADMIN.DELETE_USER}/${id}`, {
+      method: "DELETE",
+    });
+  },
 };

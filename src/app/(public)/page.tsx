@@ -17,6 +17,7 @@ import { ReviewsSection } from "@/components/landing/reviews-section";
 import { FooterSection } from "@/components/landing/footer-section";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
 import { ScrollToTopButton } from "@/components/shared/scroll-to-top";
+import { AiChatbotLauncher } from "@/components/shared/ai-chatbot-launcher";
 
 export default function HomePage() {
   return (
@@ -71,6 +72,9 @@ export default function HomePage() {
 
       {/* Floating Scroll To Top Button */}
       <ScrollToTopButton />
+
+      {/* Floating AI Calculator Launcher */}
+      <AiChatbotLauncher />
 
       {/* Floating WhatsApp Button */}
       <WhatsAppButton />

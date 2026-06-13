@@ -91,6 +91,7 @@ export default function SellerEventDetailsPage() {
           <Tabs defaultValue="overview" className="space-y-6">
             <TabsList>
               <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="edit">Edit Event</TabsTrigger>
               <TabsTrigger value="discussions">Discussions</TabsTrigger>
             </TabsList>
 
@@ -142,6 +143,10 @@ export default function SellerEventDetailsPage() {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            <TabsContent value="edit">
+              <EventForm initialData={event} entityId={event.entityId} />
             </TabsContent>
 
             <TabsContent value="discussions">

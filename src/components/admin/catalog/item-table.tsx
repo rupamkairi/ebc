@@ -1,17 +1,26 @@
 "use client";
 
-import { useItemsQuery, useDeleteItemMutation, useCategoriesQuery } from "@/queries/catalogQueries";
+import {
+  useBrandsQuery,
+  useCategoriesQuery,
+  useDeleteItemMutation,
+  useItemsQuery,
+  useSpecificationsQuery,
+} from "@/queries/catalogQueries";
 import { PaginationState, SortingState } from "@tanstack/react-table";
 import { useState } from "react";
 import { DataTable } from "@/components/datatable/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/datatable/data-table-column-header";
 import { Item } from "@/types/catalog";
+import { ITEM_TYPE } from "@/constants/enums";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 
 import { ActionColumn } from "./action-column";
 import { useItemStore } from "@/store/itemStore";
+import { AdminTableToolbar } from "@/components/admin/admin-table-toolbar";
+import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,13 +39,29 @@ export function ItemTable() {
     pageSize: 10,
   });
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState("ALL");
+  const [categoryFilter, setCategoryFilter] = useState("ALL");
+  const [brandFilter, setBrandFilter] = useState("ALL");
+  const [specificationFilter, setSpecificationFilter] = useState("ALL");
   const [itemToDelete, setItemToDelete] = useState<Item | null>(null);
+  const debouncedSearch = useDebouncedValue(search);
   const { setEditOpen } = useItemStore();
 
   const { data: categories = [] } = useCategoriesQuery({ perPage: 1000 });
+  const { data: brands = [] } = useBrandsQuery({ perPage: 1000 });
+  const { data: specifications = [] } = useSpecificationsQuery({
+    perPage: 1000,
+  });
   const deleteMutation = useDeleteItemMutation();
 
   const { data, isLoading } = useItemsQuery({
+    search: debouncedSearch.trim() || undefined,
+    type: typeFilter === "ALL" ? undefined : (typeFilter as ITEM_TYPE),
+    categoryId: categoryFilter === "ALL" ? undefined : categoryFilter,
+    brandId: brandFilter === "ALL" ? undefined : brandFilter,
+    specificationId:
+      specificationFilter === "ALL" ? undefined : specificationFilter,
     page: pagination.pageIndex + 1,
     perPage: pagination.pageSize,
     sort: sorting[0]?.id,
@@ -44,6 +69,10 @@ export function ItemTable() {
   });
 
   const items = data || [];
+
+  const resetPagination = () => {
+    setPagination((current) => ({ ...current, pageIndex: 0 }));
+  };
 
   const handleDelete = async () => {
     if (!itemToDelete) return;
@@ -144,6 +173,92 @@ export function ItemTable() {
 
   return (
     <>
+      <div className="mb-4">
+        <AdminTableToolbar
+          searchValue={search}
+          onSearchChange={(value) => {
+            setSearch(value);
+            resetPagination();
+          }}
+          searchPlaceholder="Search items..."
+          filters={[
+            {
+              key: "type",
+              label: "Type",
+              value: typeFilter,
+              placeholder: "Item type",
+              onChange: (value) => {
+                setTypeFilter(value);
+                resetPagination();
+              },
+              options: [
+                { label: "All types", value: "ALL" },
+                { label: "Products", value: ITEM_TYPE.PRODUCT },
+                { label: "Services", value: ITEM_TYPE.SERVICE },
+              ],
+            },
+            {
+              key: "category",
+              label: "Category",
+              value: categoryFilter,
+              placeholder: "Category",
+              onChange: (value) => {
+                setCategoryFilter(value);
+                resetPagination();
+              },
+              options: [
+                { label: "All categories", value: "ALL" },
+                ...categories.map((category) => ({
+                  label: category.name,
+                  value: category.id,
+                })),
+              ],
+            },
+            {
+              key: "brand",
+              label: "Brand",
+              value: brandFilter,
+              placeholder: "Brand",
+              onChange: (value) => {
+                setBrandFilter(value);
+                resetPagination();
+              },
+              options: [
+                { label: "All brands", value: "ALL" },
+                ...brands.map((brand) => ({
+                  label: brand.name,
+                  value: brand.id,
+                })),
+              ],
+            },
+            {
+              key: "specification",
+              label: "Specification",
+              value: specificationFilter,
+              placeholder: "Specification",
+              onChange: (value) => {
+                setSpecificationFilter(value);
+                resetPagination();
+              },
+              options: [
+                { label: "All specifications", value: "ALL" },
+                ...specifications.map((specification) => ({
+                  label: specification.name,
+                  value: specification.id,
+                })),
+              ],
+            },
+          ]}
+          onClear={() => {
+            setSearch("");
+            setTypeFilter("ALL");
+            setCategoryFilter("ALL");
+            setBrandFilter("ALL");
+            setSpecificationFilter("ALL");
+            resetPagination();
+          }}
+        />
+      </div>
       <DataTable
         columns={columns}
         data={items}

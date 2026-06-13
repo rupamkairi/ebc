@@ -11,6 +11,7 @@ export const API_ENDPOINTS = {
       LIST_USERS: "/auth/admin/list-users",
       GET_USER: "/auth/admin/user", // :id
       UPDATE_USER: "/auth/admin/user", // :id
+      DELETE_USER: "/auth/admin/user", // :id
     },
     USER: {
       SEND_OTP: "/auth/user/send-otp",

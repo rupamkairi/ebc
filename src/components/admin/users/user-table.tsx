@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   ColumnDef,
   PaginationState,
@@ -18,11 +19,14 @@ import {
   PauseCircle,
   Edit,
   Building2,
+  Trash2,
 } from "lucide-react";
 import { AdminUser } from "@/types/auth";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { useDeleteUserMutation } from "@/queries/adminQueries";
+import { toast } from "sonner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,6 +35,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface UserTableProps {
   users: AdminUser[];
@@ -52,6 +66,22 @@ export function UserTable({
   onSortingChange,
 }: UserTableProps) {
   const router = useRouter();
+  const [userToDelete, setUserToDelete] = useState<AdminUser | null>(null);
+  const deleteMutation = useDeleteUserMutation();
+
+  const handleDeleteAccount = () => {
+    if (!userToDelete) return;
+
+    deleteMutation.mutate(userToDelete.id, {
+      onSuccess: () => {
+        toast.success("Account anonymized and access revoked.");
+        setUserToDelete(null);
+      },
+      onError: (error) => {
+        toast.error(error.message || "Failed to delete account.");
+      },
+    });
+  };
 
   const columns: ColumnDef<AdminUser>[] = [
     {
@@ -216,6 +246,14 @@ export function UserTable({
                     </DropdownMenuItem>
                   </>
                 )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => setUserToDelete(user)}
+                  className="cursor-pointer text-destructive focus:text-destructive"
+                >
+                  <Trash2 className="size-4 mr-2" />
+                  Delete Account
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -225,15 +263,51 @@ export function UserTable({
   ];
 
   return (
-    <DataTable
-      columns={columns}
-      data={users}
-      loading={isLoading}
-      pagination={pagination}
-      onPaginationChange={onPaginationChange}
-      sorting={sorting}
-      onSortingChange={onSortingChange}
-      pageCount={-1}
-    />
+    <>
+      <DataTable
+        columns={columns}
+        data={users}
+        loading={isLoading}
+        pagination={pagination}
+        onPaginationChange={onPaginationChange}
+        sorting={sorting}
+        onSortingChange={onSortingChange}
+        pageCount={-1}
+      />
+
+      <AlertDialog
+        open={!!userToDelete}
+        onOpenChange={(open) => {
+          if (!open && !deleteMutation.isPending) setUserToDelete(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this account?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will anonymize {userToDelete?.name || "this user"}, remove
+              their login credentials, revoke active sessions, and keep existing
+              history for audit. Seller or provider entities will be paused and
+              excluded from future assignments.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteMutation.isPending}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              disabled={deleteMutation.isPending}
+              onClick={(event) => {
+                event.preventDefault();
+                handleDeleteAccount();
+              }}
+            >
+              {deleteMutation.isPending ? "Deleting..." : "Delete Account"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
