@@ -27,6 +27,8 @@ import {
   useUpdateItemRateMutation,
   useUpdateItemRegionMutation,
 } from "@/queries/catalogQueries";
+import { useEntitiesQuery } from "@/queries/entityQueries";
+import { useEntityRegionsQuery } from "@/queries/entityRegionQueries";
 import { toast } from "sonner";
 import {
   Loader2,
@@ -34,13 +36,12 @@ import {
   FileText,
   Image as ImageIcon,
   X,
-  DollarSign,
   Scale,
   IndianRupee,
 } from "lucide-react";
 
 import { ItemListing } from "@/types/catalog";
-import { useEffect, useState, useRef } from "react";
+import { useState } from "react";
 import { UNIT_TYPES, UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
@@ -48,11 +49,11 @@ import {
   FileUploader,
   FileUploadResponse,
 } from "@/components/shared/upload/media-uploader";
-import { PincodeRecord } from "@/types/region";
-import { usePincodeRecordsQuery } from "@/queries/regionQueries";
 import { Badge } from "@/components/ui/badge";
-import { RegionSelectionStep } from "./region-selection-step";
 import { ITEM_TYPE } from "@/constants/enums";
+import { RegionScopeInput, RegionScopeType, EntityRegion } from "@/types/region";
+import { EntityRegionSelector } from "@/components/shared/region/entity-region-selector";
+import { ItemRegion } from "@/types/catalog";
 
 const listingEditSchema = z.object({
   isActive: z.boolean(),
@@ -85,6 +86,29 @@ interface AttachmentWithMedia {
   documentId?: string | null;
   media?: { id: string; url: string } | null;
   document?: { id: string; url: string } | null;
+}
+
+function mapItemRegionsToScopeInput(itemRegions: ItemRegion[]): RegionScopeInput[] {
+  return itemRegions.map((ir) => {
+    const pinObj = typeof ir.pincode === "object" && ir.pincode ? ir.pincode : null;
+    return {
+      scopeType: (ir.scopeType || "PINCODE") as RegionScopeType,
+      state: pinObj?.state ?? ir.state ?? null,
+      district: pinObj?.district ?? ir.district ?? null,
+      pincodeId: ir.pincodeId ?? null,
+      pincode: pinObj?.pincode ?? null,
+    };
+  });
+}
+
+function mapEntityRegionsToScopeInput(entityRegions: EntityRegion[]): RegionScopeInput[] {
+  return entityRegions.map((er) => ({
+    scopeType: er.scopeType,
+    state: er.state ?? null,
+    district: er.district ?? null,
+    pincodeId: er.pincodeId ?? null,
+    pincode: er.pincode?.pincode ?? null,
+  }));
 }
 
 const getAttachmentIds = (
@@ -127,9 +151,12 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
   const updateRateMutation = useUpdateItemRateMutation();
   const updateRegionMutation = useUpdateItemRegionMutation();
 
+  const { data: entities } = useEntitiesQuery();
+  const entity = entities?.[0];
+  const { data: entityRegions } = useEntityRegionsQuery(entity?.id);
+
   const isService = listing.item?.type === ITEM_TYPE.SERVICE;
 
-  // Derive allowed unit types from the listing's item-level catalog setting.
   const allowedUnits: UnitType[] | undefined = (() => {
     const item = listing.item;
     if (!item) return undefined;
@@ -138,7 +165,6 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
     return undefined;
   })();
 
-  // Which units to show in the dropdown
   const visibleUnits =
     allowedUnits && allowedUnits.length > 0
       ? UNIT_TYPES.filter((u) => allowedUnits.includes(u))
@@ -146,68 +172,30 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
 
   const [activeTab, setActiveTab] = useState("general");
 
-  // Region Selection Local State
-  const [selectedState, setSelectedState] = useState("");
-  const [selectedDistrict, setSelectedDistrict] = useState("");
-  const [pincodeSearch, setPincodeSearch] = useState("");
-  const [selectedRegions, setSelectedRegions] = useState<PincodeRecord[]>([]);
-  const lastInitializedId = useRef<string | null>(null);
+  // Region state — RegionScopeInput[] supports all scope types
+  const [selectedRegions, setSelectedRegions] = useState<RegionScopeInput[]>([]);
+  const [initListingId, setInitListingId] = useState<string | null>(null);
 
-  const { data: records, isLoading: isLoadingRegions } = usePincodeRecordsQuery(
-    {
-      state: selectedState,
-      district: selectedDistrict,
-      pincode: pincodeSearch.length >= 3 ? pincodeSearch : undefined,
-    },
-  );
+  // Derived-state init: once per listing.id, from itemRegions or entityRegions fallback
+  if (initListingId !== listing.id) {
+    if (listing.itemRegions && listing.itemRegions.length > 0) {
+      setInitListingId(listing.id);
+      setSelectedRegions(mapItemRegionsToScopeInput(listing.itemRegions));
+    } else if (entityRegions !== undefined) {
+      setInitListingId(listing.id);
+      setSelectedRegions(mapEntityRegionsToScopeInput(entityRegions));
+    }
+    // else: entityRegions still loading — re-evaluates on next render
+  }
 
   const form = useForm<ListingEditFormValues>({
     resolver: zodResolver(listingEditSchema),
     defaultValues: getInitialFormValues(listing),
   });
 
-  useEffect(() => {
-    if (!listing || lastInitializedId.current === listing.id) return;
-
-    lastInitializedId.current = listing.id;
-
-    form.reset(getInitialFormValues(listing));
-
-    if (listing.itemRegions) {
-      setSelectedRegions(
-        listing.itemRegions.map((ir) => {
-          const pincodeData =
-            typeof ir.pincode === "object" ? ir.pincode : null;
-          return {
-            id: ir.pincodeId || "",
-            pincode:
-              pincodeData?.pincode ||
-              ir.pincode?.toString() ||
-              "Pincode ID: " + ir.pincodeId,
-            district: pincodeData?.district || ir.district || "District",
-            state: pincodeData?.state || ir.state || "State",
-          } as PincodeRecord;
-        }),
-      );
-    }
-  }, [listing.id]); // Removed form.reset to avoid potential unstable reference issues
-
-  const toggleRegion = (record: PincodeRecord) => {
-    setSelectedRegions((prev) =>
-      prev.some((r) => r.id === record.id)
-        ? prev.filter((r) => r.id !== record.id)
-        : [...prev, record],
-    );
-  };
-
-  const removeRegion = (id: string) => {
-    setSelectedRegions((prev) => prev.filter((r) => r.id !== id));
-  };
-
   const onSubmit: SubmitHandler<ListingEditFormValues> = async (values) => {
     const toastId = toast.loading("Saving listing changes...");
     try {
-      // 1. Update Listing Basic & Attachments
       await updateListingMutation.mutateAsync({
         id: listing.id,
         data: {
@@ -217,7 +205,6 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
         },
       });
 
-      // 2. Update Rate Info (only for products, not services)
       const rateId = listing.itemRates?.[0]?.id;
       if (!isService && rateId && values.unitType !== undefined) {
         await updateRateMutation.mutateAsync({
@@ -231,17 +218,15 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
         });
       }
 
-      // 3. Update Regions
       await updateRegionMutation.mutateAsync({
         id: listing.id,
         data: {
           itemListingId: listing.id,
           regions: selectedRegions.map((r) => ({
-            pincodeId: r.id,
-            state: r.state,
-            district: r.district,
-            wholeState: false,
-            wholeDistrict: false,
+            scopeType: r.scopeType,
+            state: r.state ?? undefined,
+            district: r.district ?? undefined,
+            pincodeId: r.pincodeId ?? undefined,
           })),
         },
       });
@@ -266,14 +251,13 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
 
   return (
     <div className="space-y-6">
-      {/* Header Info */}
       <div className="bg-muted/30 p-4 rounded-lg border flex items-center gap-4">
         <div className="h-12 w-12 rounded-md bg-background border shadow-sm flex items-center justify-center text-primary">
           <Package size={24} />
         </div>
         <div>
           <h4 className="text-lg font-bold">{listing.item?.name}</h4>
-          <p className="text-[11px] font-medium text-muted-foreground  ">
+          <p className="text-[11px] font-medium text-muted-foreground">
             {listing.item?.category?.name} • {listing.item?.brand?.name}
           </p>
         </div>
@@ -321,7 +305,6 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
 
               {!isService && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Info banner when unit types are restricted by the backend */}
                   {allowedUnits && allowedUnits.length > 0 && (
                     <div className="col-span-full flex items-start gap-2 rounded-md border border-primary/20 bg-primary/5 px-4 py-3 text-xs text-primary">
                       <Scale size={14} className="mt-0.5 shrink-0" />
@@ -441,7 +424,6 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
 
             <TabsContent value="attachments" className="mt-6 space-y-6">
               <div className="grid grid-cols-1 gap-6">
-                {/* Media Section */}
                 <Card>
                   <CardContent className="p-4 space-y-4">
                     <div className="flex items-center justify-between">
@@ -495,7 +477,6 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
                   </CardContent>
                 </Card>
 
-                {/* Documents Section */}
                 <Card>
                   <CardContent className="p-4 space-y-4">
                     <div className="flex items-center justify-between">
@@ -557,23 +538,10 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
             </TabsContent>
 
             <TabsContent value="regions" className="mt-6">
-              <RegionSelectionStep
-                selectedState={selectedState}
-                setSelectedState={setSelectedState}
-                selectedDistrict={selectedDistrict}
-                setSelectedDistrict={setSelectedDistrict}
-                pincodeSearch={pincodeSearch}
-                setPincodeSearch={setPincodeSearch}
-                isLoadingRegions={isLoadingRegions}
-                records={records}
-                selectedRegions={selectedRegions}
-                toggleRegion={toggleRegion}
-                removeRegion={removeRegion}
-                setSelectedRegions={setSelectedRegions}
-                onBack={() => setActiveTab("attachments")}
-                onComplete={() => form.handleSubmit(onSubmit)()}
-                isSubmitting={isSubmitting}
-                hideButtons={true}
+              <EntityRegionSelector
+                regions={selectedRegions}
+                onChange={setSelectedRegions}
+                inheritedRegions={entityRegions ? mapEntityRegionsToScopeInput(entityRegions) : undefined}
               />
             </TabsContent>
           </Tabs>

@@ -762,13 +762,8 @@
   "common_questions": "সাধারণ প্রশ্নাবলী",
   "still_have_questions": "এখনও প্রশ্ন আছে?",
   "view_full_knowledge_base": "সম্পূর্ণ নলেজ বেস দেখুন",
-  "service_area_management_title": "পরিষেবা এলাকা ব্যবস্থাপনা",
-  "manage_areas_provide_delivery": "আপনি যেখানে ডেলিভারি এবং পরিষেবা প্রদান করেন সেই এলাকাগুলি পরিচালনা করুন।",
-  "add_new_area": "নতুন এলাকা যোগ করুন",
   "map_view_loading": "ম্যাপ ভিউ লোড হচ্ছে...",
   "action_required": "পদক্ষেপ প্রয়োজন",
-  "extension_pending_verification": "দেওয়াস-এ আপনার এক্সটেনশন যাচাইকরণের জন্য মুলতুবি রয়েছে। দয়া করে সেই এলাকার আপনার গোডাউনের ঠিকানার প্রমাণ আপলোড করুন।",
-  "view_distribution_network": "ডিস্ট্রিবিউশন নেটওয়ার্ক দেখুন",
   "new": "নতুন",
   "location_n_a": "অবস্থান নেই",
   "enquiries_title_page": "অনুসন্ধানগুলি",
@@ -1240,5 +1235,9 @@
   "notification_badge_new_content": "নতুন কনটেন্ট",
   "notification_title_new_content": "নতুন কনটেন্ট উপলব্ধ",
   "notification_message_new_content": "নতুন নির্মাণ কনটেন্ট উপলব্ধ।",
-  "notification_badge_responded": "উত্তর দেওয়া হয়েছে"
+  "notification_badge_responded": "উত্তর দেওয়া হয়েছে",
+  "ai_calculator_chat_title": "নাসির",
+  "ai_calculator_assistant_title": "নাসির, আপনার নির্মাণ সহায়ক",
+  "ai_calculator_assistant_intro": "আমি নির্মাণ খরচের হিসাব, উপকরণ পরিকল্পনা, পরিষেবা নির্দেশনা এবং প্রযুক্তিগত প্রশ্নে সাহায্য করতে পারি। আজ কীভাবে সাহায্য করব?",
+  "ai_calculator_assistant_alt": "নাসির নির্মাণ সহায়ক"
 }

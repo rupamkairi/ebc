@@ -151,6 +151,10 @@ export const API_ENDPOINTS = {
     UPDATE: "/entity", // :id attached in service
     VERIFY: "/entity", // :id/verify attached in service
   },
+  ENTITY_REGION: {
+    LIST: "/entity-region/list",
+    SYNC: "/entity-region/sync",
+  },
   WALLET: {
     PACKAGES: "/wallet/packages",
     DETAILS: "/wallet/", // :entityId

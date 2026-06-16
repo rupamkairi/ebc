@@ -745,13 +745,8 @@
   "common_questions": "Common Questions",
   "still_have_questions": "Abhi bhi questions hain?",
   "view_full_knowledge_base": "Full Knowledge Base Dekhein",
-  "service_area_management_title": "Service Area Management",
-  "manage_areas_provide_delivery": "Woh areas manage karein jahan aap delivery aur services provide karte hain.",
-  "add_new_area": "Naya Area Add Karein",
   "map_view_loading": "Map View Load Ho Raha Hai...",
   "action_required": "Action Required",
-  "extension_pending_verification": "Dewas tak aapka extension verification ke liye pending hai. Kripya us area mein apne godown ka address proof upload karein.",
-  "view_distribution_network": "Distribution Network Dekhein",
   "new": "Naya",
   "location_n_a": "Location N/A",
   "enquiries_title_page": "Enquiries",
@@ -1216,5 +1211,9 @@
   "notification_badge_new_content": "New Content",
   "notification_title_new_content": "New Content Available",
   "notification_message_new_content": "Naya construction content available hai.",
-  "notification_badge_responded": "Responded"
+  "notification_badge_responded": "Responded",
+  "ai_calculator_chat_title": "Nasir",
+  "ai_calculator_assistant_title": "Nasir, aapka nirman sahayak",
+  "ai_calculator_assistant_intro": "Main construction cost estimates, material planning, service guidance aur technical questions mein madad kar sakta hoon. Aaj main aapki kaise madad karun?",
+  "ai_calculator_assistant_alt": "Nasir nirman sahayak"
 }

@@ -20,6 +20,7 @@ export function usePincodeRecordsQuery(
     queryKey: regionKeys.pincodes(params),
     queryFn: () => locationService.getPincodeRecords(params),
     placeholderData: keepPreviousData,
+    enabled: !!(params.state || params.district || params.pincode),
     ...options,
   });
 }

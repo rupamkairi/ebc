@@ -1,16 +1,19 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { useAiCalculator } from "@/hooks/use-ai-calculator";
+import { useLanguage } from "@/hooks/useLanguage";
 import { HistorySidebar } from "./history-sidebar";
 import { MessageList } from "@/components/ai/message-list";
 import { MessageInput } from "@/components/ai/message-input";
-import { IconRobot, IconMenu2, IconPlus } from "@tabler/icons-react";
+import { IconMenu2, IconPlus } from "@tabler/icons-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 
 export function CalculatorChat() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { t } = useLanguage();
   const {
     messages,
     input,
@@ -57,7 +60,9 @@ export function CalculatorChat() {
             />
           </SheetContent>
         </Sheet>
-        <h1 className="text-sm font-semibold text-primary">AI Calculator</h1>
+        <h1 className="text-sm font-semibold text-primary">
+          {t("ai_calculator_chat_title")}
+        </h1>
         <Button
           variant="ghost"
           size="icon"
@@ -83,16 +88,21 @@ export function CalculatorChat() {
       <div className="flex flex-1 min-h-0 flex-col relative overflow-hidden">
         {messages.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center p-8 text-center">
-            <div className="mb-6 rounded-full bg-primary/10 p-6 text-primary">
-              <IconRobot size={48} />
+            <div className="relative mb-6 size-32 overflow-hidden rounded-full bg-white shadow-sm ring-1 ring-primary/10 sm:size-40">
+              <Image
+                src="/images/nasir-chatbot.png"
+                alt={t("ai_calculator_assistant_alt")}
+                fill
+                priority
+                sizes="(min-width: 640px) 160px, 128px"
+                className="object-cover"
+              />
             </div>
             <h1 className="mb-2 text-2xl font-bold text-primary">
-              AI Calculator
+              {t("ai_calculator_assistant_title")}
             </h1>
             <p className="max-w-md text-muted-foreground">
-              Hello! I&apos;m your AI Calculator assistant. I can help you with
-              precast system estimations, cost calculations, and technical
-              advice. How can I assist you today?
+              {t("ai_calculator_assistant_intro")}
             </p>
           </div>
         ) : (

@@ -222,6 +222,7 @@ export interface ItemRate {
 export interface ItemRegion {
   id?: string;
   itemListingId?: string;
+  scopeType?: "PAN_INDIA" | "STATE" | "DISTRICT" | "PINCODE";
   state?: string;
   district?: string;
   pincodeId?: string;
@@ -299,11 +300,10 @@ export interface UpdateItemRateRequest {
 export interface CreateItemRegionRequest {
   itemListingId: string;
   regions: {
+    scopeType?: "PAN_INDIA" | "STATE" | "DISTRICT" | "PINCODE";
     state?: string;
     district?: string;
     pincodeId?: string;
-    wholeState?: boolean;
-    wholeDistrict?: boolean;
   }[];
 }
 

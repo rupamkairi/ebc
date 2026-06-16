@@ -20,8 +20,14 @@ import {
 } from "@/components/shared/upload/media-uploader";
 import { toast } from "sonner";
 import { Loader2, Save, FileText, X } from "lucide-react";
-import { useEffect } from "react";
+import { useMemo, useState } from "react";
 import { UpdateEntityRequest } from "@/types/entity";
+import { EntityRegionSelector } from "@/components/shared/region/entity-region-selector";
+import {
+  useEntityRegionsQuery,
+  useSyncEntityRegionsMutation,
+} from "@/queries/entityRegionQueries";
+import { RegionScopeInput } from "@/types/region";
 import {
   ENTITY_TYPE_LABELS,
   isServiceBusiness,
@@ -41,25 +47,46 @@ export function EntitySettingsForm() {
   const { data: entities = [], isLoading: isLoadingEntity } =
     useEntitiesQuery();
   const updateEntityMutation = useUpdateEntityMutation();
+  const syncEntityRegionsMutation = useSyncEntityRegionsMutation();
   const queryClient = useQueryClient();
   const entity = entities[0];
 
+  const { data: entityRegions } = useEntityRegionsQuery(entity?.id);
+  // Track user edits per entity ID — null means "use server data"
+  const [editedRegions, setEditedRegions] = useState<{
+    entityId: string;
+    regions: RegionScopeInput[];
+  } | null>(null);
+  const availabilityRegions = useMemo<RegionScopeInput[]>(() => {
+    if (editedRegions !== null && editedRegions.entityId === entity?.id) return editedRegions.regions;
+    return (entityRegions ?? []).map((r) => ({
+      scopeType: r.scopeType,
+      state: r.state ?? null,
+      district: r.district ?? null,
+      pincodeId: r.pincodeId ?? null,
+    }));
+  }, [editedRegions, entity?.id, entityRegions]);
+
   const form = useForm({
     defaultValues: {
-      name: "",
-      legalName: "",
-      description: "",
-      primaryContactNumber: "",
-      secondaryContactNumber: "",
-      contactEmail: "",
-      supportEmail: "",
-      addressLine1: "",
-      addressLine2: "",
-      city: "",
-      pincodeId: "",
-      documents: [] as string[],
-      media: [] as string[],
-      type: "" as string,
+      name: entity?.name || "",
+      legalName: entity?.legalName || "",
+      description: entity?.description || "",
+      primaryContactNumber: (entity?.primaryContactNumber || "").replace(/^\+91/, ""),
+      secondaryContactNumber: (entity?.secondaryContactNumber || "").replace(/^\+91/, ""),
+      contactEmail: entity?.contactEmail || "",
+      supportEmail: entity?.supportEmail || "",
+      addressLine1: entity?.addressLine1 || "",
+      addressLine2: entity?.addressLine2 || "",
+      city: entity?.city || "",
+      pincodeId: entity?.pincodeId || "",
+      documents: (entity?.entityAttachments || [])
+        .filter((a) => a.documentId)
+        .map((a) => a.documentId as string),
+      media: (entity?.entityAttachments || [])
+        .filter((a) => a.mediaId)
+        .map((a) => a.mediaId as string),
+      type: (entity?.type as string) || "",
     },
     onSubmit: async ({ value }) => {
       if (!entity) return;
@@ -76,43 +103,16 @@ export function EntitySettingsForm() {
               : "",
           } as UpdateEntityRequest,
         });
+        await syncEntityRegionsMutation.mutateAsync({
+          entityId: entity.id,
+          regions: availabilityRegions,
+        });
         toast.success("Business profile updated successfully!");
       } catch {
         toast.error("Failed to update business profile");
       }
     },
   });
-
-  useEffect(() => {
-    if (entity && !isLoadingEntity) {
-      form.reset({
-        name: entity.name || "",
-        legalName: entity.legalName || "",
-        description: entity.description || "",
-        primaryContactNumber: (entity.primaryContactNumber || "").replace(
-          /^\+91/,
-          "",
-        ),
-        secondaryContactNumber: (entity.secondaryContactNumber || "").replace(
-          /^\+91/,
-          "",
-        ),
-        contactEmail: entity.contactEmail || "",
-        supportEmail: entity.supportEmail || "",
-        addressLine1: entity.addressLine1 || "",
-        addressLine2: entity.addressLine2 || "",
-        city: entity.city || "",
-        pincodeId: entity.pincodeId || "",
-        documents: (entity.entityAttachments || [])
-          .filter((a) => a.documentId)
-          .map((a) => a.documentId as string),
-        media: (entity.entityAttachments || [])
-          .filter((a) => a.mediaId)
-          .map((a) => a.mediaId as string),
-        type: (entity.type as string) || "",
-      });
-    }
-  }, [entity, isLoadingEntity, form]);
 
   const userRole = useAuthStore((state) => state.user?.role);
   const isServiceProvider = isServiceBusiness(userRole);
@@ -744,6 +744,25 @@ export function EntitySettingsForm() {
                 </div>
               )}
             </form.Field>
+          </div>
+
+          {/* Availability Regions Section */}
+          <div className="space-y-6 pt-4">
+            <div className="border-b-2 border-secondary/30 pb-2 inline-block">
+              <h2 className="text-2xl font-bold text-secondary">
+                Availability Regions
+              </h2>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Define regions where your business is available for enquiries and
+              appointments.
+            </p>
+            <EntityRegionSelector
+              regions={availabilityRegions}
+              onChange={(regions) =>
+                entity?.id && setEditedRegions({ entityId: entity.id, regions })
+              }
+            />
           </div>
 
           <div className="flex justify-end pt-8">

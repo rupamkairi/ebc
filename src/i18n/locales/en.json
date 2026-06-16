@@ -762,13 +762,8 @@
   "common_questions": "Common Questions",
   "still_have_questions": "Still have questions?",
   "view_full_knowledge_base": "View Full Knowledge Base",
-  "service_area_management_title": "Service Area Management",
-  "manage_areas_provide_delivery": "Manage areas where you provide delivery and services.",
-  "add_new_area": "Add New Area",
   "map_view_loading": "Map View Loading...",
   "action_required": "Action Required",
-  "extension_pending_verification": "Your extension to Dewas is pending verification. Please upload address proof of your godown in that area.",
-  "view_distribution_network": "View Distribution Network",
   "new": "New",
   "location_n_a": "Location N/A",
   "enquiries_title_page": "Enquiries",
@@ -1240,5 +1235,9 @@
   "notification_badge_new_content": "New Content",
   "notification_title_new_content": "New Content Available",
   "notification_message_new_content": "New construction content is available.",
-  "notification_badge_responded": "Responded"
+  "notification_badge_responded": "Responded",
+  "ai_calculator_chat_title": "Nasir",
+  "ai_calculator_assistant_title": "Nasir, your construction assistant",
+  "ai_calculator_assistant_intro": "I can help with construction cost estimates, material planning, service guidance, and technical questions. How can I assist you today?",
+  "ai_calculator_assistant_alt": "Nasir construction assistant"
 }

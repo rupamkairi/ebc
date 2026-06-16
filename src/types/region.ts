@@ -1,6 +1,31 @@
+export type RegionScopeType = "PAN_INDIA" | "STATE" | "DISTRICT" | "PINCODE";
+
+export interface RegionScopeInput {
+  scopeType: RegionScopeType;
+  state?: string | null;
+  district?: string | null;
+  pincodeId?: string | null;
+  /** The actual pincode code string (e.g. "110001") — display only, not persisted */
+  pincode?: string | null;
+}
+
+export interface EntityRegion {
+  id: string;
+  entityId: string;
+  scopeType: RegionScopeType;
+  state?: string | null;
+  district?: string | null;
+  pincodeId?: string | null;
+  isActive: boolean;
+  pincode?: PincodeRecord;
+}
+
 export interface TargetRegion {
   id?: string;
-  pincodeId: string;
+  scopeType?: RegionScopeType;
+  state?: string | null;
+  district?: string | null;
+  pincodeId?: string | null;
   pincode?: PincodeRecord;
 }
 
@@ -20,5 +45,5 @@ export interface PincodeListParams {
   search?: string;
   page?: number;
   perPage?: number;
-  isSpecial?: boolean; // Added for fetching whole state/district entries
+  isSpecial?: boolean;
 }
