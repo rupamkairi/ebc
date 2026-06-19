@@ -19,7 +19,7 @@ import {
   FileUploadResponse,
 } from "@/components/shared/upload/media-uploader";
 import { toast } from "sonner";
-import { Loader2, Save, FileText, X } from "lucide-react";
+import { Loader2, FileText, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { UpdateEntityRequest } from "@/types/entity";
 import { EntityRegionSelector } from "@/components/shared/region/entity-region-selector";
@@ -35,6 +35,7 @@ import {
 } from "@/constants/roles";
 import { ENTITY_TYPE, VERIFICATION_STATUS } from "@/constants/enums";
 import { useAuthStore } from "@/store/authStore";
+import { useUpdateProfileMutation } from "@/queries/authQueries";
 import {
   Select,
   SelectContent,
@@ -47,9 +48,11 @@ export function EntitySettingsForm() {
   const { data: entities = [], isLoading: isLoadingEntity } =
     useEntitiesQuery();
   const updateEntityMutation = useUpdateEntityMutation();
+  const updateProfileMutation = useUpdateProfileMutation();
   const syncEntityRegionsMutation = useSyncEntityRegionsMutation();
   const queryClient = useQueryClient();
   const entity = entities[0];
+  const user = useAuthStore((state) => state.user);
 
   const { data: entityRegions } = useEntityRegionsQuery(entity?.id);
   // Track user edits per entity ID — null means "use server data"
@@ -70,6 +73,7 @@ export function EntitySettingsForm() {
   const form = useForm({
     defaultValues: {
       name: entity?.name || "",
+      userEmail: user?.email || "",
       legalName: entity?.legalName || "",
       description: entity?.description || "",
       primaryContactNumber: (entity?.primaryContactNumber || "").replace(/^\+91/, ""),
@@ -91,10 +95,24 @@ export function EntitySettingsForm() {
     onSubmit: async ({ value }) => {
       if (!entity) return;
       try {
+        await updateProfileMutation.mutateAsync({
+          email: value.userEmail.trim() || null,
+        });
         await updateEntityMutation.mutateAsync({
           id: entity.id,
           data: {
-            ...value,
+            name: value.name,
+            legalName: value.legalName,
+            description: value.description,
+            contactEmail: value.contactEmail,
+            supportEmail: value.supportEmail,
+            addressLine1: value.addressLine1,
+            addressLine2: value.addressLine2,
+            city: value.city,
+            pincodeId: value.pincodeId,
+            documents: value.documents,
+            media: value.media,
+            type: value.type,
             primaryContactNumber: value.primaryContactNumber
               ? `+91${value.primaryContactNumber}`
               : "",
@@ -114,7 +132,7 @@ export function EntitySettingsForm() {
     },
   });
 
-  const userRole = useAuthStore((state) => state.user?.role);
+  const userRole = user?.role;
   const isServiceProvider = isServiceBusiness(userRole);
   const isProductSeller = isProductBusiness(userRole);
   const isApproved =
@@ -173,6 +191,47 @@ export function EntitySettingsForm() {
                       placeholder="e.g. Acme Corp"
                       className="border-primary/30 focus-visible:ring-primary h-12 bg-white"
                     />
+                  </div>
+                )}
+              </form.Field>
+
+              <form.Field
+                name="userEmail"
+                validators={{
+                  onChange: ({ value }) =>
+                    value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+                      ? "Enter a valid email address"
+                      : undefined,
+                }}
+              >
+                {(field) => (
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor={field.name}
+                      className="text-primary text-xs font-bold"
+                    >
+                      User Email
+                    </Label>
+                    <Input
+                      id={field.name}
+                      type="email"
+                      autoComplete="email"
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(event) => field.handleChange(event.target.value)}
+                      placeholder="name@example.com"
+                      aria-invalid={field.state.meta.errors.length > 0}
+                      className="border-primary/30 focus-visible:ring-primary h-12 bg-white"
+                    />
+                    <p className="text-xs text-primary/60">
+                      Your profile email. This is separate from business contact
+                      and support emails.
+                    </p>
+                    {field.state.meta.errors.length > 0 && (
+                      <p className="text-xs font-medium text-destructive" role="alert">
+                        {field.state.meta.errors.join(", ")}
+                      </p>
+                    )}
                   </div>
                 )}
               </form.Field>
@@ -659,9 +718,9 @@ export function EntitySettingsForm() {
                         const attachment = entity.entityAttachments?.find(
                           (a) =>
                             a.mediaId === mediaId ||
-                            (a as any).media?.id === mediaId,
+                            a.media?.id === mediaId,
                         );
-                        const media = (attachment as any)?.media;
+                        const media = attachment?.media;
                         const fileName =
                           media?.name ||
                           media?.key

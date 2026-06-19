@@ -31,7 +31,7 @@ export function WhatsAppButton({
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-6 right-6 z-50 hidden md:block">
       <Button 
         onClick={handleWhatsAppClick}
         className="bg-[#25D366] hover:bg-[#20bd5c] rounded-full px-8 md:px-12 py-6 shadow-xl flex items-center gap-2 group transition-all hover:scale-105 active:scale-95"

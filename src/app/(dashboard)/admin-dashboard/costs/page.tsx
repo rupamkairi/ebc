@@ -68,11 +68,11 @@ export default function CostsAndPackagesPage() {
   };
 
   const handleSavePricing = (leadType: string) => {
-    const costInCoins = editingConfigs[leadType];
-    if (costInCoins === undefined) return;
+    const value = editingConfigs[leadType];
+    if (value === undefined) return;
 
     updatePricing.mutate(
-      { leadType, costInCoins },
+      { leadType, value },
       {
         onSuccess: () => {
           toast.success(`Pricing for ${leadType} updated successfully`);
@@ -191,7 +191,7 @@ export default function CostsAndPackagesPage() {
           <CardHeader>
             <CardTitle>Pricing Configuration</CardTitle>
             <CardDescription>
-              Set the number of coins required for each type of transaction.
+              Set fixed coin costs or the percentage charged for quotations.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -199,7 +199,7 @@ export default function CostsAndPackagesPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Activity Type</TableHead>
-                  <TableHead className="w-[200px]">Cost (Coins)</TableHead>
+                  <TableHead className="w-[220px]">Pricing Value</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -209,7 +209,7 @@ export default function CostsAndPackagesPage() {
                     editingConfigs[config.leadType] !== undefined;
                   const currentValue = isEditing
                     ? editingConfigs[config.leadType]
-                    : config.costInCoins;
+                    : config.value;
 
                   return (
                     <TableRow key={config.leadType}>
@@ -217,14 +217,23 @@ export default function CostsAndPackagesPage() {
                         {config.leadType.replace(/_/g, " ")}
                       </TableCell>
                       <TableCell>
-                        <NumericInput
-                          value={currentValue}
-                          onValueChange={(value) => handleCostChange(config.leadType, value)}
-                          className="w-32"
-                          integer
-                          min={0}
-                          fallbackValue={0}
-                        />
+                        <div className="flex items-center gap-2">
+                          <NumericInput
+                            value={currentValue}
+                            onValueChange={(value) =>
+                              handleCostChange(config.leadType, value)
+                            }
+                            className="w-32"
+                            integer={config.unit === "COINS"}
+                            min={0}
+                            max={config.unit === "PERCENT" ? 100 : undefined}
+                            step={config.unit === "PERCENT" ? "0.01" : "1"}
+                            fallbackValue={0}
+                          />
+                          <span className="text-sm font-medium text-muted-foreground">
+                            {config.unit === "PERCENT" ? "%" : "coins"}
+                          </span>
+                        </div>
                       </TableCell>
                       <TableCell className="text-right">
                         <Button

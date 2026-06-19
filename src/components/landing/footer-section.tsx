@@ -1,394 +1,384 @@
 "use client";
 
-import Container from "@/components/ui/containers";
-import { useLanguage } from "@/hooks/useLanguage";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import Link from "next/link";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import Container from "@/components/ui/containers";
 import { EBC_CONTACT, getEbcWhatsappUrl } from "@/constants/contact";
+import { useLanguage } from "@/hooks/useLanguage";
+import { openSupportCenter } from "@/lib/support-center";
+import { IconBrandFacebook, IconBrandWhatsapp } from "@tabler/icons-react";
+import {
+  BadgePercent,
+  BriefcaseBusiness,
+  Calculator,
+  CircleHelp,
+  FileText,
+  Headphones,
+  House,
+  LogIn,
+  Mail,
+  MapPin,
+  Phone,
+  Presentation,
+  Scale,
+  Store,
+  Workflow,
+  type LucideIcon,
+} from "lucide-react";
+import Link from "next/link";
+
+type FooterLinkItem = {
+  label: string;
+  icon: LucideIcon;
+  href?: string;
+  external?: boolean;
+  onClick?: () => void;
+};
+
+function FooterLinks({ items }: { items: FooterLinkItem[] }) {
+  return (
+    <ul className="space-y-2 text-[13px] font-medium text-white/90">
+      {items.map((item) => {
+        const Icon = item.icon;
+
+        return (
+          <li key={item.label}>
+            {item.onClick ? (
+              <button
+                type="button"
+                onClick={item.onClick}
+                className="inline-flex min-h-11 items-center gap-2 text-left transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 md:min-h-0"
+              >
+                <Icon
+                  className="h-4 w-4 shrink-0 text-secondary"
+                  aria-hidden="true"
+                />
+                {item.label}
+              </button>
+            ) : item.external ? (
+              <a
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center gap-2 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 md:min-h-0"
+              >
+                <Icon
+                  className="h-4 w-4 shrink-0 text-secondary"
+                  aria-hidden="true"
+                />
+                {item.label}
+              </a>
+            ) : (
+              <Link
+                href={item.href || "/"}
+                className="inline-flex min-h-11 items-center gap-2 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 md:min-h-0"
+              >
+                <Icon
+                  className="h-4 w-4 shrink-0 text-secondary"
+                  aria-hidden="true"
+                />
+                {item.label}
+              </Link>
+            )}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+function FacebookLink() {
+  return (
+    <a
+      href={EBC_CONTACT.facebookUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Econ Building Centre on Facebook"
+      className="inline-flex min-h-11 shrink-0 items-center gap-1.5 text-[11px] font-medium text-white/90 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+    >
+      <IconBrandFacebook
+        className="h-8 w-8 shrink-0 rounded-full bg-secondary p-2 text-primary"
+        aria-hidden="true"
+      />
+      Econ Building Centre
+    </a>
+  );
+}
 
 export function FooterSection() {
   const { t } = useLanguage();
-  return (
-    <footer className="bg-primary text-white pt-10 pb-6">
-      <Container size="xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-8 mb-8 px-2">
-          {/* Brand Column */}
-          <div className="lg:col-span-4 space-y-5">
-            <div className="space-y-2">
-              <h2 className="text-2xl lg:text-[28px] font-bold tracking-tight">
-                {t("footer_brand")}
-              </h2>
-              <p className="text-[13px] font-medium text-white/90 leading-relaxed max-w-sm">
-                {t("footer_tagline")}
-              </p>
-            </div>
+  const whatsappUrl = getEbcWhatsappUrl(t("whatsapp_default_message"));
 
-            <ul className="space-y-2">
-              {[
-                t("footer_features_1"),
-                t("footer_features_2"),
-                t("footer_features_3"),
-                t("footer_features_4"),
-              ].map((item, i) => (
-                <li
-                  key={i}
-                  className="flex items-center gap-2.5 text-[13px] font-semibold"
-                >
-                  <span className="shrink-0 h-4 w-4 rounded-full border border-secondary flex items-center justify-center">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="3"
-                      className="h-2.5 w-2.5 text-secondary"
-                    >
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
+  const marketplaceLinks: FooterLinkItem[] = [
+    { label: t("footer_ai_calculator"), href: "/calculator", icon: Calculator },
+    {
+      label: t("footer_compare_prices"),
+      href: "/browse?type=PRODUCT",
+      icon: Scale,
+    },
+    { label: t("footer_request_quote"), href: "/enquiry/create", icon: FileText },
+    {
+      label: t("footer_offers_zone"),
+      href: "/conference-hall?tab=offers",
+      icon: BadgePercent,
+    },
+    {
+      label: t("footer_conference_hall"),
+      href: "/conference-hall",
+      icon: Presentation,
+    },
+    {
+      label: t("footer_find_workers"),
+      href: "/browse?type=SERVICE",
+      icon: BriefcaseBusiness,
+    },
+  ];
 
-            <div className="inline-flex items-center gap-3 bg-white text-primary px-4 py-2 rounded-full shadow-sm">
-              <div className="shrink-0 flex items-center justify-center">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  className="h-[18px] w-[18px] text-secondary"
-                >
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                  <path d="M9 12l2 2 4-4" />
-                </svg>
-              </div>
-              <span className="text-[11px] md:text-[12px] font-medium">
-                {t("footer_experience")}
-              </span>
-            </div>
-          </div>
+  const stakeholderLinks: FooterLinkItem[] = [
+    {
+      label: t("footer_how_ebc_helps"),
+      href: "/#how-ebc-helps",
+      icon: House,
+    },
+    { label: t("footer_cost_guide"), href: "/calculator", icon: Calculator },
+    { label: t("footer_faq_builders"), href: "/#faq", icon: CircleHelp },
+    {
+      label: t("footer_seller_professional_zone"),
+      href: "/#ebc-ecosystem",
+      icon: Store,
+    },
+  ];
 
-          {/* Marketplace Column */}
-          <div className="lg:col-span-2 space-y-4 pt-1">
-            <h4 className="text-[17px] font-semibold ">
-              {t("footer_marketplace")}
-            </h4>
-            <ul className="space-y-2 text-[13px] font-medium text-white/90">
-              <li>
-                <Link
-                  href="/calculator"
-                  className="hover:text-white transition-colors"
-                >
-                  {t("footer_ai_calculator")}
-                </Link>
-              </li>
-              {/* <li>
-                <Link href="/estimate-cost" className="hover:text-white transition-colors">
-                  {t("footer_compare_prices")}
-                </Link>
-              </li> */}
-              <li>
-                <Link
-                  href="/buyer-dashboard"
-                  className="hover:text-white transition-colors"
-                >
-                  {t("footer_request_quote")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/buyer-dashboard"
-                  className="hover:text-white transition-colors"
-                >
-                  {t("footer_experts")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/conference-hall"
-                  className="hover:text-white transition-colors"
-                >
-                  {t("conference_hall")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/buyer-dashboard"
-                  className="hover:text-white transition-colors"
-                >
-                  {t("footer_find_sellers")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/buyer-dashboard"
-                  className="hover:text-white transition-colors"
-                >
-                  {t("footer_find_workers")}
-                </Link>
-              </li>
-            </ul>
-          </div>
+  const supportLinks: FooterLinkItem[] = [
+    { label: t("footer_how_works"), href: "/#how-it-works", icon: Workflow },
+    {
+      label: t("footer_contact_support"),
+      onClick: openSupportCenter,
+      icon: Headphones,
+    },
+    { label: t("footer_help_faq"), href: "/#faq", icon: CircleHelp },
+    { label: t("footer_admin_login"), href: "/auth/admin-login", icon: LogIn },
+  ];
 
-          {/* For You Column */}
-          <div className="lg:col-span-2 space-y-4 pt-1">
-            <h4 className="text-[17px] font-semibold ">
-              {t("footer_for_you")}
-            </h4>
-            <ul className="space-y-2 text-[13px] font-medium text-white/90">
-              <li>
-                <Link
-                  href="/how-it-helps"
-                  className="hover:text-white transition-colors"
-                >
-                  {t("footer_how_ebc_helps")}
-                </Link>
-              </li>
-              {/* <li>
-                <Link href="/planning" className="hover:text-white transition-colors">
-                  {t("footer_planning")}
-                </Link>
-              </li> */}
-              <li>
-                <Link
-                  href="/calculator"
-                  className="hover:text-white transition-colors"
-                >
-                  {t("footer_cost_guide")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#faq"
-                  className="hover:text-white transition-colors"
-                >
-                  {t("footer_faq_builders")}
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Helpful Links Column */}
-          <div className="lg:col-span-2 space-y-4 pt-1">
-            <h4 className="text-[17px] font-semibold ">
-              {t("footer_helpful_links")}
-            </h4>
-            <ul className="space-y-2 text-[13px] font-medium text-white/90">
-              <li>
-                <Link
-                  href="/calculator"
-                  className="hover:text-white transition-colors"
-                >
-                  {t("footer_estimate_cost")}
-                </Link>
-              </li>
-              <li>
-                <a
-                  href={getEbcWhatsappUrl(t("whatsapp_default_message"))}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-white transition-colors"
-                >
-                  WhatsApp: Chat directly
-                </a>
-              </li>
-              <li>
-                <Link
-                  href="/calculator"
-                  className="hover:text-white transition-colors"
-                >
-                  {t("footer_cost_guide")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/how-it-helps"
-                  className="hover:text-white transition-colors"
-                >
-                  {t("footer_compare_prices")}
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Support & Company Column */}
-          <div className="lg:col-span-2 space-y-4 pt-1">
-            <h4 className="text-[17px] font-semibold ">
-              {t("footer_support_company")}
-            </h4>
-            <ul className="space-y-2 text-[13px] font-medium text-white/90">
-              <li>
-                <Link
-                  href="/how-it-helps"
-                  className="hover:text-white transition-colors"
-                >
-                  {t("footer_about")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/how-it-works"
-                  className="hover:text-white transition-colors"
-                >
-                  {t("footer_how_works")}
-                </Link>
-              </li>
-              <li>
-                <a
-                  href={getEbcWhatsappUrl(t("whatsapp_default_message"))}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-white transition-colors"
-                >
-                  Contact Support: {EBC_CONTACT.phone}
-                </a>
-              </li>
-              <li>
-                <Link
-                  href="/#faq"
-                  className="hover:text-white transition-colors"
-                >
-                  {t("footer_help_faq")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/#faq"
-                  className="hover:text-white transition-colors"
-                >
-                  {t("privacy_policy")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/how-it-helps/seller"
-                  className="hover:text-white transition-colors"
-                >
-                  {t("footer_seller_agreement")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/how-it-helps/buyer"
-                  className="hover:text-white transition-colors"
-                >
-                  {t("footer_consumer_safety")}
-                </Link>
-              </li>
-              <li>
-                <a
-                  href="/auth/admin-login"
-                  className="hover:text-white transition-colors"
-                >
-                  {t("footer_admin_login")}
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Contact & Social Row */}
-        <div className="flex flex-col xl:flex-row items-center justify-between gap-6 pb-6 px-2">
-          {/* Contact Items */}
-          <div className="flex flex-wrap justify-center xl:justify-start gap-5 md:gap-8">
-            <div className="flex items-center gap-2.5">
-              <div className="bg-white p-1.5 rounded-full shadow-sm">
-                <svg
-                  className="h-[14px] w-[14px] text-secondary"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                >
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                  <circle cx="12" cy="10" r="3" />
-                </svg>
-              </div>
-              <span className="text-[10px] md:text-[11px] font-medium ">
-                {EBC_CONTACT.address}
-              </span>
-            </div>
-            <div className="flex items-center gap-2.5">
-              <div className="bg-white p-1.5 rounded-full shadow-sm">
-                <svg
-                  className="w-3.5 h-3.5 text-secondary"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                >
-                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                </svg>
-              </div>
-              <span className="text-[10px] md:text-[11px] font-medium ">
-                {EBC_CONTACT.phone}
-              </span>
-            </div>
-            <div className="flex items-center gap-2.5">
-              <div className="bg-white p-1.5 rounded-full shadow-sm">
-                <svg
-                  className="h-[14px] w-[14px] text-secondary"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                >
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                  <polyline points="22,6 12,13 2,6" />
-                </svg>
-              </div>
-              <a
-                href={`mailto:${EBC_CONTACT.email}`}
-                className="text-[10px] md:text-[11px] font-medium hover:text-white transition-colors"
-              >
-                {EBC_CONTACT.email}
-              </a>
-            </div>
-          </div>
-
-          {/* Social Icons */}
-          <div className="flex items-center gap-3 shrink-0">
-            <a
-              href={EBC_CONTACT.facebookUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="E-CON Building Centre on Facebook"
-              className="bg-white p-1.5 md:p-2 rounded-full hover:bg-white/90 transition-all shadow-sm"
-              title="Facebook"
-            >
+  const brandContent = (
+    <div className="space-y-5">
+      <div className="space-y-2">
+        <h2 className="text-2xl font-bold tracking-tight lg:text-[28px]">
+          {t("footer_brand")}
+        </h2>
+        <p className="max-w-sm text-[13px] font-medium leading-relaxed text-white/90">
+          {t("footer_tagline")}
+        </p>
+      </div>
+      <ul className="space-y-2">
+        {[
+          t("footer_features_1"),
+          t("footer_features_2"),
+          t("footer_features_3"),
+          t("footer_features_4"),
+        ].map((item) => (
+          <li
+            key={item}
+            className="flex items-center gap-2.5 text-[13px] font-semibold"
+          >
+            <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-secondary">
               <svg
-                className="h-[14px] w-[14px] md:h-4 md:w-4 text-primary"
                 viewBox="0 0 24 24"
-                fill="currentColor"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+                className="h-2.5 w-2.5 text-secondary"
+                aria-hidden="true"
               >
-                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                <polyline points="20 6 9 17 4 12" />
               </svg>
-            </a>
+            </span>
+            {item}
+          </li>
+        ))}
+      </ul>
+      <div className="inline-flex items-center gap-3 rounded-full bg-white px-4 py-2 text-primary shadow-sm">
+        <Scale className="h-[18px] w-[18px] shrink-0 text-secondary" />
+        <span className="text-[11px] font-medium md:text-[12px]">
+          {t("footer_experience")}
+        </span>
+      </div>
+    </div>
+  );
+
+  return (
+    <footer className="bg-primary pb-24 pt-10 text-white md:pb-6">
+      <Container size="xl">
+        <div className="hidden grid-cols-4 gap-8 px-2 lg:grid">
+          {brandContent}
+          <div className="space-y-4 pt-1">
+            <h3 className="text-[17px] font-semibold">
+              {t("footer_marketplace")}
+            </h3>
+            <FooterLinks items={marketplaceLinks} />
+          </div>
+          <div className="space-y-4 pt-1">
+            <h3 className="text-[17px] font-semibold">
+              {t("footer_stakeholder_zones")}
+            </h3>
+            <FooterLinks items={stakeholderLinks} />
+          </div>
+          <div className="space-y-4 pt-1">
+            <h3 className="text-[17px] font-semibold">
+              {t("footer_support_company")}
+            </h3>
+            <FooterLinks items={supportLinks} />
           </div>
         </div>
 
-        {/* Disclaimer Text */}
-        <div className="pb-5 px-2 max-w-4xl mx-auto">
-          <p className="text-center text-[11px] md:text-[13px] font-medium text-white/90">
-            {t("footer_disclaimer")}
-          </p>
+        <Accordion type="multiple" className="px-2 lg:hidden">
+          <AccordionItem value="brand" className="border-white/20">
+            <AccordionTrigger className="text-base font-semibold hover:no-underline [&_svg]:text-white/80">
+              {t("footer_brand")}
+            </AccordionTrigger>
+            <AccordionContent>{brandContent}</AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="marketplace" className="border-white/20">
+            <AccordionTrigger className="text-base font-semibold hover:no-underline [&_svg]:text-white/80">
+              {t("footer_marketplace")}
+            </AccordionTrigger>
+            <AccordionContent>
+              <FooterLinks items={marketplaceLinks} />
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="stakeholders" className="border-white/20">
+            <AccordionTrigger className="text-base font-semibold hover:no-underline [&_svg]:text-white/80">
+              {t("footer_stakeholder_zones")}
+            </AccordionTrigger>
+            <AccordionContent>
+              <FooterLinks items={stakeholderLinks} />
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="support" className="border-white/20">
+            <AccordionTrigger className="text-base font-semibold hover:no-underline [&_svg]:text-white/80">
+              {t("footer_support_company")}
+            </AccordionTrigger>
+            <AccordionContent>
+              <FooterLinks items={supportLinks} />
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+
+        <div className="mt-8 grid gap-3 border-y border-white/20 py-5 sm:grid-cols-3">
+          <Link
+            href="/calculator"
+            className="flex min-h-11 items-center justify-center gap-2 rounded-full bg-white px-4 text-sm font-semibold text-primary transition-colors hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+          >
+            <Calculator className="h-4 w-4" />
+            {t("footer_estimate_cost")}
+          </Link>
+          <button
+            type="button"
+            onClick={openSupportCenter}
+            className="flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/40 px-4 text-sm font-semibold transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+          >
+            <Headphones className="h-4 w-4" />
+            {t("footer_contact_support")}
+          </button>
+          <Link
+            href="/browse?type=PRODUCT"
+            className="flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/40 px-4 text-sm font-semibold transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+          >
+            <Scale className="h-4 w-4" />
+            {t("footer_compare_prices")}
+          </Link>
         </div>
 
-        {/* Bottom Meta Row */}
-        <div className="pt-5 border-t border-white/20 px-2">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] md:text-[13px] font-medium text-white/90">
-            <div className="space-y-1 text-center md:text-left">
-              <p>{t("footer_copyright")}</p>
-              <p>{t("footer_serving")}</p>
-            </div>
-            <div className="text-center md:text-right flex flex-col items-center md:items-end gap-2">
-              <LanguageSwitcher variant="footer" />
-              <p>{t("footer_designed_by")}</p>
-            </div>
+        <div className="flex items-center justify-start gap-3 overflow-x-auto px-2 py-6 text-[11px] font-medium text-white/90 lg:justify-center">
+          <span className="inline-flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap">
+            <MapPin
+              className="h-8 w-8 shrink-0 rounded-full bg-secondary p-2 text-primary"
+              aria-hidden="true"
+            />
+            {EBC_CONTACT.address}
+          </span>
+          <a
+            className="inline-flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap transition-colors hover:text-white"
+            href={`tel:${EBC_CONTACT.phone.replace(/\s/g, "")}`}
+          >
+            <Phone
+              className="h-8 w-8 shrink-0 rounded-full bg-secondary p-2 text-primary"
+              aria-hidden="true"
+            />
+            {EBC_CONTACT.phone}
+          </a>
+          <a
+            className="inline-flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap transition-colors hover:text-white"
+            href={`mailto:${EBC_CONTACT.email}`}
+          >
+            <Mail
+              className="h-8 w-8 shrink-0 rounded-full bg-secondary p-2 text-primary"
+              aria-hidden="true"
+            />
+            {EBC_CONTACT.email}
+          </a>
+          <a
+            className="inline-flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap transition-colors hover:text-white"
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <IconBrandWhatsapp
+              className="h-8 w-8 shrink-0 rounded-full bg-secondary p-2 text-primary"
+              aria-hidden="true"
+            />
+            WhatsApp Help
+          </a>
+          <FacebookLink />
+        </div>
+
+        <p className="mx-auto max-w-4xl px-2 pb-5 text-center text-[11px] font-medium text-white/90 md:text-[13px]">
+          {t("footer_disclaimer")}
+        </p>
+
+        <div className="border-t border-white/20 px-2 pt-5">
+          <div className="flex flex-col items-center gap-3 text-center text-[11px] font-medium text-white/90 md:text-[13px]">
+            <p>{t("footer_serving")}</p>
+            <LanguageSwitcher variant="footer" />
+            <p>{t("footer_copyright")}</p>
+            <p>{t("footer_designed_by")}</p>
           </div>
         </div>
       </Container>
+
+      <nav
+        aria-label="Mobile quick actions"
+        className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-3 border-t border-primary/20 bg-white px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-8px_24px_rgba(0,0,0,0.12)] md:hidden"
+      >
+        <Link
+          href="/calculator"
+          className="flex min-h-12 flex-col items-center justify-center gap-1 text-[11px] font-semibold text-primary"
+        >
+          <Calculator className="h-5 w-5" />
+          {t("footer_mobile_estimate")}
+        </Link>
+        <a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex min-h-12 flex-col items-center justify-center gap-1 text-[11px] font-semibold text-[#168a40]"
+        >
+          <IconBrandWhatsapp className="h-5 w-5" />
+          WhatsApp
+        </a>
+        <Link
+          href="/enquiry/create"
+          className="flex min-h-12 flex-col items-center justify-center gap-1 text-[11px] font-semibold text-primary"
+        >
+          <FileText className="h-5 w-5" />
+          RFQ
+        </Link>
+      </nav>
     </footer>
   );
 }

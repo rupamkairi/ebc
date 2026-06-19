@@ -382,7 +382,7 @@ export function SolutionSection() {
   ];
 
   return (
-    <section className="relative py-24 overflow-hidden min-h-[900px]">
+    <section id="how-ebc-helps" className="relative scroll-mt-24 py-24 overflow-hidden min-h-[900px]">
       {/* Background with Orange Tint */}
       <div className="absolute inset-0 z-0">
         <Image

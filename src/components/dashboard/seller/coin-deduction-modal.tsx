@@ -21,6 +21,7 @@ interface CoinDeductionModalProps {
   onClose: () => void;
   onConfirm: () => void;
   leadType: REF_TYPE;
+  amountInInr?: number;
   isProcessing?: boolean;
 }
 
@@ -29,6 +30,7 @@ export function CoinDeductionModal({
   onClose,
   onConfirm,
   leadType,
+  amountInInr,
   isProcessing = false,
 }: CoinDeductionModalProps) {
   const { data: entities } = useEntitiesQuery();
@@ -36,7 +38,7 @@ export function CoinDeductionModal({
   const { data: wallet, isLoading: isLoadingWallet } =
     useWalletDetails(entityId);
   const { data: pricing, isLoading: isLoadingPricing } =
-    useLeadPricing(leadType);
+    useLeadPricing(leadType, amountInInr);
 
   const balance = wallet?.balance ?? 0;
   const cost = pricing?.cost ?? 0;
@@ -114,10 +116,18 @@ export function CoinDeductionModal({
                   </div>
                 </div>
               ) : (
-                <p className="text-sm font-medium text-muted-foreground leading-relaxed text-center italic">
-                  Coins will be deducted from your wallet once you confirm. This
-                  action is irreversible.
-                </p>
+                <div className="space-y-2 text-center text-sm font-medium text-muted-foreground">
+                  {pricing?.unit === "PERCENT" && amountInInr !== undefined && (
+                    <p>
+                      {pricing.value}% of ₹{amountInInr.toLocaleString()} rounded up
+                      to the next whole coin.
+                    </p>
+                  )}
+                  <p className="italic">
+                    Coins will be deducted from your wallet once you confirm. This
+                    action is irreversible.
+                  </p>
+                </div>
               )}
             </>
           )}

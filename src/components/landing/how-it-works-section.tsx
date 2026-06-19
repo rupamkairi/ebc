@@ -13,7 +13,7 @@ export function HowItWorksSection() {
   const { t } = useLanguage();
 
   return (
-    <section className="py-responsive bg-white">
+    <section id="how-it-works" className="scroll-mt-24 py-responsive bg-white">
       <Container size="lg">
         <div className="text-center mb-12">
           <TypographyH2 className="text-4xl lg:text-5xl font-black text-primary">

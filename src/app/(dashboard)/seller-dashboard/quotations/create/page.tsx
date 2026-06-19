@@ -257,6 +257,10 @@ function CreateQuotationContent() {
         onClose={() => setShowDeductionModal(false)}
         onConfirm={handleConfirmDeduction}
         leadType={REF_TYPE.QUOTATION}
+        amountInInr={pendingData?.lineItems.reduce(
+          (total, item) => total + (item.amount || 0),
+          0,
+        )}
         isProcessing={isSubmitting}
       />
 

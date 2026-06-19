@@ -52,8 +52,10 @@ export interface WalletAdjustmentRequest {
 
 export interface LeadPricingRequest {
   leadType: string;
-  costInCoins: number;
+  value: number;
 }
+
+export type PricingUnit = "COINS" | "PERCENT";
 
 export interface RechargeResponse {
   id?: string;
@@ -64,5 +66,7 @@ export interface RechargeResponse {
 }
 export interface LeadPricing {
   leadType: string;
-  costInCoins: number;
+  value: number;
+  unit: PricingUnit;
+  cost?: number;
 }

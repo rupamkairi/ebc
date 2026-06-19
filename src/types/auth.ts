@@ -85,7 +85,7 @@ export interface SessionResponse {
 
 export interface UpdateProfileRequest {
   name?: string;
-  email?: string;
+  email?: string | null;
   phone?: string;
   role?: string;
   pincodeId?: string;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Sheet,
   SheetContent,
@@ -36,6 +36,7 @@ import {
   SUPPORT_QUERY_STATUS,
   SUPPORT_QUERY_PRIORITY,
 } from "@/constants/enums";
+import { OPEN_SUPPORT_CENTER_EVENT } from "@/lib/support-center";
 
 export function SupportCenter() {
   const [isOpen, setIsOpen] = useState(false);
@@ -57,6 +58,12 @@ export function SupportCenter() {
 
   const [subject, setSubject] = useState("");
   const [description, setDescription] = useState("");
+
+  useEffect(() => {
+    const handleOpen = () => setIsOpen(true);
+    window.addEventListener(OPEN_SUPPORT_CENTER_EVENT, handleOpen);
+    return () => window.removeEventListener(OPEN_SUPPORT_CENTER_EVENT, handleOpen);
+  }, []);
 
   const handleCreateTicket = async () => {
     if (!subject || !description || !selectedCategory) return;
@@ -361,9 +368,10 @@ export function SupportCenter() {
 
   return (
     <>
-      <div className="fixed bottom-8 left-8 z-50">
+      <div className="fixed bottom-8 left-8 z-50 hidden md:block">
         <Button
           onClick={() => setIsOpen(true)}
+          aria-label="Open EBC Support Center"
           className="h-14 w-14 rounded-full shadow-2xl bg-primary hover:scale-105 transition-transform"
         >
           <HelpCircle className="h-8 w-8" />

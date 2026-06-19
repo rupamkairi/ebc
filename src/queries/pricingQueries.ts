@@ -4,16 +4,19 @@ import { LeadPricingRequest } from "@/types/wallet";
 
 export const pricingKeys = {
   all: ["pricing"] as const,
-  details: (leadType: string) =>
-    [...pricingKeys.all, "details", leadType] as const,
+  details: (leadType: string, amount?: number) =>
+    [...pricingKeys.all, "details", leadType, amount] as const,
   list: () => [...pricingKeys.all, "list"] as const,
 };
 
-export const useLeadPricing = (leadType: string | undefined) => {
+export const useLeadPricing = (
+  leadType: string | undefined,
+  amount?: number,
+) => {
   return useQuery({
-    queryKey: pricingKeys.details(leadType || ""),
-    queryFn: () => pricingService.getPricingCost(leadType!),
-    enabled: !!leadType,
+    queryKey: pricingKeys.details(leadType || "", amount),
+    queryFn: () => pricingService.getPricingCost(leadType!, amount),
+    enabled: !!leadType && (leadType !== "QUOTATION" || amount !== undefined),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };

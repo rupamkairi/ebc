@@ -79,7 +79,6 @@ export function QuotationForm({
   const sellerEntityId = entities?.[0]?.id;
 
   const { data: wallet } = useWalletDetails(sellerEntityId);
-  const { data: leadPricing } = useLeadPricing(REF_TYPE.QUOTATION);
   const { mutate: acceptQuotation, isPending: isAccepting } =
     useAcceptQuotationMutation();
 
@@ -151,6 +150,10 @@ export function QuotationForm({
   const totalAmount = useMemo(() => {
     return lineItems.reduce((sum, item) => sum + item.amount, 0);
   }, [lineItems]);
+  const { data: leadPricing } = useLeadPricing(
+    REF_TYPE.QUOTATION,
+    isUpdate && quotation && !quotation.isActive ? totalAmount : undefined,
+  );
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8 max-w-5xl mx-auto pb-20">
@@ -178,7 +181,7 @@ export function QuotationForm({
                   Accept this lead to reveal the buyer&apos;s contact details.
                   This will deduct{" "}
                   <span className="text-amber-600 font-extrabold">
-                    {leadPricing?.cost || 50} coins
+                    {leadPricing?.cost ?? 0} coins
                   </span>{" "}
                   from your wallet.
                 </p>

@@ -3,9 +3,13 @@ import { API_ENDPOINTS } from "@/lib/api-endpoints";
 import { LeadPricing, LeadPricingRequest } from "@/types/wallet";
 
 export const pricingService = {
-  getPricingCost: async (leadType: string): Promise<{ cost: number }> => {
-    return fetchClient<{ cost: number }>(
-      `${API_ENDPOINTS.PRICING.BASE}/cost/${leadType}`,
+  getPricingCost: async (
+    leadType: string,
+    amount?: number,
+  ): Promise<LeadPricing & { cost: number }> => {
+    const params = amount === undefined ? "" : `?amount=${encodeURIComponent(amount)}`;
+    return fetchClient<LeadPricing & { cost: number }>(
+      `${API_ENDPOINTS.PRICING.BASE}/cost/${leadType}${params}`,
     );
   },
 

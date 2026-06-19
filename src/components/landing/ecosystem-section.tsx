@@ -128,7 +128,7 @@ export function EcosystemSection() {
   ];
 
   return (
-    <section className="bg-primary py-32 relative overflow-hidden">
+    <section id="ebc-ecosystem" className="scroll-mt-24 bg-primary py-32 relative overflow-hidden">
       {/* Optional: Subtle background pattern could go here */}
 
       <Container size="xl">

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { TypographyH1 } from "@/components/ui/typography";
 import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
+import { openSupportCenter } from "@/lib/support-center";
 
 export function FaqSection() {
   const { t } = useLanguage();
@@ -72,7 +73,12 @@ export function FaqSection() {
         <Break />
 
         <div className="flex justify-center">
-          <Button variant="glow" size="action" className="group">
+          <Button
+            variant="glow"
+            size="action"
+            className="group"
+            onClick={openSupportCenter}
+          >
             {t("faq_still_questions")}
             <ArrowRight className="size-6 group-hover:translate-x-1 transition-transform" />
           </Button>
