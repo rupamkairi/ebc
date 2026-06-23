@@ -128,6 +128,24 @@ Only accessible by specific roles (defined in `permissions.json`).
   }
   ```
 
+#### Admin User Record Management
+
+These endpoints power the admin tables and the shared admin edit page.
+
+- **GET** `/admin/user/:id`
+  - Requires `ADMIN`, `ADMIN_MANAGER`, `ADMIN_ACCOUNTANT`, or `ADMIN_EXECUTIVE`
+- **PATCH** `/admin/user/:id`
+  - Requires `ADMIN` or `ADMIN_MANAGER`
+  - `ADMIN_MANAGER` may edit `ADMIN_EXECUTIVE` records only
+  - `ADMIN` may edit any user record
+  - Request body may include `name`, `email`, `phone`, `pincodeId`, and optional `password`
+  - Email and password changes are applied transactionally
+- **DELETE** `/admin/user/:id`
+  - Requires `ADMIN`
+  - Supported targets include buyer, seller, service provider, and admin subordinate records
+  - Delete anonymizes the user and revokes access instead of hard-deleting the row
+  - Self-delete remains blocked
+
 ### User Routes (Phone/OTP)
 
 User login uses Phone/OTP.

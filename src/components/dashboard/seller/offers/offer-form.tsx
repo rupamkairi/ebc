@@ -59,6 +59,7 @@ import {
 } from "@/types/catalog";
 import {
   CreateOfferRequest,
+  Offer,
   VERIFICATION_STATUS,
 } from "@/types/conference-hall";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -75,7 +76,7 @@ import {
   X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -193,6 +194,9 @@ const offerSchema = z.object({
   pincodeIds: z.any().optional(),
   targetRegions: z.array(
     z.object({
+      scopeType: z
+        .enum(["PAN_INDIA", "STATE", "DISTRICT", "PINCODE"])
+        .optional(),
       pincodeId: z.string(),
       state: z.string().optional(),
       district: z.string().optional(),
@@ -201,6 +205,277 @@ const offerSchema = z.object({
 });
 
 type OfferFormValues = z.infer<typeof offerSchema>;
+
+type OfferHydrationIssue = {
+  field: keyof OfferFormValues | "root";
+  message: string;
+};
+
+const OFFER_RELATION_TYPES = new Set([
+  "CATEGORY",
+  "BRAND",
+  "SPECIFICATION",
+  "ITEM",
+  "ITEM_LISTING",
+]);
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return !!value && typeof value === "object" && !Array.isArray(value);
+}
+
+function asString(value: unknown): string | null {
+  return typeof value === "string" && value.trim() ? value : null;
+}
+
+function asBoolean(value: unknown): boolean | null {
+  return typeof value === "boolean" ? value : null;
+}
+
+function asDate(value: unknown): Date | null {
+  if (value instanceof Date && !Number.isNaN(value.getTime())) return value;
+  if (typeof value === "string" || typeof value === "number") {
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  }
+  return null;
+}
+
+function toIssueMessage(field: string, reason: string) {
+  return `${field}: ${reason}`;
+}
+
+function normalizeOfferForForm(offer: Offer): {
+  values: OfferFormValues;
+  issues: OfferHydrationIssue[];
+} {
+  const issues: OfferHydrationIssue[] = [];
+  const detail = Array.isArray(offer.offerDetails) ? offer.offerDetails[0] : null;
+
+  const name = asString(offer.name);
+  if (!name || name.length < 2) {
+    issues.push({
+      field: "name",
+      message: "Offer name is missing or invalid.",
+    });
+  }
+
+  const startDate = asDate(detail?.startDate);
+  if (!startDate) {
+    issues.push({
+      field: "startDate",
+      message: "Start date is missing or invalid.",
+    });
+  }
+
+  const endDate = asDate(detail?.endDate);
+  if (!endDate) {
+    issues.push({
+      field: "endDate",
+      message: "End date is missing or invalid.",
+    });
+  }
+
+  if (startDate && endDate && endDate < startDate) {
+    issues.push({
+      field: "endDate",
+      message: "End date must be on or after the start date.",
+    });
+  }
+
+  const isActive = asBoolean(offer.isActive);
+  if (isActive === null) {
+    issues.push({
+      field: "isActive",
+      message: "Active status is missing or invalid.",
+    });
+  }
+
+  const isPublic = asBoolean(detail?.isPublic);
+  if (isPublic === null) {
+    issues.push({
+      field: "isPublic",
+      message: "Public visibility is missing or invalid.",
+    });
+  }
+
+  const mediaIds: string[] = [];
+  const documentIds: string[] = [];
+  const attachments = Array.isArray(detail?.attachments) ? detail?.attachments : null;
+
+  if (attachments === null && detail?.attachments !== undefined) {
+    issues.push({
+      field: "mediaIds",
+      message: "Attachments were returned in an unexpected shape.",
+    });
+  }
+
+  attachments?.forEach((attachment, index) => {
+    if (!isRecord(attachment)) {
+      issues.push({
+        field: "mediaIds",
+        message: `Attachment ${index + 1} is invalid and was skipped.`,
+      });
+      return;
+    }
+
+    const mediaId = asString(attachment.mediaId);
+    const documentId = asString(attachment.documentId);
+
+    if (mediaId) {
+      if (!mediaIds.includes(mediaId)) mediaIds.push(mediaId);
+    } else if (attachment.mediaId !== undefined && attachment.mediaId !== null) {
+      issues.push({
+        field: "mediaIds",
+        message: `Attachment ${index + 1} has an invalid media reference.`,
+      });
+    }
+
+    if (documentId) {
+      if (!documentIds.includes(documentId)) documentIds.push(documentId);
+    } else if (attachment.documentId !== undefined && attachment.documentId !== null) {
+      issues.push({
+        field: "documentIds",
+        message: `Attachment ${index + 1} has an invalid document reference.`,
+      });
+    }
+  });
+
+  const relations: OfferFormValues["relations"] = [];
+  const rawRelations = Array.isArray(offer.offerRelations)
+    ? offer.offerRelations
+    : null;
+  if (rawRelations === null && offer.offerRelations !== undefined) {
+    issues.push({
+      field: "relations",
+      message: "Offer relations were returned in an unexpected shape.",
+    });
+  }
+
+  rawRelations?.forEach((relation, index) => {
+    if (!isRecord(relation)) {
+      issues.push({
+        field: "relations",
+        message: `Relation ${index + 1} is invalid and was skipped.`,
+      });
+      return;
+    }
+
+    const relationType = asString(relation.relationType);
+    let relationId = asString(relation.relationId);
+    let resolvedType = relationType as OfferFormValues["relations"][number]["relationType"] | null;
+
+    if (!resolvedType) {
+      if (asString(relation.categoryId)) {
+        resolvedType = "CATEGORY";
+        relationId = asString(relation.categoryId);
+      } else if (asString(relation.brandId)) {
+        resolvedType = "BRAND";
+        relationId = asString(relation.brandId);
+      } else if (asString(relation.specificationId)) {
+        resolvedType = "SPECIFICATION";
+        relationId = asString(relation.specificationId);
+      } else if (asString(relation.itemId)) {
+        resolvedType = "ITEM";
+        relationId = asString(relation.itemId);
+      } else if (asString(relation.itemListingId)) {
+        resolvedType = "ITEM_LISTING";
+        relationId = asString(relation.itemListingId);
+      }
+    }
+
+    if (!resolvedType || !OFFER_RELATION_TYPES.has(resolvedType)) {
+      issues.push({
+        field: "relations",
+        message: `Relation ${index + 1} has an invalid type and was skipped.`,
+      });
+      return;
+    }
+
+    if (!relationId) {
+      issues.push({
+        field: "relations",
+        message: `Relation ${index + 1} is missing its target id and was skipped.`,
+      });
+      return;
+    }
+
+    relations.push({
+      relationType: resolvedType,
+      relationId,
+    });
+  });
+
+  const targetRegions: OfferFormValues["targetRegions"] = [];
+  const rawTargetRegions = Array.isArray(offer.targetRegions)
+    ? offer.targetRegions
+    : Array.isArray(offer.targetRegion)
+      ? offer.targetRegion
+      : null;
+
+  if (rawTargetRegions === null && offer.targetRegions !== undefined) {
+    issues.push({
+      field: "targetRegions",
+      message: "Target regions were returned in an unexpected shape.",
+    });
+  }
+
+  rawTargetRegions?.forEach((region, index) => {
+    if (!isRecord(region)) {
+      issues.push({
+        field: "targetRegions",
+        message: `Target region ${index + 1} is invalid and was skipped.`,
+      });
+      return;
+    }
+
+    const pincodeId = asString(region.pincodeId);
+    if (!pincodeId) {
+      issues.push({
+        field: "targetRegions",
+        message: `Target region ${index + 1} is missing a pincode reference.`,
+      });
+      return;
+    }
+
+    targetRegions.push({
+      scopeType:
+        asString(region.scopeType) &&
+        ["PAN_INDIA", "STATE", "DISTRICT", "PINCODE"].includes(
+          asString(region.scopeType) as string,
+        )
+          ? (asString(region.scopeType) as
+              | "PAN_INDIA"
+              | "STATE"
+              | "DISTRICT"
+              | "PINCODE")
+          : undefined,
+      pincodeId,
+      state: asString(region.state) || undefined,
+      district: asString(region.district) || undefined,
+    });
+  });
+
+  return {
+    values: {
+      name: name || "",
+      description: asString(offer.description) || "",
+      startDate: startDate || new Date(),
+      endDate:
+        endDate ||
+        new Date(
+          (startDate || new Date()).getTime() + 7 * 24 * 60 * 60 * 1000,
+        ),
+      isActive: isActive ?? true,
+      isPublic: isPublic ?? false,
+      mediaIds,
+      documentIds,
+      relations,
+      pincodeIds: [],
+      targetRegions,
+    },
+    issues,
+  };
+}
 
 interface OfferFormProps {
   offerId?: string | null;
@@ -211,7 +486,11 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
   const router = useRouter();
   const isEdit = !!offerId;
 
-  const { data: existingOffer, isLoading: isLoadingOffer } = useOfferQuery(
+  const {
+    data: existingOffer,
+    isLoading: isLoadingOffer,
+    error: offerError,
+  } = useOfferQuery(
     offerId || "",
   );
 
@@ -225,6 +504,30 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
 
   const createMutation = useCreateOfferMutation();
   const updateMutation = useUpdateOfferMutation();
+  const offerHydration = useMemo(() => {
+    if (isLoadingOffer) {
+      return { loadBanner: null as string | null, issues: [], values: null };
+    }
+
+    if (!existingOffer) {
+      return {
+        loadBanner: isEdit
+          ? offerError instanceof Error
+            ? offerError.message
+            : "Could not load this offer. Showing a blank form so you can continue."
+          : null,
+        issues: [],
+        values: null,
+      };
+    }
+
+    const normalized = normalizeOfferForForm(existingOffer);
+    return {
+      loadBanner: null as string | null,
+      issues: normalized.issues,
+      values: normalized.values,
+    };
+  }, [existingOffer, isEdit, isLoadingOffer, offerError]);
 
   const { data: pricingData, isLoading: isLoadingPricing } =
     useLeadPricing("OFFER");
@@ -248,52 +551,20 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
   });
 
   useEffect(() => {
-    if (existingOffer) {
-      const detail = existingOffer.offerDetails?.[0];
-      form.reset({
-        name: existingOffer.name,
-        description: existingOffer.description || "",
-        startDate: detail?.startDate ? new Date(detail.startDate) : new Date(),
-        endDate: detail?.endDate ? new Date(detail.endDate) : new Date(),
-        isActive: existingOffer.isActive,
-        isPublic: detail?.isPublic || false,
-        mediaIds: (detail?.attachments || []).filter(
-          (id) => !id.includes("doc"),
-        ), // Simple filter logic
-        documentIds: (detail?.attachments || []).filter((id) =>
-          id.includes("doc"),
-        ),
-        relations:
-          existingOffer.offerRelations?.map((r) => {
-            let rId = r.relationId;
-            let rType = r.relationType;
+    if (isLoadingOffer) return;
 
-            if (!rId) {
-              if (r.categoryId) {
-                rId = r.categoryId;
-                rType = "CATEGORY";
-              } else if (r.brandId) {
-                rId = r.brandId;
-                rType = "BRAND";
-              } else if (r.specificationId) {
-                rId = r.specificationId;
-                rType = "SPECIFICATION";
-              } else if (r.itemId) {
-                rId = r.itemId;
-                rType = "ITEM";
-              } else if (r.itemListingId) {
-                rId = r.itemListingId;
-                rType = "ITEM_LISTING";
-              }
-            }
-
-            return { relationType: rType, relationId: rId };
-          }) || [],
-        pincodeIds: [],
-        targetRegions: existingOffer.targetRegions || [],
-      });
+    form.clearErrors();
+    if (!offerHydration.values) {
+      return;
     }
-  }, [existingOffer, form]);
+
+    form.reset(offerHydration.values);
+
+    offerHydration.issues.forEach((issue) => {
+      if (issue.field === "root") return;
+      form.setError(issue.field, { type: "server", message: issue.message });
+    });
+  }, [existingOffer, form, isLoadingOffer, offerHydration]);
 
   const { data: categories } = useCategoriesQuery();
   const { data: brands } = useBrandsQuery();
@@ -403,7 +674,10 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
         .filter((r) => r.relationType === "ITEM_LISTING")
         .map((r) => r.relationId),
       targetRegions: values.targetRegions.map((r) => ({
+        scopeType: r.scopeType || "PINCODE",
         pincodeId: r.pincodeId,
+        state: r.state || undefined,
+        district: r.district || undefined,
       })),
       attachmentIds: [
         ...values.mediaIds.map((id) => ({ mediaId: id })),
@@ -478,6 +752,24 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                   This offer is approved. You can only change its active status
                   or delete it.
                 </div>
+              )}
+            </AlertDescription>
+          </Alert>
+        )}
+        {(offerHydration.loadBanner || offerHydration.issues.length > 0) && (
+          <Alert className="border-amber-300 bg-amber-50 text-amber-950">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Some offer data needed repair</AlertTitle>
+            <AlertDescription className="space-y-2">
+              {offerHydration.loadBanner && <p>{offerHydration.loadBanner}</p>}
+              {offerHydration.issues.length > 0 && (
+                <ul className="list-disc space-y-1 pl-5 text-sm">
+                  {offerHydration.issues.map((issue) => (
+                    <li key={`${issue.field}-${issue.message}`}>
+                      {toIssueMessage(issue.field, issue.message)}
+                    </li>
+                  ))}
+                </ul>
               )}
             </AlertDescription>
           </Alert>
@@ -629,112 +921,135 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                 <CardTitle>Applicable Relations</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex gap-4 items-end">
-                  <div className="space-y-2 flex-1">
-                    <FormLabel>Type</FormLabel>
-                    <Select
-                      disabled={isReadOnly}
-                      value={selectedRelationType}
-                      onValueChange={(
-                        v:
-                          | "CATEGORY"
-                          | "BRAND"
-                          | "SPECIFICATION"
-                          | "ITEM"
-                          | "ITEM_LISTING",
-                      ) => setSelectedRelationType(v)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="CATEGORY">Category</SelectItem>
-                        <SelectItem value="BRAND">Brand</SelectItem>
-                        <SelectItem value="SPECIFICATION">
-                          Specification
-                        </SelectItem>
-                        <SelectItem value="ITEM">Item</SelectItem>
-                        <SelectItem value="ITEM_LISTING">Listing</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2 flex-2">
-                    <FormLabel>
-                      Select{" "}
-                      {selectedRelationType.toLowerCase().replace("_", " ")}s
-                    </FormLabel>
-                    <MultiSelectCombobox
-                      className={cn(
-                        isReadOnly && "opacity-60 cursor-not-allowed",
-                      )}
-                      options={
-                        (selectedRelationType === "CATEGORY"
-                          ? categories?.map((c: Category) => ({
-                              id: c.id,
-                              label: c.name,
-                            }))
-                          : selectedRelationType === "BRAND"
-                            ? brands?.map((b: Brand) => ({
-                                id: b.id,
-                                label: b.name,
-                              }))
-                            : selectedRelationType === "SPECIFICATION"
-                              ? specifications?.map((s: Specification) => ({
-                                  id: s.id,
-                                  label: s.name,
-                                }))
-                              : selectedRelationType === "ITEM"
-                                ? items?.map((i: Item) => ({
-                                    id: i.id,
-                                    label: i.name,
-                                  }))
-                                : listings?.map((l: ItemListing) => ({
-                                    id: l.id,
-                                    label: `${l.item?.name || l.id} - ${l.itemRates?.[0]?.rate || "No rate"}`,
-                                  }))) || []
-                      }
-                      selectedIds={form
-                        .watch("relations")
-                        .filter((r) => r.relationType === selectedRelationType)
-                        .map((r) => r.relationId)}
-                      onToggle={isReadOnly ? () => {} : toggleRelation}
-                      placeholder={`Select ${selectedRelationType.toLowerCase().replace("_", " ")}s...`}
-                    />
-                  </div>
-                </div>
+                <FormField
+                  control={form.control}
+                  name="relations"
+                  render={({ field }) => {
+                    const relations = field.value;
 
-                <div className="border rounded-md p-4 min-h-[100px] space-y-2">
-                  {form
-                    .watch("relations")
-                    .map(
-                      (
-                        r: { relationType: string; relationId: string },
-                        i: number,
-                      ) => (
-                        <Badge
-                          key={i}
-                          variant="secondary"
-                          className="mr-2 mb-2 p-2 gap-2"
-                        >
-                          <span className="font-bold text-[10px]  text-muted-foreground mr-1">
-                            {r.relationType}
-                          </span>
-                          {getRelationName(r.relationType, r.relationId)}
-                          {!isReadOnly && (
-                            <X
-                              className="h-3 w-3 cursor-pointer hover:text-destructive"
-                              onClick={() => handleRemoveRelation(i)}
+                    return (
+                      <div className="space-y-4">
+                        <div className="flex gap-4 items-end">
+                          <div className="space-y-2 flex-1">
+                            <FormLabel>Type</FormLabel>
+                            <Select
+                              disabled={isReadOnly}
+                              value={selectedRelationType}
+                              onValueChange={(
+                                v:
+                                  | "CATEGORY"
+                                  | "BRAND"
+                                  | "SPECIFICATION"
+                                  | "ITEM"
+                                  | "ITEM_LISTING",
+                              ) => setSelectedRelationType(v)}
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="CATEGORY">
+                                  Category
+                                </SelectItem>
+                                <SelectItem value="BRAND">Brand</SelectItem>
+                                <SelectItem value="SPECIFICATION">
+                                  Specification
+                                </SelectItem>
+                                <SelectItem value="ITEM">Item</SelectItem>
+                                <SelectItem value="ITEM_LISTING">
+                                  Listing
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-2 flex-2">
+                            <FormLabel>
+                              Select{" "}
+                              {selectedRelationType
+                                .toLowerCase()
+                                .replace("_", " ")}
+                              s
+                            </FormLabel>
+                            <MultiSelectCombobox
+                              className={cn(
+                                isReadOnly && "opacity-60 cursor-not-allowed",
+                              )}
+                              options={
+                                (selectedRelationType === "CATEGORY"
+                                  ? categories?.map((c: Category) => ({
+                                      id: c.id,
+                                      label: c.name,
+                                    }))
+                                  : selectedRelationType === "BRAND"
+                                    ? brands?.map((b: Brand) => ({
+                                        id: b.id,
+                                        label: b.name,
+                                      }))
+                                    : selectedRelationType === "SPECIFICATION"
+                                      ? specifications?.map((s: Specification) => ({
+                                          id: s.id,
+                                          label: s.name,
+                                        }))
+                                      : selectedRelationType === "ITEM"
+                                        ? items?.map((i: Item) => ({
+                                            id: i.id,
+                                            label: i.name,
+                                          }))
+                                        : listings?.map((l: ItemListing) => ({
+                                            id: l.id,
+                                            label: `${l.item?.name || l.id} - ${l.itemRates?.[0]?.rate || "No rate"}`,
+                                          }))) || []
+                              }
+                              selectedIds={relations
+                                .filter(
+                                  (r) =>
+                                    r.relationType === selectedRelationType,
+                                )
+                                .map((r) => r.relationId)}
+                              onToggle={isReadOnly ? () => {} : toggleRelation}
+                              placeholder={`Select ${selectedRelationType
+                                .toLowerCase()
+                                .replace("_", " ")}s...`}
                             />
+                          </div>
+                        </div>
+
+                        <div className="border rounded-md p-4 min-h-[100px] space-y-2">
+                          {relations.map(
+                            (
+                              r: { relationType: string; relationId: string },
+                              i: number,
+                            ) => (
+                              <Badge
+                                key={i}
+                                variant="secondary"
+                                className="mr-2 mb-2 p-2 gap-2"
+                              >
+                                <span className="font-bold text-[10px]  text-muted-foreground mr-1">
+                                  {r.relationType}
+                                </span>
+                                {getRelationName(r.relationType, r.relationId)}
+                                {!isReadOnly && (
+                                  <X
+                                    className="h-3 w-3 cursor-pointer hover:text-destructive"
+                                    onClick={() => handleRemoveRelation(i)}
+                                  />
+                                )}
+                              </Badge>
+                            ),
                           )}
-                        </Badge>
-                      ),
-                    )}
-                  {form.watch("relations").length === 0 && (
-                    <p className="text-sm text-muted-foreground">
-                      No relations selected. Offer might apply generally?
-                    </p>
-                  )}
-                </div>
+                          {relations.length === 0 && (
+                            <p className="text-sm text-muted-foreground">
+                              No relations selected. Offer might apply
+                              generally?
+                            </p>
+                          )}
+                        </div>
+                        <FormMessage />
+                      </div>
+                    );
+                  }}
+                />
               </CardContent>
             </Card>
 
@@ -750,11 +1065,14 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                     control={form.control}
                     name="targetRegions"
                     render={({ field }) => (
-                      <UnifiedRegionSelector
-                        selectedRegions={field.value}
-                        onUpdate={field.onChange}
-                        disabled={isReadOnly}
-                      />
+                      <div className="space-y-2">
+                        <UnifiedRegionSelector
+                          selectedRegions={field.value}
+                          onUpdate={field.onChange}
+                          disabled={isReadOnly}
+                        />
+                        <FormMessage />
+                      </div>
                     )}
                   />
                 </div>
@@ -812,6 +1130,7 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                           </div>
                         ))}
                       </div>
+                      <FormMessage />
                     </div>
                   )}
                 />
@@ -855,6 +1174,7 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                           </div>
                         ))}
                       </div>
+                      <FormMessage />
                     </div>
                   )}
                 />
@@ -884,6 +1204,7 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -902,6 +1223,7 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />

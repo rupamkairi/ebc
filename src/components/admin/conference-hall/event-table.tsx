@@ -48,9 +48,39 @@ export function EventTable({
       ),
     },
     {
+      id: "entity",
+      header: "Seller / Entity",
+      cell: ({ row }) => (
+        <div className="flex flex-col gap-1">
+          <span className="font-medium">{row.original.entity?.name || "N/A"}</span>
+          <span className="text-xs text-muted-foreground truncate max-w-[220px]">
+            {row.original.entity?.contactEmail ||
+              row.original.entity?.primaryContactNumber ||
+              "No contact details on list row"}
+          </span>
+        </div>
+      ),
+    },
+    {
       id: "type",
       header: "Type",
       cell: ({ row }) => <Badge variant="outline">{row.original.type}</Badge>,
+    },
+    {
+      id: "mode",
+      header: "Mode",
+      cell: ({ row }) => {
+        const isHybrid = row.original.isRemote && row.original.isPhysical;
+        const label = isHybrid
+          ? "Hybrid"
+          : row.original.isRemote
+            ? "Remote"
+            : row.original.isPhysical
+              ? "Physical"
+              : "Unspecified";
+
+        return <Badge variant="secondary">{label}</Badge>;
+      },
     },
     {
       id: "status",
@@ -74,6 +104,31 @@ export function EventTable({
           >
             {status}
           </Badge>
+        );
+      },
+    },
+    {
+      id: "targeting",
+      header: "Targeting",
+      cell: ({ row }) => {
+        const regions = row.original.targetRegions || [];
+        if (regions.length === 0) {
+          return <span className="text-xs text-muted-foreground">Global / Unspecified</span>;
+        }
+
+        return (
+          <div className="flex flex-wrap gap-1 max-w-[260px]">
+            {regions.slice(0, 2).map((region, index) => (
+              <Badge key={region.id || `${region.pincodeId}-${index}`} variant="outline" className="text-[10px]">
+                {formatRegion(region)}
+              </Badge>
+            ))}
+            {regions.length > 2 && (
+              <Badge variant="secondary" className="text-[10px]">
+                +{regions.length - 2} more
+              </Badge>
+            )}
+          </div>
         );
       },
     },
@@ -122,4 +177,28 @@ export function EventTable({
       pageCount={-1}
     />
   );
+}
+
+function formatRegion(region: {
+  scopeType?: string | null;
+  pincodeId?: string | null;
+  pincode?: {
+    pincode?: string | null;
+    district?: string | null;
+    state?: string | null;
+  } | null;
+  state?: string | null;
+  district?: string | null;
+}) {
+  const scope = region.scopeType || "PINCODE";
+  const parts = [
+    region.pincode?.pincode,
+    region.pincode?.district,
+    region.pincode?.state,
+    region.district,
+    region.state,
+    region.pincodeId,
+  ].filter(Boolean);
+
+  return `${scope}: ${parts.join(" • ") || "N/A"}`;
 }

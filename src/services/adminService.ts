@@ -1,6 +1,10 @@
 import fetchClient from "@/lib/api-client";
 import { API_ENDPOINTS } from "@/lib/api-endpoints";
-import { CreateAdminSubordinateRequest, AdminUser } from "@/types/auth";
+import {
+  CreateAdminSubordinateRequest,
+  AdminUser,
+  AdminUserUpdateRequest,
+} from "@/types/auth";
 
 export interface UserListParams {
   role?: string;
@@ -47,7 +51,7 @@ export const adminService = {
     });
   },
 
-  async updateAdminUser(id: string, data: Partial<AdminUser>) {
+  async updateAdminUser(id: string, data: AdminUserUpdateRequest) {
     return fetchClient<AdminUser>(`${API_ENDPOINTS.AUTH.ADMIN.UPDATE_USER}/${id}`, {
       method: "PATCH",
       body: data,

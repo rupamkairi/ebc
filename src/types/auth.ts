@@ -90,3 +90,11 @@ export interface UpdateProfileRequest {
   role?: string;
   pincodeId?: string;
 }
+
+export interface AdminUserUpdateRequest {
+  name?: string;
+  email?: string | null;
+  phone?: string;
+  pincodeId?: string;
+  password?: string;
+}

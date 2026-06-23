@@ -1,4 +1,5 @@
 import { Category, Brand, Specification, Item, ItemListing } from "./catalog";
+import { Entity } from "./entity";
 import { TargetRegion } from "./region";
 
 export enum VERIFICATION_STATUS {
@@ -34,10 +35,7 @@ export interface ConferenceHallEvent {
   hasJoined?: boolean;
   verificationStatus?: VERIFICATION_STATUS;
   verificationRemark?: string;
-  entity?: {
-    id: string;
-    name: string;
-  };
+  entity?: Entity;
   attachments?: {
     id: string;
     mediaId?: string;
@@ -117,7 +115,21 @@ export interface OfferDetail {
   publishedAt: string | null;
   isPublic: boolean;
   offerId: string;
-  attachments?: string[];
+  attachments?: {
+    id: string;
+    mediaId?: string | null;
+    documentId?: string | null;
+    media?: {
+      id: string;
+      name: string;
+      url: string;
+    } | null;
+    document?: {
+      id: string;
+      name: string;
+      url: string;
+    } | null;
+  }[];
 }
 
 export interface OfferPincode {
@@ -132,6 +144,7 @@ export interface OfferRegion {
   pincodeId: string;
   offerId: string;
   pincode?: OfferPincode;
+  pincodeDirectory?: OfferPincode | null;
 }
 
 export interface OfferRelation {
@@ -168,14 +181,12 @@ export interface Offer {
   createdById: string;
   verificationStatus?: VERIFICATION_STATUS;
   verificationRemark?: string;
-  entity?: {
-    id: string;
-    name: string;
-  };
+  entity?: Entity;
 
   // Nested Data
   offerDetails: OfferDetail[];
   targetRegions: TargetRegion[];
+  targetRegion?: TargetRegion[];
   offerRelations: OfferRelation[];
 
   // We keep status for frontend logic, but might need to derive it if not in JSON
@@ -194,7 +205,7 @@ export interface CreateOfferRequest {
   specificationIds: string[];
   itemIds: string[];
   itemListingIds: string[];
-  targetRegions: { pincodeId: string }[];
+  targetRegions: TargetRegion[];
   attachmentIds: { mediaId?: string; documentId?: string }[];
 }
 
@@ -232,6 +243,7 @@ export interface Content {
   createdById: string;
   verificationStatus?: VERIFICATION_STATUS;
   verificationRemark?: string;
+  entity?: Entity;
 
   attachments?: {
     id: string;

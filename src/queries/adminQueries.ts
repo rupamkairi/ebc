@@ -1,6 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { adminService, UserListParams } from "@/services/adminService";
-import { CreateAdminSubordinateRequest, AdminUser } from "@/types/auth";
+import {
+  CreateAdminSubordinateRequest,
+  AdminUserUpdateRequest,
+} from "@/types/auth";
 
 export const adminKeys = {
   all: ["admin"] as const,
@@ -70,7 +73,7 @@ export function useUpdateUserMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<AdminUser> }) =>
+    mutationFn: ({ id, data }: { id: string; data: AdminUserUpdateRequest }) =>
       adminService.updateAdminUser(id, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: adminKeys.all });

@@ -1,5 +1,17 @@
 "use client";
 
+import { useState } from "react";
+import { format } from "date-fns";
+import { toast } from "sonner";
+import {
+  AlertTriangle,
+  Building2,
+  ExternalLink,
+  FileText,
+  Loader2,
+} from "lucide-react";
+import { useVerifyContentMutation, useContentQuery } from "@/queries/conferenceHallQueries";
+import { Content, VERIFICATION_STATUS } from "@/types/conference-hall";
 import {
   Dialog,
   DialogContent,
@@ -13,20 +25,6 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Content, VERIFICATION_STATUS } from "@/types/conference-hall";
-import { useVerifyContentMutation } from "@/queries/conferenceHallQueries";
-import { toast } from "sonner";
-import {
-  Loader2,
-  CheckCircle,
-  XCircle,
-  FileText,
-  ExternalLink,
-  AlertTriangle,
-} from "lucide-react";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
-import { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -35,6 +33,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DocumentPreview } from "@/components/shared/document-preview";
+import { cn } from "@/lib/utils";
 
 interface ContentVerificationModalProps {
   content: Content | null;
@@ -48,19 +47,27 @@ export function ContentVerificationModal({
   onOpenChange,
 }: ContentVerificationModalProps) {
   const verifyMutation = useVerifyContentMutation();
+  const { data: detailedContent, isLoading: isLoadingDetails } =
+    useContentQuery(content?.id || "");
+  const activeContent = detailedContent ?? content;
   const [remarks, setRemarks] = useState("");
   const [status, setStatus] = useState<VERIFICATION_STATUS | null>(null);
 
-  if (!content) return null;
+  if (!activeContent) return null;
+
+  const verificationStatus =
+    activeContent.verificationStatus || VERIFICATION_STATUS.PENDING;
+  const isAlreadyVerified =
+    verificationStatus && verificationStatus !== VERIFICATION_STATUS.PENDING;
 
   const handleVerify = async () => {
-    if (!content || !status) return;
+    if (!activeContent || !status) return;
 
     try {
       await verifyMutation.mutateAsync({
-        id: content.id,
+        id: activeContent.id,
         data: {
-          status: status,
+          status,
           remarks: remarks || undefined,
         },
       });
@@ -73,80 +80,159 @@ export function ContentVerificationModal({
     }
   };
 
-  const isAlreadyVerified =
-    content.verificationStatus &&
-    content.verificationStatus !== VERIFICATION_STATUS.PENDING;
+  const entity = activeContent.entity;
+  const attachments = activeContent.attachments || [];
+  const targetRegions = activeContent.targetRegions || [];
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh] flex flex-col p-0">
+      <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col p-0">
         <ScrollArea className="h-[80vh] w-full rounded-md border">
           <DialogHeader className="p-6 pb-0">
-            <div className="flex items-center justify-between">
-              <DialogTitle className="text-2xl font-bold flex items-center gap-2">
-                <FileText className="size-6" />
-                Content Verification
-              </DialogTitle>
+            <div className="flex items-center justify-between gap-4">
+              <div className="space-y-1">
+                <DialogTitle className="text-2xl font-bold flex items-center gap-2">
+                  <FileText className="size-6" />
+                  Content Verification
+                </DialogTitle>
+                <DialogDescription>
+                  Review the content, seller details, targeting, and files before verification.
+                </DialogDescription>
+              </div>
               <Badge
                 variant={
-                  content.verificationStatus === VERIFICATION_STATUS.APPROVED
+                  verificationStatus === VERIFICATION_STATUS.APPROVED
                     ? "default"
-                    : content.verificationStatus ===
-                        VERIFICATION_STATUS.REJECTED
+                    : verificationStatus === VERIFICATION_STATUS.REJECTED
                       ? "destructive"
                       : "outline"
                 }
               >
-                {content.verificationStatus || "PENDING"}
+                {verificationStatus}
               </Badge>
             </div>
-            <DialogDescription>
-              Review content details and attachments before verification.
-            </DialogDescription>
           </DialogHeader>
 
           <ScrollArea className="flex-1 p-6">
             <div className="space-y-8">
-              {/* Content Information */}
               <section className="space-y-4">
                 <h3 className="text-lg font-semibold border-b pb-2">
                   Content Details
                 </h3>
                 <div className="grid grid-cols-1 gap-4">
-                  <InfoItem label="Title" value={content.name} />
-                  <InfoItem label="Description" value={content.description} />
-                  <div className="grid grid-cols-2 gap-4">
+                  <InfoItem label="Title" value={activeContent.name} />
+                  <InfoItem label="Description" value={activeContent.description} />
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <InfoItem
+                      label="Availability"
+                      value={activeContent.isActive ? "Active" : "Inactive"}
+                    />
+                    <InfoItem
+                      label="Visibility"
+                      value={activeContent.isPublic ? "Public" : "Private"}
+                    />
                     <InfoItem
                       label="Created At"
-                      value={format(new Date(content.createdAt), "PPP p")}
-                    />
-                    <InfoItem
-                      label="Status"
-                      value={content.isActive ? "Active" : "Inactive"}
+                      value={format(new Date(activeContent.createdAt), "PPP p")}
                     />
                   </div>
+                  <InfoItem
+                    label="Updated At"
+                    value={format(new Date(activeContent.updatedAt), "PPP p")}
+                  />
+                  {isLoadingDetails && (
+                    <p className="text-xs text-muted-foreground">
+                      Loading full content details...
+                    </p>
+                  )}
                 </div>
               </section>
 
-              {/* Attachments Section */}
-              <div className="space-y-3">
-                <h4 className="text-sm font-bold   text-muted-foreground">
+              <section className="space-y-4">
+                <div className="flex items-center gap-2 border-b pb-2">
+                  <Building2 className="size-5 text-muted-foreground" />
+                  <h3 className="text-lg font-semibold">
+                    Seller / Entity Information
+                  </h3>
+                </div>
+                {entity ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <InfoItem label="Entity Name" value={entity.name} />
+                    <InfoItem
+                      label="Legal Name"
+                      value={entity.legalName || "N/A"}
+                    />
+                    <InfoItem
+                      label="Primary Phone"
+                      value={entity.primaryContactNumber || "N/A"}
+                    />
+                    <InfoItem
+                      label="Secondary Phone"
+                      value={entity.secondaryContactNumber || "N/A"}
+                    />
+                    <InfoItem
+                      label="Contact Email"
+                      value={entity.contactEmail || "N/A"}
+                    />
+                    <InfoItem
+                      label="Support Email"
+                      value={entity.supportEmail || "N/A"}
+                    />
+                    <div className="md:col-span-2">
+                      <InfoItem
+                        label="Address"
+                        value={formatEntityAddress(entity)}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+                    Seller details are not available on this record.
+                  </div>
+                )}
+              </section>
+
+              <section className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">
+                  Target Regions
+                </h3>
+                {targetRegions.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {targetRegions.map((region, index) => (
+                      <Badge key={region.id || `${region.pincodeId}-${index}`} variant="outline">
+                        {formatRegion(region)}
+                      </Badge>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+                    No target regions configured.
+                  </div>
+                )}
+              </section>
+
+              <section className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">
                   Attachments
-                </h4>
+                </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {content.attachments && content.attachments.length > 0 ? (
-                    content.attachments.map((attachment, idx) => {
+                  {attachments.length > 0 ? (
+                    attachments.map((attachment, idx) => {
                       const doc = attachment.document || attachment.media;
                       if (!doc) return null;
 
                       const fileName = doc.name || `Attachment ${idx + 1}`;
+                      const fileType =
+                        "mimeType" in doc && doc.mimeType
+                          ? doc.mimeType.split("/").pop() || "file"
+                          : "pdf";
 
-                       return (
+                      return (
                         <DocumentPreview
                           key={attachment.id}
                           url={doc.url}
                           name={fileName}
-                          fileType={"fileType" in doc ? doc.fileType : "pdf"}
+                          fileType={fileType}
                         >
                           <a
                             href={doc.url}
@@ -157,8 +243,11 @@ export function ContentVerificationModal({
                             <div className="flex items-center gap-2 overflow-hidden">
                               <FileText className="size-4 text-primary shrink-0" />
                               <div className="flex flex-col">
-                                <span className="text-xs font-medium truncate max-w-[180px]">
+                                <span className="text-xs font-medium truncate max-w-[220px]">
                                   {decodeURIComponent(fileName)}
+                                </span>
+                                <span className="text-[10px] text-muted-foreground truncate max-w-[220px]">
+                                  {doc.url}
                                 </span>
                               </div>
                             </div>
@@ -175,24 +264,25 @@ export function ContentVerificationModal({
                     </div>
                   )}
                 </div>
-              </div>
+              </section>
 
-              {/* Previous Remarks if any */}
-              {content.verificationRemark && (
+              {activeContent.verificationRemark && (
                 <div className="bg-muted p-4 rounded-md">
-                  <Label className="text-muted-foreground text-xs ">
+                  <Label className="text-muted-foreground text-xs">
                     Previous Remarks
                   </Label>
-                  <p className="text-sm mt-1">{content.verificationRemark}</p>
+                  <p className="text-sm mt-1">{activeContent.verificationRemark}</p>
                 </div>
               )}
 
-              {/* Verification Actions */}
               {!isAlreadyVerified && (
                 <div className="space-y-4 pt-4 border-t">
-                  <h3 className="text-lg font-semibold">
-                    Verification Decision
-                  </h3>
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="size-4 text-muted-foreground" />
+                    <h3 className="text-lg font-semibold">
+                      Verification Decision
+                    </h3>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Status</Label>
@@ -214,9 +304,7 @@ export function ContentVerificationModal({
                           <SelectItem value={VERIFICATION_STATUS.REVISE}>
                             Request Revision
                           </SelectItem>
-                          <SelectItem
-                            value={VERIFICATION_STATUS.MISINFORMATION}
-                          >
+                          <SelectItem value={VERIFICATION_STATUS.MISINFORMATION}>
                             Misinformation
                           </SelectItem>
                           <SelectItem value={VERIFICATION_STATUS.INAPPROPRIATE}>
@@ -272,6 +360,44 @@ export function ContentVerificationModal({
   );
 }
 
+function formatRegion(region: {
+  scopeType?: string | null;
+  pincodeId?: string | null;
+  pincode?: {
+    pincode?: string | null;
+    district?: string | null;
+    state?: string | null;
+  } | null;
+  state?: string | null;
+  district?: string | null;
+}) {
+  const scope = region.scopeType || "PINCODE";
+  const parts = [
+    region.pincode?.pincode,
+    region.pincode?.district,
+    region.pincode?.state,
+    region.district,
+    region.state,
+    region.pincodeId,
+  ].filter(Boolean);
+
+  return `${scope}: ${parts.join(" • ") || "N/A"}`;
+}
+
+function formatEntityAddress(entity: {
+  addressLine1?: string | null;
+  addressLine2?: string | null;
+  city?: string | null;
+  pincode?: { pincode?: string | null; district?: string | null; state?: string | null } | null;
+  pincodeId?: string | null;
+}) {
+  const lines = [entity.addressLine1, entity.addressLine2].filter(Boolean).join(", ");
+  const location = [entity.city, entity.pincode?.pincode || entity.pincodeId].filter(Boolean).join(" • ");
+  const region = [entity.pincode?.district, entity.pincode?.state].filter(Boolean).join(", ");
+
+  return [lines, location, region].filter(Boolean).join(" | ") || "N/A";
+}
+
 function InfoItem({
   label,
   value,
@@ -281,10 +407,12 @@ function InfoItem({
 }) {
   return (
     <div className="space-y-1">
-      <Label className="text-muted-foreground text-xs  tracking-tight">
+      <Label className="text-muted-foreground text-xs tracking-tight">
         {label}
       </Label>
-      <p className="font-medium text-sm leading-snug">{value || "N/A"}</p>
+      <p className="font-medium text-sm leading-snug whitespace-pre-wrap">
+        {value || "N/A"}
+      </p>
     </div>
   );
 }

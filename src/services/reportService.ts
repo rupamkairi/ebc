@@ -11,6 +11,86 @@ export interface ReportResponse {
   total: number;
 }
 
+export interface AdminDashboardSummary {
+  range: {
+    startDate: string;
+    endDate: string;
+  };
+  generatedAt: string;
+  cached: boolean;
+  users: {
+    buyers: number;
+    productSellers: number;
+    serviceProviders: number;
+    adminStaff: number;
+    activeUsers: number;
+    total: number;
+  };
+  entities: {
+    total: number;
+    pendingVerification: number;
+    approved: number;
+    attentionRequired: number;
+    product: number;
+    service: number;
+  };
+  activities: {
+    enquiries: number;
+    appointments: number;
+    assignmentsDispatched: number;
+    quotations: number;
+    visits: number;
+    completedVisits: number;
+  };
+  finance: {
+    paidRevenueInr: number;
+    paidOrders: number;
+    coinTopups: number;
+    coinTopupsInr: number;
+    coinsConsumed: number;
+  };
+  marketplace: {
+    itemListings: number;
+    offers: number;
+    events: number;
+    content: number;
+    discussions: number;
+  };
+  operations: {
+    supportTickets: number;
+    openSupportTickets: number;
+    urgentSupportTickets: number;
+    notificationAttempts: number;
+    failedNotifications: number;
+    notificationFailureRate: number;
+    reviews: number;
+    averageRating: number;
+  };
+  recent: {
+    enquiries: DashboardRecentItem[];
+    appointments: DashboardRecentItem[];
+    support: Array<DashboardRecentItem & { priority: string }>;
+    pendingEntities: DashboardRecentItem[];
+  };
+  trend: Array<{
+    label: string;
+    enquiries: number;
+    appointments: number;
+    quotations: number;
+    visits: number;
+    revenue: number;
+  }>;
+}
+
+export interface DashboardRecentItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  status: string;
+  createdAt: string;
+  href: string;
+}
+
 const parseCsv = (csv: string) => {
   const records: string[][] = [];
   let row: string[] = [];
@@ -173,10 +253,44 @@ const fetchReportByDates = (endpoint: string, filename: string) => (
 ) =>
   fetchReport(endpoint, withDates(dateToParam(start), dateToParam(end)), filename);
 
+const fetchDashboardSummary = async (
+  start: Date,
+  end: Date,
+): Promise<AdminDashboardSummary> => {
+  const token = useAuthStore.getState().token;
+  const queryString = new URLSearchParams(
+    withDates(dateToParam(start), dateToParam(end)),
+  ).toString();
+  const response = await fetch(
+    `${BASE_URL}/report/admin/dashboard-summary?${queryString}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    },
+  );
+
+  if (!response.ok) {
+    let errorMessage = "Failed to load dashboard summary";
+    try {
+      const errorData = await response.json();
+      errorMessage = errorData.error || errorData.message || errorMessage;
+    } catch {
+      errorMessage = `Error ${response.status}: ${response.statusText}`;
+    }
+    throw new Error(errorMessage);
+  }
+
+  return response.json();
+};
+
 export const reportService = {
   downloadRows,
   fetchReport: fetchReportByDateStrings,
   admin: {
+    fetchDashboardSummary,
     fetchPlatformOverview: fetchReportByDates(
       "/admin/platform-overview",
       "platform-overview.csv",

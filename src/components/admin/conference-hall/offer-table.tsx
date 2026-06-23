@@ -45,6 +45,20 @@ export function OfferTable({
       ),
     },
     {
+      id: "entity",
+      header: "Seller / Entity",
+      cell: ({ row }) => (
+        <div className="flex flex-col gap-1">
+          <span className="font-medium">{row.original.entity?.name || "N/A"}</span>
+          <span className="text-xs text-muted-foreground truncate max-w-[220px]">
+            {row.original.entity?.contactEmail ||
+              row.original.entity?.primaryContactNumber ||
+              "No contact details on list row"}
+          </span>
+        </div>
+      ),
+    },
+    {
       id: "status",
       header: "Status",
       cell: ({ row }) => {

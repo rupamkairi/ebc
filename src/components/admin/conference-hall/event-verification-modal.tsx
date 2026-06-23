@@ -1,5 +1,18 @@
 "use client";
 
+import { useState } from "react";
+import { format } from "date-fns";
+import { toast } from "sonner";
+import {
+  AlertTriangle,
+  Calendar,
+  ExternalLink,
+  FileText,
+  Loader2,
+  Building2,
+} from "lucide-react";
+import { useEventQuery, useVerifyEventMutation } from "@/queries/conferenceHallQueries";
+import { ConferenceHallEvent, VERIFICATION_STATUS } from "@/types/conference-hall";
 import {
   Dialog,
   DialogContent,
@@ -14,23 +27,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  ConferenceHallEvent,
-  VERIFICATION_STATUS,
-} from "@/types/conference-hall";
-import { useVerifyEventMutation } from "@/queries/conferenceHallQueries";
-import { toast } from "sonner";
-import {
-  Loader2,
-  FileText,
-  ExternalLink,
-  Calendar,
-  MapPin,
-  Video,
-} from "lucide-react";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
-import { useState } from "react";
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -38,6 +34,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DocumentPreview } from "@/components/shared/document-preview";
+import { cn } from "@/lib/utils";
 
 interface EventVerificationModalProps {
   event: ConferenceHallEvent | null;
@@ -51,19 +48,28 @@ export function EventVerificationModal({
   onOpenChange,
 }: EventVerificationModalProps) {
   const verifyMutation = useVerifyEventMutation();
+  const { data: detailedEvent, isLoading: isLoadingDetails } = useEventQuery(
+    event?.id || "",
+  );
+  const activeEvent = detailedEvent ?? event;
   const [remarks, setRemarks] = useState("");
   const [status, setStatus] = useState<VERIFICATION_STATUS | null>(null);
 
-  if (!event) return null;
+  if (!activeEvent) return null;
+
+  const verificationStatus =
+    activeEvent.verificationStatus || VERIFICATION_STATUS.PENDING;
+  const isAlreadyVerified =
+    verificationStatus && verificationStatus !== VERIFICATION_STATUS.PENDING;
 
   const handleVerify = async () => {
-    if (!event || !status) return;
+    if (!activeEvent || !status) return;
 
     try {
       await verifyMutation.mutateAsync({
-        id: event.id,
+        id: activeEvent.id,
         data: {
-          status: status,
+          status,
           remarks: remarks || undefined,
         },
       });
@@ -76,113 +82,217 @@ export function EventVerificationModal({
     }
   };
 
-  const isAlreadyVerified =
-    event.verificationStatus &&
-    event.verificationStatus !== VERIFICATION_STATUS.PENDING;
+  const entity = activeEvent.entity;
+  const attachments = activeEvent.attachments || [];
+  const targetRegions = activeEvent.targetRegions || [];
+  const isHybrid = activeEvent.isRemote && activeEvent.isPhysical;
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh] flex flex-col p-0">
+      <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col p-0">
         <ScrollArea className="h-[80vh] w-full rounded-md border">
           <DialogHeader className="p-6 pb-0">
-            <div className="flex items-center justify-between">
-              <DialogTitle className="text-2xl font-bold flex items-center gap-2">
-                <Calendar className="size-6" />
-                Event Verification
-              </DialogTitle>
+            <div className="flex items-center justify-between gap-4">
+              <div className="space-y-1">
+                <DialogTitle className="text-2xl font-bold flex items-center gap-2">
+                  <Calendar className="size-6" />
+                  Event Verification
+                </DialogTitle>
+                <DialogDescription>
+                  Review the event, seller details, timing, venue, and target audience before verification.
+                </DialogDescription>
+              </div>
               <Badge
                 variant={
-                  event.verificationStatus === VERIFICATION_STATUS.APPROVED
+                  verificationStatus === VERIFICATION_STATUS.APPROVED
                     ? "default"
-                    : event.verificationStatus === VERIFICATION_STATUS.REJECTED
+                    : verificationStatus === VERIFICATION_STATUS.REJECTED
                       ? "destructive"
                       : "outline"
                 }
               >
-                {event.verificationStatus || "PENDING"}
+                {verificationStatus}
               </Badge>
             </div>
-            <DialogDescription>
-              Review event details, schedule, and attachments before
-              verification.
-            </DialogDescription>
           </DialogHeader>
 
           <ScrollArea className="flex-1 p-6">
             <div className="space-y-8">
-              {/* Event Information */}
               <section className="space-y-4">
                 <h3 className="text-lg font-semibold border-b pb-2">
                   Event Details
                 </h3>
                 <div className="grid grid-cols-1 gap-4">
-                  <InfoItem label="Name" value={event.name} />
-                  <InfoItem label="Description" value={event.description} />
-                  <div className="grid grid-cols-2 gap-4">
-                    <InfoItem label="Type" value={event.type} />
-                    <InfoItem label="Created By" value={event.entity?.name} />
+                  <InfoItem label="Name" value={activeEvent.name} />
+                  <InfoItem label="Description" value={activeEvent.description} />
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <InfoItem label="Type" value={activeEvent.type} />
+                    <InfoItem
+                      label="Mode"
+                      value={
+                        isHybrid
+                          ? "Hybrid"
+                          : activeEvent.isRemote
+                            ? "Remote"
+                            : activeEvent.isPhysical
+                              ? "Physical"
+                              : "Unspecified"
+                      }
+                    />
+                    <InfoItem
+                      label="Visibility"
+                      value={activeEvent.isPublic ? "Public" : "Private"}
+                    />
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <InfoItem
                       label="Start Date"
                       value={
-                        event.startDate
-                          ? format(new Date(event.startDate), "PPP p")
+                        activeEvent.startDate
+                          ? format(new Date(activeEvent.startDate), "PPP p")
                           : "N/A"
                       }
                     />
                     <InfoItem
                       label="End Date"
                       value={
-                        event.endDate
-                          ? format(new Date(event.endDate), "PPP p")
+                        activeEvent.endDate
+                          ? format(new Date(activeEvent.endDate), "PPP p")
                           : "N/A"
                       }
                     />
+                    <InfoItem
+                      label="Status"
+                      value={activeEvent.isActive ? "Active" : "Inactive"}
+                    />
                   </div>
-
-                  {event.isPhysical && (
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <InfoItem label="Location" value={event.location} />
-                    </div>
-                  )}
-
-                  {event.isRemote && (
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <Video className="h-4 w-4 text-muted-foreground" />
-                        <Label className="text-muted-foreground text-xs  tracking-tight">
-                          Meeting Link
-                        </Label>
-                      </div>
-                      <p className="font-medium text-sm leading-snug break-all">
-                        {event.meetingUrl || "N/A"}
-                      </p>
-                    </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <InfoItem
+                      label="Created At"
+                      value={format(new Date(activeEvent.createdAt), "PPP p")}
+                    />
+                    <InfoItem
+                      label="Updated At"
+                      value={format(new Date(activeEvent.updatedAt), "PPP p")}
+                    />
+                  </div>
+                  {isLoadingDetails && (
+                    <p className="text-xs text-muted-foreground">
+                      Loading full event details...
+                    </p>
                   )}
                 </div>
               </section>
 
-              {/* Attachments Section */}
-              <div className="space-y-3">
-                <h4 className="text-sm font-bold   text-muted-foreground">
+              <section className="space-y-4">
+                <div className="flex items-center gap-2 border-b pb-2">
+                  <Building2 className="size-5 text-muted-foreground" />
+                  <h3 className="text-lg font-semibold">
+                    Seller / Entity Information
+                  </h3>
+                </div>
+                {entity ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <InfoItem label="Entity Name" value={entity.name} />
+                    <InfoItem
+                      label="Legal Name"
+                      value={entity.legalName || "N/A"}
+                    />
+                    <InfoItem
+                      label="Primary Phone"
+                      value={entity.primaryContactNumber || "N/A"}
+                    />
+                    <InfoItem
+                      label="Secondary Phone"
+                      value={entity.secondaryContactNumber || "N/A"}
+                    />
+                    <InfoItem
+                      label="Contact Email"
+                      value={entity.contactEmail || "N/A"}
+                    />
+                    <InfoItem
+                      label="Support Email"
+                      value={entity.supportEmail || "N/A"}
+                    />
+                    <div className="md:col-span-2">
+                      <InfoItem
+                        label="Address"
+                        value={formatEntityAddress(entity)}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+                    Seller details are not available on this record.
+                  </div>
+                )}
+              </section>
+
+              <section className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">
+                  Location / Online Access
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <InfoItem
+                    label="Physical Location"
+                    value={
+                      activeEvent.isPhysical
+                        ? activeEvent.location || "N/A"
+                        : "Not a physical event"
+                    }
+                  />
+                  <InfoItem
+                    label="Meeting Link"
+                    value={
+                      activeEvent.isRemote
+                        ? activeEvent.meetingUrl || "N/A"
+                        : "Not a remote event"
+                    }
+                  />
+                </div>
+              </section>
+
+              <section className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">
+                  Target Regions
+                </h3>
+                {targetRegions.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {targetRegions.map((region, index) => (
+                      <Badge key={region.id || `${region.pincodeId}-${index}`} variant="outline">
+                        {formatRegion(region)}
+                      </Badge>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+                    No target regions configured.
+                  </div>
+                )}
+              </section>
+
+              <section className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">
                   Attachments
-                </h4>
+                </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {event.attachments && event.attachments.length > 0 ? (
-                    event.attachments.map((attachment, idx) => {
+                  {attachments.length > 0 ? (
+                    attachments.map((attachment, idx) => {
                       const doc = attachment.document || attachment.media;
                       if (!doc) return null;
 
                       const fileName = doc.name || `Attachment ${idx + 1}`;
+                      const fileType =
+                        "mimeType" in doc && doc.mimeType
+                          ? doc.mimeType.split("/").pop() || "file"
+                          : "pdf";
 
-                       return (
+                      return (
                         <DocumentPreview
                           key={attachment.id}
                           url={doc.url}
                           name={fileName}
-                          fileType={"fileType" in doc ? doc.fileType : "pdf"}
+                          fileType={fileType}
                         >
                           <a
                             href={doc.url}
@@ -193,8 +303,11 @@ export function EventVerificationModal({
                             <div className="flex items-center gap-2 overflow-hidden">
                               <FileText className="size-4 text-primary shrink-0" />
                               <div className="flex flex-col">
-                                <span className="text-xs font-medium truncate max-w-[180px]">
+                                <span className="text-xs font-medium truncate max-w-[220px]">
                                   {decodeURIComponent(fileName)}
+                                </span>
+                                <span className="text-[10px] text-muted-foreground truncate max-w-[220px]">
+                                  {doc.url}
                                 </span>
                               </div>
                             </div>
@@ -211,24 +324,25 @@ export function EventVerificationModal({
                     </div>
                   )}
                 </div>
-              </div>
+              </section>
 
-              {/* Previous Remarks if any */}
-              {event.verificationRemark && (
+              {activeEvent.verificationRemark && (
                 <div className="bg-muted p-4 rounded-md">
-                  <Label className="text-muted-foreground text-xs ">
+                  <Label className="text-muted-foreground text-xs">
                     Previous Remarks
                   </Label>
-                  <p className="text-sm mt-1">{event.verificationRemark}</p>
+                  <p className="text-sm mt-1">{activeEvent.verificationRemark}</p>
                 </div>
               )}
 
-              {/* Verification Actions */}
               {!isAlreadyVerified && (
                 <div className="space-y-4 pt-4 border-t">
-                  <h3 className="text-lg font-semibold">
-                    Verification Decision
-                  </h3>
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="size-4 text-muted-foreground" />
+                    <h3 className="text-lg font-semibold">
+                      Verification Decision
+                    </h3>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Status</Label>
@@ -250,9 +364,7 @@ export function EventVerificationModal({
                           <SelectItem value={VERIFICATION_STATUS.REVISE}>
                             Request Revision
                           </SelectItem>
-                          <SelectItem
-                            value={VERIFICATION_STATUS.MISINFORMATION}
-                          >
+                          <SelectItem value={VERIFICATION_STATUS.MISINFORMATION}>
                             Misinformation
                           </SelectItem>
                           <SelectItem value={VERIFICATION_STATUS.INAPPROPRIATE}>
@@ -308,6 +420,48 @@ export function EventVerificationModal({
   );
 }
 
+function formatRegion(region: {
+  scopeType?: string | null;
+  pincodeId?: string | null;
+  pincode?: {
+    pincode?: string | null;
+    district?: string | null;
+    state?: string | null;
+  } | null;
+  state?: string | null;
+  district?: string | null;
+}) {
+  const scope = region.scopeType || "PINCODE";
+  const parts = [
+    region.pincode?.pincode,
+    region.pincode?.district,
+    region.pincode?.state,
+    region.district,
+    region.state,
+    region.pincodeId,
+  ].filter(Boolean);
+
+  return `${scope}: ${parts.join(" • ") || "N/A"}`;
+}
+
+function formatEntityAddress(entity: {
+  addressLine1?: string | null;
+  addressLine2?: string | null;
+  city?: string | null;
+  pincode?: { pincode?: string | null; district?: string | null; state?: string | null } | null;
+  pincodeId?: string | null;
+}) {
+  const lines = [entity.addressLine1, entity.addressLine2].filter(Boolean).join(", ");
+  const location = [entity.city, entity.pincode?.pincode || entity.pincodeId]
+    .filter(Boolean)
+    .join(" • ");
+  const region = [entity.pincode?.district, entity.pincode?.state]
+    .filter(Boolean)
+    .join(", ");
+
+  return [lines, location, region].filter(Boolean).join(" | ") || "N/A";
+}
+
 function InfoItem({
   label,
   value,
@@ -317,10 +471,12 @@ function InfoItem({
 }) {
   return (
     <div className="space-y-1">
-      <Label className="text-muted-foreground text-xs  tracking-tight">
+      <Label className="text-muted-foreground text-xs tracking-tight">
         {label}
       </Label>
-      <p className="font-medium text-sm leading-snug">{value || "N/A"}</p>
+      <p className="font-medium text-sm leading-snug whitespace-pre-wrap">
+        {value || "N/A"}
+      </p>
     </div>
   );
 }

@@ -18,6 +18,11 @@ import { AdminUser } from "@/types/auth";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { USER_ROLE_LABELS } from "@/constants/roles";
+import { useAuthStore } from "@/store/authStore";
+import {
+  AdminUserRowActions,
+  getAdminUserRowActionsPermission,
+} from "@/components/admin/admin-user-row-actions";
 
 type User = AdminUser;
 
@@ -62,11 +67,16 @@ const columns: ColumnDef<User>[] = [
 ];
 
 export function AdminManagersTable() {
+  const { user } = useAuthStore();
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
   const [sorting, setSorting] = useState<SortingState>([]);
+  const rowPermissions = getAdminUserRowActionsPermission(
+    user?.role,
+    "ADMIN_MANAGER",
+  );
 
   const { data, isLoading } = useAdminManagersQuery({
     role: "ADMIN_MANAGER",
@@ -77,16 +87,30 @@ export function AdminManagersTable() {
   });
 
   const users = data || [];
-  // Note: API should return total count for pagination, but currently returns array.
-  // We'll proceed with assumed logic or update service if response structure changes.
-  // For now, assuming data is just the array as per current service implementation.
-  // If we need total pages, we might need a metadata response wrapper.
+  const columnsWithActions = [
+    ...columns,
+    ...(rowPermissions.canEdit || rowPermissions.canDelete
+      ? [
+          {
+            id: "actions",
+            header: () => <div className="text-right">Actions</div>,
+            cell: ({ row }: { row: { original: User } }) => (
+              <AdminUserRowActions
+                user={row.original}
+                canEdit={rowPermissions.canEdit}
+                canDelete={rowPermissions.canDelete}
+              />
+            ),
+          },
+        ]
+      : []),
+  ] as ColumnDef<User>[];
 
   return (
     <DataTable
-      columns={columns}
+      columns={columnsWithActions}
       data={users}
-      pageCount={-1} // Set to -1 or valid count if API provides it
+      pageCount={-1}
       pagination={pagination}
       onPaginationChange={setPagination}
       sorting={sorting}

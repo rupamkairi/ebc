@@ -58,6 +58,37 @@ const regionText = (regions?: { pincode?: unknown }[]) =>
     })
     .join(" ") || "";
 
+const entityText = (entity?: {
+  name?: string | null;
+  legalName?: string | null;
+  contactEmail?: string | null;
+  supportEmail?: string | null;
+  primaryContactNumber?: string | null;
+  secondaryContactNumber?: string | null;
+  addressLine1?: string | null;
+  addressLine2?: string | null;
+  city?: string | null;
+  pincodeId?: string | null;
+  pincode?: { pincode?: string | null; district?: string | null; state?: string | null } | null;
+}) =>
+  [
+    entity?.name,
+    entity?.legalName,
+    entity?.contactEmail,
+    entity?.supportEmail,
+    entity?.primaryContactNumber,
+    entity?.secondaryContactNumber,
+    entity?.addressLine1,
+    entity?.addressLine2,
+    entity?.city,
+    entity?.pincodeId,
+    entity?.pincode?.pincode,
+    entity?.pincode?.district,
+    entity?.pincode?.state,
+  ]
+    .map(normalize)
+    .join(" ");
+
 export function filterConferenceHallEvents(
   events: ConferenceHallEvent[],
   search: string,
@@ -107,6 +138,7 @@ export function filterConferenceHallEvents(
       event.type,
       getVerificationStatus(event.verificationStatus),
       event.entity?.name,
+      entityText(event.entity),
       event.location,
       event.meetingUrl,
       event.startDate,
@@ -173,6 +205,7 @@ export function filterConferenceHallOffers(
       offer.description,
       getVerificationStatus(offer.verificationStatus),
       offer.entity?.name,
+      entityText(offer.entity),
       offer.status,
       offer.createdAt,
       offer.updatedAt,
@@ -232,6 +265,8 @@ export function filterConferenceHallContents(
       content.name,
       content.description,
       getVerificationStatus(content.verificationStatus),
+      content.entity?.name,
+      entityText(content.entity),
       content.createdAt,
       content.updatedAt,
       attachmentText,
