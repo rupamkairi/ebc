@@ -25,6 +25,7 @@ import {
   FileText,
   ExternalLink,
   Star,
+  ShieldAlert,
 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -32,7 +33,7 @@ import { USER_ROLE_LABELS, ENTITY_TYPE_LABELS } from "@/constants/roles";
 import { VERIFICATION_STATUS } from "@/constants/enums";
 import { DocumentPreview } from "@/components/shared/document-preview";
 import { useEntityReviewsFullQuery, useToggleHideReviewMutation } from "@/queries/reviewQueries";
-import { useUpdateUserMutation } from "@/queries/adminQueries";
+import { useRestoreFakeEnquiryBlacklistMutation, useUpdateUserMutation } from "@/queries/adminQueries";
 
 interface UserDetailsModalProps {
   user: AdminUser | null;
@@ -48,11 +49,19 @@ export function UserDetailsModal({
   const verifyMutation = useVerifyEntityMutation();
   const toggleHideMutation = useToggleHideReviewMutation();
   const updateUserMutation = useUpdateUserMutation();
+  const restoreFakeEnquiryMutation = useRestoreFakeEnquiryBlacklistMutation();
 
   const entity = user?.createdEntities?.[0] || user?.staffAt;
   const { data: reviews = [], isLoading: isLoadingReviews } = useEntityReviewsFullQuery(entity?.id || "");
 
   if (!user) return null;
+
+  const fakeEnquiryBlacklistEndsAt = user.fakeEnquiryBlacklistedUntil
+    ? new Date(user.fakeEnquiryBlacklistedUntil)
+    : null;
+  const isFakeEnquiryBlacklisted = fakeEnquiryBlacklistEndsAt
+    ? fakeEnquiryBlacklistEndsAt.getTime() > Date.now()
+    : false;
 
   const isPending = entity?.verificationStatus === "PENDING";
 
@@ -487,6 +496,45 @@ export function UserDetailsModal({
                         "Restrict Reviews"
                       )}
                     </Button>
+                  </div>
+
+                  <div className="p-4 border border-rose-500/20 bg-rose-500/5 rounded-xl flex items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <h4 className="text-sm font-black text-rose-800 flex items-center gap-2">
+                        <ShieldAlert className="size-4" />
+                        Fake Enquiry Blacklist
+                      </h4>
+                      <p className="text-xs text-rose-700 font-medium leading-relaxed max-w-md">
+                        {isFakeEnquiryBlacklisted
+                          ? `Buyer is blacklisted until ${format(fakeEnquiryBlacklistEndsAt!, "PPP")}.`
+                          : fakeEnquiryBlacklistEndsAt
+                            ? "Blacklist expired. Record can be cleared if needed."
+                            : "No fake-enquiry blacklist active for this buyer."}
+                      </p>
+                    </div>
+
+                    {isFakeEnquiryBlacklisted && (
+                      <Button
+                        variant="destructive"
+                        className="rounded-xl text-xs font-black h-9 px-4 shrink-0"
+                        disabled={restoreFakeEnquiryMutation.isPending}
+                        onClick={async () => {
+                          try {
+                            await restoreFakeEnquiryMutation.mutateAsync(user.id);
+                            toast.success("Buyer blacklist restored successfully.");
+                            onOpenChange(false);
+                          } catch (error) {
+                            toast.error("Failed to restore buyer blacklist.");
+                          }
+                        }}
+                      >
+                        {restoreFakeEnquiryMutation.isPending ? (
+                          <Loader2 className="size-4 animate-spin mr-1" />
+                        ) : (
+                          "Restore Blacklist"
+                        )}
+                      </Button>
+                    )}
                   </div>
                 </section>
               )}

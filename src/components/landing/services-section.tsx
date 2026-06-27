@@ -41,37 +41,35 @@ export function ServicesSection() {
   const services = [
     {
       title: t("ser_item_1"),
-      image: "/images/services/architecture.png",
+      image: "/images/services/Building_Construction.png",
     },
     {
       title: t("ser_item_2"),
-      image: "/images/services/floor-extension-or-upgradation.jpg",
+      image: "/images/services/Sanitary_&_Plumbing.png",
     },
     {
       title: t("ser_item_3"),
-      image: "/images/services/building-repair-or-renovation.jpg",
+      image: "/images/services/Consultancy_&_Supervision.png",
     },
     {
       title: t("ser_item_4"),
-      image: "/images/services/site-engineer-construction-site 1.png",
+      image: "/images/services/Marble_&_Tiles_Setting.png",
     },
     {
       title: t("ser_item_5"),
-      image: "/images/services/custom-hom-design-and-planning.jpg",
+      image: "/images/services/Painting_&_Colouring.png",
     },
     {
       title: t("ser_item_6"),
-      image:
-        "/images/services/construction-residential-new-house-progress-building-site 1.png",
+      image: "/images/services/Electrical_Wiring.png",
     },
     {
       title: t("ser_item_7"),
-      image:
-        "/images/services/skilled-worker-installing-ceramic-wood-effect-tiles-floor-worker-making-laminate-flooring-construction-site-new-apartment 1.png",
+      image: "/images/services/Outdoor_Beautification.png",
     },
     {
       title: t("ser_item_8"),
-      image: "/images/services/remote-technical-supervision.jpg",
+      image: "/images/services/Interior_Decoration.png",
     },
   ];
 

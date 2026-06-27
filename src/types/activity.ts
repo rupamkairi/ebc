@@ -60,6 +60,11 @@ export interface Enquiry {
   updatedAt: string;
   createdById: string;
   createdBy?: ActivityUser;
+  fakeEnquiryStrike?: {
+    id: string;
+    revokedAt?: string | null;
+    createdAt: string;
+  } | null;
 }
 
 export interface EnquiryListParams {
@@ -193,6 +198,14 @@ export interface Quotation {
   enquiry?: Enquiry;
   requestedRevision?: boolean;
   hasBeenRevised?: boolean;
+}
+
+export interface FakeEnquiryFlagResponse {
+  strikeCount: number;
+  strikeThreshold: number;
+  blacklistDurationDays: number;
+  isBlacklisted: boolean;
+  blacklistedUntil?: string | null;
 }
 
 export interface QuotationListParams {

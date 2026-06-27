@@ -15,6 +15,7 @@ import {
   Briefcase,
   CheckCircle2,
   GraduationCap,
+  ShieldAlert,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -84,6 +85,13 @@ const notificationDisplay: Record<
     messageKey: "notification_message_quotation_reject",
     icon: MessageSquare,
     badgeClassName: "bg-red-100 text-red-700",
+  },
+  [NOTIFICATION_TYPE.FAKE_ENQUIRY_FLAGGED]: {
+    labelKey: "notification_badge_fake_enquiry_flagged",
+    titleKey: "notification_title_fake_enquiry_flagged",
+    messageKey: "notification_message_fake_enquiry_flagged",
+    icon: ShieldAlert,
+    badgeClassName: "bg-rose-100 text-rose-700",
   },
   [NOTIFICATION_TYPE.APPOINTMENT_SUBMIT]: {
     labelKey: "notification_badge_appointment_submit",
@@ -212,6 +220,10 @@ export function NotificationInbox({
     }
 
     if (role === "BUYER") {
+      if (type.includes("FAKE_ENQUIRY")) {
+        const id = (metadata?.enquiryId as string) || activityId;
+        return id ? `/buyer-dashboard/enquiries/${id}` : null;
+      }
       if (type.includes("QUOTATION")) {
         const id = (metadata?.enquiryId as string) || activityId;
         return id ? `/buyer-dashboard/enquiries/${id}` : null;
@@ -296,7 +308,10 @@ export function NotificationInbox({
                   ? t(display.titleKey, metadata)
                   : notification.title;
                 const message = display
-                  ? t(display.messageKey, metadata)
+                  ? notification.type === NOTIFICATION_TYPE.FAKE_ENQUIRY_FLAGGED &&
+                    notification.metadata?.message
+                    ? String(notification.metadata.message)
+                    : t(display.messageKey, metadata)
                   : notification.message;
                 const enquiryId = notification.metadata?.enquiryId as
                   | string

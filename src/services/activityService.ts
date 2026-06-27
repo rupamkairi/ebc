@@ -14,7 +14,8 @@ import {
   CreateQuotationRequest,
   UpdateQuotationRequest,
   AssignmentListParams,
-  ActivityAssignment
+  ActivityAssignment,
+  FakeEnquiryFlagResponse,
 } from "@/types/activity";
 
 export const activityService = {
@@ -80,6 +81,15 @@ export const activityService = {
   async completeEnquiry(id: string) {
     return fetchClient(
       `${API_ENDPOINTS.ACTIVITY.ENQUIRY.COMPLETE}/${id}/complete`,
+      {
+        method: "POST",
+      },
+    );
+  },
+
+  async flagFakeEnquiry(id: string) {
+    return fetchClient<FakeEnquiryFlagResponse>(
+      `${API_ENDPOINTS.ACTIVITY.QUOTATION.FAKE_ENQUIRY}/${id}`,
       {
         method: "POST",
       },

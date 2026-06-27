@@ -4,6 +4,7 @@ import {
   CreateAdminSubordinateRequest,
   AdminUser,
   AdminUserUpdateRequest,
+  FakeEnquiryModerationConfig,
 } from "@/types/auth";
 
 export interface UserListParams {
@@ -62,5 +63,36 @@ export const adminService = {
     return fetchClient<AdminUser>(`${API_ENDPOINTS.AUTH.ADMIN.DELETE_USER}/${id}`, {
       method: "DELETE",
     });
+  },
+
+  async getFakeEnquiryModerationConfig() {
+    return fetchClient<FakeEnquiryModerationConfig>(
+      API_ENDPOINTS.AUTH.ADMIN.FAKE_ENQUIRY_CONFIG,
+      {
+        method: "GET",
+      },
+    );
+  },
+
+  async updateFakeEnquiryModerationConfig(data: {
+    strikeThreshold: number;
+    blacklistDurationDays: number;
+  }) {
+    return fetchClient<FakeEnquiryModerationConfig>(
+      API_ENDPOINTS.AUTH.ADMIN.FAKE_ENQUIRY_CONFIG,
+      {
+        method: "PUT",
+        body: data,
+      },
+    );
+  },
+
+  async restoreFakeEnquiryBlacklist(id: string) {
+    return fetchClient<AdminUser>(
+      `${API_ENDPOINTS.AUTH.ADMIN.FAKE_ENQUIRY_RESTORE}/${id}`,
+      {
+        method: "POST",
+      },
+    );
   },
 };

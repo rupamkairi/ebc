@@ -27,6 +27,9 @@ import {
   Presentation,
   Scale,
   Store,
+  Shield,
+  ScrollText,
+  UserRound,
   Workflow,
   type LucideIcon,
 } from "lucide-react";
@@ -165,6 +168,27 @@ export function FooterSection() {
     { label: t("footer_admin_login"), href: "/auth/admin-login", icon: LogIn },
   ];
 
+  const legalLinks: FooterLinkItem[] = [
+    { label: t("about_us"), href: "/about-us", icon: UserRound },
+    { label: t("contact_us"), href: "/contact-us", icon: Headphones },
+    { label: t("privacy_policy"), href: "/privacy-policy", icon: Shield },
+    { label: t("cookie_policy"), href: "/cookie-policy", icon: Shield },
+    { label: t("disclaimer"), href: "/disclaimer", icon: ScrollText },
+    { label: t("faq_page"), href: "/faq", icon: CircleHelp },
+    { label: t("how_ebc_works"), href: "/how-ebc-works", icon: Workflow },
+    { label: t("refund_policy"), href: "/refund-policy", icon: FileText },
+    {
+      label: t("shipping_delivery_policy"),
+      href: "/shipping-delivery-policy",
+      icon: BriefcaseBusiness,
+    },
+    {
+      label: t("terms_of_service"),
+      href: "/terms-and-conditions",
+      icon: ScrollText,
+    },
+  ];
+
   const brandContent = (
     <div className="space-y-5">
       <div className="space-y-2">
@@ -233,6 +257,9 @@ export function FooterSection() {
               {t("footer_support_company")}
             </h3>
             <FooterLinks items={supportLinks} />
+            <div className="pt-4">
+              <FooterLinks items={legalLinks} />
+            </div>
           </div>
         </div>
 
@@ -265,6 +292,9 @@ export function FooterSection() {
             </AccordionTrigger>
             <AccordionContent>
               <FooterLinks items={supportLinks} />
+              <div className="pt-4">
+                <FooterLinks items={legalLinks} />
+              </div>
             </AccordionContent>
           </AccordionItem>
         </Accordion>

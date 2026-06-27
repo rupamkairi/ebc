@@ -217,6 +217,16 @@ export function useAcceptQuotationMutation() {
   });
 }
 
+export function useFlagFakeEnquiryMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => activityService.flagFakeEnquiry(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: activityKeys.all });
+    },
+  });
+}
+
 export function useRequestRevisionMutation() {
   const queryClient = useQueryClient();
   return useMutation({

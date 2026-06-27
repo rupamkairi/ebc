@@ -12,6 +12,8 @@ export const API_ENDPOINTS = {
       GET_USER: "/auth/admin/user", // :id
       UPDATE_USER: "/auth/admin/user", // :id
       DELETE_USER: "/auth/admin/user", // :id
+      FAKE_ENQUIRY_CONFIG: "/auth/admin/fake-enquiry-config",
+      FAKE_ENQUIRY_RESTORE: "/auth/admin/user", // :id/fake-enquiry-restore
     },
     USER: {
       SEND_OTP: "/auth/user/send-otp",
@@ -131,6 +133,7 @@ export const API_ENDPOINTS = {
       DELETE: "/activity/quotation", // :id
       LIST: "/activity/quotation/list",
       ACCEPT: "/activity/quotation/accept", // :id
+      FAKE_ENQUIRY: "/activity/quotation/fake-enquiry", // :id
       REQUEST_REVISION: "/activity/quotation/request-revision", // :id
     },
     VISIT: {

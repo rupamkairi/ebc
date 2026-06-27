@@ -17,13 +17,13 @@ function MaterialCard({ title, category, image }: MaterialCardProps) {
   return (
     <div className="bg-secondary p-1 rounded-xl shadow-lg transition-transform duration-300 hover:scale-105">
       {/* Top White Area for Image - Tightened padding */}
-      <div className="bg-white rounded-lg p-1.5 aspect-square flex items-center justify-center relative overflow-hidden">
+      <div className="bg-white rounded-lg p-1.5 aspect-4/3 flex items-center justify-center relative overflow-hidden">
         <Image
           src={image}
           alt={title}
           fill
-          className="object-contain p-3"
-          sizes="(max-width: 768px) 50vw, 25vw"
+          className="object-cover "
+          // sizes="(max-width: 768px) 50vw, 25vw"
           unoptimized
         />
       </div>
@@ -48,44 +48,36 @@ export function MaterialsSection() {
 
   const materials = [
     {
-      title: t("mat_cement_title"),
-      category: t("mat_cement_cat"),
-      image: "/images/materials/cement.png",
-    },
-    {
-      title: t("mat_lumber_title"),
-      category: t("mat_lumber_cat"),
-      image: "/images/materials/lumber.png",
-    },
-    {
-      title: t("mat_steel_title"),
-      category: t("mat_steel_cat"),
-      image: "/images/materials/tmt.png",
-    },
-    {
-      title: t("mat_bricks_title"),
-      category: t("mat_bricks_cat"),
+      title: t("mat_brick_title"),
       image: "/images/materials/bricks.png",
     },
     {
+      title: t("mat_sand_title"),
+      image: "/images/materials/river_sand.png",
+    },
+    {
+      title: t("mat_stone_title"),
+      image: "/images/materials/store_chips.png",
+    },
+    {
+      title: t("mat_cement_title"),
+      image: "/images/materials/cement.png",
+    },
+    {
+      title: t("mat_tmt_title"),
+      image: "/images/materials/tmt_bar.png",
+    },
+    {
+      title: t("mat_paint_title"),
+      image: "/images/materials/paint.png",
+    },
+    {
       title: t("mat_marble_title"),
-      category: t("mat_marble_cat"),
-      image: "/images/materials/marble.png",
+      image: "/images/materials/marble_tiles.png",
     },
     {
-      title: t("mat_aggregate_title"),
-      category: t("mat_aggregate_cat"),
-      image: "/images/materials/aggregate.png",
-    },
-    {
-      title: t("mat_flyash_title"),
-      category: t("mat_flyash_cat"),
-      image: "/images/materials/flyash.png",
-    },
-    {
-      title: t("mat_gypsum_title"),
-      category: t("mat_gypsum_cat"),
-      image: "/images/materials/gypsum.png",
+      title: t("mat_paver_title"),
+      image: "/images/materials/paver.png",
     },
   ];
 
@@ -105,7 +97,7 @@ export function MaterialsSection() {
             <MaterialCard
               key={index}
               title={material.title}
-              category={material.category}
+              category={""}
               image={material.image}
             />
           ))}

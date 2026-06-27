@@ -65,6 +65,10 @@ export interface AdminUser {
   phoneVerified?: boolean;
   username?: string | null;
   pincodeId?: string | null;
+  fakeEnquiryBlacklistedAt?: string | null;
+  fakeEnquiryBlacklistedUntil?: string | null;
+  fakeEnquiryBlacklistReason?: string | null;
+  fakeEnquiryBlacklistedById?: string | null;
   pincode?: PincodeDirectory | null;
   pincode_directory?: PincodeDirectory | null;
   staffAtEntityId?: string | null;
@@ -97,4 +101,12 @@ export interface AdminUserUpdateRequest {
   phone?: string;
   pincodeId?: string;
   password?: string;
+}
+
+export interface FakeEnquiryModerationConfig {
+  id: string;
+  strikeThreshold: number;
+  blacklistDurationDays: number;
+  createdAt: string;
+  updatedAt: string;
 }

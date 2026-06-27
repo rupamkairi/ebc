@@ -6,6 +6,7 @@ import {
   useAcceptQuotationMutation,
   useCompleteEnquiryMutation,
   useRequestRevisionMutation,
+  useFlagFakeEnquiryMutation,
 } from "@/queries/activityQueries";
 import { QUOTATION_STATUS, ENQUIRY_STATUS } from "@/constants/enums";
 import { Badge } from "@/components/ui/badge";
@@ -34,16 +35,19 @@ import { ReviewSnapshot } from "@/components/shared/reviews";
 import { DocumentPreview } from "@/components/shared/document-preview";
 
 import { PageBackButton } from "@/components/dashboard/seller/activity-shared/page-back-button";
+import { useAuthStore } from "@/store/authStore";
 
 export default function SellerQuotationDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { t } = useLanguage();
+  const { user } = useAuthStore();
 
   const { data: q, isLoading } = useQuotationQuery(id);
   const acceptMutation = useAcceptQuotationMutation();
   const completeMutation = useCompleteEnquiryMutation();
   const requestRevisionMutation = useRequestRevisionMutation();
+  const fakeEnquiryMutation = useFlagFakeEnquiryMutation();
 
   if (isLoading) {
     return (
@@ -66,6 +70,8 @@ export default function SellerQuotationDetailsPage() {
 
   const isAccepted = q.status === QUOTATION_STATUS.ACCEPTED;
   const isEnquiryCompleted = q.enquiry?.status === ENQUIRY_STATUS.COMPLETED;
+  const isOwnQuotation = q.createdById === user?.id;
+  const hasFakeStrike = !!q.enquiry?.fakeEnquiryStrike;
   const isNegotiable =
     q.quotationLineItems?.some((li) => li.isNegotiable) &&
     !q.quotationDetails?.[0]?.hasBeenRevised;
@@ -93,6 +99,21 @@ export default function SellerQuotationDetailsPage() {
     try {
       await requestRevisionMutation.mutateAsync(q.id);
       toast.success("Revision request sent successfully!");
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Something went wrong";
+      toast.error(message);
+    }
+  };
+
+  const handleFakeEnquiry = async () => {
+    try {
+      const result = await fakeEnquiryMutation.mutateAsync(q.id);
+      toast.success(
+        result.isBlacklisted
+          ? `Buyer blacklisted for ${result.blacklistDurationDays} days.`
+          : "Fake enquiry flagged.",
+      );
     } catch (error: unknown) {
       const message =
         error instanceof Error ? error.message : "Something went wrong";
@@ -166,6 +187,20 @@ export default function SellerQuotationDetailsPage() {
                   {t("ask_for_discount")}
                 </Button>
               )}
+
+            {isAccepted && isOwnQuotation && !hasFakeStrike && (
+              <Button
+                onClick={handleFakeEnquiry}
+                variant="outline"
+                className="border-rose-500 text-rose-600 hover:bg-rose-50 font-black px-8 h-11 rounded-xl"
+                disabled={fakeEnquiryMutation.isPending}
+              >
+                {fakeEnquiryMutation.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                ) : null}
+                Mark Fake Enquiry
+              </Button>
+            )}
 
             {(isAccepted || isEnquiryCompleted) && (
               <div

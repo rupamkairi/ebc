@@ -9,6 +9,7 @@ export const adminKeys = {
   all: ["admin"] as const,
   users: (params: UserListParams) =>
     [...adminKeys.all, "users", params] as const,
+  fakeEnquiryConfig: () => [...adminKeys.all, "fake-enquiry-config"] as const,
 };
 
 import { keepPreviousData } from "@tanstack/react-query";
@@ -90,6 +91,42 @@ export function useDeleteUserMutation() {
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: adminKeys.all });
       queryClient.invalidateQueries({ queryKey: [...adminKeys.all, "user", id] });
+    },
+  });
+}
+
+export function useFakeEnquiryModerationConfigQuery(enabled = true) {
+  return useQuery({
+    queryKey: adminKeys.fakeEnquiryConfig(),
+    queryFn: () => adminService.getFakeEnquiryModerationConfig(),
+    enabled,
+  });
+}
+
+export function useUpdateFakeEnquiryModerationConfigMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: {
+      strikeThreshold: number;
+      blacklistDurationDays: number;
+    }) => adminService.updateFakeEnquiryModerationConfig(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.fakeEnquiryConfig() });
+    },
+  });
+}
+
+export function useRestoreFakeEnquiryBlacklistMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => adminService.restoreFakeEnquiryBlacklist(id),
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.all });
+      queryClient.invalidateQueries({
+        queryKey: [...adminKeys.all, "user", id],
+      });
     },
   });
 }

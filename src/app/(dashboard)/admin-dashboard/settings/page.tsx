@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Container from "@/components/ui/containers";
 import { NotificationChannelList } from "@/components/dashboard/notifications/notification-channel-list";
 import {
@@ -9,10 +10,48 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Loader2, Save } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
+import {
+  useFakeEnquiryModerationConfigQuery,
+  useUpdateFakeEnquiryModerationConfigMutation,
+} from "@/queries/adminQueries";
+import { toast } from "sonner";
 
 export default function AdminSettingsPage() {
   const { user } = useAuthStore();
+  const isAdmin = user?.role?.toUpperCase() === "ADMIN";
+  const { data: moderationConfig, isLoading } =
+    useFakeEnquiryModerationConfigQuery(isAdmin);
+  const updateModerationConfig =
+    useUpdateFakeEnquiryModerationConfigMutation();
+  const [draft, setDraft] = useState({
+    strikeThreshold: 3,
+    blacklistDurationDays: 90,
+  });
+
+  useEffect(() => {
+    if (moderationConfig) {
+      setDraft({
+        strikeThreshold: moderationConfig.strikeThreshold,
+        blacklistDurationDays: moderationConfig.blacklistDurationDays,
+      });
+    }
+  }, [moderationConfig]);
+
+  if (!isAdmin) {
+    return (
+      <Container>
+        <div className="flex h-[400px] items-center justify-center">
+          <p className="text-destructive font-semibold">
+            Access Denied. Admin only.
+          </p>
+        </div>
+      </Container>
+    );
+  }
 
   return (
     <Container className="py-8 space-y-8">
@@ -55,6 +94,78 @@ export default function AdminSettingsPage() {
                   </p>
                 </div>
               </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Fake Enquiry Moderation</CardTitle>
+              <CardDescription>
+                Configure strike threshold and blacklist duration. Auto-expiry
+                is checked on demand, so no cron job is needed.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {isLoading ? (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Loader2 className="size-4 animate-spin" />
+                  Loading moderation config...
+                </div>
+              ) : (
+                <div className="grid gap-4 md:grid-cols-2">
+                  <label className="space-y-2">
+                    <span className="text-sm font-medium">
+                      Strike Threshold
+                    </span>
+                    <Input
+                      type="number"
+                      min={1}
+                      value={draft.strikeThreshold}
+                      onChange={(e) =>
+                        setDraft((prev) => ({
+                          ...prev,
+                          strikeThreshold: Number(e.target.value) || 1,
+                        }))
+                      }
+                    />
+                  </label>
+                  <label className="space-y-2">
+                    <span className="text-sm font-medium">
+                      Blacklist Duration Days
+                    </span>
+                    <Input
+                      type="number"
+                      min={1}
+                      value={draft.blacklistDurationDays}
+                      onChange={(e) =>
+                        setDraft((prev) => ({
+                          ...prev,
+                          blacklistDurationDays: Number(e.target.value) || 1,
+                        }))
+                      }
+                    />
+                  </label>
+                </div>
+              )}
+
+              <Button
+                disabled={updateModerationConfig.isPending || isLoading}
+                onClick={async () => {
+                  try {
+                    await updateModerationConfig.mutateAsync(draft);
+                    toast.success("Fake enquiry moderation updated.");
+                  } catch (error) {
+                    toast.error("Failed to update fake enquiry moderation.");
+                  }
+                }}
+              >
+                {updateModerationConfig.isPending ? (
+                  <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="mr-1 h-4 w-4" />
+                )}
+                Save
+              </Button>
             </CardContent>
           </Card>
 
