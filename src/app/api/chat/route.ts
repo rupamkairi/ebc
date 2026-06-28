@@ -1,5 +1,5 @@
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
-import { streamText, type UIMessage } from "ai";
+import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import fs from "node:fs/promises";
 import path from "node:path";
 
@@ -8,6 +8,9 @@ const openrouter = createOpenRouter({
 });
 
 export const runtime = "nodejs";
+
+const GENERATION_TIMEOUT_MS = 10_000;
+const MAX_OUTPUT_TOKENS = 256;
 
 const LOG_PATH = path.join(process.cwd(), ".logs", "ai-chat.log");
 const SERVER_API_BASE_RAW =
@@ -55,6 +58,26 @@ type RetrievalItem = {
   sourceMimeType?: string | null;
 };
 
+type IncomingMessage = {
+  role?: string;
+  content?: unknown;
+  parts?: Array<{ type?: string; text?: string }>;
+};
+
+const NO_KNOWLEDGE_RESPONSE = "I don't know from the current knowledge base.";
+
+const buildBaseSystemPrompt = () =>
+  [
+    "You are EBC AI Calculator assistant.",
+    "Use plain markdown only.",
+    "Do not output LaTeX wrappers such as \\boxed{}, \\text{}, \\[...\\], or \\(...\\).",
+    "For questions about calculator knowledge, uploaded documents, or sample guides, answer only from the Knowledge Context below.",
+    `If the exact answer is not explicitly present in context, reply exactly: ${NO_KNOWLEDGE_RESPONSE}`,
+    "Do not guess, infer, or use outside knowledge for grounded questions.",
+    "When context contains a number, ratio, currency, or unit, copy it exactly as written in context.",
+    "If context supports the answer, keep it short and end with a single line `Sources: [#n, #m]` using the same source numbers.",
+  ].join("\n");
+
 const buildRagSystemPrompt = (items: RetrievalItem[]) => {
   const context = items
     .slice(0, 8)
@@ -69,13 +92,9 @@ const buildRagSystemPrompt = (items: RetrievalItem[]) => {
     .join("\n\n");
 
   return [
-    "You are EBC AI Calculator assistant.",
-    "Use the knowledge context below when it is relevant.",
-    "If context is insufficient, clearly say you do not have enough information and continue with best-effort general guidance.",
-    "When using context facts, end with a single line `Sources: [#n, #m]` using the same source numbers.",
-    "",
     "Knowledge Context:",
-    context,
+    context || "(no relevant knowledge retrieved)",
+    "",
   ].join("\n");
 };
 
@@ -113,6 +132,34 @@ const fetchKnowledgeContext = async (query: string) => {
   }
 };
 
+const extractTextFromParts = (parts?: IncomingMessage["parts"]) => {
+  if (!parts || !Array.isArray(parts)) return "";
+  return parts
+    .filter((part) => part?.type === "text" && typeof part.text === "string")
+    .map((part) => part.text ?? "")
+    .join("");
+};
+
+const normalizeIncomingMessage = (msg: IncomingMessage) => {
+  if (msg.role !== "user" && msg.role !== "assistant" && msg.role !== "system") {
+    return null;
+  }
+
+  let content = "";
+  if (typeof msg.content === "string") {
+    content = msg.content;
+  } else if (msg.content != null) {
+    content = String(msg.content);
+  } else if (msg.parts) {
+    content = extractTextFromParts(msg.parts);
+  }
+
+  const trimmed = content.trim();
+  if (!trimmed) return null;
+
+  return { role: msg.role, content: trimmed };
+};
+
 export async function POST(req: Request) {
   const requestId =
     typeof crypto !== "undefined" && "randomUUID" in crypto
@@ -138,6 +185,7 @@ export async function POST(req: Request) {
     }
 
     const messages = body.messages as UIMessage[];
+    const incomingMessages = body.messages as IncomingMessage[];
 
     await appendLog({
       requestId,
@@ -146,34 +194,27 @@ export async function POST(req: Request) {
       lastRole: messages[messages.length - 1]?.role,
     });
 
-    // Map UI messages to Core messages, extracting text from parts if needed
-    const coreMessages = messages.map(
-      (msg: {
-        role: string;
-        content?: string;
-        parts?: { text: string }[];
-      }) => ({
-        role: msg.role,
-        content:
-          msg.content ||
-          (msg.parts ? msg.parts.map((p) => p.text).join("") : ""),
-      }),
-    );
-
-    const latestUserQuery = [...coreMessages]
+    const latestUserQuery = [...incomingMessages]
       .reverse()
-      .find((msg) => msg.role === "user")?.content;
+      .map(normalizeIncomingMessage)
+      .find((msg) => msg?.role === "user")?.content;
 
     const retrievalItems =
       typeof latestUserQuery === "string" && latestUserQuery.trim()
         ? await fetchKnowledgeContext(latestUserQuery)
         : [];
 
+    const coreMessages = await convertToModelMessages(
+      messages.map(({ id: _id, ...rest }) => rest),
+    );
+
     if (retrievalItems.length > 0) {
-      coreMessages.unshift({
-        role: "system",
-        content: buildRagSystemPrompt(retrievalItems),
-      });
+      coreMessages.unshift(
+        { role: "system", content: buildBaseSystemPrompt() },
+        { role: "system", content: buildRagSystemPrompt(retrievalItems) },
+      );
+    } else {
+      coreMessages.unshift({ role: "system", content: buildBaseSystemPrompt() });
     }
 
     await appendLog({
@@ -187,7 +228,11 @@ export async function POST(req: Request) {
     const result = streamText({
       model: openrouter("openrouter/free"),
       messages: coreMessages,
-      // You can add additional system messages or configurations here
+      maxOutputTokens: MAX_OUTPUT_TOKENS,
+      maxRetries: 0,
+      temperature: 0,
+      stopSequences: ["<tool-search>"],
+      timeout: GENERATION_TIMEOUT_MS,
       onFinish: async (event) => {
         await appendLog({
           requestId,
@@ -203,6 +248,13 @@ export async function POST(req: Request) {
           requestId,
           event: "stream_error",
           error: serializeError(event.error),
+        });
+      },
+      onAbort: async (event) => {
+        await appendLog({
+          requestId,
+          event: "stream_abort",
+          stepCount: event.steps.length,
         });
       },
     });

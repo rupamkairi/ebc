@@ -13,14 +13,26 @@ interface ChatBubbleProps {
   parts: UIMessage["parts"];
 }
 
+const normalizeAssistantText = (text: string) =>
+  text
+    .replace(/<\/?tool-search>/g, "")
+    .replace(/\\boxed\{([^{}]*)\}/g, "$1")
+    .replace(/\\text\{([^{}]*)\}/g, "$1")
+    .replace(/\\\[/g, "")
+    .replace(/\\\]/g, "")
+    .replace(/\\\(/g, "")
+    .replace(/\\\)/g, "");
+
 export function ChatBubble({ role, parts }: ChatBubbleProps) {
   const isAssistant = role === "assistant";
-  
-  // Extract text from parts
+
   const textContent = parts
     .filter((part) => part.type === "text")
     .map((part) => part.text)
     .join("\n");
+  const renderedText = isAssistant
+    ? normalizeAssistantText(textContent)
+    : textContent;
 
   return (
     <div
@@ -75,13 +87,13 @@ export function ChatBubble({ role, parts }: ChatBubbleProps) {
               <strong className="font-semibold">{children}</strong>
             ),
             em: ({ children }) => <em className="italic">{children}</em>,
-            code: ({ inline, children }) =>
-              inline ? (
+            code: ({ className, children }) =>
+              className ? (
+                <code className="block text-[0.85em]">{children}</code>
+              ) : (
                 <code className="rounded bg-muted px-1 py-0.5 text-[0.85em]">
                   {children}
                 </code>
-              ) : (
-                <code className="block text-[0.85em]">{children}</code>
               ),
             pre: ({ children }) => (
               <pre className="mb-3 overflow-x-auto rounded-lg bg-muted p-3 text-xs leading-relaxed">
@@ -119,9 +131,9 @@ export function ChatBubble({ role, parts }: ChatBubbleProps) {
             td: ({ children }) => (
               <td className="border-b border-border px-2 py-2">{children}</td>
             ),
-            }}
-          >
-            {textContent}
+          }}
+        >
+            {renderedText}
           </ReactMarkdown>
         </div>
       </div>
