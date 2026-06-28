@@ -61,78 +61,88 @@ export function ChatBubble({ role, parts }: ChatBubbleProps) {
             : "bg-primary text-primary-foreground"
         )}
       >
-        <div className="whitespace-pre-wrap leading-relaxed">
+        <div className="leading-relaxed">
           <ReactMarkdown
             remarkPlugins={[remarkGfm, remarkMath]}
             rehypePlugins={[rehypeKatex]}
             components={{
-            h1: ({ children }) => (
-              <h1 className="mb-3 text-lg font-semibold">{children}</h1>
-            ),
-            h2: ({ children }) => (
-              <h2 className="mb-3 text-base font-semibold">{children}</h2>
-            ),
-            h3: ({ children }) => (
-              <h3 className="mb-2 text-sm font-semibold">{children}</h3>
-            ),
-            p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
-            ul: ({ children }) => (
-              <ul className="mb-3 list-disc pl-5 last:mb-0">{children}</ul>
-            ),
-            ol: ({ children }) => (
-              <ol className="mb-3 list-decimal pl-5 last:mb-0">{children}</ol>
-            ),
-            li: ({ children }) => <li className="mb-1">{children}</li>,
-            strong: ({ children }) => (
-              <strong className="font-semibold">{children}</strong>
-            ),
-            em: ({ children }) => <em className="italic">{children}</em>,
-            code: ({ className, children }) =>
-              className ? (
-                <code className="block text-[0.85em]">{children}</code>
-              ) : (
-                <code className="rounded bg-muted px-1 py-0.5 text-[0.85em]">
+              h1: ({ children }) => (
+                <h1 className="mb-3 text-lg font-semibold">
                   {children}
-                </code>
+                </h1>
               ),
-            pre: ({ children }) => (
-              <pre className="mb-3 overflow-x-auto rounded-lg bg-muted p-3 text-xs leading-relaxed">
-                {children}
-              </pre>
-            ),
-            blockquote: ({ children }) => (
-              <blockquote className="mb-3 border-l-2 border-border pl-3 text-muted-foreground">
-                {children}
-              </blockquote>
-            ),
-            a: ({ href, children }) => (
-              <a
-                href={href}
-                target="_blank"
-                rel="noreferrer"
-                className="text-primary underline underline-offset-2"
-              >
-                {children}
-              </a>
-            ),
-            hr: () => <hr className="my-4 border-border" />,
-            table: ({ children }) => (
-              <div className="mb-3 overflow-x-auto">
-                <table className="w-full border-collapse text-left text-xs">
+              h2: ({ children }) => (
+                <h2 className="mb-3 text-base font-semibold">
                   {children}
-                </table>
-              </div>
-            ),
-            th: ({ children }) => (
-              <th className="border-b border-border px-2 py-2 font-semibold">
-                {children}
-              </th>
-            ),
-            td: ({ children }) => (
-              <td className="border-b border-border px-2 py-2">{children}</td>
-            ),
-          }}
-        >
+                </h2>
+              ),
+              h3: ({ children }) => (
+                <h3 className="mb-2 text-sm font-semibold">
+                  {children}
+                </h3>
+              ),
+              p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
+              ul: ({ children }) => (
+                <ul className="mb-3 list-disc pl-5 last:mb-0">{children}</ul>
+              ),
+              ol: ({ children }) => (
+                <ol className="mb-3 list-decimal pl-5 last:mb-0">{children}</ol>
+              ),
+              li: ({ children }) => (
+                <li className="mb-1 leading-relaxed [&>h1]:mb-1 [&>h2]:mb-1 [&>h3]:mb-1 [&>p]:mb-0 [&>ul]:mt-1 [&>ol]:mt-1">
+                  {children}
+                </li>
+              ),
+              strong: ({ children }) => (
+                <strong className="font-semibold">{children}</strong>
+              ),
+              em: ({ children }) => <em className="italic">{children}</em>,
+              code: ({ className, children }) =>
+                className ? (
+                  <code className="block text-[0.85em]">{children}</code>
+                ) : (
+                  <code className="rounded bg-muted px-1 py-0.5 text-[0.85em]">
+                    {children}
+                  </code>
+                ),
+              pre: ({ children }) => (
+                <pre className="mb-3 overflow-x-auto rounded-lg bg-muted p-3 text-xs leading-relaxed">
+                  {children}
+                </pre>
+              ),
+              blockquote: ({ children }) => (
+                <blockquote className="mb-3 border-l-2 border-border pl-3 text-muted-foreground">
+                  {children}
+                </blockquote>
+              ),
+              a: ({ href, children }) => (
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-primary underline underline-offset-2"
+                >
+                  {children}
+                </a>
+              ),
+              hr: () => <hr className="my-4 border-border" />,
+              table: ({ children }) => (
+                <div className="mb-3 overflow-x-auto">
+                  <table className="w-full border-collapse text-left text-xs">
+                    {children}
+                  </table>
+                </div>
+              ),
+              th: ({ children }) => (
+                <th className="border-b border-border px-2 py-2 font-semibold">
+                  {children}
+                </th>
+              ),
+              td: ({ children }) => (
+                <td className="border-b border-border px-2 py-2">{children}</td>
+              ),
+            }}
+          >
             {renderedText}
           </ReactMarkdown>
         </div>

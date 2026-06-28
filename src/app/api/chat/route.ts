@@ -1,5 +1,11 @@
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
-import { convertToModelMessages, streamText, type UIMessage } from "ai";
+import {
+  convertToModelMessages,
+  createUIMessageStream,
+  createUIMessageStreamResponse,
+  streamText,
+  type UIMessage,
+} from "ai";
 import fs from "node:fs/promises";
 import path from "node:path";
 
@@ -65,8 +71,18 @@ type IncomingMessage = {
 };
 
 const NO_KNOWLEDGE_RESPONSE = "I don't know from the current knowledge base.";
+const KNOWLEDGE_QUERY_HINT_PATTERN =
+  /(\b(sample guide|sample|guide|uploaded document|uploaded documents|knowledge base|knowledge|according to the sample|according to the guide|as per the sample|as per the guide|from the sample|from the guide|in the sample|in the guide|from the document|in the document|plaster|curing|rough-in|contingency|exclusions|foundation|masonry|waterproofing|electrical|plumbing|slab|rcc|paint|finishing|lintels|skirting)\b)/i;
 
-const buildBaseSystemPrompt = () =>
+const buildGeneralSystemPrompt = () =>
+  [
+    "You are EBC AI Calculator assistant.",
+    "Use plain markdown only.",
+    "Answer normal greetings, identity questions, general explanations, and arithmetic normally.",
+    "Be concise and direct.",
+  ].join("\n");
+
+const buildKnowledgeSystemPrompt = () =>
   [
     "You are EBC AI Calculator assistant.",
     "Use plain markdown only.",
@@ -131,6 +147,22 @@ const fetchKnowledgeContext = async (query: string) => {
     clearTimeout(timeout);
   }
 };
+
+const looksLikeKnowledgeQuestion = (query: string) =>
+  KNOWLEDGE_QUERY_HINT_PATTERN.test(query);
+
+const createFixedAssistantResponse = (text: string, originalMessages: UIMessage[]) =>
+  createUIMessageStreamResponse({
+    stream: createUIMessageStream({
+      originalMessages,
+      execute({ writer }) {
+        const messageId = crypto.randomUUID();
+        writer.write({ type: "text-start", id: messageId });
+        writer.write({ type: "text-delta", id: messageId, delta: text });
+        writer.write({ type: "text-end", id: messageId });
+      },
+    }),
+  });
 
 const extractTextFromParts = (parts?: IncomingMessage["parts"]) => {
   if (!parts || !Array.isArray(parts)) return "";
@@ -199,10 +231,27 @@ export async function POST(req: Request) {
       .map(normalizeIncomingMessage)
       .find((msg) => msg?.role === "user")?.content;
 
-    const retrievalItems =
-      typeof latestUserQuery === "string" && latestUserQuery.trim()
-        ? await fetchKnowledgeContext(latestUserQuery)
-        : [];
+    const isKnowledgeQuestion =
+      typeof latestUserQuery === "string" &&
+      latestUserQuery.trim().length > 0 &&
+      looksLikeKnowledgeQuestion(latestUserQuery);
+
+    const retrievalItems = isKnowledgeQuestion
+      ? await fetchKnowledgeContext(latestUserQuery)
+      : [];
+
+    if (
+      isKnowledgeQuestion &&
+      retrievalItems.length === 0
+    ) {
+      await appendLog({
+        requestId,
+        event: "knowledge_fallback",
+        queryLength: latestUserQuery.length,
+      });
+
+      return createFixedAssistantResponse(NO_KNOWLEDGE_RESPONSE, messages);
+    }
 
     const coreMessages = await convertToModelMessages(
       messages.map(({ id: _id, ...rest }) => rest),
@@ -210,11 +259,12 @@ export async function POST(req: Request) {
 
     if (retrievalItems.length > 0) {
       coreMessages.unshift(
-        { role: "system", content: buildBaseSystemPrompt() },
+        { role: "system", content: buildGeneralSystemPrompt() },
+        { role: "system", content: buildKnowledgeSystemPrompt() },
         { role: "system", content: buildRagSystemPrompt(retrievalItems) },
       );
     } else {
-      coreMessages.unshift({ role: "system", content: buildBaseSystemPrompt() });
+      coreMessages.unshift({ role: "system", content: buildGeneralSystemPrompt() });
     }
 
     await appendLog({
