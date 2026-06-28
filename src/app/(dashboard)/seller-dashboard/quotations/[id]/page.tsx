@@ -6,6 +6,7 @@ import {
   useQuotationQuery,
   useUpdateQuotationMutation,
   useEnquiryQuery,
+  useFlagFakeEnquiryMutation,
 } from "@/queries/activityQueries";
 import { QuotationForm } from "@/components/dashboard/seller/quotation/quotation-form";
 import {
@@ -27,12 +28,14 @@ import { CreateQuotationRequest } from "@/types/activity";
 import { QuotationState } from "@/store/quotationStore";
 import { useLanguage } from "@/hooks/useLanguage";
 import { PageBackButton } from "@/components/dashboard/seller/activity-shared/page-back-button";
+import { useAuthStore } from "@/store/authStore";
 
 export default function ViewQuotationPage() {
   const { t } = useLanguage();
   const params = useParams();
   const id = params.id as string;
   const router = useRouter();
+  const { user } = useAuthStore();
 
   const { data: quotation, isLoading: isQuotationLoading } =
     useQuotationQuery(id);
@@ -48,6 +51,7 @@ export default function ViewQuotationPage() {
 
   const { mutate: updateQuotation, isPending: isUpdating } =
     useUpdateQuotationMutation();
+  const fakeEnquiryMutation = useFlagFakeEnquiryMutation();
 
   const killSwitchUpdateDisabled = !isApproved; // Restricted if not approved
 
@@ -133,6 +137,10 @@ export default function ViewQuotationPage() {
     );
   }
 
+  const isAccepted = quotation.status === QUOTATION_STATUS.ACCEPTED;
+  const isOwnQuotation = quotation.createdById === user?.id;
+  const hasFakeStrike = !!quotation.enquiry?.fakeEnquiryStrike;
+
   const handleSubmit = (data: CreateQuotationRequest) => {
     if (killSwitchUpdateDisabled) {
       toast.error(
@@ -155,6 +163,21 @@ export default function ViewQuotationPage() {
     );
   };
 
+  const handleFakeEnquiry = async () => {
+    try {
+      const result = await fakeEnquiryMutation.mutateAsync(quotation.id);
+      toast.success(
+        result.isBlacklisted
+          ? `Buyer blacklisted for ${result.blacklistDurationDays} days.`
+          : "Fake enquiry flagged.",
+      );
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Something went wrong";
+      toast.error(message);
+    }
+  };
+
   return (
     <div className="space-y-6 max-w-5xl mx-auto px-4">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -164,7 +187,7 @@ export default function ViewQuotationPage() {
           label={t("back_to_quotation_list")}
         />
         <div className="flex flex-wrap gap-2 px-4">
-          {quotation.status === QUOTATION_STATUS.ACCEPTED && (
+          {isAccepted && (
             <Badge className="bg-green-600 text-white font-black  text-[10px]  px-3 py-1">
               <CheckCircle2 className="h-3 w-3 mr-1.5" />
               Accepted
@@ -175,6 +198,19 @@ export default function ViewQuotationPage() {
               <MessageSquare className="h-3 w-3 mr-1.5" />
               Action Required: Revision Requested
             </Badge>
+          )}
+          {isAccepted && isOwnQuotation && !hasFakeStrike && (
+            <Button
+              onClick={handleFakeEnquiry}
+              variant="outline"
+              className="border-rose-500 text-rose-600 hover:bg-rose-50 font-black px-8 h-11 rounded-xl"
+              disabled={fakeEnquiryMutation.isPending}
+            >
+              {fakeEnquiryMutation.isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : null}
+              Mark Fake Enquiry
+            </Button>
           )}
           {quotation.quotationDetails?.[0]?.hasBeenRevised && (
             <Badge className="bg-violet-600 text-white font-black  text-[10px]  px-3 py-1 flex items-center">

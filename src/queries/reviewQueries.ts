@@ -62,8 +62,14 @@ export const useCreateReviewMutation = () => {
     },
     onSuccess: (_, variables) => {
       if (variables.entityId) {
-        queryClient.invalidateQueries({
-          queryKey: ["entity-reviews", variables.entityId],
+        const queryKeys = [
+          ["entity-reviews", variables.entityId],
+          ["entity-reviews-full", variables.entityId],
+          ["review-summary", variables.entityId],
+        ] as const;
+
+        queryKeys.forEach((queryKey) => {
+          queryClient.invalidateQueries({ queryKey });
         });
       }
     },
