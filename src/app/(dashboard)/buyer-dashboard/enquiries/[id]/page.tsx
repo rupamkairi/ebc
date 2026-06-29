@@ -31,6 +31,7 @@ import {
   Clock,
   ChevronRight,
   MessageSquare,
+  ShieldAlert,
 } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -116,6 +117,15 @@ export default function BuyerEnquiryDetailsPage() {
               >
                 ID: {enquiry.id.slice(0, 8)}
               </Badge>
+              {!!enquiry.fakeEnquiryStrike && !enquiry.fakeEnquiryStrike.revokedAt && (
+                <Badge
+                  variant="destructive"
+                  className="px-4 py-1 text-[10px] font-black"
+                >
+                  <ShieldAlert className="h-3 w-3" />
+                  Fake Enquiry
+                </Badge>
+              )}
               <Badge
                 className={cn(
                   " text-[10px] font-black ",

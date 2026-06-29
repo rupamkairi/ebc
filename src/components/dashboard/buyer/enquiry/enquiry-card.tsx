@@ -7,7 +7,7 @@ import { Enquiry } from "@/types/activity";
 import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
 import { ENQUIRY_STATUS } from "@/constants/enums";
 import { format } from "date-fns";
-import { Package, MapPin, Calendar, ArrowRight } from "lucide-react";
+import { Package, MapPin, Calendar, ArrowRight, ShieldAlert } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import Link from "next/link";
 
@@ -20,6 +20,8 @@ export function EnquiryCard({ enquiry, detailsHref }: EnquiryCardProps) {
   const { t } = useLanguage();
   const items = enquiry.enquiryLineItems || [];
   const details = enquiry.enquiryDetails?.[0];
+  const isFakeEnquiry =
+    !!enquiry.fakeEnquiryStrike && !enquiry.fakeEnquiryStrike.revokedAt;
 
   const getStatusColor = (status: ENQUIRY_STATUS) => {
     switch (status) {
@@ -44,9 +46,17 @@ export function EnquiryCard({ enquiry, detailsHref }: EnquiryCardProps) {
             <span className="text-[10px] font-black  text-primary/40 ">
               {t("enquiry_id")}
             </span>
-            <CardTitle className="text-sm font-black text-primary">
-              #{enquiry.id.slice(0, 8).toUpperCase()}
-            </CardTitle>
+            <div className="flex flex-wrap items-center gap-2">
+              <CardTitle className="text-sm font-black text-primary">
+                #{enquiry.id.slice(0, 8).toUpperCase()}
+              </CardTitle>
+              {isFakeEnquiry && (
+                <Badge variant="destructive" className="px-2.5 py-0.5 text-[9px] font-black">
+                  <ShieldAlert className="h-3 w-3" />
+                  Fake Enquiry
+                </Badge>
+              )}
+            </div>
           </div>
           <Badge
             variant="outline"

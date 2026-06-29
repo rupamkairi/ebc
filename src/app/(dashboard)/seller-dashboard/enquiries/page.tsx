@@ -6,10 +6,12 @@ import {
   Loader2,
   CheckCircle2,
   ChevronDown,
+  ShieldAlert,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useEntitiesQuery } from "@/queries/entityQueries";
 import {
   useAssignmentsQuery,
@@ -206,6 +208,8 @@ export default function EnquiriesPage() {
               const firstItem = enq.enquiryLineItems?.[0];
               const details = enq.enquiryDetails?.[0];
               const badge = getTimeBadge(enq.createdAt, t);
+              const isFakeEnquiry =
+                !!enq.fakeEnquiryStrike && !enq.fakeEnquiryStrike.revokedAt;
 
               return (
                 <Card
@@ -232,6 +236,15 @@ export default function EnquiriesPage() {
                         >
                           {badge.label}
                         </div>
+                        {isFakeEnquiry && (
+                          <Badge
+                            variant="destructive"
+                            className="px-3 py-1 text-[9px] font-black"
+                          >
+                            <ShieldAlert className="h-3 w-3" />
+                            Fake Enquiry
+                          </Badge>
+                        )}
                       </div>
                       <div
                         className={cn(

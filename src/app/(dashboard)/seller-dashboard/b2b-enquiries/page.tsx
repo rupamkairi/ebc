@@ -6,9 +6,17 @@ import { Button } from "@/components/ui/button";
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { Search, ChevronRight, Loader2, Frown, Plus } from "lucide-react";
+import {
+  Search,
+  ChevronRight,
+  Loader2,
+  Frown,
+  Plus,
+  ShieldAlert,
+} from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { getTimeBadge } from "@/lib/activity-utils";
 import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
@@ -135,6 +143,8 @@ export default function EnquiriesPage() {
               const firstItem = enq.enquiryLineItems?.[0];
               const details = enq.enquiryDetails?.[0];
               const badge = getTimeBadge(enq.createdAt, t);
+              const isFakeEnquiry =
+                !!enq.fakeEnquiryStrike && !enq.fakeEnquiryStrike.revokedAt;
 
               return (
                 <Card
@@ -148,6 +158,15 @@ export default function EnquiriesPage() {
                         <div className="px-3 py-1 rounded-full border border-primary/10 text-primary text-[9px] font-black  bg-primary/5 ">
                           ID: {enq.id.slice(0, 8)}
                         </div>
+                        {isFakeEnquiry && (
+                          <Badge
+                            variant="destructive"
+                            className="px-3 py-1 text-[9px] font-black"
+                          >
+                            <ShieldAlert className="h-3 w-3" />
+                            Fake Enquiry
+                          </Badge>
+                        )}
                         <div
                           className={cn(
                             "px-3 py-1 rounded-full text-[9px] font-black  ",

@@ -7,8 +7,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { EnquiryCard } from "@/components/dashboard/buyer/enquiry/enquiry-card";
 import { BuyerProfileCard } from "@/components/dashboard/buyer/dashboard-components";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { Frown } from "lucide-react";
+import { Frown, ShieldAlert } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 
 const filters = ["All", "Pending", "Approved", "Rejected"];
@@ -18,6 +19,12 @@ export default function EnquiriesPage() {
   const { data: session } = useSessionQuery();
   const { data: enquiries, isLoading } = useEnquiriesQuery({});
   const { t } = useLanguage();
+
+  const fakeEnquiryCount =
+    enquiries?.filter(
+      (enquiry) =>
+        !!enquiry.fakeEnquiryStrike && !enquiry.fakeEnquiryStrike.revokedAt,
+    ).length || 0;
 
   const filteredEnquiries = (enquiries || []).filter((e) => {
     if (activeFilter === "All") return true;
@@ -36,10 +43,16 @@ export default function EnquiriesPage() {
       )}
 
       {/* Header Section */}
-      <div className="flex flex-col gap-2">
-        <h1 className="text-4xl md:text-5xl font-black text-primary tracking-tight">
-          {t("enquiries_title_page")}
-        </h1>
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <h1 className="text-4xl md:text-5xl font-black text-primary tracking-tight">
+            {t("enquiries_title_page")}
+          </h1>
+          <Badge variant="destructive" className="w-fit px-4 py-1 text-xs font-black">
+            <ShieldAlert className="h-3 w-3" />
+            Fake enquiries: {fakeEnquiryCount}
+          </Badge>
+        </div>
         <p className="text-base text-muted-foreground font-bold  ">
           {t("manage_track_enquiries_subtitle")}
         </p>

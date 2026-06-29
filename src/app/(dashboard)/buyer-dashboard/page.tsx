@@ -20,6 +20,7 @@ import {
   Quote,
   MapPin,
   FileCheck,
+  ShieldAlert,
   LucideIcon,
 } from "lucide-react";
 import {
@@ -38,6 +39,8 @@ import {
   BuyerProfileCard,
 } from "@/components/dashboard/buyer/dashboard-components";
 import { useSessionQuery } from "@/queries/authQueries";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { format } from "date-fns";
 
 export default function BuyerDashboardPage() {
   const { t } = useLanguage();
@@ -47,6 +50,13 @@ export default function BuyerDashboardPage() {
   const { data: visits } = useVisitsQuery({});
   const { data: session } = useSessionQuery();
   const { data: rooms } = useRoomsQuery();
+  const blacklistUntil = session?.user?.fakeEnquiryBlacklistedUntil;
+  const blacklistUntilDate = blacklistUntil ? new Date(blacklistUntil) : null;
+  const isBlacklisted =
+    !!blacklistUntilDate && blacklistUntilDate.getTime() > Date.now();
+  const blacklistReason =
+    session?.user?.fakeEnquiryBlacklistReason ||
+    "Reached fake enquiry strike threshold.";
 
   const stats = useMemo(() => {
     const pendingEnquiries =
@@ -101,6 +111,19 @@ export default function BuyerDashboardPage() {
             role={session.user.role || "Buyer"}
             avatarUrl={session.user.image || undefined}
           />
+        )}
+
+        {isBlacklisted && blacklistUntilDate && (
+          <Alert variant="destructive" className="rounded-3xl border-red-200 bg-red-50">
+            <ShieldAlert className="h-4 w-4" />
+            <AlertTitle className="font-black text-red-900">
+              Fake enquiry blacklist active
+            </AlertTitle>
+            <AlertDescription className="text-red-800 font-medium">
+              Your account is blacklisted until{" "}
+              {format(blacklistUntilDate, "dd MMM yyyy, hh:mm a")}. {blacklistReason}
+            </AlertDescription>
+          </Alert>
         )}
 
         <div className="flex flex-col gap-10">

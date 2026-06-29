@@ -29,6 +29,7 @@ import {
   Clock,
   ChevronRight,
   MessageSquare,
+  ShieldAlert,
 } from "lucide-react";
 import { PageBackButton } from "@/components/dashboard/seller/activity-shared/page-back-button";
 import { format } from "date-fns";
@@ -102,6 +103,16 @@ export default function SellerEnquiryDetailsPage() {
               ? t("manage_track_enquiries_subtitle")
               : t("this_enquiry_is_closed")}
           </p>
+          {!!enquiry.fakeEnquiryStrike &&
+            !enquiry.fakeEnquiryStrike.revokedAt && (
+              <Badge
+                variant="destructive"
+                className="mt-3 px-4 py-1 text-[10px] font-black"
+              >
+                <ShieldAlert className="h-3 w-3" />
+                Fake Enquiry
+              </Badge>
+            )}
         </div>
       </div>
 

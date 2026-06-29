@@ -12,6 +12,7 @@ import {
   MapPin,
   MessageSquare,
   PackageCheck,
+  ShieldAlert,
 } from "lucide-react";
 import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
 import Link from "next/link";
@@ -31,6 +32,7 @@ import {
 import { useSessionQuery } from "@/queries/authQueries";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 import { BuyerInfoCard } from "@/components/dashboard/seller/activity-shared/buyer-info-card";
 import { ActivityActionCard } from "@/components/dashboard/seller/activity-shared/activity-action-card";
 import { ActivityTipCard } from "@/components/dashboard/seller/activity-shared/activity-tip-card";
@@ -131,6 +133,8 @@ export default function EnquiryDetailsPage() {
   const isAcceptedLocally =
     !!myQuotation && myQuotation.status === QUOTATION_STATUS.ACCEPTED;
   const hasActionNeeded = (!hasResponded || isRevisionRequested) && !isClosed;
+  const isFakeEnquiry =
+    !!enquiry.fakeEnquiryStrike && !enquiry.fakeEnquiryStrike.revokedAt;
 
   return (
     <div className="flex flex-col gap-6 max-w-5xl mx-auto">
@@ -166,6 +170,15 @@ export default function EnquiryDetailsPage() {
                   <span className="px-3 py-1 rounded-full border-2 border-secondary text-secondary text-xs font-black ">
                     ID: {enquiry.id.slice(0, 8)}
                   </span>
+                  {isFakeEnquiry && (
+                    <Badge
+                      variant="destructive"
+                      className="px-4 py-1 text-[10px] font-black"
+                    >
+                      <ShieldAlert className="h-3 w-3" />
+                      Fake Enquiry
+                    </Badge>
+                  )}
                   <span
                     className={cn(
                       "px-4 py-1 rounded-full text-[10px] font-black   text-white",
