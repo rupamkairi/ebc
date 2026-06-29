@@ -12,8 +12,10 @@ import {
   TrendingUp,
   RefreshCw,
   MessageSquare,
+  ShieldAlert,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { useQuotationsQuery } from "@/queries/activityQueries";
 import { format } from "date-fns";
@@ -63,6 +65,9 @@ export default function QuotationsPage() {
           `${t("enquiry_id_label", "Enquiry")} #${qut.enquiryId.slice(0, 8)}`,
         displayDate: format(new Date(qut.createdAt), "dd MMM yyyy"),
         isEnquiryClosed: qut.enquiry?.status === ENQUIRY_STATUS.COMPLETED,
+        isFakeEnquiry:
+          !!qut.enquiry?.fakeEnquiryStrike &&
+          !qut.enquiry.fakeEnquiryStrike.revokedAt,
         uiStatus:
           qut.status === QUOTATION_STATUS.ACCEPTED
             ? "Accepted"
@@ -87,7 +92,7 @@ export default function QuotationsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black tracking-tight text-primary">
-            {t("deal_board", "Deal Board")}
+            Quotations
           </h1>
           <p className="text-sm text-primary/60 font-medium mt-1">
             {t(
@@ -166,6 +171,15 @@ export default function QuotationsPage() {
                       >
                         {qut.uiStatus}
                       </span>
+                      {qut.isFakeEnquiry && (
+                        <Badge
+                          variant="destructive"
+                          className="px-3 py-1 text-[9px] font-black"
+                        >
+                          <ShieldAlert className="h-3 w-3" />
+                          Fake Enquiry
+                        </Badge>
+                      )}
                       {qut.quotationDetails?.[0]?.requestedRevision &&
                         !qut.quotationDetails?.[0]?.hasBeenRevised && (
                           <span className="px-3 py-1 rounded-full text-[9px] font-black  bg-orange-500 text-white flex items-center gap-1.5 shadow-sm">

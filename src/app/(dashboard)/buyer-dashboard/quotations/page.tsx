@@ -17,6 +17,7 @@ import {
   TrendingDown,
   TrendingUp,
   RefreshCw,
+  ShieldAlert,
 } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -114,6 +115,9 @@ export default function BuyerQuotationsPage() {
             const itemCount = q.quotationLineItems?.length ?? 0;
             const isAccepted = q.status === "ACCEPTED";
             const isEnquiryClosed = q.enquiry?.status === "COMPLETED";
+            const isFakeEnquiry =
+              !!q.enquiry?.fakeEnquiryStrike &&
+              !q.enquiry.fakeEnquiryStrike.revokedAt;
             const details = q.quotationDetails?.[0];
             const isNegotiable =
               q.quotationLineItems?.some((li) => li.isNegotiable) &&
@@ -164,6 +168,15 @@ export default function BuyerQuotationsPage() {
                                   ? t("enquiry_closed")
                                   : t("pending_label")}
                             </Badge>
+                            {isFakeEnquiry && (
+                              <Badge
+                                variant="destructive"
+                                className="text-[10px] font-black px-2.5 py-1 gap-1.5"
+                              >
+                                <ShieldAlert className="h-2.5 w-2.5" />
+                                Fake Enquiry
+                              </Badge>
+                            )}
                             {isNegotiable &&
                               !isAccepted &&
                               !isEnquiryClosed && (

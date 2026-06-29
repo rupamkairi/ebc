@@ -16,6 +16,7 @@ import {
   TrendingDown,
   TrendingUp,
   CheckCircle2,
+  ShieldAlert,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -197,6 +198,15 @@ export default function ViewQuotationPage() {
             <Badge className="bg-orange-500 text-white font-black  text-[10px]  animate-pulse px-3 py-1">
               <MessageSquare className="h-3 w-3 mr-1.5" />
               Action Required: Revision Requested
+            </Badge>
+          )}
+          {hasFakeStrike && (
+            <Badge
+              variant="destructive"
+              className="px-3 py-1 text-[10px] font-black"
+            >
+              <ShieldAlert className="h-3 w-3" />
+              Fake Enquiry
             </Badge>
           )}
           {isAccepted && isOwnQuotation && !hasFakeStrike && (

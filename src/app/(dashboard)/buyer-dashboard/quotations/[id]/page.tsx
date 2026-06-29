@@ -27,6 +27,7 @@ import {
   RefreshCw,
   FileText as FileTextIcon,
   Download,
+  ShieldAlert,
 } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -63,6 +64,8 @@ export default function QuotationDetailsPage() {
 
   const isAccepted = q.status === QUOTATION_STATUS.ACCEPTED;
   const isEnquiryCompleted = q.enquiry?.status === ENQUIRY_STATUS.COMPLETED;
+  const isFakeEnquiry =
+    !!q.enquiry?.fakeEnquiryStrike && !q.enquiry.fakeEnquiryStrike.revokedAt;
   const isNegotiable =
     q.quotationLineItems?.some((li) => li.isNegotiable) &&
     !q.quotationDetails?.[0]?.hasBeenRevised;
@@ -175,6 +178,15 @@ export default function QuotationDetailsPage() {
               {isAccepted && (
                 <Badge className="bg-emerald-500 text-white font-black  text-[10px] ">
                   Accepted
+                </Badge>
+              )}
+              {isFakeEnquiry && (
+                <Badge
+                  variant="destructive"
+                  className="px-3 py-1 text-[10px] font-black"
+                >
+                  <ShieldAlert className="h-3 w-3" />
+                  Fake Enquiry
                 </Badge>
               )}
               {q.quotationDetails?.[0]?.hasBeenRevised && (
