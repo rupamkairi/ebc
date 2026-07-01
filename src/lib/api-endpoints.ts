@@ -189,6 +189,10 @@ export const API_ENDPOINTS = {
     DELETE: "/notification-channel", // :id
     VERIFY: "/notification-channel", // :id/verify
   },
+  NOTIFICATION_DELIVERY_CONFIG: {
+    LIST: "/notification-delivery-config",
+    UPDATE: "/notification-delivery-config", // :key
+  },
   ATTACHMENT: {
     MEDIA: {
       UPLOAD_SINGLE: "/attachment/media/upload/single",

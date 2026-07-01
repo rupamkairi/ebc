@@ -17,6 +17,17 @@ export interface NotificationChannel {
   updatedAt: string;
 }
 
+export interface NotificationDeliveryConfig {
+  id: string;
+  key: string;
+  label: string;
+  channels: NotificationChannelType[];
+  smsTemplateId: string | null;
+  smsTemplateParams: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface AddChannelRequest {
   type: NotificationChannelType;
   destination: string;
@@ -29,6 +40,13 @@ export interface VerifyChannelOTPRequest {
 
 export interface UpdateChannelRequest {
   isActive?: boolean;
+}
+
+export interface UpdateNotificationDeliveryConfigRequest {
+  label: string;
+  channels: NotificationChannelType[];
+  smsTemplateId?: string | null;
+  smsTemplateParams?: string[];
 }
 
 export interface Notification {

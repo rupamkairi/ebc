@@ -6,6 +6,10 @@ import {
   AdminUserUpdateRequest,
   FakeEnquiryModerationConfig,
 } from "@/types/auth";
+import {
+  NotificationDeliveryConfig,
+  UpdateNotificationDeliveryConfigRequest,
+} from "@/types/notification";
 
 export interface UserListParams {
   role?: string;
@@ -92,6 +96,28 @@ export const adminService = {
       `${API_ENDPOINTS.AUTH.ADMIN.FAKE_ENQUIRY_RESTORE}/${id}`,
       {
         method: "POST",
+      },
+    );
+  },
+
+  async getNotificationDeliveryConfigs() {
+    return fetchClient<NotificationDeliveryConfig[]>(
+      API_ENDPOINTS.NOTIFICATION_DELIVERY_CONFIG.LIST,
+      {
+        method: "GET",
+      },
+    );
+  },
+
+  async updateNotificationDeliveryConfig(
+    key: string,
+    data: UpdateNotificationDeliveryConfigRequest,
+  ) {
+    return fetchClient<NotificationDeliveryConfig>(
+      `${API_ENDPOINTS.NOTIFICATION_DELIVERY_CONFIG.UPDATE}/${key}`,
+      {
+        method: "PUT",
+        body: data,
       },
     );
   },

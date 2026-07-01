@@ -4,12 +4,15 @@ import {
   CreateAdminSubordinateRequest,
   AdminUserUpdateRequest,
 } from "@/types/auth";
+import { UpdateNotificationDeliveryConfigRequest } from "@/types/notification";
 
 export const adminKeys = {
   all: ["admin"] as const,
   users: (params: UserListParams) =>
     [...adminKeys.all, "users", params] as const,
   fakeEnquiryConfig: () => [...adminKeys.all, "fake-enquiry-config"] as const,
+  deliveryConfigs: () =>
+    [...adminKeys.all, "delivery-configs"] as const,
 };
 
 import { keepPreviousData } from "@tanstack/react-query";
@@ -127,6 +130,30 @@ export function useRestoreFakeEnquiryBlacklistMutation() {
       queryClient.invalidateQueries({
         queryKey: [...adminKeys.all, "user", id],
       });
+    },
+  });
+}
+
+export function useNotificationDeliveryConfigsQuery() {
+  return useQuery({
+    queryKey: adminKeys.deliveryConfigs(),
+    queryFn: () => adminService.getNotificationDeliveryConfigs(),
+  });
+}
+
+export function useUpdateNotificationDeliveryConfigMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      key,
+      data,
+    }: {
+      key: string;
+      data: UpdateNotificationDeliveryConfigRequest;
+    }) => adminService.updateNotificationDeliveryConfig(key, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.deliveryConfigs() });
     },
   });
 }
