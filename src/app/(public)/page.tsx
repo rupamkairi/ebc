@@ -13,7 +13,6 @@ import { EcosystemSection } from "@/components/landing/ecosystem-section";
 import { AdvantagesSection } from "@/components/landing/advantages-section";
 import { MaterialsSection } from "@/components/landing/materials-section";
 import { ServicesSection } from "@/components/landing/services-section";
-import { ReviewsSection } from "@/components/landing/reviews-section";
 import { FooterSection } from "@/components/landing/footer-section";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
 import { ScrollToTopButton } from "@/components/shared/scroll-to-top";
@@ -57,9 +56,6 @@ export default function HomePage() {
 
       {/* FAQ SECTION */}
       <FaqSection />
-
-      {/* REVIEWS SECTION */}
-      <ReviewsSection />
 
       {/* These sections are currently commented out per request */}
       {/* <WhySection /> */}
