@@ -169,7 +169,7 @@ User login uses Phone/OTP.
     "isNewUser": true
   }
   ```
-- **Note:** `isNewUser` will be `true` if a new user record was created, and `false` if an existing user was found and their OTP was updated. Check server console logs for the OTP.
+- **Note:** `isNewUser` will be `true` if a new user record was created, and `false` if an existing user was found and their OTP was updated. OTP delivery now depends on the MSG91 send succeeding; check the tagged `[OTP-DEBUG]` and `[OTP-DEBUG][MSG91]` server logs for delivery diagnostics instead of expecting the OTP value in logs.
 
 #### 1.9 Verify OTP
 
