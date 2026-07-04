@@ -1,6 +1,5 @@
 "use client";
 
-import { IconInnerShadowTop } from "@tabler/icons-react";
 import {
   Activity,
   BarChart3,
@@ -41,6 +40,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useAuthStore } from "@/store/authStore";
 import { USER_ROLE } from "@/constants/enums";
+import Image from "next/image";
 import Link from "next/link";
 
 // This is sample data.
@@ -132,7 +132,6 @@ const data = {
       icon: Sparkles,
       color: "text-foreground",
       items: [
-        { title: "Conference Hall", url: "#" },
         { title: "Calculators", url: "/admin-dashboard/ai/calculator" },
       ],
     },
@@ -213,9 +212,11 @@ export function AdminDashboardSidebar({
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
               <a href="/admin-dashboard">
-                <img
+                <Image
                   src="/logo.svg"
                   alt="E-CON Building Centre"
+                  width={24}
+                  height={24}
                   className="size-6 object-contain"
                 />
                 <span className="text-base font-semibold">

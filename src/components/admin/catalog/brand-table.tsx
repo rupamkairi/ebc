@@ -11,6 +11,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/datatable/data-table-column-header";
 import { Brand } from "@/types/catalog";
 import { format } from "date-fns";
+import Image from "next/image";
 
 import { ActionColumn } from "./action-column";
 import { useBrandStore } from "@/store/brandStore";
@@ -26,6 +27,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 
 export function BrandTable() {
@@ -36,6 +42,7 @@ export function BrandTable() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [search, setSearch] = useState("");
   const [brandToDelete, setBrandToDelete] = useState<Brand | null>(null);
+  const [previewLogoUrl, setPreviewLogoUrl] = useState<string | null>(null);
   const debouncedSearch = useDebouncedValue(search);
   const { setEditOpen } = useBrandStore();
 
@@ -75,6 +82,52 @@ export function BrandTable() {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Name" />
       ),
+    },
+    {
+      id: "logo",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Logo" />
+      ),
+      cell: ({ row }) => {
+        const logoUrl = row.original.brandLogo?.url;
+
+        if (!logoUrl) return "-";
+
+        return (
+          <Dialog
+            open={previewLogoUrl === logoUrl}
+            onOpenChange={(open) => setPreviewLogoUrl(open ? logoUrl : null)}
+          >
+            <DialogTrigger asChild>
+              <button
+                type="button"
+                onClick={() => setPreviewLogoUrl(logoUrl)}
+                className="inline-flex size-10 items-center justify-center overflow-hidden rounded-md border bg-muted/20"
+              >
+                <Image
+                  src={logoUrl}
+                  alt={row.original.name}
+                  width={40}
+                  height={40}
+                  className="size-full object-cover"
+                />
+              </button>
+            </DialogTrigger>
+            <DialogContent
+              showCloseButton={false}
+              className="w-auto max-w-none gap-0 border-0 bg-transparent p-0 shadow-none data-[state=open]:zoom-in-95"
+            >
+              <Image
+                src={logoUrl}
+                alt={row.original.name}
+                width={720}
+                height={720}
+                className="max-h-[90vh] w-auto max-w-[90vw] rounded-none object-contain"
+              />
+            </DialogContent>
+          </Dialog>
+        );
+      },
     },
     {
       accessorKey: "createdAt",
