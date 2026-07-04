@@ -1,22 +1,17 @@
-import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import {
-  convertToModelMessages,
   createUIMessageStream,
   createUIMessageStreamResponse,
-  streamText,
   type UIMessage,
 } from "ai";
 import fs from "node:fs/promises";
 import path from "node:path";
 
-const openrouter = createOpenRouter({
-  apiKey: process.env.OPENROUTER_API_KEY,
-});
-
 export const runtime = "nodejs";
 
 const GENERATION_TIMEOUT_MS = 10_000;
 const MAX_OUTPUT_TOKENS = 256;
+const AI_UNAVAILABLE_RESPONSE =
+  "AI is temporarily unavailable. Please try again shortly.";
 
 const LOG_PATH = path.join(process.cwd(), ".logs", "ai-chat.log");
 const SERVER_API_BASE_RAW =
@@ -26,6 +21,8 @@ const SERVER_API_BASE_RAW =
 const SERVER_API_BASE = SERVER_API_BASE_RAW.endsWith("/api")
   ? SERVER_API_BASE_RAW
   : `${SERVER_API_BASE_RAW.replace(/\/$/, "")}/api`;
+const OPENROUTER_API_BASE =
+  process.env.OPENROUTER_API_BASE || "https://openrouter.ai/api/v1";
 
 function truncate(text: string, max = 2000) {
   if (text.length <= max) return text;
@@ -70,9 +67,36 @@ type IncomingMessage = {
   parts?: Array<{ type?: string; text?: string }>;
 };
 
+type ChatMessage = {
+  role: "user" | "assistant" | "system";
+  content: string;
+};
+
+type ChatCompletionResponse = {
+  choices?: Array<{
+    message?: {
+      content?: string | Array<{ type?: string; text?: string }>;
+    };
+  }>;
+  error?: { message?: string };
+};
+
+const parseModelList = (value: string | undefined, fallback: string[]) => {
+  const parsed = (value || "")
+    .split(",")
+    .map((model) => model.trim())
+    .filter(Boolean);
+  return parsed.length > 0 ? parsed : fallback;
+};
+
+const CHAT_MODELS = parseModelList(process.env.OPENROUTER_CHAT_MODELS, [
+  "google/gemma-4-31b-it:free",
+  "google/gemma-4-26b-a4b-it:free",
+]);
+
 const NO_KNOWLEDGE_RESPONSE = "I don't know from the current knowledge base.";
 const KNOWLEDGE_QUERY_HINT_PATTERN =
-  /(\b(sample guide|sample|guide|uploaded document|uploaded documents|knowledge base|knowledge|according to the sample|according to the guide|as per the sample|as per the guide|from the sample|from the guide|in the sample|in the guide|from the document|in the document|plaster|curing|rough-in|contingency|exclusions|foundation|masonry|waterproofing|electrical|plumbing|slab|rcc|paint|finishing|lintels|skirting)\b)/i;
+  /(\b(sample guide|sample|guide|uploaded document|uploaded documents|uploaded image|uploaded images|knowledge base|knowledge|according to the sample|according to the guide|as per the sample|as per the guide|from the sample|from the guide|in the sample|in the guide|from the document|in the document|from the image|in the image|project|goals?|objectives?|scope|sow|summary|brief|plaster|curing|rough-in|contingency|exclusions|foundation|masonry|waterproofing|electrical|plumbing|slab|rcc|paint|finishing|lintels|skirting)\b)/i;
 
 const buildGeneralSystemPrompt = () =>
   [
@@ -164,6 +188,72 @@ const createFixedAssistantResponse = (text: string, originalMessages: UIMessage[
     }),
   });
 
+const extractChatText = (payload: ChatCompletionResponse) => {
+  const content = payload.choices?.[0]?.message?.content;
+  if (typeof content === "string") return content.trim();
+  if (Array.isArray(content)) {
+    return content
+      .filter((part) => part?.type === "text" && typeof part.text === "string")
+      .map((part) => part.text ?? "")
+      .join("\n")
+      .trim();
+  }
+  return "";
+};
+
+const fetchOpenRouterChatText = async (chatMessages: ChatMessage[]) => {
+  if (!process.env.OPENROUTER_API_KEY) {
+    throw new Error("OPENROUTER_API_KEY is missing.");
+  }
+
+  const errors: string[] = [];
+  for (const model of CHAT_MODELS) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), GENERATION_TIMEOUT_MS);
+
+    try {
+      const response = await fetch(`${OPENROUTER_API_BASE}/chat/completions`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          "Content-Type": "application/json",
+          "HTTP-Referer": "https://ebc.com",
+          "X-Title": "EBC AI Calculator",
+        },
+        signal: controller.signal,
+        body: JSON.stringify({
+          model,
+          messages: chatMessages,
+          max_tokens: MAX_OUTPUT_TOKENS,
+          temperature: 0,
+          stop: ["<tool-search>"],
+        }),
+      });
+
+      const payload = (await response.json().catch(() => ({}))) as ChatCompletionResponse;
+      if (!response.ok) {
+        errors.push(
+          `${model}: ${payload?.error?.message || `status ${response.status}`}`,
+        );
+        continue;
+      }
+
+      const text = extractChatText(payload);
+      if (text) {
+        return { model, text };
+      }
+      errors.push(`${model}: empty response`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      errors.push(`${model}: ${message}`);
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+
+  throw new Error(errors.join("; ") || "No OpenRouter chat model returned text.");
+};
+
 const extractTextFromParts = (parts?: IncomingMessage["parts"]) => {
   if (!parts || !Array.isArray(parts)) return "";
   return parts
@@ -231,12 +321,12 @@ export async function POST(req: Request) {
       .map(normalizeIncomingMessage)
       .find((msg) => msg?.role === "user")?.content;
 
+    const hasUserQuery =
+      typeof latestUserQuery === "string" && latestUserQuery.trim().length > 0;
     const isKnowledgeQuestion =
-      typeof latestUserQuery === "string" &&
-      latestUserQuery.trim().length > 0 &&
-      looksLikeKnowledgeQuestion(latestUserQuery);
+      hasUserQuery && looksLikeKnowledgeQuestion(latestUserQuery);
 
-    const retrievalItems = isKnowledgeQuestion
+    const retrievalItems = hasUserQuery
       ? await fetchKnowledgeContext(latestUserQuery)
       : [];
 
@@ -253,18 +343,18 @@ export async function POST(req: Request) {
       return createFixedAssistantResponse(NO_KNOWLEDGE_RESPONSE, messages);
     }
 
-    const coreMessages = await convertToModelMessages(
-      messages.map(({ id: _id, ...rest }) => rest),
-    );
+    const chatMessages = incomingMessages
+      .map(normalizeIncomingMessage)
+      .filter((msg): msg is ChatMessage => Boolean(msg));
 
     if (retrievalItems.length > 0) {
-      coreMessages.unshift(
+      chatMessages.unshift(
         { role: "system", content: buildGeneralSystemPrompt() },
         { role: "system", content: buildKnowledgeSystemPrompt() },
         { role: "system", content: buildRagSystemPrompt(retrievalItems) },
       );
     } else {
-      coreMessages.unshift({ role: "system", content: buildGeneralSystemPrompt() });
+      chatMessages.unshift({ role: "system", content: buildGeneralSystemPrompt() });
     }
 
     await appendLog({
@@ -273,45 +363,32 @@ export async function POST(req: Request) {
       queryLength:
         typeof latestUserQuery === "string" ? latestUserQuery.length : 0,
       contextCount: retrievalItems.length,
+      contexts: retrievalItems.map((item) => ({
+        sourceId: item.sourceId,
+        chunkId: item.chunkId,
+        score: item.score,
+        documentId: item.documentId,
+        mediaId: item.mediaId,
+      })),
     });
 
-    const result = streamText({
-      model: openrouter("openrouter/free"),
-      messages: coreMessages,
-      maxOutputTokens: MAX_OUTPUT_TOKENS,
-      maxRetries: 0,
-      temperature: 0,
-      stopSequences: ["<tool-search>"],
-      timeout: GENERATION_TIMEOUT_MS,
-      onFinish: async (event) => {
-        await appendLog({
-          requestId,
-          event: "finish",
-          model: event.model?.modelId,
-          finishReason: event.finishReason,
-          usage: event.usage,
-          text: truncate(event.text ?? ""),
-        });
-      },
-      onError: async (event) => {
-        await appendLog({
-          requestId,
-          event: "stream_error",
-          error: serializeError(event.error),
-        });
-      },
-      onAbort: async (event) => {
-        await appendLog({
-          requestId,
-          event: "stream_abort",
-          stepCount: event.steps.length,
-        });
-      },
+    const result = await fetchOpenRouterChatText(chatMessages).catch(async (error) => {
+      await appendLog({
+        requestId,
+        event: "chat_fallback_failed",
+        error: serializeError(error),
+      });
+      return { model: null, text: AI_UNAVAILABLE_RESPONSE };
     });
 
-    return result.toUIMessageStreamResponse({
-      originalMessages: messages,
+    await appendLog({
+      requestId,
+      event: "finish",
+      model: result.model,
+      text: truncate(result.text),
     });
+
+    return createFixedAssistantResponse(result.text, messages);
   } catch (error) {
     await appendLog({
       requestId,

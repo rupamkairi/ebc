@@ -1,6 +1,8 @@
 "use client";
 
 import Container from "@/components/ui/containers";
+import NextImage from "next/image";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -18,6 +20,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+} from "@/components/ui/dialog";
 import {
   useAiKnowledgeSourcesQuery,
   useCreateAiKnowledgeSourcesMutation,
@@ -62,6 +68,11 @@ const getSourceName = (source: AiKnowledgeSource) => {
 };
 
 export default function AdminAiCalculatorKnowledgePage() {
+  const [previewImage, setPreviewImage] = useState<{
+    url: string;
+    alt: string;
+  } | null>(null);
+
   const {
     data: sources = [],
     isLoading,
@@ -140,7 +151,7 @@ export default function AdminAiCalculatorKnowledgePage() {
         <div className="space-y-1">
           <h1 className="text-3xl font-bold tracking-tight">AI Calculator Knowledge</h1>
           <p className="text-muted-foreground">
-            Upload construction documents and images to train retrieval knowledge for
+            Upload construction documents and images to build retrieval knowledge for
             the calculator.
           </p>
         </div>
@@ -181,7 +192,7 @@ export default function AdminAiCalculatorKnowledgePage() {
         <CardHeader>
           <CardTitle>Upload Knowledge Sources</CardTitle>
           <CardDescription>
-            Documents: PDF, DOCX, TXT, MD. Media: images only.
+            Documents: PDF, DOCX, TXT, MD. Images are understood with vision extraction.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-3 md:flex-row md:items-center">
@@ -284,6 +295,28 @@ export default function AdminAiCalculatorKnowledgePage() {
                           <span className="inline-flex items-center gap-1 text-xs">
                             <FileText className="h-3.5 w-3.5" /> Document
                           </span>
+                        ) : source.media?.url ? (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setPreviewImage({
+                                url: source.media?.url ?? "",
+                                alt: getSourceName(source) ?? "Knowledge image",
+                              })
+                            }
+                            className="inline-flex items-center gap-2 rounded-md border bg-muted/20 p-1 pr-2 text-xs hover:bg-muted"
+                          >
+                            <span className="relative size-8 overflow-hidden rounded border bg-background">
+                              <NextImage
+                                src={source.media.url}
+                                alt={getSourceName(source) ?? "Knowledge image"}
+                                fill
+                                sizes="32px"
+                                className="object-cover"
+                              />
+                            </span>
+                            Image
+                          </button>
                         ) : (
                           <span className="inline-flex items-center gap-1 text-xs">
                             <ImageIcon className="h-3.5 w-3.5" /> Image
@@ -335,6 +368,26 @@ export default function AdminAiCalculatorKnowledgePage() {
           )}
         </CardContent>
       </Card>
+
+      <Dialog
+        open={!!previewImage}
+        onOpenChange={(open) => !open && setPreviewImage(null)}
+      >
+        <DialogContent
+          showCloseButton={false}
+          className="w-auto max-w-none gap-0 border-0 bg-transparent p-0 shadow-none data-[state=open]:zoom-in-95"
+        >
+          {previewImage && (
+            <NextImage
+              src={previewImage.url}
+              alt={previewImage.alt}
+              width={960}
+              height={960}
+              className="max-h-[90vh] w-auto max-w-[90vw] rounded-none object-contain"
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </Container>
   );
 }
