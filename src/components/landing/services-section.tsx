@@ -9,11 +9,12 @@ import { Button } from "@/components/ui/button";
 interface ServiceCardProps {
   title: string;
   image: string;
+  href?: string;
 }
 
-function ServiceCard({ title, image }: ServiceCardProps) {
-  return (
-    <div className="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl h-full flex flex-col">
+function ServiceCard({ title, image, href }: ServiceCardProps) {
+  const content = (
+    <>
       <div className="relative aspect-4/3 w-full grow">
         <Image
           src={image}
@@ -25,12 +26,25 @@ function ServiceCard({ title, image }: ServiceCardProps) {
         />
       </div>
       <div className="bg-secondary p-3 text-center">
-        <p className="text-[10px] sm:text-xs font-bold text-white   line-clamp-2 min-h-10 flex items-center justify-center">
+        <p className="text-[10px] sm:text-xs font-bold text-white line-clamp-2 min-h-10 flex items-center justify-center">
           {title}
         </p>
       </div>
-    </div>
+    </>
   );
+
+  const className =
+    "group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl h-full flex flex-col block";
+
+  if (href) {
+    return (
+      <Link href={href} className={className}>
+        {content}
+      </Link>
+    );
+  }
+
+  return <div className={className}>{content}</div>;
 }
 
 import { useLanguage } from "@/hooks/useLanguage";
@@ -46,6 +60,7 @@ export function ServicesSection() {
     {
       title: t("ser_item_2"),
       image: "/images/services/Sanitary_&_Plumbing.png",
+      href: "/browse?q=Installation&page=1",
     },
     {
       title: t("ser_item_3"),
@@ -96,6 +111,7 @@ export function ServicesSection() {
                 key={index}
                 title={service.title}
                 image={service.image}
+                href={service.href}
               />
             ))}
           </div>

@@ -24,6 +24,20 @@ export class ApiError extends Error {
   }
 }
 
+const formatDuration = (totalSeconds: number) => {
+  const safeSeconds = Math.max(0, Math.ceil(totalSeconds));
+  const minutes = Math.floor(safeSeconds / 60);
+  const seconds = safeSeconds % 60;
+
+  if (minutes === 0) {
+    return `${seconds} second${seconds === 1 ? "" : "s"}`;
+  }
+
+  return `${minutes} minute${minutes === 1 ? "" : "s"} ${seconds} second${
+    seconds === 1 ? "" : "s"
+  }`;
+};
+
 async function fetchClient<T>(
   endpoint: string,
   options: RequestOptions = {},
@@ -92,6 +106,22 @@ async function fetchClient<T>(
       } catch {
         // Ignore if json parsing fails
       }
+
+      if (response.status === 429) {
+        const retryAfterHeader = response.headers.get("Retry-After");
+        const retryAfterSeconds = retryAfterHeader
+          ? Number(retryAfterHeader)
+          : undefined;
+
+        if (Number.isFinite(retryAfterSeconds)) {
+          errorData = {
+            ...(errorData && typeof errorData === "object" ? errorData : {}),
+            retryAfterSeconds,
+            retryAfterLabel: formatDuration(retryAfterSeconds as number),
+          };
+        }
+      }
+
       throw new ApiError(response.status, errorMessage, errorData);
     }
 

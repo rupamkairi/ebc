@@ -31,6 +31,8 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { USER_ROLE } from "@/constants/enums";
 import { useLanguage } from "@/hooks/useLanguage";
+import { ApiError } from "@/lib/api-client";
+import { useOtpResendCooldown } from "@/hooks/use-otp-resend-cooldown";
 
 export function UserLoginMobileOtpForm({
   className,
@@ -44,6 +46,13 @@ export function UserLoginMobileOtpForm({
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"phone" | "otp">("phone");
   const [isLoading, setIsLoading] = useState(false);
+  const cooldownKey = mobile ? `ebc:otp-resend:${mobile}` : null;
+  const {
+    isCoolingDown,
+    remainingSeconds,
+    startCooldown,
+    formatSeconds,
+  } = useOtpResendCooldown(cooldownKey);
 
   // Handle redirect from register
   React.useEffect(() => {
@@ -77,15 +86,30 @@ export function UserLoginMobileOtpForm({
       return;
     }
 
+    if (isCoolingDown) {
+      toast.error(
+        `Please wait ${formatSeconds(remainingSeconds)} before requesting another OTP.`,
+      );
+      return;
+    }
+
     setIsLoading(true);
     try {
       const phone = `+91${mobile}`;
       await authService.sendOtp({ phone });
+      startCooldown();
       toast.success("OTP sent successfully");
       setStep("otp");
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : "Failed to send OTP";
+        error instanceof ApiError &&
+        typeof error.data === "object" &&
+        error.data !== null &&
+        "message" in error.data
+          ? String((error.data as { message?: unknown }).message || error.message)
+          : error instanceof Error
+            ? error.message
+            : "Failed to send OTP";
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
@@ -230,7 +254,7 @@ export function UserLoginMobileOtpForm({
                   <Field className="pt-2">
                     <Button
                       type="submit"
-                      disabled={isLoading}
+                      disabled={isLoading || isCoolingDown}
                       className={cn(
                         "w-full h-11 text-base font-semibold",
                         isDarkTheme &&
@@ -240,7 +264,9 @@ export function UserLoginMobileOtpForm({
                       {isLoading && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
-                      {t("send_otp")}
+                      {isCoolingDown
+                        ? `${t("send_otp")} (${formatSeconds(remainingSeconds)})`
+                        : t("send_otp")}
                     </Button>
                   </Field>
                 </FieldGroup>
@@ -302,6 +328,21 @@ export function UserLoginMobileOtpForm({
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
                       {t("login")}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={handleSendOtp}
+                      disabled={isLoading || isCoolingDown}
+                      className={cn(
+                        "w-full",
+                        isDarkTheme &&
+                          "text-white hover:text-white hover:bg-white/10",
+                      )}
+                    >
+                      {isCoolingDown
+                        ? `${t("resend_otp")} (${formatSeconds(remainingSeconds)})`
+                        : t("resend_otp")}
                     </Button>
                     <Button
                       type="button"

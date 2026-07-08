@@ -39,6 +39,8 @@ import { USER_ROLE } from "@/constants/enums";
 
 import { PincodeSearchAutocomplete } from "@/components/autocompletes/pincode-search-autocomplete";
 import { useLanguage } from "@/hooks/useLanguage";
+import { ApiError } from "@/lib/api-client";
+import { useOtpResendCooldown } from "@/hooks/use-otp-resend-cooldown";
 
 export function UserRegisterForm({
   className,
@@ -73,6 +75,13 @@ export function UserRegisterForm({
   const [step, setStep] = useState<"info" | "otp">("info");
   const [isNewUser, setIsNewUser] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const cooldownKey = mobile ? `ebc:otp-resend:${mobile}` : null;
+  const {
+    isCoolingDown,
+    remainingSeconds,
+    startCooldown,
+    formatSeconds,
+  } = useOtpResendCooldown(cooldownKey);
 
   const handleMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, "").slice(0, 10);
@@ -94,6 +103,13 @@ export function UserRegisterForm({
       return;
     }
 
+    if (isCoolingDown) {
+      toast.error(
+        `Please wait ${formatSeconds(remainingSeconds)} before requesting another OTP.`,
+      );
+      return;
+    }
+
     setIsLoading(true);
     try {
       const phone = `+91${mobile}`;
@@ -103,6 +119,7 @@ export function UserRegisterForm({
         type,
         pincodeId,
       });
+      startCooldown();
 
       if (response.isNewUser === false) {
         toast.error(
@@ -119,7 +136,14 @@ export function UserRegisterForm({
       setStep("otp");
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : "Failed to register";
+        error instanceof ApiError &&
+        typeof error.data === "object" &&
+        error.data !== null &&
+        "message" in error.data
+          ? String((error.data as { message?: unknown }).message || error.message)
+          : error instanceof Error
+            ? error.message
+            : "Failed to register";
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
@@ -297,7 +321,7 @@ export function UserRegisterForm({
                   <Field className="pt-2">
                     <Button
                       type="submit"
-                      disabled={isLoading}
+                      disabled={isLoading || isCoolingDown}
                       className={cn(
                         "w-full h-11 text-base font-semibold",
                         isDarkTheme &&
@@ -307,7 +331,9 @@ export function UserRegisterForm({
                       {isLoading && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
-                      {t("create_account")}
+                      {isCoolingDown
+                        ? `${t("create_account")} (${formatSeconds(remainingSeconds)})`
+                        : t("create_account")}
                     </Button>
                   </Field>
                 </FieldGroup>
@@ -364,11 +390,26 @@ export function UserRegisterForm({
                         isDarkTheme &&
                           "bg-secondary hover:bg-secondary/90 text-white rounded-md shadow-lg shadow-secondary/20",
                       )}
-                    >
+                      >
                       {isLoading && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
                       {t("verify_register")}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={handleSendOtp}
+                      disabled={isLoading || isCoolingDown}
+                      className={cn(
+                        "w-full",
+                        isDarkTheme &&
+                          "text-white hover:text-white hover:bg-white/10",
+                      )}
+                    >
+                      {isCoolingDown
+                        ? `${t("resend_otp")} (${formatSeconds(remainingSeconds)})`
+                        : t("resend_otp")}
                     </Button>
                     <Button
                       type="button"

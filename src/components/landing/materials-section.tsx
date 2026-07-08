@@ -11,34 +11,45 @@ interface MaterialCardProps {
   title: string;
   category: string;
   image: string;
+  href?: string;
 }
 
-function MaterialCard({ title, category, image }: MaterialCardProps) {
-  return (
-    <div className="bg-secondary p-1 rounded-xl shadow-lg transition-transform duration-300 hover:scale-105">
-      {/* Top White Area for Image - Tightened padding */}
+function MaterialCard({ title, category, image, href }: MaterialCardProps) {
+  const content = (
+    <>
       <div className="bg-white rounded-lg p-1.5 aspect-4/3 flex items-center justify-center relative overflow-hidden">
         <Image
           src={image}
           alt={title}
           fill
-          className="object-cover "
-          // sizes="(max-width: 768px) 50vw, 25vw"
+          className="object-cover"
           unoptimized
         />
       </div>
 
-      {/* Bottom Text Area - Tightened padding */}
       <div className="py-2 px-2 text-center">
-        <h3 className="text-white font-black text-[13px] md:text-sm leading-tight  tracking-tight">
+        <h3 className="text-white font-black text-[13px] md:text-sm leading-tight tracking-tight">
           {title}
         </h3>
         <p className="text-white/80 text-[10px] font-bold leading-tight mt-0.5 lowercase">
           {category}
         </p>
       </div>
-    </div>
+    </>
   );
+
+  const className =
+    "bg-secondary p-1 rounded-xl shadow-lg transition-transform duration-300 hover:scale-105 block";
+
+  if (href) {
+    return (
+      <Link href={href} className={className}>
+        {content}
+      </Link>
+    );
+  }
+
+  return <div className={className}>{content}</div>;
 }
 
 import { useLanguage } from "@/hooks/useLanguage";
@@ -54,30 +65,37 @@ export function MaterialsSection() {
     {
       title: t("mat_sand_title"),
       image: "/images/materials/river_sand.png",
+      href: "/browse?q=Sand",
     },
     {
       title: t("mat_stone_title"),
       image: "/images/materials/store_chips.png",
+      href: "/browse?type=PRODUCT&q=Stone+chips&page=1",
     },
     {
       title: t("mat_cement_title"),
       image: "/images/materials/cement.png",
+      href: "/browse?q=cement",
     },
     {
       title: t("mat_tmt_title"),
       image: "/images/materials/tmt_bar.png",
+      href: "/browse?q=TMT",
     },
     {
       title: t("mat_paint_title"),
       image: "/images/materials/paint.png",
+      href: "/browse?q=Paint",
     },
     {
       title: t("mat_marble_title"),
       image: "/images/materials/marble_tiles.png",
+      href: "/browse?type=PRODUCT&parentCategory=52975122-fa62-4646-be95-e09bf732054a&page=1",
     },
     {
       title: t("mat_paver_title"),
       image: "/images/materials/paver.png",
+      href: "/browse?q=Paver",
     },
   ];
 
@@ -99,6 +117,7 @@ export function MaterialsSection() {
               title={material.title}
               category={""}
               image={material.image}
+              href={material.href}
             />
           ))}
         </div>
