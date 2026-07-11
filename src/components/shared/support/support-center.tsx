@@ -31,16 +31,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { SupportChat } from "@/components/shared/support/support-chat";
-import { useAuthStore } from "@/store/authStore";
 import {
   SUPPORT_QUERY_STATUS,
   SUPPORT_QUERY_PRIORITY,
 } from "@/constants/enums";
 import { OPEN_SUPPORT_CENTER_EVENT } from "@/lib/support-center";
+import { EBC_CONTACT } from "@/constants/contact";
 
 export function SupportCenter() {
   const [isOpen, setIsOpen] = useState(false);
-  const token = useAuthStore((state) => state.token);
+  const supportPhone = process.env.NEXT_PUBLIC_SUPPORT_PHONE || EBC_CONTACT.phone;
+  const supportEmail = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || EBC_CONTACT.email;
+  const supportWhatsapp = process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP || EBC_CONTACT.whatsappNumber;
   const [view, setView] = useState<
     "HOME" | "CATEGORIES" | "FAQ" | "NEW_TICKET" | "MY_TICKETS" | "CHAT"
   >("HOME");
@@ -49,10 +51,10 @@ export function SupportCenter() {
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
 
   const { data: categories, isLoading: loadingCats } =
-    useSupportCategoriesQuery(!!token);
+    useSupportCategoriesQuery(true);
   const { data: myTickets, isLoading: loadingTickets } = useSupportQueriesQuery(
     undefined,
-    !!token,
+    true,
   );
   const createMutation = useCreateSupportQueryMutation();
 
@@ -121,29 +123,29 @@ export function SupportCenter() {
                 Our support team is available Mon-Fri, 9am - 6pm.
               </p>
               <div className="space-y-2">
-                <a
-                  href="tel:+918800000000"
+                {supportPhone && <a
+                  href={`tel:${supportPhone}`}
                   className="flex items-center gap-3 p-3 rounded-lg border hover:bg-muted text-sm transition-colors"
                 >
                   <Phone className="h-4 w-4 text-green-600" />
                   <span>Call Executive Directly</span>
-                </a>
-                <a
-                  href="mailto:support@econbuildingcentre.com"
+                </a>}
+                {supportEmail && <a
+                  href={`mailto:${supportEmail}`}
                   className="flex items-center gap-3 p-3 rounded-lg border hover:bg-muted text-sm transition-colors"
                 >
                   <Mail className="h-4 w-4 text-blue-600" />
                   <span>Email Support</span>
-                </a>
-                <a
-                  href="https://wa.me/918800000000"
+                </a>}
+                {supportWhatsapp && <a
+                  href={`https://wa.me/${supportWhatsapp.replace(/\D/g, "")}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 p-3 rounded-lg border hover:bg-muted text-sm transition-colors"
                 >
                   <MessageCircle className="h-4 w-4 text-green-500" />
                   <span>WhatsApp Support</span>
-                </a>
+                </a>}
               </div>
             </div>
           </div>
@@ -368,16 +370,6 @@ export function SupportCenter() {
 
   return (
     <>
-      <div className="fixed bottom-8 left-8 z-50 hidden md:block">
-        <Button
-          onClick={() => setIsOpen(true)}
-          aria-label="Open EBC Support Center"
-          className="h-14 w-14 rounded-full shadow-2xl bg-primary hover:scale-105 transition-transform"
-        >
-          <HelpCircle className="h-8 w-8" />
-        </Button>
-      </div>
-
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetContent
           side="right"

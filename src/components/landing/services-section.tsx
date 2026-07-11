@@ -56,6 +56,7 @@ export function ServicesSection() {
     {
       title: t("ser_item_1"),
       image: "/images/services/Building_Construction.png",
+      href: "/browse?type=SERVICE&page=1&q=contract",
     },
     {
       title: t("ser_item_2"),
@@ -65,26 +66,32 @@ export function ServicesSection() {
     {
       title: t("ser_item_3"),
       image: "/images/services/Consultancy_&_Supervision.png",
+      href: "/browse?type=SERVICE&q=Construction+&page=1",
     },
     {
       title: t("ser_item_4"),
       image: "/images/services/Marble_&_Tiles_Setting.png",
+      href: "/browse?type=PRODUCT&parentCategory=52975122-fa62-4646-be95-e09bf732054a&page=1",
     },
     {
       title: t("ser_item_5"),
       image: "/images/services/Painting_&_Colouring.png",
+      href: "/browse?type=SERVICE&q=Painti&page=1",
     },
     {
       title: t("ser_item_6"),
       image: "/images/services/Electrical_Wiring.png",
+      href: "/browse?type=SERVICE&page=1&parentCategory=b2c9a992-ef38-41bc-ad24-51dbe7a9a86c",
     },
     {
       title: t("ser_item_7"),
       image: "/images/services/Outdoor_Beautification.png",
+      href: "/browse?type=SERVICE&q=Exte&page=1",
     },
     {
       title: t("ser_item_8"),
       image: "/images/services/Interior_Decoration.png",
+      href: "/browse?type=SERVICE&q=Interior&page=1",
     },
   ];
 

@@ -90,7 +90,7 @@ export function SupportChat({ ticketId }: SupportChatProps) {
 
           {/* Conversation Thread */}
           {ticket?.conversations?.map((msg) => {
-            const isMe = msg.senderId === currentUserId;
+            const isMe = currentUserId ? msg.senderId === currentUserId : !!msg.isGuest;
             return (
               <div key={msg.id} className={cn("flex", isMe ? "justify-end" : "justify-start")}>
                 <div className={cn(

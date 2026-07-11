@@ -6,7 +6,6 @@ import { Card } from "@/components/ui/card";
 import {
   CalendarDays,
   FileText,
-  Headphones,
   MessageSquare,
   Settings,
   Star,
@@ -620,7 +619,7 @@ export default function SellerDashboardPage() {
                 {t("relations")}
               </h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card className="bg-primary text-white p-8 rounded-[20px] shadow-lg shadow-primary/20 flex flex-col justify-between h-full border-0 relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                   <Users className="w-16 h-16" />
@@ -657,29 +656,6 @@ export default function SellerDashboardPage() {
                 </Link>
               </Card>
 
-              <Card className="bg-primary text-white p-8 rounded-[20px] shadow-lg shadow-primary/20 flex flex-col justify-between h-full border-0 relative overflow-hidden group">
-                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                  <Headphones className="w-16 h-16" />
-                </div>
-                <div className="flex items-center gap-3 mb-8 relative z-10">
-                  <Headphones className="h-6 w-6 text-secondary" />
-                  <h3 className="font-bold text-lg ">
-                    {t("technical_support")}
-                  </h3>
-                </div>
-                <div className="flex flex-col gap-3 relative z-10 w-full">
-                  <Link href="/seller-dashboard/support" className="w-full">
-                    <Button className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-lg h-11 shadow-md text-sm font-semibold px-4">
-                      {t("view_helpdesk")}
-                    </Button>
-                  </Link>
-                  <Link href="/seller-dashboard/support" className="w-full">
-                    <Button className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-lg h-11 shadow-md text-sm font-semibold px-4">
-                      {t("view_tickets")}
-                    </Button>
-                  </Link>
-                </div>
-              </Card>
             </div>
           </section>
 

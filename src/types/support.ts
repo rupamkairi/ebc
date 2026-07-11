@@ -21,7 +21,8 @@ export type SupportQueryStatus = SUPPORT_QUERY_STATUS;
 export interface SupportMessage {
   id: string;
   queryId: string;
-  senderId: string;
+  senderId: string | null;
+  isGuest?: boolean;
   message: string;
   attachmentIds?: string[];
   createdAt: string;
