@@ -61,6 +61,7 @@ export function MaterialsSection() {
     {
       title: t("mat_brick_title"),
       image: "/images/materials/bricks.png",
+      href: "/browse?q=Brick",
     },
     {
       title: t("mat_sand_title"),

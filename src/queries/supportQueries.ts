@@ -34,6 +34,27 @@ export const useCreateSupportCategoryMutation = () => {
   });
 };
 
+export const useUpdateSupportCategoryMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, ...payload }: { id: string; name: string; description?: string }) =>
+      fetchClient<SupportCategory>(`${SUPPORT_API}/categories/${id}`, {
+        method: "PATCH",
+        body: payload,
+      }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["support-categories"] }),
+  });
+};
+
+export const useDeleteSupportCategoryMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) =>
+      fetchClient<void>(`${SUPPORT_API}/categories/${id}`, { method: "DELETE" }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["support-categories"] }),
+  });
+};
+
 export const useSupportQueriesQuery = (status?: string, enabled = true) => {
   return useQuery({
     queryKey: ["support-queries", status],
