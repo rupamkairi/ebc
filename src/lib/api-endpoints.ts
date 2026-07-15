@@ -2,6 +2,8 @@ export const API_ENDPOINTS = {
   AUTH: {
     ADMIN: {
       LOGIN: "/auth/admin/login",
+      PASSWORD_RESET_REQUEST: "/auth/admin/password-reset/request",
+      PASSWORD_RESET_CONFIRM: "/auth/admin/password-reset/confirm",
       CREATE_ADMIN: "/auth/admin/create-admin",
       CREATE_MANAGER: "/auth/admin/create-admin-manager",
       CREATE_ACCOUNTANT: "/auth/admin/create-admin-accountant",

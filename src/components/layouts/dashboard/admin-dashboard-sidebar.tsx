@@ -123,6 +123,7 @@ const data = {
       color: "text-foreground",
       items: [
         { title: "General", url: "/admin-dashboard/reports" },
+        { title: "Operations Control Room (V2)", url: "/admin-dashboard/reports-v2" },
         { title: "Reviews Moderation", url: "/admin-dashboard/reviews" },
       ],
     },
@@ -154,6 +155,10 @@ const data = {
       url: "/admin-dashboard/support",
       icon: MessageSquare,
       color: "text-foreground",
+      items: [
+        { title: "Tickets", url: "/admin-dashboard/support" },
+        { title: "Deleted Tickets", url: "/admin-dashboard/support/deleted" },
+      ],
     },
     {
       title: "Settings",

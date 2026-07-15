@@ -2,6 +2,8 @@ import fetchClient from "@/lib/api-client";
 import { API_ENDPOINTS } from "@/lib/api-endpoints";
 import {
   AdminLoginRequest,
+  AdminPasswordResetConfirmRequest,
+  AdminPasswordResetRequest,
   AuthResponse,
   SessionResponse,
   SendOtpRequest,
@@ -22,6 +24,22 @@ export const authService = {
       }
     );
     return response;
+  },
+
+  async requestAdminPasswordReset(data: AdminPasswordResetRequest): Promise<{ message: string }> {
+    return fetchClient(API_ENDPOINTS.AUTH.ADMIN.PASSWORD_RESET_REQUEST, {
+      method: "POST",
+      body: data,
+      auth: false,
+    });
+  },
+
+  async confirmAdminPasswordReset(data: AdminPasswordResetConfirmRequest): Promise<{ message: string }> {
+    return fetchClient(API_ENDPOINTS.AUTH.ADMIN.PASSWORD_RESET_CONFIRM, {
+      method: "POST",
+      body: data,
+      auth: false,
+    });
   },
 
   async sendOtp(data: SendOtpRequest): Promise<SendOtpResponse> {

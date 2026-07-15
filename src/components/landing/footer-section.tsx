@@ -11,7 +11,7 @@ import Container from "@/components/ui/containers";
 import { EBC_CONTACT, getEbcWhatsappUrl } from "@/constants/contact";
 import { useLanguage } from "@/hooks/useLanguage";
 import { openSupportCenter } from "@/lib/support-center";
-import { IconBrandFacebook, IconBrandWhatsapp } from "@tabler/icons-react";
+import { IconBrandFacebook, IconBrandWhatsapp, IconBrandYoutube } from "@tabler/icons-react";
 import {
   BadgePercent,
   BriefcaseBusiness,
@@ -109,6 +109,24 @@ function FacebookLink() {
         aria-hidden="true"
       />
       Econ Building Centre
+    </a>
+  );
+}
+
+function YoutubeLink() {
+  return (
+    <a
+      href={EBC_CONTACT.youtubeUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Econ Building Centre on YouTube"
+      className="inline-flex min-h-11 shrink-0 items-center gap-1.5 text-[11px] font-medium text-white/90 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+    >
+      <IconBrandYoutube
+        className="h-8 w-8 shrink-0 rounded-full bg-secondary p-2 text-primary"
+        aria-hidden="true"
+      />
+      YouTube
     </a>
   );
 }
@@ -365,6 +383,7 @@ export function FooterSection() {
             WhatsApp Help
           </a>
           <FacebookLink />
+          <YoutubeLink />
         </div>
 
         <p className="mx-auto max-w-4xl px-2 pb-5 text-center text-[11px] font-medium text-white/90 md:text-[13px]">

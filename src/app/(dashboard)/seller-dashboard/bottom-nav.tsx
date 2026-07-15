@@ -23,7 +23,7 @@ export function BottomNav() {
   const isServiceProvider = isServiceBusiness(user?.user?.role);
 
   const navItems = [
-    { icon: Home, label: t("home", "Home"), href: "/seller-dashboard" },
+    { icon: Home, label: t("home", "Home"), href: "/" },
     {
       icon: Package,
       label: t("catalog", "Catalog"),

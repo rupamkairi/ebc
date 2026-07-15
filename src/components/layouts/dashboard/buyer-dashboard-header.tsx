@@ -31,7 +31,7 @@ export default function BuyerDashboardHeader() {
   const centerContent = (
     <nav className="hidden lg:flex items-center gap-6">
       <Link
-        href="/buyer-dashboard"
+        href="/"
         className="text-sm font-medium transition-colors hover:text-primary flex items-center gap-2"
       >
         Home
@@ -83,7 +83,7 @@ export default function BuyerDashboardHeader() {
           </SheetHeader>
           <div className="flex-col flex px-4 mt-6 gap-2">
             <Link
-              href="/buyer-dashboard"
+              href="/"
               onClick={() => setIsOpen(false)}
               className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 transition-colors font-medium text-gray-700 hover:text-primary"
             >

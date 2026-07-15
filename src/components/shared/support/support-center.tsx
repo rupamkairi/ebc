@@ -37,6 +37,7 @@ import {
 } from "@/constants/enums";
 import { OPEN_SUPPORT_CENTER_EVENT } from "@/lib/support-center";
 import { EBC_CONTACT } from "@/constants/contact";
+import { PendingSupportAttachment, SupportAttachmentPicker } from "./support-attachment-picker";
 
 export function SupportCenter() {
   const [isOpen, setIsOpen] = useState(false);
@@ -60,6 +61,7 @@ export function SupportCenter() {
 
   const [subject, setSubject] = useState("");
   const [description, setDescription] = useState("");
+  const [attachments, setAttachments] = useState<PendingSupportAttachment[]>([]);
 
   useEffect(() => {
     const handleOpen = () => setIsOpen(true);
@@ -75,11 +77,13 @@ export function SupportCenter() {
         subject,
         description,
         priority: SUPPORT_QUERY_PRIORITY.MEDIUM,
+        attachments: attachments.map(({ mediaId, documentId }) => ({ mediaId, documentId })),
       });
       setSelectedTicketId(ticket.id);
       setView("CHAT");
       setSubject("");
       setDescription("");
+      setAttachments([]);
     } catch (error) {
       console.error(error);
     }
@@ -272,6 +276,7 @@ export function SupportCenter() {
                   onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
+              <SupportAttachmentPicker value={attachments} onChange={setAttachments} disabled={createMutation.isPending} />
               <Button
                 className="w-full py-6 text-lg shadow-lg"
                 onClick={handleCreateTicket}

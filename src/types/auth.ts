@@ -3,6 +3,16 @@ export interface AdminLoginRequest {
   password?: string;
 }
 
+export interface AdminPasswordResetRequest {
+  email: string;
+}
+
+export interface AdminPasswordResetConfirmRequest {
+  email: string;
+  code: string;
+  password: string;
+}
+
 export interface AuthResponse {
   id: string; // session-uuid
   token: string; // jwt-token-string

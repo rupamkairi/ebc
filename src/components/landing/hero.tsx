@@ -37,7 +37,7 @@ export function Hero() {
         className="group h-[54px] md:h-[60px] pl-1.5 pr-6 md:pr-8 py-0 bg-primary hover:bg-primary/90 text-white rounded-full flex items-center gap-4 transition-all duration-300 shadow-xl border-none w-full md:w-auto"
         asChild
       >
-        <Link href="/browse">
+        <Link href="https://econbuildingcentre.com/browse?type=SERVICE&page=1">
           <div className="h-10 w-10 md:h-11 md:w-11 shrink-0 rounded-full bg-secondary flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
             <UserRound className="size-5 md:size-6 text-white" />
           </div>
@@ -52,7 +52,7 @@ export function Hero() {
         className="group h-[54px] md:h-[60px] pl-1.5 pr-6 md:pr-8 py-0 bg-primary hover:bg-primary/90 text-white rounded-full flex items-center gap-4 transition-all duration-300 shadow-xl border-none w-full md:w-auto"
         asChild
       >
-        <Link href="/browse">
+        <Link href="https://econbuildingcentre.com/browse?type=PRODUCT&page=1">
           <div className="h-10 w-10 md:h-11 md:w-11 shrink-0 rounded-full bg-secondary flex items-center justify-center shadow-lg group-hover:-rotate-12 transition-transform">
             <Scale className="size-5 md:size-6 text-white" />
           </div>

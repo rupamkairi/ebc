@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useAuthStore } from "@/store/authStore";
 import fetchClient from "@/lib/api-client";
 import { API_ENDPOINTS } from "@/lib/api-endpoints";
+import { reportService } from "@/services/reportService";
 
 export interface ChatSession {
   id: string;
@@ -131,6 +132,7 @@ export function useAiCalculator(initialSessionId?: string) {
       }
 
       setLastSyncedMessageId(event.message.id);
+      void reportService.recordV2Event({ eventType: "calculator_result", idempotencyKey: `calculator-result:${event.message.id}`, sessionId });
 
       const { user, assistant } = getLastUserAssistantPair(event.messages);
       const syncMessages = [user, assistant]
@@ -193,6 +195,8 @@ export function useAiCalculator(initialSessionId?: string) {
       const currentInput = input;
       setInput("");
 
+      void reportService.recordV2Event({ eventType: messages.length === 0 ? "calculator_started" : "calculator_step", idempotencyKey: `calculator-message:${sessionId || "new"}:${messages.length}`, sessionId, metadata: { step: messages.length + 1 } });
+
       try {
         // In SDK v6, sendMessage takes { text: string } for simple text messages
         await sendMessage({ text: currentInput });
@@ -200,7 +204,7 @@ export function useAiCalculator(initialSessionId?: string) {
         console.error("Failed to send message:", error);
       }
     },
-    [input, sendMessage],
+    [input, sendMessage, messages.length, sessionId],
   );
 
   // Load initial messages if sessionId changes

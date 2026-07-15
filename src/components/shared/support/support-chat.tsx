@@ -11,21 +11,24 @@ import {
   Loader2, 
   Send, 
   ShieldCheck, 
-  Paperclip,
+  FileText,
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
+import { PendingSupportAttachment, SupportAttachmentPicker } from "./support-attachment-picker";
 
 interface SupportChatProps {
   ticketId: string;
+  readOnly?: boolean;
 }
 
-export function SupportChat({ ticketId }: SupportChatProps) {
+export function SupportChat({ ticketId, readOnly = false }: SupportChatProps) {
   const { data: ticket, isLoading } = useSupportQueryDetailsQuery(ticketId);
   const addMessageMutation = useAddSupportMessageMutation(ticketId);
   const [message, setMessage] = useState("");
+  const [attachments, setAttachments] = useState<PendingSupportAttachment[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const userState = useAuthStore((state) => state.user);
   const currentUserId = userState?.id;
@@ -37,10 +40,14 @@ export function SupportChat({ ticketId }: SupportChatProps) {
   }, [ticket?.conversations, isLoading]);
 
   const handleSendMessage = async () => {
-    if (!message.trim()) return;
+    if (!message.trim() && attachments.length === 0) return;
     try {
-      await addMessageMutation.mutateAsync({ message });
+      await addMessageMutation.mutateAsync({
+        message: message.trim() || undefined,
+        attachments: attachments.map(({ mediaId, documentId }) => ({ mediaId, documentId })),
+      });
       setMessage("");
+      setAttachments([]);
     } catch (error) {
       console.error(error);
     }
@@ -53,6 +60,7 @@ export function SupportChat({ ticketId }: SupportChatProps) {
       </div>
     );
   }
+  const interactionDisabled = readOnly || !!ticket?.archivedAt || ticket?.status === "CLOSED";
 
   return (
     <div className="flex flex-col h-[calc(100vh-180px)]">
@@ -77,17 +85,14 @@ export function SupportChat({ ticketId }: SupportChatProps) {
       {/* Messages area */}
       <ScrollArea className="flex-1 pr-4">
         <div className="space-y-4 pb-4">
-          {/* Ticket Description as the first message */}
-          <div className="flex justify-start">
-            <div className="max-w-[85%] bg-muted p-3 rounded-2xl rounded-tl-none text-xs">
-              <p className="font-semibold mb-1">Issue Description:</p>
-              <p>{ticket?.description}</p>
-              <span className="text-[10px] text-muted-foreground mt-2 block opacity-70">
-                {ticket?.createdAt ? new Date(ticket.createdAt).toLocaleTimeString() : ""}
-              </span>
+          {!ticket?.conversations?.some((item) => item.message === ticket.description) && (
+            <div className="flex justify-start">
+              <div className="max-w-[85%] rounded-2xl rounded-tl-none bg-muted p-3 text-xs">
+                <p className="font-semibold mb-1">Issue Description:</p>
+                <p>{ticket?.description}</p>
+              </div>
             </div>
-          </div>
-
+          )}
           {/* Conversation Thread */}
           {ticket?.conversations?.map((msg) => {
             const isMe = currentUserId ? msg.senderId === currentUserId : !!msg.isGuest;
@@ -99,7 +104,20 @@ export function SupportChat({ ticketId }: SupportChatProps) {
                     ? "bg-primary text-primary-foreground rounded-tr-none" 
                     : "bg-background border rounded-tl-none"
                 )}>
-                  <p>{msg.message}</p>
+                  {msg.message && <p>{msg.message}</p>}
+                  {msg.attachments && msg.attachments.length > 0 && <div className="mt-2 grid gap-2">
+                    {msg.attachments.map((attachment) => attachment.media ? (
+                      <a key={attachment.id} href={attachment.media.url} target="_blank" rel="noreferrer">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={attachment.media.url} alt="Support attachment" className="max-h-48 w-full rounded-lg object-cover" />
+                      </a>
+                    ) : attachment.document ? (
+                      <a key={attachment.id} href={attachment.document.url} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-md border bg-background/80 p-2 text-foreground">
+                        <FileText className="h-4 w-4" />
+                        <span className="truncate">{attachment.document.key?.split("/").pop() || "Open document"}</span>
+                      </a>
+                    ) : null)}
+                  </div>}
                   <span className={cn(
                     "text-[10px] mt-2 block opacity-70",
                     isMe ? "text-primary-foreground/70" : "text-muted-foreground"
@@ -116,21 +134,21 @@ export function SupportChat({ ticketId }: SupportChatProps) {
 
       {/* Message input */}
       <div className="pt-4 border-t mt-auto">
+        {interactionDisabled && <p className="mb-2 text-center text-xs text-muted-foreground">{ticket?.archivedAt ? "This deleted ticket is read-only." : "This ticket is closed."}</p>}
+        {!interactionDisabled && <SupportAttachmentPicker value={attachments} onChange={setAttachments} disabled={addMessageMutation.isPending} />}
         <div className="flex items-center gap-2 bg-muted/50 p-1 rounded-xl border focus-within:border-primary transition-colors">
-          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
-            <Paperclip className="h-4 w-4" />
-          </Button>
           <Input 
             className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 h-10 px-0"
             placeholder="Type your message..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+            disabled={interactionDisabled}
           />
           <Button 
             size="icon" 
             className="h-10 w-10 rounded-xl"
-            disabled={!message.trim() || addMessageMutation.isPending}
+            disabled={interactionDisabled || (!message.trim() && attachments.length === 0) || addMessageMutation.isPending}
             onClick={handleSendMessage}
           >
             {addMessageMutation.isPending ? (

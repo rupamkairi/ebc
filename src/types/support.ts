@@ -24,7 +24,7 @@ export interface SupportMessage {
   senderId: string | null;
   isGuest?: boolean;
   message: string;
-  attachmentIds?: string[];
+  attachments?: SupportAttachment[];
   createdAt: string;
 }
 
@@ -38,6 +38,8 @@ export interface SupportQuery {
   priority: SUPPORT_QUERY_PRIORITY;
   createdAt: string;
   updatedAt: string;
+  archivedAt?: string | null;
+  archivedById?: string | null;
   category?: SupportCategory;
   assignedTo?: {
     id: string;
@@ -56,10 +58,31 @@ export interface CreateSupportQueryRequest {
   subject: string;
   description: string;
   priority: SUPPORT_QUERY_PRIORITY;
-  attachmentIds?: string[];
+  attachments?: SupportAttachmentRef[];
 }
 
 export interface AddSupportMessageRequest {
-  message: string;
-  attachmentIds?: string[];
+  message?: string;
+  attachments?: SupportAttachmentRef[];
+}
+
+export interface SupportAttachmentRef {
+  mediaId?: string;
+  documentId?: string;
+}
+
+export interface SupportFile {
+  id: string;
+  url: string;
+  key?: string;
+  mimeType?: string;
+  sizeBytes?: string;
+}
+
+export interface SupportAttachment {
+  id: string;
+  mediaId?: string | null;
+  documentId?: string | null;
+  media?: SupportFile | null;
+  document?: SupportFile | null;
 }

@@ -24,6 +24,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent } from "@/components/ui/card";
 import { NOTIFICATION_TYPE } from "@/constants/enums";
 import { useLanguage } from "@/hooks/useLanguage";
+import { reportService } from "@/services/reportService";
 
 interface NotificationInboxProps {
   userType: "ADMIN" | "SELLER" | "BUYER";
@@ -192,8 +193,10 @@ export function NotificationInbox({
   const { t } = useLanguage();
 
   const handleNotificationClick = (notification: Notification) => {
+    void reportService.recordV2Event({ eventType: "notification_clicked", idempotencyKey: `notification-click:${notification.id}`, metadata: { notificationType: notification.type } });
     if (!notification.isRead) {
       markReadMutation.mutate(notification.id);
+      void reportService.recordV2Event({ eventType: "notification_opened", idempotencyKey: `notification-open:${notification.id}`, metadata: { notificationType: notification.type } });
     }
 
     const path = getNotificationPath(notification, userType);

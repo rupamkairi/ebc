@@ -55,12 +55,12 @@ export const useDeleteSupportCategoryMutation = () => {
   });
 };
 
-export const useSupportQueriesQuery = (status?: string, enabled = true) => {
+export const useSupportQueriesQuery = (status?: string, enabled = true, archived = false) => {
   return useQuery({
-    queryKey: ["support-queries", status],
+    queryKey: ["support-queries", status, archived],
     queryFn: async () => {
       return fetchClient<SupportQuery[]>(`${SUPPORT_API}/queries`, {
-        query: status ? { status } : undefined,
+        query: { ...(status ? { status } : {}), archived: String(archived) },
       });
     },
     enabled,
@@ -119,6 +119,17 @@ export const useUpdateSupportQueryMutation = (queryId: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["support-query", queryId] });
       queryClient.invalidateQueries({ queryKey: ["support-queries"] });
+    },
+  });
+};
+
+export const useDeleteSupportQueryMutation = (queryId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async () => fetchClient<SupportQuery>(`${SUPPORT_API}/queries/${queryId}`, { method: "DELETE" }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["support-queries"] });
+      queryClient.invalidateQueries({ queryKey: ["support-query", queryId] });
     },
   });
 };

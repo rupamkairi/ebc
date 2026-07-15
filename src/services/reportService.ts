@@ -91,6 +91,39 @@ export interface DashboardRecentItem {
   href: string;
 }
 
+export interface ReportV2Module {
+  id: string;
+  title: string;
+  objective: string;
+  metrics: Array<{
+    id: string;
+    label: string;
+    value: number | null;
+    format?: "number" | "percent" | "currency" | "duration";
+    definition: string;
+    comparison?: { value: number | null; change: number | null };
+    unavailableReason?: string;
+  }>;
+  series: Array<{ label: string; value: number }>;
+  breakdowns: Array<{ id: string; title: string; rows: ReportRow[] }>;
+  rows: ReportRow[];
+  columns: string[];
+  tags: Array<{ code: string; label: string; explanation: string; severity: "info" | "warning" | "critical" }>;
+}
+
+export interface ReportV2Dashboard {
+  version: "v2";
+  generatedAt: string;
+  selectedPeriod: { start: string; end: string };
+  comparisonPeriod: { start: string; end: string };
+  appliedFilters: { categoryId: string | null; pincodeId: string | null; grouping: "day" | "week" | "month" | "year" };
+  refinements: { categories: Array<{ id: string; name: string }>; pincodes: Array<{ id: string; label: string }> };
+  executiveSummary: ReportV2Module["metrics"];
+  checklists: Array<{ period: "daily" | "weekly" | "monthly"; items: string[] }>;
+  modules: ReportV2Module[];
+  alerts: Array<{ id: string; module: string; metric: string; observed: number; severity: string; threshold: number; status: string; lastSeenAt: string }>;
+}
+
 const parseCsv = (csv: string) => {
   const records: string[][] = [];
   let row: string[] = [];
@@ -286,11 +319,47 @@ const fetchDashboardSummary = async (
   return response.json();
 };
 
+const fetchV2Dashboard = async (startDate: string, endDate: string): Promise<ReportV2Dashboard> => {
+  const token = useAuthStore.getState().token;
+  const query = new URLSearchParams({ startDate, endDate }).toString();
+  const response = await fetch(`${BASE_URL}/report/admin/v2/dashboard?${query}`, {
+    headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+  });
+  if (!response.ok) throw new Error("Failed to load Reports V2 dashboard");
+  return response.json();
+};
+
+const refineV2Dashboard = async (input: { startDate: string; endDate: string; categoryId?: string; pincodeId?: string; grouping: "day" | "week" | "month" | "year" }): Promise<ReportV2Dashboard> => {
+  const token = useAuthStore.getState().token;
+  const response = await fetch(`${BASE_URL}/report/admin/v2/dashboard/refine`, { method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(input) });
+  if (!response.ok) throw new Error("Failed to refine Reports V2 dashboard");
+  return response.json();
+};
+
+const recordV2Event = async (event: { eventType: string; idempotencyKey?: string; sessionId?: string; entityId?: string; categoryId?: string; pincodeId?: string; conversion?: string; metadata?: Record<string, string | number | boolean> }) => {
+  const token = useAuthStore.getState().token;
+  if (!token) return;
+  await fetch(`${BASE_URL}/report/v2/events`, { method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }, body: JSON.stringify(event), keepalive: true });
+};
+
+const downloadV2Module = async (moduleId: string, startDate: string, endDate: string, refinements?: { categoryId?: string; pincodeId?: string; grouping?: string }) => {
+  const token = useAuthStore.getState().token;
+  const query = new URLSearchParams({ startDate, endDate, ...(refinements?.categoryId ? { categoryId: refinements.categoryId } : {}), ...(refinements?.pincodeId ? { pincodeId: refinements.pincodeId } : {}), ...(refinements?.grouping ? { grouping: refinements.grouping } : {}) }).toString();
+  const response = await fetch(`${BASE_URL}/report/admin/v2/export/${moduleId}?${query}`, { headers: { Authorization: `Bearer ${token}` } });
+  if (!response.ok) throw new Error("Failed to export Reports V2 module");
+  const url = URL.createObjectURL(await response.blob());
+  const link = document.createElement("a"); link.href = url; link.download = `${moduleId}.csv`; link.click(); URL.revokeObjectURL(url);
+};
+
 export const reportService = {
   downloadRows,
+  recordV2Event,
   fetchReport: fetchReportByDateStrings,
   admin: {
     fetchDashboardSummary,
+    fetchV2Dashboard,
+    refineV2Dashboard,
+    downloadV2Module,
     fetchPlatformOverview: fetchReportByDates(
       "/admin/platform-overview",
       "platform-overview.csv",

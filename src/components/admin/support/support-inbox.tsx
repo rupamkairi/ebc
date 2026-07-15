@@ -4,6 +4,7 @@ import { useState } from "react";
 import {
   useSupportQueriesQuery,
   useUpdateSupportQueryMutation,
+  useDeleteSupportQueryMutation,
 } from "@/queries/supportQueries";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,9 +14,9 @@ import {
   MessageSquare,
   Phone,
   User,
-  CheckCircle2,
   MoreVertical,
   Loader2,
+  Trash2,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
@@ -28,16 +29,20 @@ import {
 import { cn } from "@/lib/utils";
 import { SupportChat } from "@/components/shared/support/support-chat";
 import { SUPPORT_QUERY_STATUS } from "@/constants/enums";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
-export default function AdminSupportInbox() {
+export default function AdminSupportInbox({ archived = false }: { archived?: boolean }) {
   const [statusFilter, setStatusFilter] = useState<string>(
-    SUPPORT_QUERY_STATUS.OPEN,
+    archived ? "ALL" : SUPPORT_QUERY_STATUS.OPEN,
   );
-  const { data: queries, isLoading } = useSupportQueriesQuery(statusFilter);
+  const { data: queries, isLoading } = useSupportQueriesQuery(statusFilter === "ALL" ? undefined : statusFilter, true, archived);
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   const selectedTicket = queries?.find((q) => q.id === selectedTicketId);
   const updateMutation = useUpdateSupportQueryMutation(selectedTicketId || "");
+  const deleteMutation = useDeleteSupportQueryMutation(selectedTicketId || "");
 
   const handleUpdateStatus = async (status: string) => {
     if (!selectedTicketId) return;
@@ -62,6 +67,7 @@ export default function AdminSupportInbox() {
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
+              {archived && <SelectItem value="ALL">All Deleted</SelectItem>}
               <SelectItem value={SUPPORT_QUERY_STATUS.OPEN}>Open</SelectItem>
               <SelectItem value={SUPPORT_QUERY_STATUS.ASSIGNED}>
                 Assigned
@@ -84,7 +90,7 @@ export default function AdminSupportInbox() {
             <div className="flex justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
-          ) : ((queries as any)?.data || (queries as any))?.length === 0 ? (
+          ) : queries?.length === 0 ? (
             <div className="text-center py-12 border rounded-xl bg-muted/20">
               <p className="text-sm text-muted-foreground">
                 No tickets in this category.
@@ -155,28 +161,23 @@ export default function AdminSupportInbox() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                {selectedTicket?.status !== SUPPORT_QUERY_STATUS.RESOLVED && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-green-600 border-green-200 hover:bg-green-50"
-                    onClick={() =>
-                      handleUpdateStatus(SUPPORT_QUERY_STATUS.RESOLVED)
-                    }
-                    disabled={updateMutation.isPending}
-                  >
-                    <CheckCircle2 className="h-4 w-4 mr-2" />
-                    Mark Resolved
-                  </Button>
-                )}
-                <Button variant="ghost" size="icon">
-                  <MoreVertical className="h-4 w-4" />
-                </Button>
+                {!archived && <Select value={[SUPPORT_QUERY_STATUS.IN_PROGRESS, SUPPORT_QUERY_STATUS.RESOLVED, SUPPORT_QUERY_STATUS.CLOSED].includes(selectedTicket?.status as SUPPORT_QUERY_STATUS) ? selectedTicket?.status : undefined} onValueChange={handleUpdateStatus} disabled={updateMutation.isPending}>
+                  <SelectTrigger className="w-[150px]"><SelectValue placeholder="Change status" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={SUPPORT_QUERY_STATUS.IN_PROGRESS}>In Progress</SelectItem>
+                    <SelectItem value={SUPPORT_QUERY_STATUS.RESOLVED}>Resolved</SelectItem>
+                    <SelectItem value={SUPPORT_QUERY_STATUS.CLOSED}>Closed</SelectItem>
+                  </SelectContent>
+                </Select>}
+                {!archived && <DropdownMenu>
+                  <DropdownMenuTrigger asChild><Button variant="ghost" size="icon"><MoreVertical className="h-4 w-4" /></Button></DropdownMenuTrigger>
+                  <DropdownMenuContent align="end"><DropdownMenuItem className="text-destructive" onSelect={() => setConfirmDelete(true)}><Trash2 className="mr-2 h-4 w-4" />Delete</DropdownMenuItem></DropdownMenuContent>
+                </DropdownMenu>}
               </div>
             </div>
 
             <div className="flex-1 p-4 overflow-hidden flex flex-col">
-              <SupportChat ticketId={selectedTicketId} />
+              <SupportChat ticketId={selectedTicketId} readOnly={archived} />
             </div>
           </>
         ) : (
@@ -194,6 +195,12 @@ export default function AdminSupportInbox() {
           </div>
         )}
       </div>
+      <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
+        <AlertDialogContent>
+          <AlertDialogHeader><AlertDialogTitle>Delete this support ticket?</AlertDialogTitle><AlertDialogDescription>This archives the ticket permanently. Its conversation remains visible under Deleted Tickets, but no messages or status changes will be allowed.</AlertDialogDescription></AlertDialogHeader>
+          <AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction className="bg-destructive text-destructive-foreground" disabled={deleteMutation.isPending} onClick={async () => { await deleteMutation.mutateAsync(); setSelectedTicketId(null); setConfirmDelete(false); }}>Delete Ticket</AlertDialogAction></AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
