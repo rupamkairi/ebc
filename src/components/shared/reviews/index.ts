@@ -1,4 +1,5 @@
 export * from "./review-card";
+export * from "./review-attachment-gallery";
 export * from "./review-form";
 export * from "./review-list";
 export * from "./reputation-section";

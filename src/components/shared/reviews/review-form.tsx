@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Star, Send, Loader2, X, Plus, Camera } from "lucide-react";
+import { Star, Send, Loader2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateReviewMutation } from "@/queries/reviewQueries";
-import { MediaUploader } from "@/components/shared/upload/media-uploader";
+import { ReviewAttachmentPicker, type UploadedReviewFile } from "./review-attachment-picker";
 import { useAuthStore } from "@/store/authStore";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -17,11 +17,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
-interface Media {
-  id: string;
-  url: string;
-}
 
 interface ReviewFormProps {
   entityId?: string;
@@ -47,8 +42,9 @@ export function ReviewForm({
   const [hoverRating, setHoverRating] = useState(0);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [attachmentIds, setAttachmentIds] = useState<string[]>([]);
-  const [uploadedMedias, setUploadedMedias] = useState<Media[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedReviewFile[]>([]);
+  const [pickerKey, setPickerKey] = useState(0);
+  const [isUploadingAttachments, setIsUploadingAttachments] = useState(false);
 
   const { user } = useAuthStore();
   const isBanned = user?.username === "review_banned";
@@ -75,7 +71,8 @@ export function ReviewForm({
         rating,
         title,
         description,
-        attachmentIds,
+        attachmentIds: uploadedFiles.filter((file) => file.category !== "document").map((file) => file.id),
+        documentIds: uploadedFiles.filter((file) => file.category === "document").map((file) => file.id),
         isVerified: !!(isVerified || enquiryId || appointmentId),
       });
 
@@ -94,8 +91,9 @@ export function ReviewForm({
     setRating(5);
     setTitle("");
     setDescription("");
-    setAttachmentIds([]);
-    setUploadedMedias([]);
+    setUploadedFiles([]);
+    setPickerKey((current) => current + 1);
+    setIsUploadingAttachments(false);
   };
 
   return (
@@ -111,7 +109,7 @@ export function ReviewForm({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-4xl border-none shadow-2xl">
+      <DialogContent className="max-h-[90vh] overflow-y-auto p-0 sm:max-w-[720px] rounded-4xl border-none shadow-2xl">
         <div className="bg-linear-to-b from-primary/10 to-background p-8">
           <DialogHeader className="mb-6">
             <DialogTitle className="text-2xl font-black tracking-tight">
@@ -203,72 +201,21 @@ export function ReviewForm({
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black   ml-4 text-muted-foreground">
-                Photos / Videos
-              </label>
-              <div className="flex flex-wrap gap-2 px-1">
-                {uploadedMedias.map((media, idx) => (
-                  <div
-                    key={idx}
-                    className="relative h-20 w-20 rounded-2xl overflow-hidden border group shadow-sm"
-                  >
-                    <img
-                      src={media.url}
-                      alt={`Review attachment ${idx + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setUploadedMedias((prev) =>
-                          prev.filter((_, i) => i !== idx),
-                        );
-                        setAttachmentIds((prev) =>
-                          prev.filter((_, i) => i !== idx),
-                        );
-                      }}
-                      className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </div>
-                ))}
-
-                {uploadedMedias.length < 5 && (
-                  <MediaUploader
-                    variant="multiple"
-                    onUploadSuccess={(attachments) => {
-                      const newIds = attachments.map((a) => a.id);
-                      setAttachmentIds((prev) => [...prev, ...newIds]);
-                      setUploadedMedias((prev) => [
-                        ...prev,
-                        ...attachments.map((a) => ({ id: a.id, url: a.url })),
-                      ]);
-                    }}
-                  >
-                    <button
-                      type="button"
-                      className="h-20 w-20 rounded-2xl border-2 border-dashed border-muted-foreground/20 flex flex-col items-center justify-center gap-1 text-muted-foreground hover:bg-muted/10 transition-colors"
-                    >
-                      <Camera className="h-5 w-5" />
-                      <span className="text-[10px] font-black">ADD</span>
-                    </button>
-                  </MediaUploader>
-                )}
-              </div>
+              <label className="ml-4 text-[10px] font-black text-muted-foreground">Attachments (Optional)</label>
+              <ReviewAttachmentPicker key={pickerKey} onChange={setUploadedFiles} onUploadingChange={setIsUploadingAttachments} />
             </div>
 
             <Button
               type="submit"
               className="w-full h-14 rounded-3xl text-base font-black tracking-tight"
-              disabled={createMutation.isPending}
+              disabled={createMutation.isPending || isUploadingAttachments}
             >
               {createMutation.isPending ? (
                 <Loader2 className="h-5 w-5 animate-spin mr-2" />
               ) : (
                 <Send className="h-5 w-5 mr-2" />
               )}
-              Submit Experience
+              {isUploadingAttachments ? "Uploading attachments..." : "Submit Experience"}
             </Button>
           </form>
         )}

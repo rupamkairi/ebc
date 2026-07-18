@@ -1,14 +1,12 @@
-export interface Media {
+export interface ReviewAttachment {
   id: string;
+  sourceId?: string;
   url: string;
-  type: string;
-}
-
-export interface Attachment {
-  id: string;
-  reviewId?: string;
-  mediaId: string;
-  media: Media;
+  category: "image" | "video" | "document";
+  originalName?: string;
+  mimeType?: string;
+  size: number;
+  kind?: "IMAGE" | "VIDEO";
 }
 
 export interface ReviewUser {
@@ -44,7 +42,7 @@ export interface Review {
   itemListingId?: string;
   enquiryId?: string;
   appointmentId?: string;
-  attachments?: Attachment[];
+  attachments?: ReviewAttachment[];
 }
 
 export interface ReviewSummary {
@@ -65,5 +63,6 @@ export interface CreateReviewRequest {
   title?: string;
   description?: string;
   attachmentIds?: string[];
+  documentIds?: string[];
   isVerified?: boolean;
 }

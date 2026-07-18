@@ -1252,5 +1252,11 @@
   "ai_calculator_chat_title": "Nasir",
   "ai_calculator_assistant_title": "Nasir, your construction assistant",
   "ai_calculator_assistant_intro": "I can help with construction cost estimates, material planning, service guidance, and technical questions. How can I assist you today?",
-  "ai_calculator_assistant_alt": "Nasir construction assistant"
+  "ai_calculator_assistant_alt": "Nasir construction assistant",
+  "review_attachment_warning": "This file was uploaded by a user. Download and open it at your own risk.",
+  "review_preview_unavailable": "Preview unavailable",
+  "review_preview_fallback": "Download the file to view it in a compatible application.",
+  "review_download": "Download",
+  "review_download_video": "Download Video",
+  "review_open": "Open"
 }

@@ -1228,5 +1228,11 @@
   "ai_calculator_chat_title": "Nasir",
   "ai_calculator_assistant_title": "Nasir, aapka nirman sahayak",
   "ai_calculator_assistant_intro": "Main construction cost estimates, material planning, service guidance aur technical questions mein madad kar sakta hoon. Aaj main aapki kaise madad karun?",
-  "ai_calculator_assistant_alt": "Nasir nirman sahayak"
+  "ai_calculator_assistant_alt": "Nasir nirman sahayak",
+  "review_attachment_warning": "Yeh file ek user ne upload ki hai. Ise apne risk par download aur open karein.",
+  "review_preview_unavailable": "Preview available nahi hai",
+  "review_preview_fallback": "File ko compatible app mein dekhne ke liye download karein.",
+  "review_download": "Download",
+  "review_download_video": "Video Download Karein",
+  "review_open": "Open"
 }

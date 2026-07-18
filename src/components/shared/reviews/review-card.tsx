@@ -18,6 +18,7 @@ import {
 import { useAuthStore } from "@/store/authStore";
 
 import { Review } from "@/types/review";
+import { ReviewAttachmentGallery } from "./review-attachment-gallery";
 
 interface ReviewCardProps {
   review: Review;
@@ -160,20 +161,7 @@ export function ReviewCard({ review, isOwner }: ReviewCardProps) {
       </div>
 
       {review.attachments && review.attachments.length > 0 && (
-        <div className="flex flex-wrap gap-2 mt-4">
-          {review.attachments.map((at) => (
-            <div
-              key={at.id}
-              className="h-20 w-24 rounded-xl overflow-hidden border bg-muted cursor-pointer hover:opacity-80 transition-opacity"
-            >
-              <img
-                src={at.media?.url}
-                alt="Review attachment"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          ))}
-        </div>
+        <ReviewAttachmentGallery attachments={review.attachments} />
       )}
 
       {review.isHidden && (

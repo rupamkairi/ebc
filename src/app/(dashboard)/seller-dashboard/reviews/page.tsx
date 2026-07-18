@@ -26,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { useLanguage } from "@/hooks/useLanguage";
+import { ReviewAttachmentGallery } from "@/components/shared/reviews";
 
 // ── Star row helper ──────────────────────────────────────────────────────────
 function StarRow({ rating }: { rating: number }) {
@@ -162,6 +163,12 @@ function ReviewCard({
           <p className="text-white/40 text-xs italic">No written review.</p>
         )}
       </div>
+
+      {review.attachments && review.attachments.length > 0 && (
+        <div className="rounded-xl bg-white/10 p-2">
+          <ReviewAttachmentGallery attachments={review.attachments} />
+        </div>
+      )}
 
       {/* Footer */}
       <div className="mt-4 flex items-center justify-between">

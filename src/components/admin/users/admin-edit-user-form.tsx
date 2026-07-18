@@ -25,38 +25,6 @@ const userFormSchema = z.object({
   email: z.string().email("Invalid email address").or(z.literal("")),
   phone: z.string().min(10, "Phone number must be at least 10 digits").or(z.literal("")),
   pincodeId: z.string().optional(),
-  password: z.string().optional(),
-  confirmPassword: z.string().optional(),
-}).superRefine((data, ctx) => {
-  const password = data.password?.trim() || "";
-  const confirmPassword = data.confirmPassword?.trim() || "";
-
-  if (password.length > 0 && password.length < 6) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.too_small,
-      minimum: 6,
-      type: "string",
-      inclusive: true,
-      message: "Password must be at least 6 characters",
-      path: ["password"],
-    });
-  }
-
-  if (password.length > 0 && password !== confirmPassword) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: "Passwords do not match",
-      path: ["confirmPassword"],
-    });
-  }
-
-  if (confirmPassword.length > 0 && password.length === 0) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: "Enter a new password before confirming it.",
-      path: ["password"],
-    });
-  }
 });
 
 type UserFormValues = z.infer<typeof userFormSchema>;
@@ -76,14 +44,11 @@ export function AdminEditUserForm({ user }: AdminEditUserFormProps) {
       email: user.email || "",
       phone: user.phone || "",
       pincodeId: user.pincodeId || "",
-      password: "",
-      confirmPassword: "",
     },
   });
 
   const onSubmit = async (data: UserFormValues) => {
     try {
-      const password = data.password?.trim();
       await updateMutation.mutateAsync({
         id: user.id,
         data: {
@@ -91,7 +56,6 @@ export function AdminEditUserForm({ user }: AdminEditUserFormProps) {
           email: data.email || undefined,
           phone: data.phone || undefined,
           pincodeId: data.pincodeId || undefined,
-          ...(password ? { password } : {}),
         },
       });
       toast.success("User profile updated successfully");
@@ -167,47 +131,6 @@ export function AdminEditUserForm({ user }: AdminEditUserFormProps) {
             )}
           />
 
-          <div className="space-y-4 md:col-span-2">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>New Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Leave blank to keep current password"
-                        type="password"
-                        autoComplete="new-password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Repeat new password"
-                        type="password"
-                        autoComplete="new-password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
         </div>
 
         <div className="flex gap-4">

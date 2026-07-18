@@ -1252,5 +1252,11 @@
   "ai_calculator_chat_title": "নাসির",
   "ai_calculator_assistant_title": "নাসির, আপনার নির্মাণ সহায়ক",
   "ai_calculator_assistant_intro": "আমি নির্মাণ খরচের হিসাব, উপকরণ পরিকল্পনা, পরিষেবা নির্দেশনা এবং প্রযুক্তিগত প্রশ্নে সাহায্য করতে পারি। আজ কীভাবে সাহায্য করব?",
-  "ai_calculator_assistant_alt": "নাসির নির্মাণ সহায়ক"
+  "ai_calculator_assistant_alt": "নাসির নির্মাণ সহায়ক",
+  "review_attachment_warning": "এই ফাইলটি একজন ব্যবহারকারী আপলোড করেছেন। নিজ দায়িত্বে এটি ডাউনলোড ও খুলুন।",
+  "review_preview_unavailable": "প্রিভিউ পাওয়া যাচ্ছে না",
+  "review_preview_fallback": "সামঞ্জস্যপূর্ণ অ্যাপে দেখতে ফাইলটি ডাউনলোড করুন।",
+  "review_download": "ডাউনলোড",
+  "review_download_video": "ভিডিও ডাউনলোড করুন",
+  "review_open": "খুলুন"
 }

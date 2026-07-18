@@ -10,6 +10,8 @@ import {
   Clock,
   ChevronDown,
   ChevronUp,
+  Download,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,14 +23,53 @@ import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useAuthStore } from "@/store/authStore";
+import { isServiceBusiness } from "@/constants/roles";
+import { reportService } from "@/services/reportService";
+import { toast } from "sonner";
 
 export default function WalletPage() {
   const { t } = useLanguage();
+  const { user } = useAuthStore();
   const [isRechargeOpen, setIsRechargeOpen] = useState(false);
   const [showAll, setShowAll] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const { data: entities } = useEntitiesQuery();
   const entityId = entities?.[0]?.id;
   const { data: wallet, isLoading } = useWalletDetails(entityId);
+
+  const handleDownloadReport = async () => {
+    try {
+      setIsDownloading(true);
+      const isService = isServiceBusiness(user?.role);
+      const reportEndpoint = isService
+        ? "/service-provider/wallet-transactions"
+        : "/product-seller/wallet-transactions";
+      const filename = isService
+        ? "provider-wallet-transactions.csv"
+        : "seller-wallet-transactions.csv";
+
+      const response = await reportService.fetchReport(
+        reportEndpoint,
+        filename,
+        "2000-01-01",
+        "2099-12-31"
+      );
+
+      if (response.rows.length === 0) {
+        toast.info("No transactions found to download.");
+        return;
+      }
+
+      reportService.downloadRows(response.rows, response.filename, response.columns);
+      toast.success("Wallet transactions report downloaded successfully!");
+    } catch (err: any) {
+      console.error("Failed to download wallet report:", err);
+      toast.error(err.message || "Failed to download wallet report.");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -95,6 +136,19 @@ export default function WalletPage() {
           </div>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+          <Button
+            onClick={handleDownloadReport}
+            disabled={isDownloading}
+            variant="outline"
+            className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white border border-white/25 rounded-lg px-6 h-11 font-semibold shadow-sm"
+          >
+            {isDownloading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="mr-2 h-4 w-4" />
+            )}
+            Download Report
+          </Button>
           <Button 
             onClick={() => setIsRechargeOpen(true)}
             className="w-full sm:w-auto bg-secondary hover:bg-secondary/90 text-white border-0 rounded-lg px-6 h-11 font-semibold shadow-sm"
