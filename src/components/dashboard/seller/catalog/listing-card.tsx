@@ -48,16 +48,19 @@ export function ListingCard({ listing, type }: ListingCardProps) {
   return (
     <Card className="group relative border shadow-none hover:border-primary/50 transition-all overflow-hidden bg-card rounded-2xl">
       <CardContent className="p-0">
-        <div className="flex items-stretch">
-          <div className="w-16 h-16 md:w-20 md:h-20 bg-muted flex items-center justify-center text-muted-foreground/40 shrink-0 self-center ml-4 rounded-xl">
+        <div className="flex min-w-0 items-stretch">
+          <div className="ml-3 h-14 w-14 shrink-0 self-center rounded-xl bg-muted text-muted-foreground/40 flex items-center justify-center sm:ml-4 sm:h-16 sm:w-16 md:h-20 md:w-20">
             {isProduct ? <Package size={24} /> : <Clock size={24} />}
           </div>
 
-          <div className="flex-1 p-4 flex items-center justify-between">
-            <div className="flex-1 space-y-1 min-w-0 pr-4">
-              <div className="flex items-center gap-2">
+          <div className="min-w-0 flex-1 p-3 pr-12 flex flex-col items-stretch gap-3 md:p-4 md:pr-4 md:flex-row md:items-center md:justify-between">
+            <div className="min-w-0 w-full flex-1 space-y-1 pr-0 md:pr-4">
+              <div className="flex min-w-0 flex-wrap items-center gap-2">
                 {isApproved ? (
-                  <Link href={`/seller-dashboard/catalog/${listing.id}`}>
+                  <Link
+                    href={`/seller-dashboard/catalog/${listing.id}`}
+                    className="min-w-0 flex-1"
+                  >
                     <h3 className="text-base font-semibold truncate text-primary hover:underline">
                       {listing.item?.name}
                     </h3>
@@ -70,7 +73,7 @@ export function ListingCard({ listing, type }: ListingCardProps) {
                 <Badge
                   variant={listing.isActive ? "outline" : "secondary"}
                   className={cn(
-                    "text-[10px]  h-5 font-bold",
+                    "h-5 shrink-0 text-[10px] font-bold",
                     listing.isActive &&
                       "bg-emerald-500/10 text-emerald-600 border-none",
                   )}
@@ -79,12 +82,14 @@ export function ListingCard({ listing, type }: ListingCardProps) {
                 </Badge>
               </div>
 
-              <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium italic">
+              <div className="flex min-w-0 items-center gap-2 overflow-hidden text-xs font-medium italic text-muted-foreground">
                 {isProduct ? (
                   <>
-                    <span>{listing.item?.category?.name}</span>
+                    <span className="truncate">
+                      {listing.item?.category?.name}
+                    </span>
                     <span className="text-muted-foreground/30">•</span>
-                    <span>{listing.item?.brand?.name}</span>
+                    <span className="truncate">{listing.item?.brand?.name}</span>
                   </>
                 ) : (
                   <div className="flex items-center gap-1">
@@ -95,7 +100,7 @@ export function ListingCard({ listing, type }: ListingCardProps) {
               </div>
             </div>
 
-            <div className="flex items-center gap-4 shrink-0">
+            <div className="flex items-center justify-between gap-2 md:shrink-0 md:justify-end md:gap-4">
               {isProduct && (
                 <div className="text-right flex flex-col items-end">
                   <p className="text-[10px] text-primary/40  font-black  leading-none">
@@ -116,7 +121,8 @@ export function ListingCard({ listing, type }: ListingCardProps) {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-10 w-10 text-muted-foreground/40 hover:text-primary"
+                    aria-label="More listing options"
+                    className="absolute right-2 top-2 z-10 h-10 w-10 text-muted-foreground/60 hover:text-primary md:static"
                   >
                     <MoreVertical size={18} />
                   </Button>

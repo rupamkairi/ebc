@@ -107,6 +107,8 @@ export interface ReportV2Module {
   series: Array<{ label: string; value: number }>;
   breakdowns: Array<{ id: string; title: string; rows: ReportRow[] }>;
   rows: ReportRow[];
+  rowCount?: number;
+  rowsTruncated?: boolean;
   columns: string[];
   tags: Array<{ code: string; label: string; explanation: string; severity: "info" | "warning" | "critical" }>;
 }
@@ -351,6 +353,17 @@ const downloadV2Module = async (moduleId: string, startDate: string, endDate: st
   const link = document.createElement("a"); link.href = url; link.download = `${moduleId}.csv`; link.click(); URL.revokeObjectURL(url);
 };
 
+const searchV2Locations = async (query: string): Promise<Array<{ id: string; label: string }>> => {
+  const token = useAuthStore.getState().token;
+  const q = new URLSearchParams({ q: query }).toString();
+  const response = await fetch(`${BASE_URL}/report/admin/v2/locations?${q}`, {
+    headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+  });
+  if (!response.ok) return [];
+  const data = await response.json();
+  return data.locations || [];
+};
+
 export const reportService = {
   downloadRows,
   recordV2Event,
@@ -359,6 +372,7 @@ export const reportService = {
     fetchDashboardSummary,
     fetchV2Dashboard,
     refineV2Dashboard,
+    searchV2Locations,
     downloadV2Module,
     fetchPlatformOverview: fetchReportByDates(
       "/admin/platform-overview",

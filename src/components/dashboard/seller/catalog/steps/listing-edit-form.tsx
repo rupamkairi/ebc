@@ -273,10 +273,25 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
             onValueChange={setActiveTab}
             className="w-full"
           >
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="general">General & Rates</TabsTrigger>
-              <TabsTrigger value="attachments">Brochures & Media</TabsTrigger>
-              <TabsTrigger value="regions">Service Area</TabsTrigger>
+            <TabsList className="grid h-auto min-h-9 w-full grid-cols-3 items-stretch">
+              <TabsTrigger
+                value="general"
+                className="h-auto min-w-0 whitespace-normal break-words px-1 py-2 text-center text-xs leading-tight sm:px-2 sm:text-sm"
+              >
+                General & Rates
+              </TabsTrigger>
+              <TabsTrigger
+                value="attachments"
+                className="h-auto min-w-0 whitespace-normal break-words px-1 py-2 text-center text-xs leading-tight sm:px-2 sm:text-sm"
+              >
+                Brochures & Media
+              </TabsTrigger>
+              <TabsTrigger
+                value="regions"
+                className="h-auto min-w-0 whitespace-normal break-words px-1 py-2 text-center text-xs leading-tight sm:px-2 sm:text-sm"
+              >
+                Service Area
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="general" className="mt-6 space-y-6">

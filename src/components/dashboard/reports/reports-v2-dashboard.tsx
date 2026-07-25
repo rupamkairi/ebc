@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AlertTriangle, CheckCircle2, Download, Loader2, RefreshCw, ShieldAlert, SlidersHorizontal, TrendingDown, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Combobox } from "@/components/ui/combobox";
@@ -28,40 +28,60 @@ function Metrics({ module }: { module: ReportV2Module }) {
 
 function Rows({ module }: { module: ReportV2Module }) {
   if (!module.rows.length || !module.columns.length) return null;
-  return <div className="overflow-hidden rounded-lg border"><div className="border-b bg-muted/30 px-4 py-2 text-sm font-medium">Audit details <span className="font-normal text-muted-foreground">({module.rows.length} rows)</span></div><div className="max-h-80 overflow-auto"><Table><TableHeader><TableRow>{module.columns.map((column) => <TableHead key={column}>{column.replaceAll(/([A-Z])/g, " $1")}</TableHead>)}</TableRow></TableHeader><TableBody>{module.rows.slice(0, 25).map((row, index) => <TableRow key={String(row.id || row.rfqId || row.transactionId || index)}>{module.columns.map((column) => <TableCell key={column} className="whitespace-nowrap text-xs">{String(row[column] ?? "-")}</TableCell>)}</TableRow>)}</TableBody></Table></div></div>;
+  const rowCount = module.rowCount ?? module.rows.length;
+  return <div className="overflow-hidden rounded-lg border"><div className="border-b bg-muted/30 px-4 py-2 text-sm font-medium">Audit details <span className="font-normal text-muted-foreground">({rowCount} rows{module.rowsTruncated ? `; showing first ${Math.min(25, module.rows.length)}` : ""})</span></div><div className="max-h-80 overflow-auto"><Table><TableHeader><TableRow>{module.columns.map((column) => <TableHead key={column}>{column.replaceAll(/([A-Z])/g, " $1")}</TableHead>)}</TableRow></TableHeader><TableBody>{module.rows.slice(0, 25).map((row, index) => <TableRow key={String(row.id || row.rfqId || row.transactionId || index)}>{module.columns.map((column) => <TableCell key={column} className="whitespace-nowrap text-xs">{String(row[column] ?? "-")}</TableCell>)}</TableRow>)}</TableBody></Table></div></div>;
 }
 
 export function ReportsV2Dashboard() {
   const [startDate, setStartDate] = useState(initialStart);
   const [endDate, setEndDate] = useState(initialEnd);
   const [dashboard, setDashboard] = useState<ReportV2Dashboard | null>(null);
-  const [categoryId, setCategoryId] = useState("");
   const [pincodeId, setPincodeId] = useState("");
   const [grouping, setGrouping] = useState<Grouping>("day");
-  const [categorySearch, setCategorySearch] = useState("");
   const [locationSearch, setLocationSearch] = useState("");
+  const [locationOptions, setLocationOptions] = useState<Array<{ value: string; label: string }>>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    const timer = setTimeout(async () => {
+      try {
+        const locations = await reportService.admin.searchV2Locations(locationSearch);
+        if (active) {
+          setLocationOptions(locations.map((item) => ({ value: item.id, label: item.label })));
+        }
+      } catch {
+        // preserve current options on failure
+      }
+    }, 250);
+    return () => {
+      active = false;
+      clearTimeout(timer);
+    };
+  }, [locationSearch]);
 
   const run = async (refine = false, clear = false) => {
     if (!startDate || !endDate) return setError("Select both start and end dates.");
     if (new Date(startDate) > new Date(endDate)) return setError("Start date must be before or equal to end date.");
     try {
       setLoading(true); setError(null);
-      const next = refine ? await reportService.admin.refineV2Dashboard({ startDate, endDate, categoryId: clear ? undefined : categoryId || undefined, pincodeId: clear ? undefined : pincodeId || undefined, grouping: clear ? "day" : grouping }) : await reportService.admin.fetchV2Dashboard(startDate, endDate);
-      if (clear) { setCategoryId(""); setPincodeId(""); setGrouping("day"); }
+      const next = refine ? await reportService.admin.refineV2Dashboard({ startDate, endDate, pincodeId: clear ? undefined : pincodeId || undefined, grouping: clear ? "day" : grouping }) : await reportService.admin.fetchV2Dashboard(startDate, endDate);
+      if (clear) { setPincodeId(""); setGrouping("day"); }
       setDashboard(next);
+      if (next?.refinements?.pincodes?.length && locationOptions.length === 0) {
+        setLocationOptions(next.refinements.pincodes.map((item) => ({ value: item.id, label: item.label })));
+      }
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Failed to load Reports V2"); }
     finally { setLoading(false); }
   };
 
   const download = async (moduleId: string) => {
-    try { await reportService.admin.downloadV2Module(moduleId, startDate, endDate, { categoryId: dashboard?.appliedFilters.categoryId || undefined, pincodeId: dashboard?.appliedFilters.pincodeId || undefined, grouping: dashboard?.appliedFilters.grouping }); }
+    try { await reportService.admin.downloadV2Module(moduleId, startDate, endDate, { pincodeId: dashboard?.appliedFilters.pincodeId || undefined, grouping: dashboard?.appliedFilters.grouping }); }
     catch (cause) { setError(cause instanceof Error ? cause.message : "Failed to export module"); }
   };
 
-  const categoryName = dashboard?.refinements.categories.find((item) => item.id === dashboard.appliedFilters.categoryId)?.name;
-  const pincodeName = dashboard?.refinements.pincodes.find((item) => item.id === dashboard.appliedFilters.pincodeId)?.label;
+  const pincodeName = locationOptions.find((item) => item.value === dashboard?.appliedFilters.pincodeId)?.label || dashboard?.refinements.pincodes.find((item) => item.id === dashboard.appliedFilters.pincodeId)?.label;
 
   return <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-responsive py-8">
     <div><h1 className="text-2xl font-bold">Reports V2</h1><p className="text-sm text-muted-foreground">Operations, revenue, risk, and marketplace health.</p></div>
@@ -70,7 +90,7 @@ export function ReportsV2Dashboard() {
     {!dashboard && !loading && <Card><CardContent className="p-8 text-center text-sm text-muted-foreground">Select a date range and view reports.</CardContent></Card>}
     {dashboard && <>
       <Card><CardContent className="grid gap-4 p-5 md:grid-cols-3"><div><p className="text-xs text-muted-foreground">Selected period</p><p className="font-medium">{dateLabel(dashboard.selectedPeriod.start)} - {dateLabel(dashboard.selectedPeriod.end)}</p></div><div><p className="text-xs text-muted-foreground">Compared with</p><p className="font-medium">{dateLabel(dashboard.comparisonPeriod.start)} - {dateLabel(dashboard.comparisonPeriod.end)}</p></div><div><p className="text-xs text-muted-foreground">Generated</p><p className="font-medium">{new Date(dashboard.generatedAt).toLocaleString("en-IN")}</p></div></CardContent></Card>
-      <details className="rounded-lg border bg-card"><summary className="flex cursor-pointer list-none items-center gap-2 p-4 font-medium"><SlidersHorizontal className="size-4" />Refine report</summary><div className="grid gap-4 border-t p-4 md:grid-cols-3"><div className="space-y-2"><Label>Category</Label><Combobox options={dashboard.refinements.categories.filter((item) => item.name.toLowerCase().includes(categorySearch.toLowerCase())).map((item) => ({ value: item.id, label: item.name }))} value={categoryId} onValueChange={setCategoryId} searchValue={categorySearch} onSearchValueChange={setCategorySearch} placeholder="Search category name" label="All categories" /></div><div className="space-y-2"><Label>Location</Label><Combobox options={dashboard.refinements.pincodes.filter((item) => item.label.toLowerCase().includes(locationSearch.toLowerCase())).slice(0, 100).map((item) => ({ value: item.id, label: item.label }))} value={pincodeId} onValueChange={setPincodeId} searchValue={locationSearch} onSearchValueChange={setLocationSearch} placeholder="Search pincode or place" label="All locations" /></div><div className="space-y-2"><Label>Trend grouping</Label><Select value={grouping} onValueChange={(value) => setGrouping(value as Grouping)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{(["day", "week", "month", "year"] as const).map((value) => <SelectItem key={value} value={value} className="capitalize">{value}</SelectItem>)}</SelectContent></Select></div><div className="flex flex-wrap items-center gap-2 md:col-span-3">{categoryName && <Badge variant="secondary">Category: {categoryName}</Badge>}{pincodeName && <Badge variant="secondary">Location: {pincodeName}</Badge>}<Badge variant="outline">Grouped by {dashboard.appliedFilters.grouping}</Badge><div className="ml-auto flex gap-2"><Button variant="ghost" onClick={() => run(true, true)} disabled={loading}>Clear filters</Button><Button onClick={() => run(true)} disabled={loading}>Apply refinements</Button></div></div></div></details>
+      <details className="rounded-lg border bg-card"><summary className="flex cursor-pointer list-none items-center gap-2 p-4 font-medium"><SlidersHorizontal className="size-4" />Refine report</summary><div className="grid gap-4 border-t p-4 md:grid-cols-2"><div className="space-y-2"><Label>Location</Label><Combobox options={locationOptions} value={pincodeId} onValueChange={setPincodeId} searchValue={locationSearch} onSearchValueChange={setLocationSearch} placeholder="Search pincode or location name..." label="All locations" /></div><div className="space-y-2"><Label>Trend grouping</Label><Select value={grouping} onValueChange={(value) => setGrouping(value as Grouping)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{(["day", "week", "month", "year"] as const).map((value) => <SelectItem key={value} value={value} className="capitalize">{value}</SelectItem>)}</SelectContent></Select></div><div className="flex flex-wrap items-center gap-2 md:col-span-2">{pincodeName && <Badge variant="secondary">Location: {pincodeName}</Badge>}<Badge variant="outline">Grouped by {dashboard.appliedFilters.grouping}</Badge><div className="ml-auto flex gap-2"><Button variant="ghost" onClick={() => run(true, true)} disabled={loading}>Clear filters</Button><Button onClick={() => run(true)} disabled={loading}>Apply refinements</Button></div></div></div></details>
       <section><h2 className="mb-3 text-lg font-semibold">Executive summary</h2><div className="grid grid-cols-2 gap-3 md:grid-cols-4">{dashboard.executiveSummary.slice(0, 8).map((item) => <Card key={item.id}><CardContent className="p-4"><p className="text-xs text-muted-foreground">{item.label}</p><p className="mt-1 text-xl font-semibold">{displayValue(item.value, item.format)}</p></CardContent></Card>)}</div></section>
       {dashboard.alerts.length ? <Card className="border-amber-500/40"><CardHeader><CardTitle className="flex items-center gap-2"><ShieldAlert className="size-5 text-amber-600" />Active alerts</CardTitle><CardDescription>Automatically triggered operational thresholds.</CardDescription></CardHeader><CardContent className="grid gap-2 md:grid-cols-2">{dashboard.alerts.map((alert) => <div key={alert.id} className="rounded-md bg-muted p-3 text-sm"><span className="font-medium">{alert.severity}: {alert.metric.replaceAll("_", " ")}</span><span className="ml-2 text-muted-foreground">{alert.observed} (threshold {alert.threshold})</span></div>)}</CardContent></Card> : <Card><CardContent className="flex items-center gap-2 p-4 text-sm text-emerald-700"><CheckCircle2 className="size-4" />No active threshold alerts for this report.</CardContent></Card>}
       <section><h2 className="mb-3 text-lg font-semibold">Operations checklists</h2><div className="grid gap-4 md:grid-cols-3">{dashboard.checklists.map((list) => <Card key={list.period}><CardHeader><CardTitle className="capitalize">{list.period} review</CardTitle></CardHeader><CardContent className="space-y-2">{list.items.map((item) => <div key={item} className="flex items-start gap-2 text-sm"><CheckCircle2 className="mt-0.5 size-4 text-muted-foreground" />{item}</div>)}</CardContent></Card>)}</div></section>
