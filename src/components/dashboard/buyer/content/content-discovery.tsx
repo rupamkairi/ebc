@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { BookOpen, Building2, Calendar, Download, FileText, MessageSquare } from "lucide-react";
 import { useContentsQuery } from "@/queries/conferenceHallQueries";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
-import { Content } from "@/types/conference-hall";
+import { ConferenceHallAsset, Content } from "@/types/conference-hall";
 import { ConferenceHallSearch } from "@/components/dashboard/buyer/conference-hall-search";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -107,19 +107,22 @@ export function ContentDiscovery({ pincodeId, onOpenForum }: ContentDiscoveryPro
                   {selected.attachments.map((attachment) => {
                     const asset = attachment.document || attachment.media;
                     return (
-                      <div key={attachment.id} className="flex items-center justify-between rounded-lg border p-3">
-                        <span className="flex min-w-0 items-center gap-2 text-sm">
-                          <FileText className="size-4 shrink-0" />
-                          <span className="truncate">{asset?.name || "Unavailable attachment"}</span>
-                        </span>
-                        {asset?.url && (
-                          <Button asChild size="sm" variant="outline">
-                            <a href={asset.url} target="_blank" rel="noreferrer">
-                              <Download className="mr-2 size-4" />
-                              Open
-                            </a>
-                          </Button>
-                        )}
+                      <div key={attachment.id} className="space-y-3 rounded-lg border p-3">
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="flex min-w-0 items-center gap-2 text-sm">
+                            <FileText className="size-4 shrink-0" />
+                            <span className="truncate">{asset?.name || "Unavailable attachment"}</span>
+                          </span>
+                          {asset?.url && (
+                            <Button asChild size="sm" variant="outline">
+                              <a href={asset.url} target="_blank" rel="noreferrer">
+                                <Download className="mr-2 size-4" />
+                                Open
+                              </a>
+                            </Button>
+                          )}
+                        </div>
+                        {asset && <AttachmentMediaPreview asset={asset} />}
                       </div>
                     );
                   })}
@@ -143,4 +146,35 @@ export function ContentDiscovery({ pincodeId, onOpenForum }: ContentDiscoveryPro
       </Dialog>
     </div>
   );
+}
+
+function AttachmentMediaPreview({ asset }: { asset: ConferenceHallAsset }) {
+  if (!asset.url) return null;
+  const isImage =
+    asset.kind === "IMAGE" || asset.mimeType?.startsWith("image/");
+  const isVideo =
+    asset.kind === "VIDEO" || asset.mimeType?.startsWith("video/");
+
+  if (isImage) {
+    return (
+      // Public R2 assets are intentionally rendered directly.
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={asset.url}
+        alt={asset.name}
+        className="max-h-72 w-full rounded-md object-contain"
+      />
+    );
+  }
+  if (isVideo) {
+    return (
+      <video
+        src={asset.url}
+        controls
+        preload="metadata"
+        className="max-h-72 w-full rounded-md"
+      />
+    );
+  }
+  return null;
 }

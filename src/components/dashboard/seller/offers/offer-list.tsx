@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 import { Offer } from "@/types/conference-hall";
 import { useEntitiesQuery } from "@/queries/entityQueries";
 import { cn } from "@/lib/utils";
+import { formatConferenceHallRegion } from "@/lib/conference-hall-region-label";
 
 export function OfferList() {
   const router = useRouter();
@@ -105,13 +106,7 @@ export function OfferList() {
                             <Globe className="h-3 w-3" />
                             <span className="truncate max-w-[200px]">
                               {offer.targetRegions
-                                .map((r) =>
-                                  r.pincode
-                                    ? r.pincode.pincode ||
-                                      r.pincode.district ||
-                                      r.pincode.state
-                                    : "Area",
-                                )
+                                .map(formatConferenceHallRegion)
                                 .join(", ")}
                             </span>
                           </div>

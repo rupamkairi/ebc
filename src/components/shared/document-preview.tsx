@@ -62,7 +62,7 @@ export function DocumentPreview({
                   {name || "Document Preview"}
                 </DialogTitle>
                 <DialogDescription>
-                  Admin Secure Preview - PDF Document
+                  Document Preview - PDF
                 </DialogDescription>
               </div>
               <div className="flex items-center gap-2 shrink-0 pr-6">

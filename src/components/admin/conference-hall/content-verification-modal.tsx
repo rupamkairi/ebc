@@ -33,6 +33,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DocumentPreview } from "@/components/shared/document-preview";
+import { formatConferenceHallRegion } from "@/lib/conference-hall-region-label";
 import { cn } from "@/lib/utils";
 
 interface ContentVerificationModalProps {
@@ -200,7 +201,7 @@ export function ContentVerificationModal({
                   <div className="flex flex-wrap gap-2">
                     {targetRegions.map((region, index) => (
                       <Badge key={region.id || `${region.pincodeId}-${index}`} variant="outline">
-                        {formatRegion(region)}
+                        {formatConferenceHallRegion(region)}
                       </Badge>
                     ))}
                   </div>
@@ -222,10 +223,25 @@ export function ContentVerificationModal({
                       if (!doc) return null;
 
                       const fileName = doc.name || `Attachment ${idx + 1}`;
+                      const mimeType =
+                        "mimeType" in doc &&
+                        typeof doc.mimeType === "string"
+                          ? doc.mimeType
+                          : null;
                       const fileType =
-                        "mimeType" in doc && doc.mimeType
-                          ? doc.mimeType.split("/").pop() || "file"
-                          : "pdf";
+                        mimeType?.split("/").pop() || "pdf";
+
+                      if (!doc.url) {
+                        return (
+                          <div
+                            key={attachment.id}
+                            className="flex items-center gap-2 rounded-lg border border-dashed p-3 text-xs text-muted-foreground"
+                          >
+                            <FileText className="size-4 shrink-0" />
+                            {fileName} — unavailable
+                          </div>
+                        );
+                      }
 
                       return (
                         <DocumentPreview
@@ -358,30 +374,6 @@ export function ContentVerificationModal({
       </DialogContent>
     </Dialog>
   );
-}
-
-function formatRegion(region: {
-  scopeType?: string | null;
-  pincodeId?: string | null;
-  pincode?: {
-    pincode?: string | null;
-    district?: string | null;
-    state?: string | null;
-  } | null;
-  state?: string | null;
-  district?: string | null;
-}) {
-  const scope = region.scopeType || "PINCODE";
-  const parts = [
-    region.pincode?.pincode,
-    region.pincode?.district,
-    region.pincode?.state,
-    region.district,
-    region.state,
-    region.pincodeId,
-  ].filter(Boolean);
-
-  return `${scope}: ${parts.join(" • ") || "N/A"}`;
 }
 
 function formatEntityAddress(entity: {

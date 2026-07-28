@@ -27,6 +27,7 @@ export interface TargetRegion {
   district?: string | null;
   pincodeId?: string | null;
   pincode?: PincodeRecord;
+  pincodeDirectory?: PincodeRecord | null;
 }
 
 export interface PincodeRecord {

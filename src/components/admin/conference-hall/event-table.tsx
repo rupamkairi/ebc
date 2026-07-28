@@ -16,6 +16,7 @@ import {
 } from "@/types/conference-hall";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { formatConferenceHallRegion } from "@/lib/conference-hall-region-label";
 
 interface EventTableProps {
   data: ConferenceHallEvent[];
@@ -125,7 +126,7 @@ export function EventTable({
           <div className="flex flex-wrap gap-1 max-w-[260px]">
             {regions.slice(0, 2).map((region, index) => (
               <Badge key={region.id || `${region.pincodeId}-${index}`} variant="outline" className="text-[10px]">
-                {formatRegion(region)}
+                {formatConferenceHallRegion(region)}
               </Badge>
             ))}
             {regions.length > 2 && (
@@ -182,28 +183,4 @@ export function EventTable({
       pageCount={-1}
     />
   );
-}
-
-function formatRegion(region: {
-  scopeType?: string | null;
-  pincodeId?: string | null;
-  pincode?: {
-    pincode?: string | null;
-    district?: string | null;
-    state?: string | null;
-  } | null;
-  state?: string | null;
-  district?: string | null;
-}) {
-  const scope = region.scopeType || "PINCODE";
-  const parts = [
-    region.pincode?.pincode,
-    region.pincode?.district,
-    region.pincode?.state,
-    region.district,
-    region.state,
-    region.pincodeId,
-  ].filter(Boolean);
-
-  return `${scope}: ${parts.join(" • ") || "N/A"}`;
 }

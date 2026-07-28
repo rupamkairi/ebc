@@ -17,6 +17,8 @@ import {
   Sparkles,
   MapPin,
   Building2,
+  ExternalLink,
+  Paperclip,
 } from "lucide-react";
 import {
   Dialog,
@@ -28,6 +30,7 @@ import {
 import { Offer } from "@/types/conference-hall";
 import { format } from "date-fns";
 import { ConferenceHallSearch } from "@/components/dashboard/buyer/conference-hall-search";
+import { formatConferenceHallRegion } from "@/lib/conference-hall-region-label";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
@@ -141,7 +144,7 @@ export function OfferDiscovery({
                         <MapPin className="h-4 w-4" />
                         <span>
                           {offer.targetRegions
-                            .map((r) => r.pincode?.pincode || r.pincodeId)
+                            .map(formatConferenceHallRegion)
                             .slice(0, 3)
                             .join(", ")}
                           {offer.targetRegions.length > 3
@@ -261,13 +264,51 @@ export function OfferDiscovery({
                         {selectedOffer.targetRegions &&
                         selectedOffer.targetRegions.length > 0
                           ? selectedOffer.targetRegions
-                              .map((r) => r.pincode?.pincode || r.pincodeId)
+                              .map(formatConferenceHallRegion)
                               .join(", ")
-                          : "Pan India"}
+                          : "All regions"}
                       </p>
                     </div>
                   </div>
                 </div>
+
+                {!!selectedOffer.offerDetails?.[0]?.attachments?.length && (
+                  <div className="space-y-3">
+                    <p className="flex items-center gap-2 text-[10px] font-black text-slate-400">
+                      <Paperclip className="size-4" />
+                      Resources & Materials
+                    </p>
+                    <div className="grid gap-2">
+                      {selectedOffer.offerDetails[0].attachments.map(
+                        (attachment) => {
+                          const asset =
+                            attachment.media || attachment.document;
+                          return asset?.url ? (
+                            <a
+                              key={attachment.id}
+                              href={asset.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center justify-between rounded-2xl border border-slate-100 bg-white p-3 text-sm font-bold text-slate-600 transition-colors hover:border-primary/30"
+                            >
+                              <span className="truncate">
+                                {asset.name}
+                              </span>
+                              <ExternalLink className="size-4 shrink-0" />
+                            </a>
+                          ) : (
+                            <div
+                              key={attachment.id}
+                              className="rounded-2xl border border-dashed border-slate-200 p-3 text-sm text-slate-400"
+                            >
+                              {asset?.name || "Unavailable attachment"}
+                            </div>
+                          );
+                        },
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 {/* Footer / Hosting Entity */}
                 <div className="pt-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6">

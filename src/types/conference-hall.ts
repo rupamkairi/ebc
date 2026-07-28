@@ -13,6 +13,28 @@ export enum VERIFICATION_STATUS {
   OTHER = "OTHER",
 }
 
+export interface ConferenceHallAsset {
+  id: string;
+  name: string;
+  url: string | null;
+  key?: string | null;
+  originalName?: string | null;
+  mimeType?: string | null;
+  sizeBytes?: string | null;
+  kind?: "IMAGE" | "VIDEO";
+  width?: number | null;
+  height?: number | null;
+  duration?: number | null;
+}
+
+export interface ConferenceHallAttachment {
+  id: string;
+  mediaId?: string | null;
+  documentId?: string | null;
+  media?: ConferenceHallAsset | null;
+  document?: ConferenceHallAsset | null;
+}
+
 export interface ConferenceHallEvent {
   id: string;
   name: string;
@@ -36,21 +58,7 @@ export interface ConferenceHallEvent {
   verificationStatus?: VERIFICATION_STATUS;
   verificationRemark?: string;
   entity?: Entity;
-  attachments?: {
-    id: string;
-    mediaId?: string;
-    documentId?: string;
-    media?: {
-      id: string;
-      name: string;
-      url: string;
-    };
-    document?: {
-      id: string;
-      name: string;
-      url: string;
-    };
-  }[];
+  attachments?: ConferenceHallAttachment[];
   _count?: {
     participants: number;
   };
@@ -116,21 +124,7 @@ export interface OfferDetail {
   publishedAt: string | null;
   isPublic: boolean;
   offerId: string;
-  attachments?: {
-    id: string;
-    mediaId?: string | null;
-    documentId?: string | null;
-    media?: {
-      id: string;
-      name: string;
-      url: string;
-    } | null;
-    document?: {
-      id: string;
-      name: string;
-      url: string;
-    } | null;
-  }[];
+  attachments?: ConferenceHallAttachment[];
 }
 
 export interface OfferPincode {
@@ -247,21 +241,7 @@ export interface Content {
   verificationRemark?: string;
   entity?: Entity;
 
-  attachments?: {
-    id: string;
-    mediaId?: string;
-    documentId?: string;
-    media?: {
-      id: string;
-      name: string;
-      url: string;
-    };
-    document?: {
-      id: string;
-      name: string;
-      url: string;
-    };
-  }[];
+  attachments?: ConferenceHallAttachment[];
   targetRegions?: TargetRegion[];
 }
 

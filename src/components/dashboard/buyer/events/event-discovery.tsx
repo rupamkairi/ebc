@@ -95,11 +95,6 @@ export function EventDiscovery({
       if (timeframe === "PAST") {
         return event.type === "RECORDED";
       }
-      // Pincode filtering on frontend for reliability
-      if (pincodeId && event.targetRegions && event.targetRegions.length > 0) {
-        return event.targetRegions.some((r) => r.pincodeId === pincodeId);
-      }
-
       return true;
     }) || [];
 
@@ -392,27 +387,39 @@ export function EventDiscovery({
                         Resources & Materials
                       </p>
                       <div className="grid grid-cols-1 gap-2">
-                        {selectedEvent.attachments.map((att) => (
-                          <a
-                            key={att.id}
-                            href={att.media?.url || att.document?.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100 hover:bg-white hover:border-primary/30 transition-all group"
-                          >
+                        {selectedEvent.attachments.map((att) => {
+                          const asset = att.media || att.document;
+                          const content = (
                             <div className="flex items-center gap-3">
                               <div className="h-8 w-8 rounded-lg bg-white flex items-center justify-center shadow-sm">
                                 <Video className="h-4 w-4 text-slate-400 group-hover:text-primary transition-colors" />
                               </div>
                               <span className="text-sm font-bold text-slate-600">
-                                {att.media?.name ||
-                                  att.document?.name ||
-                                  "Attachment"}
+                                {asset?.name || "Unavailable attachment"}
                               </span>
                             </div>
+                          );
+
+                          return asset?.url ? (
+                            <a
+                              key={att.id}
+                              href={asset.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="group flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50 p-3 transition-all hover:border-primary/30 hover:bg-white"
+                            >
+                              {content}
                             <ArrowUpRight className="h-4 w-4 text-slate-300 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-                          </a>
-                        ))}
+                            </a>
+                          ) : (
+                            <div
+                              key={att.id}
+                              className="flex items-center justify-between rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-3 opacity-60"
+                            >
+                              {content}
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   )}

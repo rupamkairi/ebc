@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { formatConferenceHallRegion } from "@/lib/conference-hall-region-label";
 
 export function EventList() {
   const { data: entities } = useEntitiesQuery();
@@ -197,13 +198,7 @@ export function EventList() {
                       <span>
                         Targets:{" "}
                         {event.targetRegions
-                          .map((r) =>
-                            r.pincode
-                              ? r.pincode.pincode ||
-                                r.pincode.district ||
-                                r.pincode.state
-                              : "Area",
-                          )
+                          .map(formatConferenceHallRegion)
                           .join(", ")}
                       </span>
                     </div>

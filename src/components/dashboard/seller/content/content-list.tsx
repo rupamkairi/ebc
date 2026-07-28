@@ -35,6 +35,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import Link from "next/link";
+import { formatConferenceHallRegion } from "@/lib/conference-hall-region-label";
 
 export function ContentList() {
   const { data: entities } = useEntitiesQuery();
@@ -172,13 +173,7 @@ export function ContentList() {
                   <span>
                     Targets:{" "}
                     {content.targetRegions
-                      .map((r) =>
-                        r.pincode
-                          ? r.pincode.pincode ||
-                            r.pincode.district ||
-                            r.pincode.state
-                          : "Area",
-                      )
+                      .map(formatConferenceHallRegion)
                       .join(", ")}
                   </span>
                 </div>

@@ -14,6 +14,7 @@ import { PincodeRecord, TargetRegion } from "@/types/region";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { locationService } from "@/services/locationService";
+import { formatConferenceHallRegion } from "@/lib/conference-hall-region-label";
 
 interface UnifiedRegionSelectorProps {
   selectedRegions: TargetRegion[];
@@ -38,15 +39,22 @@ export function UnifiedRegionSelector({
   });
 
   const addRegion = (pincodeRecord: PincodeRecord) => {
-    if (selectedRegions.some((r) => r.pincodeId === pincodeRecord.id)) return;
+    const nextRegion: TargetRegion = {
+      id: "",
+      pincodeId: pincodeRecord.id,
+      pincode: pincodeRecord,
+    };
+    if (
+      selectedRegions.some(
+        (region) => regionIdentity(region) === regionIdentity(nextRegion),
+      )
+    ) {
+      return;
+    }
 
     onUpdate([
       ...selectedRegions,
-      {
-        id: "", // Placeholder, backend will generate
-        pincodeId: pincodeRecord.id,
-        pincode: pincodeRecord,
-      },
+      nextRegion,
     ]);
   };
 
@@ -55,7 +63,10 @@ export function UnifiedRegionSelector({
       (r) => r.pincodeId === pincodeRecord.id,
     );
     if (isSelected) {
-      removeRegion(pincodeRecord.id);
+      const selected = selectedRegions.find(
+        (region) => region.pincodeId === pincodeRecord.id,
+      );
+      if (selected) removeRegion(selected);
     } else {
       addRegion(pincodeRecord);
     }
@@ -98,8 +109,11 @@ export function UnifiedRegionSelector({
     }
   };
 
-  const removeRegion = (pincodeId: string) => {
-    onUpdate(selectedRegions.filter((r) => r.pincodeId !== pincodeId));
+  const removeRegion = (regionToRemove: TargetRegion) => {
+    const identity = regionIdentity(regionToRemove);
+    onUpdate(
+      selectedRegions.filter((region) => regionIdentity(region) !== identity),
+    );
   };
 
   return (
@@ -263,26 +277,18 @@ export function UnifiedRegionSelector({
             </div>
           ) : (
             selectedRegions.map((region) => {
-              const r = region.pincode;
-              const isWholeState = r && !r.district && !r.pincode;
-              const isWholeDistrict = r && r.district && !r.pincode;
-
               return (
                 <Badge
-                  key={region.pincodeId}
+                  key={regionIdentity(region)}
                   variant="secondary"
                   className="pl-2 pr-1 py-1 gap-1 flex items-center"
                 >
                   <span className="text-xs">
-                    {isWholeState
-                      ? `Whole ${r.state}`
-                      : isWholeDistrict
-                        ? `${r.district} (District)`
-                        : `${r?.pincode} - ${r?.district}`}
+                    {formatConferenceHallRegion(region)}
                   </span>
                   <button
                     type="button"
-                    onClick={() => removeRegion(region.pincodeId)}
+                    onClick={() => removeRegion(region)}
                     className="ml-1 hover:bg-muted-foreground/20 rounded-full transition-colors"
                   >
                     <X className="h-3 w-3" />
@@ -295,4 +301,25 @@ export function UnifiedRegionSelector({
       </div>
     </div>
   );
+}
+
+function regionIdentity(region: TargetRegion) {
+  const record = region.pincode || region.pincodeDirectory;
+  if (region.scopeType === "PAN_INDIA") return "PAN_INDIA";
+  if (region.scopeType === "STATE" || (record && !record.district && !record.pincode)) {
+    return `STATE:${(region.state || record?.state || "").trim().toLowerCase()}`;
+  }
+  if (
+    region.scopeType === "DISTRICT" ||
+    (record && !!record.district && !record.pincode)
+  ) {
+    return `DISTRICT:${(region.state || record?.state || "").trim().toLowerCase()}:${(
+      region.district ||
+      record?.district ||
+      ""
+    )
+      .trim()
+      .toLowerCase()}`;
+  }
+  return `PINCODE:${region.pincodeId || record?.id || ""}`;
 }
