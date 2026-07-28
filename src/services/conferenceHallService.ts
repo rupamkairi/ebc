@@ -60,6 +60,9 @@ export const conferenceHallService = {
     );
   },
 
+  permanentlyDeleteContent: (id: string) =>
+    fetchClient(`${API_ENDPOINTS.CONFERENCE_HALL.CONTENT.ADMIN_DELETE}/${id}/permanent`, { method: "DELETE" }),
+
   publishContent: (id: string) => {
     return fetchClient<Content>(
       `${API_ENDPOINTS.CONFERENCE_HALL.CONTENT.PUBLISH.replace("/publish", "")}/${id}/publish`,
@@ -114,6 +117,9 @@ export const conferenceHallService = {
       method: "DELETE",
     });
   },
+
+  permanentlyDeleteEvent: (id: string) =>
+    fetchClient(`${API_ENDPOINTS.CONFERENCE_HALL.EVENT.ADMIN_DELETE}/${id}/permanent`, { method: "DELETE" }),
 
   publishEvent: (id: string) => {
     return fetchClient<ConferenceHallEvent>(
@@ -173,6 +179,9 @@ export const conferenceHallService = {
       method: "DELETE",
     });
   },
+
+  permanentlyDeleteOffer: (id: string) =>
+    fetchClient(`${API_ENDPOINTS.CONFERENCE_HALL.OFFER.ADMIN_DELETE}/${id}/permanent`, { method: "DELETE" }),
 
   publishOffer: (id: string) => {
     return fetchClient<Offer>(

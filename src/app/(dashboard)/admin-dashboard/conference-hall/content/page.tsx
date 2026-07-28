@@ -7,9 +7,11 @@ import { ContentVerificationModal } from "@/components/admin/conference-hall/con
 import { AdminTableToolbar } from "@/components/admin/admin-table-toolbar";
 import { filterConferenceHallContents } from "@/components/admin/conference-hall/filter-conference-hall";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
-import { useContentsQuery } from "@/queries/conferenceHallQueries";
+import { useContentsQuery, usePermanentlyDeleteContentMutation } from "@/queries/conferenceHallQueries";
 import { Content, VERIFICATION_STATUS } from "@/types/conference-hall";
 import { PaginationState, SortingState } from "@tanstack/react-table";
+import { useAuthStore } from "@/store/authStore";
+import { toast } from "sonner";
 
 export default function AdminContentVerificationPage() {
   const [selectedContent, setSelectedContent] = useState<Content | null>(null);
@@ -19,6 +21,10 @@ export default function AdminContentVerificationPage() {
     pageSize: 10,
   });
   const [sorting, setSorting] = useState<SortingState>([]); // Sort by verificationStatus asc by default if needed
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const role = useAuthStore((state) => state.user?.role);
+  const canDelete = role === "ADMIN" || role === "ADMIN_MANAGER";
+  const permanentDelete = usePermanentlyDeleteContentMutation();
   const [search, setSearch] = useState("");
   const [verificationStatus, setVerificationStatus] = useState("ALL");
   const [activeState, setActiveState] = useState("ALL");
@@ -53,6 +59,19 @@ export default function AdminContentVerificationPage() {
   const handleViewDetails = (content: Content) => {
     setSelectedContent(content);
     setIsModalOpen(true);
+  };
+
+  const handleDelete = async (content: Content) => {
+    setDeletingId(content.id);
+    try {
+      await permanentDelete.mutateAsync(content.id);
+      toast.success("Content permanently deleted");
+    } catch (error) {
+      toast.error("Could not delete content");
+      throw error;
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   return (
@@ -139,6 +158,9 @@ export default function AdminContentVerificationPage() {
         data={filteredContents}
         isLoading={isLoading}
         onViewDetails={handleViewDetails}
+        onDelete={handleDelete}
+        canDelete={canDelete}
+        deletingId={deletingId}
         pagination={pagination}
         onPaginationChange={setPagination}
         sorting={sorting}

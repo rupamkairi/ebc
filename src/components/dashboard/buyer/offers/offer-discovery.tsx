@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   Calendar,
-  Search,
   ArrowRight,
   Sparkles,
   MapPin,
@@ -28,7 +27,7 @@ import {
 } from "@/components/ui/dialog";
 import { Offer } from "@/types/conference-hall";
 import { format } from "date-fns";
-import { Input } from "@/components/ui/input";
+import { ConferenceHallSearch } from "@/components/dashboard/buyer/conference-hall-search";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
@@ -80,15 +79,11 @@ export function OfferDiscovery({
       {/* Search + Pincode Bar */}
       <div className="flex flex-col gap-4">
         {/* Search */}
-        <div className="relative w-full md:w-96">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search promotions & offers..."
-            className="pl-9 rounded-xl border-none bg-muted/50 focus-visible:bg-white transition-all shadow-inner"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
+        <ConferenceHallSearch
+          placeholder="Search offers..."
+          value={searchTerm}
+          onChange={setSearchTerm}
+        />
       </div>
 
       {activeOffers.length === 0 ? (

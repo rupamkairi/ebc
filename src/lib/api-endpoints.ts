@@ -87,6 +87,7 @@ export const API_ENDPOINTS = {
       UPDATE: "/conference-hall/event", // :id
       GET: "/conference-hall/event", // :id
       DELETE: "/conference-hall/event", // :id
+      ADMIN_DELETE: "/conference-hall/event", // :id/permanent
       LIST: "/conference-hall/event/list",
       JOIN: "/conference-hall/event/join", // :id/join
       PUBLISH: "/conference-hall/event/publish", // :id/publish
@@ -96,6 +97,7 @@ export const API_ENDPOINTS = {
       UPDATE: "/conference-hall/offer", // :id
       GET: "/conference-hall/offer", // :id
       DELETE: "/conference-hall/offer", // :id
+      ADMIN_DELETE: "/conference-hall/offer", // :id/permanent
       LIST: "/conference-hall/offer/list",
       PUBLISH: "/conference-hall/offer/publish", // :id/publish
     },
@@ -104,6 +106,7 @@ export const API_ENDPOINTS = {
       UPDATE: "/conference-hall/content", // :id
       GET: "/conference-hall/content", // :id
       DELETE: "/conference-hall/content", // :id
+      ADMIN_DELETE: "/conference-hall/content", // :id/permanent
       LIST: "/conference-hall/content/list",
       PUBLISH: "/conference-hall/content/publish", // :id/publish
     },

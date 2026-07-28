@@ -7,12 +7,14 @@ import { EventVerificationModal } from "@/components/admin/conference-hall/event
 import { AdminTableToolbar } from "@/components/admin/admin-table-toolbar";
 import { filterConferenceHallEvents } from "@/components/admin/conference-hall/filter-conference-hall";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
-import { useEventsQuery } from "@/queries/conferenceHallQueries";
+import { useEventsQuery, usePermanentlyDeleteEventMutation } from "@/queries/conferenceHallQueries";
 import {
   ConferenceHallEvent,
   VERIFICATION_STATUS,
 } from "@/types/conference-hall";
 import { PaginationState, SortingState } from "@tanstack/react-table";
+import { useAuthStore } from "@/store/authStore";
+import { toast } from "sonner";
 
 export default function AdminEventVerificationPage() {
   const [selectedEvent, setSelectedEvent] =
@@ -23,6 +25,10 @@ export default function AdminEventVerificationPage() {
     pageSize: 10,
   });
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const role = useAuthStore((state) => state.user?.role);
+  const canDelete = role === "ADMIN" || role === "ADMIN_MANAGER";
+  const permanentDelete = usePermanentlyDeleteEventMutation();
   const [search, setSearch] = useState("");
   const [verificationStatus, setVerificationStatus] = useState("ALL");
   const [activeState, setActiveState] = useState("ALL");
@@ -62,6 +68,19 @@ export default function AdminEventVerificationPage() {
   const handleViewDetails = (event: ConferenceHallEvent) => {
     setSelectedEvent(event);
     setIsModalOpen(true);
+  };
+
+  const handleDelete = async (event: ConferenceHallEvent) => {
+    setDeletingId(event.id);
+    try {
+      await permanentDelete.mutateAsync(event.id);
+      toast.success("Event permanently deleted");
+    } catch (error) {
+      toast.error("Could not delete event");
+      throw error;
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   return (
@@ -181,6 +200,9 @@ export default function AdminEventVerificationPage() {
         data={filteredEvents}
         isLoading={isLoading}
         onViewDetails={handleViewDetails}
+        onDelete={handleDelete}
+        canDelete={canDelete}
+        deletingId={deletingId}
         pagination={pagination}
         onPaginationChange={setPagination}
         sorting={sorting}

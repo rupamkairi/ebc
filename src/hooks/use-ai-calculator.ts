@@ -78,6 +78,7 @@ export function useAiCalculator(initialSessionId?: string) {
   );
   const [history, setHistory] = useState<ChatSession[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [deletingSessionId, setDeletingSessionId] = useState<string | null>(null);
   const [input, setInput] = useState("");
   const [lastSyncedMessageId, setLastSyncedMessageId] = useState<string | null>(
     null,
@@ -231,6 +232,20 @@ export function useAiCalculator(initialSessionId?: string) {
     setSessionId(id);
   }, []);
 
+  const deleteSession = useCallback(async (id: string) => {
+    setDeletingSessionId(id);
+    try {
+      await fetchClient(`/ai-chat/sessions/${id}`, { method: "DELETE" });
+      setHistory((current) => current.filter((session) => session.id !== id));
+      if (sessionId === id) {
+        setSessionId(undefined);
+        setMessages([]);
+      }
+    } finally {
+      setDeletingSessionId(null);
+    }
+  }, [sessionId, setMessages]);
+
   return {
     messages,
     input,
@@ -243,5 +258,7 @@ export function useAiCalculator(initialSessionId?: string) {
     startNewChat,
     loadSession,
     fetchRecentSessions,
+    deleteSession,
+    deletingSessionId,
   };
 }

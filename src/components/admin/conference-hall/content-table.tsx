@@ -9,8 +9,7 @@ import {
 import { DataTable } from "@/components/datatable/data-table";
 import { DataTableColumnHeader } from "@/components/datatable/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Eye } from "lucide-react";
+import { ConferenceHallRowActions } from "./conference-hall-row-actions";
 import { Content, VERIFICATION_STATUS } from "@/types/conference-hall";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -18,6 +17,9 @@ import { cn } from "@/lib/utils";
 interface ContentTableProps {
   data: Content[];
   onViewDetails: (content: Content) => void;
+  onDelete: (content: Content) => Promise<void>;
+  canDelete: boolean;
+  deletingId?: string | null;
   isLoading?: boolean;
   pagination?: PaginationState;
   onPaginationChange?: OnChangeFn<PaginationState>;
@@ -28,6 +30,9 @@ interface ContentTableProps {
 export function ContentTable({
   data,
   onViewDetails,
+  onDelete,
+  canDelete,
+  deletingId,
   isLoading,
   pagination,
   onPaginationChange,
@@ -124,14 +129,14 @@ export function ContentTable({
       header: () => <div className="text-right">Actions</div>,
       cell: ({ row }) => (
         <div className="text-right">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onViewDetails(row.original)}
-          >
-            <Eye className="size-4 mr-2" />
-            Verify
-          </Button>
+          <ConferenceHallRowActions
+            name={row.original.name}
+            type="content"
+            onView={() => onViewDetails(row.original)}
+            onDelete={() => onDelete(row.original)}
+            canDelete={canDelete}
+            isDeleting={deletingId === row.original.id}
+          />
         </div>
       ),
     },

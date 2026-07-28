@@ -7,9 +7,11 @@ import { OfferVerificationModal } from "@/components/admin/conference-hall/offer
 import { AdminTableToolbar } from "@/components/admin/admin-table-toolbar";
 import { filterConferenceHallOffers } from "@/components/admin/conference-hall/filter-conference-hall";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
-import { useOffersQuery } from "@/queries/conferenceHallQueries";
+import { useOffersQuery, usePermanentlyDeleteOfferMutation } from "@/queries/conferenceHallQueries";
 import { Offer, VERIFICATION_STATUS } from "@/types/conference-hall";
 import { PaginationState, SortingState } from "@tanstack/react-table";
+import { useAuthStore } from "@/store/authStore";
+import { toast } from "sonner";
 
 export default function AdminOfferVerificationPage() {
   const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
@@ -19,6 +21,10 @@ export default function AdminOfferVerificationPage() {
     pageSize: 10,
   });
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const role = useAuthStore((state) => state.user?.role);
+  const canDelete = role === "ADMIN" || role === "ADMIN_MANAGER";
+  const permanentDelete = usePermanentlyDeleteOfferMutation();
   const [search, setSearch] = useState("");
   const [verificationStatus, setVerificationStatus] = useState("ALL");
   const [activeState, setActiveState] = useState("ALL");
@@ -44,6 +50,19 @@ export default function AdminOfferVerificationPage() {
   const handleViewDetails = (offer: Offer) => {
     setSelectedOffer(offer);
     setIsModalOpen(true);
+  };
+
+  const handleDelete = async (offer: Offer) => {
+    setDeletingId(offer.id);
+    try {
+      await permanentDelete.mutateAsync(offer.id);
+      toast.success("Offer permanently deleted");
+    } catch (error) {
+      toast.error("Could not delete offer");
+      throw error;
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   return (
@@ -114,6 +133,9 @@ export default function AdminOfferVerificationPage() {
         data={filteredOffers}
         isLoading={isLoading}
         onViewDetails={handleViewDetails}
+        onDelete={handleDelete}
+        canDelete={canDelete}
+        deletingId={deletingId}
         pagination={pagination}
         onPaginationChange={setPagination}
         sorting={sorting}

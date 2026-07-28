@@ -20,7 +20,6 @@ import {
   Calendar,
   MapPin,
   Video,
-  Search,
   Users,
   Unlock,
   Loader2,
@@ -39,7 +38,7 @@ import {
 } from "@/components/ui/dialog";
 import { ConferenceHallEvent } from "@/types/conference-hall";
 import { format } from "date-fns";
-import { Input } from "@/components/ui/input";
+import { ConferenceHallSearch } from "@/components/dashboard/buyer/conference-hall-search";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
@@ -133,15 +132,11 @@ export function EventDiscovery({
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-        <div className="relative w-full md:w-96">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search events..."
-            className="pl-9"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
+        <ConferenceHallSearch
+          placeholder="Search events..."
+          value={searchTerm}
+          onChange={setSearchTerm}
+        />
         <Tabs
           value={timeframe}
           onValueChange={(v) => setTimeframe(v as "FUTURE" | "PAST" | "ALL")}

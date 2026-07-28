@@ -2,8 +2,9 @@
 
 import { EventDiscovery } from "@/components/dashboard/buyer/events/event-discovery";
 import { OfferDiscovery } from "@/components/dashboard/buyer/offers/offer-discovery";
+import { ContentDiscovery } from "@/components/dashboard/buyer/content/content-discovery";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GraduationCap, Tag, Sofa, MapPin } from "lucide-react";
+import { CalendarDays, Tag, MessageSquare, MapPin, BookOpen } from "lucide-react";
 import { ForumSection } from "@/components/shared/forum";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -12,8 +13,10 @@ import { Suspense, useEffect, useState } from "react";
 import { useAuthStore } from "@/store/authStore";
 import { PincodeSearchAutocomplete } from "@/components/autocompletes/pincode-search-autocomplete";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { useSessionQuery } from "@/queries/authQueries";
 import { BuyerProfileCard } from "@/components/dashboard/buyer/dashboard-components";
+import { Content } from "@/types/conference-hall";
 
 function BuyerConferenceHallContent() {
   const { t } = useLanguage();
@@ -23,12 +26,12 @@ function BuyerConferenceHallContent() {
   const { data: session } = useSessionQuery();
 
   const [activeTab, setActiveTab] = useState(() => {
-    return tabParam === "offers" ||
-      tabParam === "lounge" ||
-      tabParam === "events"
-      ? tabParam
+    if (tabParam === "lounge") return "forum";
+    return ["events", "contents", "offers", "forum"].includes(tabParam || "")
+      ? tabParam!
       : "events";
   });
+  const [forumContent, setForumContent] = useState<Content | null>(null);
 
   const [pincodeId, setPincodeId] = useState(user?.pincodeId || "");
 
@@ -37,9 +40,9 @@ function BuyerConferenceHallContent() {
     if (
       tabParam &&
       tabParam !== activeTab &&
-      (tabParam === "offers" || tabParam === "lounge" || tabParam === "events")
+      ["events", "contents", "offers", "forum", "lounge"].includes(tabParam)
     ) {
-      setActiveTab(tabParam);
+      setActiveTab(tabParam === "lounge" ? "forum" : tabParam);
     }
   }, [tabParam, activeTab]);
 
@@ -110,8 +113,19 @@ function BuyerConferenceHallContent() {
                 "text-muted-foreground",
               )}
             >
-              <GraduationCap className="h-4 w-4 md:h-5 md:w-5" />
-              {t("learning_events_tab_new")}
+              <CalendarDays className="h-4 w-4 md:h-5 md:w-5" />
+              {t("conference_event_tab")}
+            </TabsTrigger>
+            <TabsTrigger
+              value="contents"
+              className={cn(
+                "flex-1 h-full gap-2 md:gap-3 font-bold text-sm md:text-base transition-all rounded-none border-r border-[#9CA3AF] whitespace-nowrap px-6 md:px-0",
+                "data-[state=active]:bg-primary data-[state=active]:text-white",
+                "text-muted-foreground",
+              )}
+            >
+              <BookOpen className="h-4 w-4 md:h-5 md:w-5" />
+              {t("conference_contents_tab")}
             </TabsTrigger>
             <TabsTrigger
               value="offers"
@@ -122,18 +136,18 @@ function BuyerConferenceHallContent() {
               )}
             >
               <Tag className="h-4 w-4 md:h-5 md:w-5" />
-              {t("promotions_offers_tab_new")}
+              {t("conference_offers_tab")}
             </TabsTrigger>
             <TabsTrigger
-              value="lounge"
+              value="forum"
               className={cn(
                 "flex-1 h-full gap-2 md:gap-3 font-bold text-sm md:text-base transition-all rounded-none border-r border-[#9CA3AF] last:border-r-0 whitespace-nowrap px-6 md:px-0",
                 "data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:md:rounded-tr-2xl",
                 "text-muted-foreground",
               )}
             >
-              <Sofa className="h-4 w-4 md:h-5 md:w-5" />
-              {t("community_lounge_tab_new")}
+              <MessageSquare className="h-4 w-4 md:h-5 md:w-5" />
+              {t("conference_forum_tab")}
             </TabsTrigger>
           </TabsList>
         </div>
@@ -149,6 +163,20 @@ function BuyerConferenceHallContent() {
             </div>
           </TabsContent>
           <TabsContent
+            value="contents"
+            className="m-0 focus-visible:outline-none"
+          >
+            <div className="p-4 md:p-12">
+              <ContentDiscovery
+                pincodeId={pincodeId}
+                onOpenForum={(content) => {
+                  setForumContent(content);
+                  setActiveTab("forum");
+                }}
+              />
+            </div>
+          </TabsContent>
+          <TabsContent
             value="offers"
             className="m-0 focus-visible:outline-none"
           >
@@ -157,13 +185,19 @@ function BuyerConferenceHallContent() {
             </div>
           </TabsContent>
           <TabsContent
-            value="lounge"
+            value="forum"
             className="m-0 focus-visible:outline-none"
           >
             <div className="p-4 md:p-12">
               <div className="max-w-4xl mx-auto">
+                {forumContent && (
+                  <Button variant="outline" className="mb-4" onClick={() => setForumContent(null)}>
+                    Back to general forum
+                  </Button>
+                )}
                 <ForumSection
-                  slug="conference-hall-general"
+                  slug={forumContent ? undefined : "conference-hall-general"}
+                  contentId={forumContent?.id}
                   pincodeId={pincodeId}
                 />
               </div>

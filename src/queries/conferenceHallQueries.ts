@@ -85,6 +85,14 @@ export function useDeleteContentMutation() {
   });
 }
 
+export function usePermanentlyDeleteContentMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: conferenceHallService.permanentlyDeleteContent,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: conferenceHallKeys.all }),
+  });
+}
+
 export function usePublishContentMutation() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -162,6 +170,14 @@ export function useDeleteEventMutation() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: conferenceHallKeys.all });
     },
+  });
+}
+
+export function usePermanentlyDeleteEventMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: conferenceHallService.permanentlyDeleteEvent,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: conferenceHallKeys.all }),
   });
 }
 
@@ -259,6 +275,14 @@ export function useDeleteOfferMutation() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: conferenceHallKeys.all });
     },
+  });
+}
+
+export function usePermanentlyDeleteOfferMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: conferenceHallService.permanentlyDeleteOffer,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: conferenceHallKeys.all }),
   });
 }
 

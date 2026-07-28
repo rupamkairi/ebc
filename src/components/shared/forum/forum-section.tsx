@@ -37,6 +37,7 @@ export interface ForumSectionProps {
   eventId?: string;
   offerId?: string;
   itemId?: string;
+  contentId?: string;
   slug?: string;
   pincodeId?: string;
   className?: string;
@@ -46,6 +47,7 @@ export function ForumSection({
   eventId,
   offerId,
   itemId,
+  contentId,
   slug,
   pincodeId,
   className,
@@ -58,6 +60,7 @@ export function ForumSection({
     eventId,
     offerId,
     itemId,
+    contentId,
     slug,
     pincodeId,
   });

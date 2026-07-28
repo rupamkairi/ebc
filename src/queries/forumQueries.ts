@@ -8,6 +8,7 @@ export const useForumContextQuery = (params: {
   eventId?: string;
   offerId?: string;
   itemId?: string;
+  contentId?: string;
   slug?: string;
   pincodeId?: string;
 }) => {
@@ -15,6 +16,7 @@ export const useForumContextQuery = (params: {
   if (params.eventId) queryParams.append("eventId", params.eventId);
   if (params.offerId) queryParams.append("offerId", params.offerId);
   if (params.itemId) queryParams.append("itemId", params.itemId);
+  if (params.contentId) queryParams.append("contentId", params.contentId);
   if (params.slug) queryParams.append("slug", params.slug);
   if (params.pincodeId) queryParams.append("pincodeId", params.pincodeId);
 
@@ -30,6 +32,7 @@ export const useForumContextQuery = (params: {
       params.eventId ||
       params.offerId ||
       params.itemId ||
+      params.contentId ||
       params.slug
     ),
   });

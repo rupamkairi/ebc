@@ -286,6 +286,12 @@ export interface ContentListParams {
   isActive?: boolean;
   isPublic?: boolean;
   search?: string;
+  discovery?: boolean;
+  targeting?: {
+    pincodeId?: string;
+    district?: string;
+    state?: string;
+  };
 }
 
 export interface VerificationRequest {

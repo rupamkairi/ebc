@@ -10,6 +10,7 @@ import { MessageInput } from "@/components/ai/message-input";
 import { IconMenu2, IconPlus } from "@tabler/icons-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export function CalculatorChat() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -25,6 +26,8 @@ export function CalculatorChat() {
     isLoadingHistory,
     startNewChat,
     loadSession,
+    deleteSession,
+    deletingSessionId,
   } = useAiCalculator();
 
   const handleSelectSession = (id: string) => {
@@ -35,6 +38,16 @@ export function CalculatorChat() {
   const handleNewChat = () => {
     startNewChat();
     setIsSidebarOpen(false);
+  };
+
+  const handleDeleteSession = async (id: string) => {
+    try {
+      await deleteSession(id);
+      toast.success("Conversation deleted");
+    } catch {
+      toast.error("Could not delete conversation");
+      throw new Error("Conversation deletion failed");
+    }
   };
 
   return (
@@ -56,6 +69,9 @@ export function CalculatorChat() {
               onSelectSession={handleSelectSession}
               onNewChat={handleNewChat}
               isLoading={isLoadingHistory}
+              onDeleteSession={handleDeleteSession}
+              deletingSessionId={deletingSessionId}
+              disableDelete={isLoading}
               className="w-full"
             />
           </SheetContent>
@@ -81,6 +97,9 @@ export function CalculatorChat() {
         onSelectSession={loadSession}
         onNewChat={startNewChat}
         isLoading={isLoadingHistory}
+        onDeleteSession={handleDeleteSession}
+        deletingSessionId={deletingSessionId}
+        disableDelete={isLoading}
         className="hidden md:flex w-64 border-r border-border shrink-0"
       />
 
