@@ -28,7 +28,7 @@ export function ContentDiscovery({ pincodeId, onOpenForum }: ContentDiscoveryPro
   const [selected, setSelected] = useState<Content | null>(null);
   const debouncedSearch = useDebouncedValue(search);
   const { data = [], isLoading, isError, refetch } = useContentsQuery({
-    discovery: true,
+    mode: "DISCOVERY",
     search: debouncedSearch || undefined,
     targeting: { pincodeId },
   });

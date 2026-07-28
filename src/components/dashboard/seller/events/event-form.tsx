@@ -35,6 +35,7 @@ import {
   VERIFICATION_STATUS,
 } from "@/types/conference-hall";
 import { TargetRegion } from "@/types/region";
+import { serializeConferenceHallRegions } from "@/lib/conference-hall-regions";
 import { useForm, formOptions } from "@tanstack/react-form";
 import {
   AlertTriangle,
@@ -110,9 +111,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                 : {
                     ...restValue,
                     meetingUrl: normalizedMeetingUrl,
-                    targetRegions: targetRegions.map((r) => ({
-                      pincodeId: r.pincodeId,
-                    })),
+                    targetRegions: serializeConferenceHallRegions(targetRegions),
                   };
 
               await updateEventMutation.mutateAsync({
@@ -126,9 +125,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
             await createEventMutation.mutateAsync({
               ...restValue,
               meetingUrl: value.meetingUrl.trim() || undefined,
-              targetRegions: targetRegions.map((r) => ({
-                pincodeId: r.pincodeId,
-              })),
+              targetRegions: serializeConferenceHallRegions(targetRegions),
               entityId,
             });
             toast.success("Event created and sent for admin approval!");

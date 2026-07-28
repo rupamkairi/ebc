@@ -40,6 +40,7 @@ import {
 import { TargetRegion } from "@/types/region";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import { serializeConferenceHallRegions } from "@/lib/conference-hall-regions";
 
 interface ContentFormProps {
   initialData?: Content;
@@ -71,9 +72,7 @@ export function ContentForm({ initialData, entityId }: ContentFormProps) {
             id: initialData.id,
             data: {
               ...restValue,
-              targetRegions: targetRegions.map((r) => ({
-                pincodeId: r.pincodeId,
-              })),
+              targetRegions: serializeConferenceHallRegions(targetRegions),
             } as UpdateContentRequest,
           });
           toast.success("Content updated successfully!");
@@ -81,9 +80,7 @@ export function ContentForm({ initialData, entityId }: ContentFormProps) {
           const { targetRegions, ...restValue } = value;
           await createContentMutation.mutateAsync({
             ...(restValue as CreateContentRequest),
-            targetRegions: targetRegions.map((r) => ({
-              pincodeId: r.pincodeId,
-            })),
+            targetRegions: serializeConferenceHallRegions(targetRegions),
             entityId,
           });
           toast.success("Content created successfully!");

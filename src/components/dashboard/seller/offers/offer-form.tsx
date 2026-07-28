@@ -36,6 +36,7 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { serializeConferenceHallRegions } from "@/lib/conference-hall-regions";
 import {
   useBrandsQuery,
   useCategoriesQuery,
@@ -673,12 +674,7 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
       itemListingIds: values.relations
         .filter((r) => r.relationType === "ITEM_LISTING")
         .map((r) => r.relationId),
-      targetRegions: values.targetRegions.map((r) => ({
-        scopeType: r.scopeType || "PINCODE",
-        pincodeId: r.pincodeId,
-        state: r.state || undefined,
-        district: r.district || undefined,
-      })),
+      targetRegions: serializeConferenceHallRegions(values.targetRegions),
       attachmentIds: [
         ...values.mediaIds.map((id) => ({ mediaId: id })),
         ...values.documentIds.map((id) => ({ documentId: id })),

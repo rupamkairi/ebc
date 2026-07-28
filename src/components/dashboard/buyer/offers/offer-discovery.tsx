@@ -45,6 +45,7 @@ export function OfferDiscovery({
   const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
 
   const { data: offers, isLoading } = useOffersQuery({
+    mode: "DISCOVERY",
     search: searchTerm,
     isPublic,
     targeting: { pincodeId },
@@ -54,12 +55,7 @@ export function OfferDiscovery({
     offers?.filter((o) => {
       if (!o.isActive || !o.offerDetails?.[0]?.publishedAt) return false;
 
-      // Filter by pincode on frontend for reliability
-      if (pincodeId && o.targetRegions && o.targetRegions.length > 0) {
-        return o.targetRegions.some((r) => r.pincodeId === pincodeId);
-      }
-
-      return true; // No target regions means Pan India
+      return true;
     }) || [];
 
   if (isLoading) {

@@ -68,6 +68,7 @@ export function EventDiscovery({
 
   // Fetch all public active events for this pincode
   const { data: events, isLoading } = useEventsQuery({
+    mode: "DISCOVERY",
     search: searchTerm,
     isPublic,
     isActive: true,

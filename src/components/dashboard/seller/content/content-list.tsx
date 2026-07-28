@@ -42,6 +42,7 @@ export function ContentList() {
   const isApproved = entity?.verificationStatus === "APPROVED";
 
   const { data: contents, isLoading } = useContentsQuery({
+    mode: "MANAGEMENT",
     entityId: entity?.id,
   });
 
@@ -131,6 +132,9 @@ export function ContentList() {
 
           <CardHeader className="pb-4">
             <div className="flex items-center gap-2 mb-3">
+              <Badge variant="outline">
+                {content.verificationStatus || "PENDING"}
+              </Badge>
               {content.isPublic ? (
                 <Badge
                   variant="default"

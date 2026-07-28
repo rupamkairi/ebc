@@ -1,6 +1,6 @@
 import { Category, Brand, Specification, Item, ItemListing } from "./catalog";
 import { Entity } from "./entity";
-import { TargetRegion } from "./region";
+import { RegionScopeInput, TargetRegion } from "./region";
 
 export enum VERIFICATION_STATUS {
   PENDING = "PENDING",
@@ -80,12 +80,13 @@ export interface CreateEventRequest {
   meetingUrl?: string;
   pincodeId?: string;
   attachmentIds?: { mediaId?: string; documentId?: string }[];
-  targetRegions?: { pincodeId: string }[];
+  targetRegions?: RegionScopeInput[];
 }
 
 export type UpdateEventRequest = Partial<CreateEventRequest>;
 
 export interface EventListParams {
+  mode?: "DISCOVERY" | "MANAGEMENT";
   entityId?: string;
   isActive?: boolean;
   isPublic?: boolean;
@@ -205,7 +206,7 @@ export interface CreateOfferRequest {
   specificationIds: string[];
   itemIds: string[];
   itemListingIds: string[];
-  targetRegions: TargetRegion[];
+  targetRegions: RegionScopeInput[];
   attachmentIds: { mediaId?: string; documentId?: string }[];
 }
 
@@ -216,6 +217,7 @@ export interface PublishOfferRequest {
 }
 
 export interface OfferListParams {
+  mode?: "DISCOVERY" | "MANAGEMENT";
   entityId?: string;
   status?: OfferStatus;
   search?: string;
@@ -269,7 +271,7 @@ export interface CreateContentRequest {
   entityId: string;
   isActive: boolean;
   attachmentIds: { mediaId?: string; documentId?: string }[];
-  targetRegions?: { pincodeId: string }[];
+  targetRegions?: RegionScopeInput[];
 }
 
 export interface UpdateContentRequest {
@@ -277,16 +279,16 @@ export interface UpdateContentRequest {
   description?: string;
   isActive?: boolean;
   isPublic?: boolean;
-  targetRegions?: { pincodeId: string }[];
+  targetRegions?: RegionScopeInput[];
   attachmentIds?: { mediaId?: string; documentId?: string }[];
 }
 
 export interface ContentListParams {
+  mode?: "DISCOVERY" | "MANAGEMENT";
   entityId?: string;
   isActive?: boolean;
   isPublic?: boolean;
   search?: string;
-  discovery?: boolean;
   targeting?: {
     pincodeId?: string;
     district?: string;

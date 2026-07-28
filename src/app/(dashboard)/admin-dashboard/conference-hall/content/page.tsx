@@ -32,6 +32,7 @@ export default function AdminContentVerificationPage() {
   const debouncedSearch = useDebouncedValue(search);
 
   const { data: contents = [], isLoading } = useContentsQuery({
+    mode: "MANAGEMENT",
     // We might want to filter by entity or status later, for now fetch all
     // Add sorting/pagination params if API supports it
   });

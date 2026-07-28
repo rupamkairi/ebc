@@ -31,6 +31,7 @@ export default function AdminOfferVerificationPage() {
   const debouncedSearch = useDebouncedValue(search);
 
   const { data: offers = [], isLoading } = useOffersQuery({
+    mode: "MANAGEMENT",
     // Add sorting/pagination params if API supports it
   });
 

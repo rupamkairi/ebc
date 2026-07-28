@@ -30,7 +30,10 @@ export function OfferList() {
   const entity = entities?.[0];
   const isApproved = entity?.verificationStatus === "APPROVED";
 
-  const { data: offers, isLoading } = useOffersQuery({ entityId: entity?.id });
+  const { data: offers, isLoading } = useOffersQuery({
+    mode: "MANAGEMENT",
+    entityId: entity?.id,
+  });
   const deleteMutation = useDeleteOfferMutation();
 
   const [publishOfferId, setPublishOfferId] = useState<string | null>(null);

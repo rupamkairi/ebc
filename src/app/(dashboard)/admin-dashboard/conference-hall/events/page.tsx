@@ -38,6 +38,7 @@ export default function AdminEventVerificationPage() {
   const debouncedSearch = useDebouncedValue(search);
 
   const { data: events = [], isLoading } = useEventsQuery({
+    mode: "MANAGEMENT",
     // Add sorting/pagination params if API supports it
   });
 

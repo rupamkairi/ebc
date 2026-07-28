@@ -40,6 +40,7 @@ export function EventList() {
   const isApproved = entity?.verificationStatus === "APPROVED";
 
   const { data: events, isLoading } = useEventsQuery({
+    mode: "MANAGEMENT",
     entityId: entity?.id,
   });
 
