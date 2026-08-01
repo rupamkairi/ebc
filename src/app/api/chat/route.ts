@@ -5,11 +5,10 @@ import {
 } from "ai";
 import fs from "node:fs/promises";
 import path from "node:path";
+import { parseFreeOpenRouterModels } from "@/lib/openrouter-models";
 
 export const runtime = "nodejs";
 
-const GENERATION_TIMEOUT_MS = 10_000;
-const MAX_OUTPUT_TOKENS = 256;
 const AI_UNAVAILABLE_RESPONSE =
   "AI is temporarily unavailable. Please try again shortly.";
 
@@ -23,6 +22,20 @@ const SERVER_API_BASE = SERVER_API_BASE_RAW.endsWith("/api")
   : `${SERVER_API_BASE_RAW.replace(/\/$/, "")}/api`;
 const OPENROUTER_API_BASE =
   process.env.OPENROUTER_API_BASE || "https://openrouter.ai/api/v1";
+
+const parsePositiveInteger = (value: string | undefined, fallback: number) => {
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
+};
+
+const GENERATION_TIMEOUT_MS = parsePositiveInteger(
+  process.env.OPENROUTER_GENERATION_TIMEOUT_MS,
+  20_000,
+);
+const MAX_OUTPUT_TOKENS = parsePositiveInteger(
+  process.env.OPENROUTER_MAX_OUTPUT_TOKENS,
+  768,
+);
 
 function truncate(text: string, max = 2000) {
   if (text.length <= max) return text;
@@ -81,17 +94,9 @@ type ChatCompletionResponse = {
   error?: { message?: string };
 };
 
-const parseModelList = (value: string | undefined, fallback: string[]) => {
-  const parsed = (value || "")
-    .split(",")
-    .map((model) => model.trim())
-    .filter(Boolean);
-  return parsed.length > 0 ? parsed : fallback;
-};
-
-const CHAT_MODELS = parseModelList(process.env.OPENROUTER_CHAT_MODELS, [
+const CHAT_MODELS = parseFreeOpenRouterModels(process.env.OPENROUTER_CHAT_MODELS, [
   "google/gemma-4-26b-a4b-it:free",
-  "nvidia/nemotron-nano-9b-v2:free",
+  "openrouter/free",
 ]);
 
 const NO_KNOWLEDGE_RESPONSE = "I don't know from the current knowledge base.";
@@ -103,6 +108,7 @@ const buildGeneralSystemPrompt = () =>
     "You are EBC AI Calculator assistant.",
     "Use plain markdown only.",
     "Answer normal greetings, identity questions, general explanations, and arithmetic normally.",
+    "Reply in the same language as the user's latest message unless the user asks for another language.",
     "Be concise and direct.",
   ].join("\n");
 
@@ -343,19 +349,23 @@ export async function POST(req: Request) {
       return createFixedAssistantResponse(NO_KNOWLEDGE_RESPONSE, messages);
     }
 
-    const chatMessages = incomingMessages
+    const normalizedMessages = incomingMessages
       .map(normalizeIncomingMessage)
       .filter((msg): msg is ChatMessage => Boolean(msg));
 
-    if (retrievalItems.length > 0) {
-      chatMessages.unshift(
-        { role: "system", content: buildGeneralSystemPrompt() },
-        { role: "system", content: buildKnowledgeSystemPrompt() },
-        { role: "system", content: buildRagSystemPrompt(retrievalItems) },
-      );
-    } else {
-      chatMessages.unshift({ role: "system", content: buildGeneralSystemPrompt() });
-    }
+    const generalChatMessages: ChatMessage[] = [
+      { role: "system", content: buildGeneralSystemPrompt() },
+      ...normalizedMessages,
+    ];
+    const chatMessages: ChatMessage[] =
+      retrievalItems.length > 0
+        ? [
+            { role: "system", content: buildGeneralSystemPrompt() },
+            { role: "system", content: buildKnowledgeSystemPrompt() },
+            { role: "system", content: buildRagSystemPrompt(retrievalItems) },
+            ...normalizedMessages,
+          ]
+        : generalChatMessages;
 
     await appendLog({
       requestId,
@@ -372,14 +382,37 @@ export async function POST(req: Request) {
       })),
     });
 
-    const result = await fetchOpenRouterChatText(chatMessages).catch(async (error) => {
-      await appendLog({
-        requestId,
-        event: "chat_fallback_failed",
-        error: serializeError(error),
-      });
-      return { model: null, text: AI_UNAVAILABLE_RESPONSE };
-    });
+    let result: { model: string | null; text: string };
+    try {
+      result = await fetchOpenRouterChatText(chatMessages);
+    } catch (error) {
+      if (retrievalItems.length > 0) {
+        await appendLog({
+          requestId,
+          event: "rag_chat_failed_retrying_without_context",
+          contextCount: retrievalItems.length,
+          error: serializeError(error),
+        });
+
+        try {
+          result = await fetchOpenRouterChatText(generalChatMessages);
+        } catch (retryError) {
+          await appendLog({
+            requestId,
+            event: "chat_fallback_failed",
+            error: serializeError(retryError),
+          });
+          result = { model: null, text: AI_UNAVAILABLE_RESPONSE };
+        }
+      } else {
+        await appendLog({
+          requestId,
+          event: "chat_fallback_failed",
+          error: serializeError(error),
+        });
+        result = { model: null, text: AI_UNAVAILABLE_RESPONSE };
+      }
+    }
 
     await appendLog({
       requestId,
