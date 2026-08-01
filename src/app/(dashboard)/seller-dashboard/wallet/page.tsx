@@ -20,13 +20,13 @@ import { useEntitiesQuery } from "@/queries/entityQueries";
 import { useWalletDetails } from "@/queries/walletQueries";
 import { RechargeModal } from "@/components/dashboard/seller/recharge-modal";
 import { format } from "date-fns";
-import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAuthStore } from "@/store/authStore";
 import { isServiceBusiness } from "@/constants/roles";
 import { reportService } from "@/services/reportService";
 import { toast } from "sonner";
+import { downloadWalletReceipt } from "@/lib/wallet-receipt";
 
 export default function WalletPage() {
   const { t } = useLanguage();
@@ -34,6 +34,7 @@ export default function WalletPage() {
   const [isRechargeOpen, setIsRechargeOpen] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadingReceiptId, setDownloadingReceiptId] = useState<string | null>(null);
   const { data: entities } = useEntitiesQuery();
   const entityId = entities?.[0]?.id;
   const { data: wallet, isLoading } = useWalletDetails(entityId);
@@ -63,9 +64,9 @@ export default function WalletPage() {
 
       reportService.downloadRows(response.rows, response.filename, response.columns);
       toast.success("Wallet transactions report downloaded successfully!");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to download wallet report:", err);
-      toast.error(err.message || "Failed to download wallet report.");
+      toast.error(err instanceof Error ? err.message : "Failed to download wallet report.");
     } finally {
       setIsDownloading(false);
     }
@@ -112,6 +113,22 @@ export default function WalletPage() {
     EVENT_PARTICIPANT: "Event Participant",
     VISIT: "Site Visit",
     CONTENT: "Content",
+  };
+
+  const handleDownloadReceipt = async (txn: (typeof transactions)[number]) => {
+    try {
+      setDownloadingReceiptId(txn.id);
+      await downloadWalletReceipt({
+        transaction: txn,
+        purpose: REASON_LABELS[txn.reason] || txn.reason.replace(/_/g, " "),
+      });
+      toast.success("Receipt downloaded successfully!");
+    } catch (error) {
+      console.error("Failed to download receipt:", error);
+      toast.error("Failed to download receipt.");
+    } finally {
+      setDownloadingReceiptId(null);
+    }
   };
 
   return (
@@ -261,6 +278,21 @@ export default function WalletPage() {
                                   Paid: ₹{txn.amountInInr.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </div>
                               )}
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleDownloadReceipt(txn)}
+                                disabled={downloadingReceiptId === txn.id}
+                                className="mt-1 h-7 gap-1 px-1.5 text-[10px] font-semibold text-primary hover:bg-primary/5 hover:text-primary"
+                              >
+                                {downloadingReceiptId === txn.id ? (
+                                  <Loader2 className="size-3 animate-spin" />
+                                ) : (
+                                  <Download className="size-3" />
+                                )}
+                                {t("download_receipt", "Receipt")}
+                              </Button>
                             </div>
                           </div>
                         );

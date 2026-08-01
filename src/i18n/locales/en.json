@@ -251,6 +251,7 @@
   "coins": "Coins",
   "add_coins": "Add Coins",
   "transaction_history": "Transaction History",
+  "download_receipt": "Receipt",
   "operations": "Operations",
   "service_area_management": "Service Area Management",
   "service_area_desc": "Manage the locations and pincodes where you offer your services or deliver products.",

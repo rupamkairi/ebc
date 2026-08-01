@@ -90,8 +90,8 @@ const parseModelList = (value: string | undefined, fallback: string[]) => {
 };
 
 const CHAT_MODELS = parseModelList(process.env.OPENROUTER_CHAT_MODELS, [
-  "google/gemma-4-31b-it:free",
   "google/gemma-4-26b-a4b-it:free",
+  "nvidia/nemotron-nano-9b-v2:free",
 ]);
 
 const NO_KNOWLEDGE_RESPONSE = "I don't know from the current knowledge base.";

@@ -9,7 +9,6 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import {
   useWalletPackages,
   useCreateRechargeOrder,
@@ -114,6 +113,13 @@ export function RechargeModal({ isOpen, onClose }: RechargeModalProps) {
           },
         },
       };
+
+      // Dismiss the Radix dialog before opening Razorpay so its overlay cannot
+      // remain above the payment checkout and intercept payment clicks.
+      onClose();
+      await new Promise<void>((resolve) => {
+        window.requestAnimationFrame(() => resolve());
+      });
 
       const rzp = new window.Razorpay(options);
       rzp.open();
