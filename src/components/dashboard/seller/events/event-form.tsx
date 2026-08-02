@@ -1,6 +1,9 @@
 "use client";
 
-import { FileUploader } from "@/components/shared/upload/media-uploader";
+import {
+  attachmentReferencesFrom,
+  ConferenceHallAttachmentEditor,
+} from "@/components/shared/conference-hall/conference-hall-attachments";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -41,14 +44,11 @@ import {
   AlertTriangle,
   Calendar,
   CheckCircle,
-  FileText,
-  FileVideo,
   Globe,
   Loader2,
   MapPin,
   Save,
   Video,
-  X,
 } from "lucide-react";
 import { useLeadPricing } from "@/queries/pricingQueries";
 import { useRouter } from "next/navigation";
@@ -85,7 +85,7 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
         location: initialData?.location || "",
         meetingUrl: initialData?.meetingUrl || "",
         pincodeId: initialData?.pincodeId || "",
-        attachmentIds: [] as { mediaId?: string; documentId?: string }[],
+        attachmentIds: attachmentReferencesFrom(initialData?.attachments),
         targetRegions: (initialData?.targetRegions || []) as TargetRegion[],
       },
       onSubmit: async ({ value }) => {
@@ -502,79 +502,15 @@ export function EventForm({ initialData, entityId }: EventFormProps) {
                   <CardContent className="space-y-6">
                     <form.Field name="attachmentIds">
                       {(field) => (
-                        <div className="space-y-4">
-                          <div className="space-y-2">
-                            <Label>Recorded Session / Video</Label>
-                            <FileUploader
-                              type="media"
-                              entityId={entityId}
-                              disabled={isApproved}
-                              onUploadSuccess={(files) => {
-                                const newIds = files.map((f) => ({
-                                  mediaId: f.id,
-                                }));
-                                field.handleChange([
-                                  ...field.state.value,
-                                  ...newIds,
-                                ]);
-                              }}
-                            />
-                          </div>
-                          <div className="space-y-2 pt-2 border-t">
-                            <Label>Brochure / Presentation</Label>
-                            <FileUploader
-                              type="document"
-                              entityId={entityId}
-                              disabled={isApproved}
-                              onUploadSuccess={(files) => {
-                                const newIds = files.map((f) => ({
-                                  documentId: f.id,
-                                }));
-                                field.handleChange([
-                                  ...field.state.value,
-                                  ...newIds,
-                                ]);
-                              }}
-                            />
-                          </div>
-
-                          {/* Preview selected assets */}
-                          {field.state.value.length > 0 && (
-                            <div className="grid grid-cols-1 gap-2 mt-4">
-                              {field.state.value.map((asset, idx) => (
-                                <div
-                                  key={idx}
-                                  className="flex items-center justify-between p-2 border rounded text-xs"
-                                >
-                                  <div className="flex items-center gap-2">
-                                    {asset.mediaId ? (
-                                      <FileVideo className="h-3 w-3" />
-                                    ) : (
-                                      <FileText className="h-3 w-3" />
-                                    )}
-                                    <span>Asset {idx + 1}</span>
-                                  </div>
-                                  {!isApproved && (
-                                    <Button
-                                      variant="ghost"
-                                      size="icon"
-                                      className="h-6 w-6"
-                                      onClick={() => {
-                                        field.handleChange(
-                                          field.state.value.filter(
-                                            (_, i) => i !== idx,
-                                          ),
-                                        );
-                                      }}
-                                    >
-                                      <X className="h-3 w-3" />
-                                    </Button>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
+                        <ConferenceHallAttachmentEditor
+                          attachments={initialData?.attachments}
+                          references={field.state.value}
+                          onChange={field.handleChange}
+                          entityId={entityId}
+                          disabled={isApproved}
+                          mediaLabel="Recorded Session / Video"
+                          documentLabel="Brochure / Presentation"
+                        />
                       )}
                     </form.Field>
                   </CardContent>

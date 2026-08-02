@@ -61,7 +61,7 @@ export default function EditContentPage() {
         </div>
       </div>
 
-      <div className="max-w-4xl">
+      <div className="w-full max-w-7xl">
         <ContentForm entityId={entity.id} initialData={content} />
       </div>
     </div>

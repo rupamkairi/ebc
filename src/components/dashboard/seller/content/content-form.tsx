@@ -13,7 +13,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { FileUploader } from "@/components/shared/upload/media-uploader";
+import {
+  attachmentReferencesFrom,
+  ConferenceHallAttachmentEditor,
+} from "@/components/shared/conference-hall/conference-hall-attachments";
 import {
   useCreateContentMutation,
   useUpdateContentMutation,
@@ -25,8 +28,6 @@ import { useLeadPricing } from "@/queries/pricingQueries";
 import {
   Loader2,
   Save,
-  X,
-  File,
   AlertTriangle,
   CheckCircle,
   Globe,
@@ -61,7 +62,7 @@ export function ContentForm({ initialData, entityId }: ContentFormProps) {
       name: initialData?.name || "",
       description: initialData?.description || "",
       isActive: initialData?.isActive ?? true,
-      attachmentIds: [] as { mediaId?: string; documentId?: string }[],
+      attachmentIds: attachmentReferencesFrom(initialData?.attachments),
       targetRegions: (initialData?.targetRegions || []) as TargetRegion[],
     },
     onSubmit: async ({ value }) => {
@@ -70,10 +71,13 @@ export function ContentForm({ initialData, entityId }: ContentFormProps) {
           const { targetRegions, ...restValue } = value;
           await updateContentMutation.mutateAsync({
             id: initialData.id,
-            data: {
-              ...restValue,
-              targetRegions: serializeConferenceHallRegions(targetRegions),
-            } as UpdateContentRequest,
+            data:
+              initialData.verificationStatus === VERIFICATION_STATUS.APPROVED
+                ? { isActive: value.isActive }
+                : ({
+                    ...restValue,
+                    targetRegions: serializeConferenceHallRegions(targetRegions),
+                  } as UpdateContentRequest),
           });
           toast.success("Content updated successfully!");
         } else {
@@ -154,9 +158,9 @@ export function ContentForm({ initialData, entityId }: ContentFormProps) {
       >
         {([, targetRegions]) => {
           return (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(20rem,1fr)]">
               {/* Basic Info */}
-              <div className="lg:col-span-2 space-y-6">
+              <div className="min-w-0 space-y-6">
                 <Card>
                   <CardHeader>
                     <CardTitle>Content Information</CardTitle>
@@ -260,80 +264,16 @@ export function ContentForm({ initialData, entityId }: ContentFormProps) {
                   <CardContent className="space-y-6">
                     <form.Field name="attachmentIds">
                       {(field) => (
-                        <div className="space-y-4">
-                          <div className="space-y-2">
-                            <Label>Document / File</Label>
-                            {initialData?.verificationStatus !==
-                              VERIFICATION_STATUS.APPROVED && (
-                              <FileUploader
-                                type="document"
-                                entityId={entityId}
-                                onUploadSuccess={(files) => {
-                                  const newIds = files.map((f) => ({
-                                    documentId: f.id,
-                                  }));
-                                  field.handleChange([
-                                    ...field.state.value,
-                                    ...newIds,
-                                  ]);
-                                }}
-                              />
-                            )}
-                          </div>
-                          <div className="space-y-2 pt-2 border-t">
-                            <Label>Media / Video</Label>
-                            {initialData?.verificationStatus !==
-                              VERIFICATION_STATUS.APPROVED && (
-                              <FileUploader
-                                type="media"
-                                entityId={entityId}
-                                onUploadSuccess={(files) => {
-                                  const newIds = files.map((f) => ({
-                                    mediaId: f.id,
-                                  }));
-                                  field.handleChange([
-                                    ...field.state.value,
-                                    ...newIds,
-                                  ]);
-                                }}
-                              />
-                            )}
-                          </div>
-
-                          {/* Preview selected assets */}
-                          {field.state.value.length > 0 && (
-                            <div className="grid grid-cols-1 gap-2 mt-4">
-                              {field.state.value.map((asset, idx) => (
-                                <div
-                                  key={idx}
-                                  className="flex items-center justify-between p-2 border rounded text-xs"
-                                >
-                                  <div className="flex items-center gap-2">
-                                    <File className="h-3 w-3" />
-                                    <span>Asset {idx + 1}</span>
-                                  </div>
-                                  {initialData?.verificationStatus !==
-                                    VERIFICATION_STATUS.APPROVED && (
-                                    <Button
-                                      variant="ghost"
-                                      size="icon"
-                                      className="h-6 w-6"
-                                      onClick={() => {
-                                        field.handleChange(
-                                          field.state.value.filter(
-                                            (_, i) => i !== idx,
-                                          ),
-                                        );
-                                      }}
-                                    >
-                                      <X className="h-3 w-3" />
-                                    </Button>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
+                        <ConferenceHallAttachmentEditor
+                          attachments={initialData?.attachments}
+                          references={field.state.value}
+                          onChange={field.handleChange}
+                          entityId={entityId}
+                          disabled={
+                            initialData?.verificationStatus ===
+                            VERIFICATION_STATUS.APPROVED
+                          }
+                        />
                       )}
                     </form.Field>
                   </CardContent>

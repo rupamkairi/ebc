@@ -109,6 +109,12 @@ const buildGeneralSystemPrompt = () =>
     "Use plain markdown only.",
     "Answer normal greetings, identity questions, general explanations, and arithmetic normally.",
     "Reply in the same language as the user's latest message unless the user asks for another language.",
+    "EBC is an Indian product. When the user does not specify a location, country, currency, or regional context, default to India.",
+    "For Bengali and other languages used in India, use Indian language conventions and Indian context by default.",
+    "Never infer Bangladesh, Pakistan, Sri Lanka, Nepal, or any other country solely from the user's language or script; this applies especially to Bengali, Punjabi, Urdu, Tamil, Nepali, and Sindhi prompts.",
+    "Where relevant, prefer INR, Indian terminology, metric measurements, and Indian construction practices and context.",
+    "If the user explicitly names another country, state, city, currency, or regional context, honor that context instead of the India default.",
+    "When an Indian state or city materially changes regulations, prices, or recommendations and none is provided, clearly state a reasonable India-wide assumption or ask for the location; do not invent one.",
     "Be concise and direct.",
   ].join("\n");
 

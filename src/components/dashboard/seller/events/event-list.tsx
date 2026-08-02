@@ -23,7 +23,11 @@ import {
   Trash2,
   Users,
   Globe,
+  Eye,
 } from "lucide-react";
+import { useState } from "react";
+import { ConferenceHallEvent } from "@/types/conference-hall";
+import { EventDetailDialog } from "@/components/shared/conference-hall/conference-hall-detail-dialogs";
 import { format } from "date-fns";
 import {
   DropdownMenu,
@@ -36,6 +40,7 @@ import { toast } from "sonner";
 import { formatConferenceHallRegion } from "@/lib/conference-hall-region-label";
 
 export function EventList() {
+  const [viewingEvent, setViewingEvent] = useState<ConferenceHallEvent | null>(null);
   const { data: entities } = useEntitiesQuery();
   const entity = entities?.[0];
   const isApproved = entity?.verificationStatus === "APPROVED";
@@ -73,6 +78,7 @@ export function EventList() {
   }
 
   return (
+    <>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {events.map((event) => (
         <Card
@@ -207,7 +213,10 @@ export function EventList() {
               </div>
             </div>
           </CardContent>
-          <CardFooter className="pt-4 px-6 pb-6 bg-muted/5">
+          <CardFooter className="pt-4 px-6 pb-6 bg-muted/5 gap-2">
+            <Button variant="outline" className="rounded-xl" onClick={() => setViewingEvent(event)}>
+              <Eye className="mr-2 size-4" /> View
+            </Button>
             <Button
               variant="outline"
               className="w-full rounded-xl hover:bg-primary hover:text-primary-foreground transition-all duration-300 disabled:opacity-50"
@@ -228,5 +237,7 @@ export function EventList() {
         </Card>
       ))}
     </div>
+    <EventDetailDialog item={viewingEvent} onOpenChange={(open) => !open && setViewingEvent(null)} />
+    </>
   );
 }

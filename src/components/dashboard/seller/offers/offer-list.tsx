@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash2, Globe, Loader2 } from "lucide-react";
+import { Edit, Trash2, Globe, Loader2, Eye } from "lucide-react";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
@@ -24,6 +24,7 @@ import { Offer } from "@/types/conference-hall";
 import { useEntitiesQuery } from "@/queries/entityQueries";
 import { cn } from "@/lib/utils";
 import { formatConferenceHallRegion } from "@/lib/conference-hall-region-label";
+import { OfferDetailDialog } from "@/components/shared/conference-hall/conference-hall-detail-dialogs";
 
 export function OfferList() {
   const router = useRouter();
@@ -38,6 +39,7 @@ export function OfferList() {
   const deleteMutation = useDeleteOfferMutation();
 
   const [publishOfferId, setPublishOfferId] = useState<string | null>(null);
+  const [viewingOffer, setViewingOffer] = useState<Offer | null>(null);
 
   if (isLoading) {
     return (
@@ -129,6 +131,9 @@ export function OfferList() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
+                        <Button variant="ghost" size="icon" title="View" onClick={() => setViewingOffer(offer)}>
+                          <Eye className="h-4 w-4" />
+                        </Button>
                         {!isPublished && offer.isActive && (
                           <Button
                             variant="ghost"
@@ -179,6 +184,7 @@ export function OfferList() {
         onOpenChange={(open) => !open && setPublishOfferId(null)}
         offerId={publishOfferId}
       />
+      <OfferDetailDialog item={viewingOffer} onOpenChange={(open) => !open && setViewingOffer(null)} />
     </>
   );
 }

@@ -58,7 +58,7 @@ export default function CreateContentPage() {
         </div>
       </div>
 
-      <div className="max-w-4xl">
+      <div className="w-full max-w-7xl">
         <ContentForm entityId={entity.id} />
       </div>
     </div>

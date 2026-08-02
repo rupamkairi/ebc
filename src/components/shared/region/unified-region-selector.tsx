@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, Globe, MapPin, Loader2, Search } from "lucide-react";
+import { X, Globe, MapPin, Loader2, Search, CheckCircle2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -12,8 +12,6 @@ import { DistrictSearchAutocomplete } from "@/components/autocompletes/district-
 import { usePincodeRecordsQuery } from "@/queries/regionQueries";
 import { PincodeRecord, TargetRegion } from "@/types/region";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
-import { locationService } from "@/services/locationService";
 import { formatConferenceHallRegion } from "@/lib/conference-hall-region-label";
 
 interface UnifiedRegionSelectorProps {
@@ -30,7 +28,20 @@ export function UnifiedRegionSelector({
   const [selectedState, setSelectedState] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [pincodeSearch, setPincodeSearch] = useState("");
-  const [isAddingSpecial, setIsAddingSpecial] = useState(false);
+  const hasPanIndia = selectedRegions.some(
+    (region) => region.scopeType === "PAN_INDIA",
+  );
+  const selectedStateKey = selectedState.trim().toLowerCase();
+  const selectedDistrictKey = selectedDistrict.trim().toLowerCase();
+  const hasWholeState = selectedRegions.some(
+    (region) =>
+      regionIdentity(region) === `STATE:${selectedStateKey}`,
+  );
+  const hasWholeDistrict = selectedRegions.some(
+    (region) =>
+      regionIdentity(region) ===
+      `DISTRICT:${selectedStateKey}:${selectedDistrictKey}`,
+  );
 
   const { data: records, isLoading } = usePincodeRecordsQuery({
     state: selectedState,
@@ -72,41 +83,32 @@ export function UnifiedRegionSelector({
     }
   };
 
-  const addSpecialRegion = async (type: "STATE" | "DISTRICT") => {
+  const addWholeRegion = (type: "STATE" | "DISTRICT") => {
     if (type === "STATE" && !selectedState) return;
     if (type === "DISTRICT" && (!selectedState || !selectedDistrict)) return;
+    const next: TargetRegion = {
+      scopeType: type,
+      state: selectedState,
+      district: type === "DISTRICT" ? selectedDistrict : null,
+      pincodeId: null,
+    };
+    const stateKey = selectedState.trim().toLowerCase();
+    const districtKey = selectedDistrict.trim().toLowerCase();
+    const remaining = selectedRegions.filter((region) => {
+      const record = region.pincode || region.pincodeDirectory;
+      const regionState = (region.state || record?.state || "").trim().toLowerCase();
+      const regionDistrict = (region.district || record?.district || "")
+        .trim()
+        .toLowerCase();
+      if (region.scopeType === "PAN_INDIA") return false;
+      if (type === "STATE") return regionState !== stateKey;
+      return !(regionState === stateKey && regionDistrict === districtKey);
+    });
+    onUpdate([...remaining, next]);
+  };
 
-    setIsAddingSpecial(true);
-    try {
-      const results = await locationService.getPincodeRecords({
-        state: selectedState,
-        district: type === "DISTRICT" ? selectedDistrict : undefined,
-        isSpecial: true,
-      });
-
-      // Find the specific one:
-      // For STATE: district and pincode are null
-      // For DISTRICT: district is set, pincode is null
-      const match = results.find((r) => {
-        if (type === "STATE") {
-          return !r.district && !r.pincode;
-        } else {
-          return r.district && !r.pincode;
-        }
-      });
-
-      if (match) {
-        addRegion(match);
-      } else {
-        toast.error(
-          `Could not find a special entry for this ${type.toLowerCase()}.`,
-        );
-      }
-    } catch {
-      toast.error("Failed to fetch regional data");
-    } finally {
-      setIsAddingSpecial(false);
-    }
+  const targetAllIndia = () => {
+    onUpdate(hasPanIndia ? [] : [{ scopeType: "PAN_INDIA" }]);
   };
 
   const removeRegion = (regionToRemove: TargetRegion) => {
@@ -120,12 +122,22 @@ export function UnifiedRegionSelector({
     <div
       className={cn("space-y-6", disabled && "opacity-60 pointer-events-none")}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-muted/20 p-4 rounded-lg border">
-        <div className="space-y-1">
+      <div className="space-y-4 bg-muted/20 p-4 rounded-lg border">
+        <Button
+          type="button"
+          variant={hasPanIndia ? "default" : "outline"}
+          className="w-full justify-center gap-2"
+          onClick={targetAllIndia}
+        >
+          {hasPanIndia ? <CheckCircle2 className="size-4" /> : <Globe className="size-4" />}
+          {hasPanIndia ? "All of India selected" : "Target all of India"}
+        </Button>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="min-w-0 space-y-1">
           <Label className="text-xs font-semibold text-muted-foreground  ">
             Step 1: Select State
           </Label>
-          <div className="flex gap-2">
+          <div className="grid min-w-0 grid-cols-1 gap-2">
             <StateSearchAutocomplete
               value={selectedState}
               onValueChange={(val) => {
@@ -133,56 +145,47 @@ export function UnifiedRegionSelector({
                 setSelectedDistrict("");
               }}
               className="flex-1"
+              disabled={hasPanIndia}
             />
             <Button
               type="button"
-              variant="outline"
-              size="icon"
-              disabled={!selectedState || isAddingSpecial}
-              onClick={() => addSpecialRegion("STATE")}
-              className="shrink-0"
-              title="Target Whole State"
+              variant={hasWholeState ? "default" : "outline"}
+              disabled={!selectedState || hasPanIndia}
+              onClick={() => addWholeRegion("STATE")}
+              className="w-full gap-2"
             >
-              {isAddingSpecial ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Globe className="h-4 w-4" />
-              )}
+              {hasWholeState ? <CheckCircle2 className="h-4 w-4" /> : <Globe className="h-4 w-4" />}
+              <span>{hasWholeState ? "Whole state selected" : "Add whole state"}</span>
             </Button>
           </div>
         </div>
 
-        <div className="space-y-1">
+        <div className="min-w-0 space-y-1">
           <Label className="text-xs font-semibold text-muted-foreground  ">
             Step 2: Select District (Optional)
           </Label>
-          <div className="flex gap-2">
+          <div className="grid min-w-0 grid-cols-1 gap-2">
             <DistrictSearchAutocomplete
               state={selectedState}
               value={selectedDistrict}
               onValueChange={setSelectedDistrict}
-              disabled={!selectedState}
+              disabled={!selectedState || hasPanIndia}
               className="flex-1"
             />
             <Button
               type="button"
-              variant="outline"
-              size="icon"
-              disabled={!selectedDistrict || isAddingSpecial}
-              onClick={() => addSpecialRegion("DISTRICT")}
-              className="shrink-0"
-              title="Target Whole District"
+              variant={hasWholeDistrict ? "default" : "outline"}
+              disabled={!selectedDistrict || hasPanIndia}
+              onClick={() => addWholeRegion("DISTRICT")}
+              className="w-full gap-2"
             >
-              {isAddingSpecial ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <MapPin className="h-4 w-4" />
-              )}
+              {hasWholeDistrict ? <CheckCircle2 className="h-4 w-4" /> : <MapPin className="h-4 w-4" />}
+              <span>{hasWholeDistrict ? "Whole district selected" : "Add whole district"}</span>
             </Button>
           </div>
         </div>
 
-        <div className="space-y-1 md:col-span-2">
+        <div className="min-w-0 space-y-1 md:col-span-2">
           <Label className="text-xs font-semibold text-muted-foreground  ">
             Step 3: Search Pincode (Optional)
           </Label>
@@ -194,13 +197,14 @@ export function UnifiedRegionSelector({
               placeholder="Search by pincode (min 3 digits)..."
               value={pincodeSearch}
               onChange={(e) => setPincodeSearch(e.target.value)}
-              disabled={!selectedState}
+              disabled={!selectedState || hasPanIndia}
               className="pl-9"
             />
             {isLoading && (
               <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
             )}
           </div>
+        </div>
         </div>
       </div>
 
@@ -210,6 +214,7 @@ export function UnifiedRegionSelector({
           <div className="grid grid-cols-1 divide-y">
             {records
               .filter((r) => r.pincode) // Only show regular pincodes in this list
+              .filter((r) => !isPincodeCovered(selectedRegions, r))
               .map((r) => {
                 const isSelected = selectedRegions.some(
                   (reg) => reg.pincodeId === r.id,
@@ -322,4 +327,24 @@ function regionIdentity(region: TargetRegion) {
       .toLowerCase()}`;
   }
   return `PINCODE:${region.pincodeId || record?.id || ""}`;
+}
+
+function isPincodeCovered(regions: TargetRegion[], record: PincodeRecord) {
+  const state = record.state.trim().toLowerCase();
+  const district = record.district.trim().toLowerCase();
+  return regions.some((region) => {
+    if (region.scopeType === "PAN_INDIA") return true;
+    const source = region.pincode || region.pincodeDirectory;
+    const regionState = (region.state || source?.state || "").trim().toLowerCase();
+    const regionDistrict = (region.district || source?.district || "")
+      .trim()
+      .toLowerCase();
+    if (region.scopeType === "STATE" || (source && !source.district && !source.pincode)) {
+      return regionState === state;
+    }
+    if (region.scopeType === "DISTRICT" || (source && source.district && !source.pincode)) {
+      return regionState === state && regionDistrict === district;
+    }
+    return false;
+  });
 }

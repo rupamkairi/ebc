@@ -93,7 +93,7 @@ export function HistorySidebar({
             <div
               key={session.id}
               className={cn(
-                "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition-colors",
+                "grid w-full min-w-0 grid-cols-[minmax(0,1fr)_1.75rem] items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition-colors",
                 currentSessionId === session.id
                   ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
                   : "text-sidebar-foreground hover:bg-sidebar-accent/50",
@@ -104,7 +104,7 @@ export function HistorySidebar({
                 onClick={() => onSelectSession(session.id)}
               >
                 <IconMessage size={16} className="shrink-0 opacity-70" />
-                <span className="truncate">
+                <span className="block min-w-0 truncate">
                   {session.title || "Untitled Chat"}
                 </span>
               </button>
@@ -113,7 +113,7 @@ export function HistorySidebar({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="size-7 shrink-0"
+                    className="size-7"
                     aria-label="Chat actions"
                   >
                     <IconDots size={16} />

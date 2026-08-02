@@ -24,6 +24,7 @@ import {
   Lock,
   UploadCloud,
   Loader2,
+  Eye,
 } from "lucide-react";
 import { format } from "date-fns";
 import {
@@ -36,8 +37,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import Link from "next/link";
 import { formatConferenceHallRegion } from "@/lib/conference-hall-region-label";
+import { useState } from "react";
+import { Content } from "@/types/conference-hall";
+import { ContentDetailDialog } from "@/components/shared/conference-hall/conference-hall-detail-dialogs";
 
 export function ContentList() {
+  const [viewingContent, setViewingContent] = useState<Content | null>(null);
   const { data: entities } = useEntitiesQuery();
   const entity = entities?.[0];
   const isApproved = entity?.verificationStatus === "APPROVED";
@@ -102,6 +107,7 @@ export function ContentList() {
   }
 
   return (
+    <>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {contents.map((content) => (
         <Card
@@ -181,6 +187,9 @@ export function ContentList() {
             </div>
           </CardContent>
           <CardFooter className="pt-4 px-6 pb-6 bg-muted/5 gap-2">
+            <Button variant="outline" className="rounded-xl" onClick={() => setViewingContent(content)}>
+              <Eye className="mr-2 size-4" /> View
+            </Button>
             <Button
               variant="outline"
               className="flex-1 rounded-xl disabled:opacity-50"
@@ -215,5 +224,7 @@ export function ContentList() {
         </Card>
       ))}
     </div>
+    <ContentDetailDialog item={viewingContent} onOpenChange={(open) => !open && setViewingContent(null)} />
+    </>
   );
 }

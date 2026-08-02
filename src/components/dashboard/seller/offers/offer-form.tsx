@@ -1,10 +1,7 @@
 "use client";
 
 import { UnifiedRegionSelector } from "@/components/shared/region/unified-region-selector";
-import {
-  FileUploader,
-  FileUploadResponse,
-} from "@/components/shared/upload/media-uploader";
+import { ConferenceHallAttachmentEditor } from "@/components/shared/conference-hall/conference-hall-attachments";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -32,7 +29,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
@@ -70,15 +66,13 @@ import {
   AlertTriangle,
   CalendarIcon,
   CheckCircle,
-  FileText,
-  Image as ImageIcon,
   Loader2,
   Plus,
   X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 
@@ -550,6 +544,8 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
       targetRegions: [],
     },
   });
+  const mediaIds = useWatch({ control: form.control, name: "mediaIds" });
+  const documentIds = useWatch({ control: form.control, name: "documentIds" });
 
   useEffect(() => {
     if (isLoadingOffer) return;
@@ -1081,98 +1077,28 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
                 <CardTitle>Attachments</CardTitle>
               </CardHeader>
               <CardContent>
-                <FormField
-                  control={form.control}
-                  name="mediaIds"
-                  render={({ field }) => (
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between border-b pb-2">
-                        <FormLabel>Media</FormLabel>
-                        {!isReadOnly && (
-                          <FileUploader
-                            type="media"
-                            variant="multiple"
-                            entityId={entityId}
-                            onUploadSuccess={(
-                              newFiles: FileUploadResponse[],
-                            ) => {
-                              const newIds = newFiles.map((f) => f.id);
-                              field.onChange([
-                                ...(field.value || []),
-                                ...newIds,
-                              ]);
-                            }}
-                          />
-                        )}
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {field.value.map((id) => (
-                          <div
-                            key={id}
-                            className="flex items-center gap-2 p-2 border rounded text-xs"
-                          >
-                            <ImageIcon className="h-3 w-3" /> {id.slice(0, 8)}
-                            ...
-                            {!isReadOnly && (
-                              <X
-                                className="h-3 w-3 cursor-pointer text-destructive"
-                                onClick={() =>
-                                  field.onChange(
-                                    field.value.filter((i) => i !== id),
-                                  )
-                                }
-                              />
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                      <FormMessage />
-                    </div>
-                  )}
-                />
-
-                <Separator className="my-4" />
-
-                <FormField
-                  control={form.control}
-                  name="documentIds"
-                  render={({ field }) => (
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between border-b pb-2">
-                        <FormLabel>Documents</FormLabel>
-                        <FileUploader
-                          type="document"
-                          variant="multiple"
-                          entityId={entityId}
-                          onUploadSuccess={(newFiles: FileUploadResponse[]) => {
-                            const newIds = newFiles.map((f) => f.id);
-                            field.onChange([...(field.value || []), ...newIds]);
-                          }}
-                        />
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {field.value.map((id) => (
-                          <div
-                            key={id}
-                            className="flex items-center gap-2 p-2 border rounded text-xs"
-                          >
-                            <FileText className="h-3 w-3 text-blue-500" />{" "}
-                            {id.slice(0, 8)}
-                            ...
-                            <X
-                              className="h-3 w-3 cursor-pointer text-destructive"
-                              onClick={() =>
-                                field.onChange(
-                                  field.value.filter((i) => i !== id),
-                                )
-                              }
-                            />
-                          </div>
-                        ))}
-                      </div>
-                      <FormMessage />
-                    </div>
-                  )}
+                <ConferenceHallAttachmentEditor
+                  attachments={existingOffer?.offerDetails?.[0]?.attachments}
+                  references={[
+                    ...mediaIds.map((mediaId) => ({ mediaId })),
+                    ...documentIds.map((documentId) => ({ documentId })),
+                  ]}
+                  onChange={(references) => {
+                    form.setValue(
+                      "mediaIds",
+                      references.flatMap((item) =>
+                        item.mediaId ? [item.mediaId] : [],
+                      ),
+                    );
+                    form.setValue(
+                      "documentIds",
+                      references.flatMap((item) =>
+                        item.documentId ? [item.documentId] : [],
+                      ),
+                    );
+                  }}
+                  entityId={activeEntityId || ""}
+                  disabled={isReadOnly}
                 />
               </CardContent>
             </Card>
