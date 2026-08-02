@@ -19,7 +19,7 @@ import {
 } from "@/queries/activityQueries";
 import { useItemListingsQuery } from "@/queries/catalogQueries";
 import { Input } from "@/components/ui/input";
-import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
+import { formatUnitType } from "@/constants/quantities";
 import { ACTIVITY_TYPE, ENQUIRY_STATUS } from "@/constants/enums";
 import { cn } from "@/lib/utils";
 import { getTimeBadge } from "@/lib/activity-utils";
@@ -302,9 +302,7 @@ export default function EnquiriesPage() {
                           <p className="text-[10px] font-bold text-primary/40 tracking-tight pb-0.5">
                             {firstItem?.quantity}{" "}
                             {firstItem?.unitType &&
-                              UNIT_TYPE_LABELS[
-                                firstItem.unitType as UnitType
-                              ]}{" "}
+                              formatUnitType(firstItem.unitType)}{" "}
                             {t("piece_requested")}
                           </p>
                         </div>

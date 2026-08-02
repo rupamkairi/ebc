@@ -1263,5 +1263,11 @@
   "review_preview_fallback": "Download the file to view it in a compatible application.",
   "review_download": "Download",
   "review_download_video": "Download Video",
-  "review_open": "Open"
+  "review_open": "Open",
+  "unit_select_label": "Select unit",
+  "unit_search_placeholder": "Search units...",
+  "acceptable_unit_search_placeholder": "Search acceptable units...",
+  "unit_no_matches": "No matching units.",
+  "unit_results_count": "Showing {{visible}} of {{total}}",
+  "unit_selected_count": "{{count}} selected"
 }

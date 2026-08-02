@@ -12,7 +12,11 @@ import { ListingModalHeader } from "@/components/dashboard/seller/catalog/listin
 import { ItemSelectionStep } from "@/components/dashboard/seller/catalog/steps/item-selection-step";
 import { RateDetailsStep } from "@/components/dashboard/seller/catalog/steps/rate-details-step";
 import { RegionSelectionStep } from "@/components/dashboard/seller/catalog/steps/region-selection-step";
-import { UnitType, UNIT_TYPES } from "@/constants/quantities";
+import {
+  formatUnitType,
+  resolveUnitType,
+  UnitType,
+} from "@/constants/quantities";
 import { UNIT_TYPE, ITEM_TYPE } from "@/constants/enums";
 import { ApiError } from "@/lib/api-client";
 
@@ -87,12 +91,12 @@ export function CreateListingModal({
     const match = message.match(/Acceptable types?:\s*(.+)/i);
     if (!match) return null;
     const rawTypes = match[1]
-      .split(/[,\s]+/)
+      .split(",")
       .map((s) => s.trim())
       .filter(Boolean);
-    const valid = rawTypes.filter((t) =>
-      (UNIT_TYPES as readonly string[]).includes(t),
-    ) as UnitType[];
+    const valid = rawTypes
+      .map(resolveUnitType)
+      .filter((unit): unit is UnitType => Boolean(unit));
     return valid.length > 0 ? valid : null;
   };
 
@@ -113,7 +117,6 @@ export function CreateListingModal({
       setIsLoadingItemDetails(true);
       try {
         const fullItem = await catalogService.getItem(item.id);
-        console.log("[CreateListingModal] full item response:", fullItem);
         const fromDetail = resolveAllowedUnits(fullItem);
         setAllowedUnitTypes(fromDetail);
         if (fromDetail && fromDetail.length > 0) {
@@ -174,7 +177,7 @@ export function CreateListingModal({
           setUnitType(parsed[0]);
           setStep(2);
           toast.error(
-            `Unit type not allowed for this item. Allowed: ${parsed.join(", ")}. Please review and resubmit.`,
+            `Unit type not allowed for this item. Allowed: ${parsed.map(formatUnitType).join(", ")}. Please review and resubmit.`,
             { duration: 6000 },
           );
           return;

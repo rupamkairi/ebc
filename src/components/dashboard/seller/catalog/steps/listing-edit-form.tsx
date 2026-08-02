@@ -16,13 +16,6 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { NumericInput } from "@/components/ui/numeric-input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   useUpdateItemListingMutation,
   useUpdateItemRateMutation,
   useUpdateItemRegionMutation,
@@ -42,7 +35,7 @@ import {
 
 import { ItemListing } from "@/types/catalog";
 import { useState } from "react";
-import { UNIT_TYPES, UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
+import { formatUnitType, UNIT_TYPES, UnitType } from "@/constants/quantities";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -54,6 +47,7 @@ import { ITEM_TYPE } from "@/constants/enums";
 import { RegionScopeInput, RegionScopeType, EntityRegion } from "@/types/region";
 import { EntityRegionSelector } from "@/components/shared/region/entity-region-selector";
 import { ItemRegion } from "@/types/catalog";
+import { UnitTypeSelect } from "@/components/shared/unit-type-select";
 
 const listingEditSchema = z.object({
   isActive: z.boolean(),
@@ -327,7 +321,7 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
                         This item can only be listed in:{" "}
                         <strong>
                           {allowedUnits
-                            .map((u) => UNIT_TYPE_LABELS[u])
+                            .map(formatUnitType)
                             .join(", ")}
                         </strong>
                         . Other unit types have been hidden.
@@ -341,23 +335,13 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="font-bold">Unit Type</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select unit" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {visibleUnits.map((unit) => (
-                              <SelectItem key={unit} value={unit}>
-                                {UNIT_TYPE_LABELS[unit]}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <FormControl>
+                          <UnitTypeSelect
+                            value={field.value}
+                            onValueChange={field.onChange}
+                            units={visibleUnits}
+                          />
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -404,7 +388,7 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
                         </FormControl>
                         <FormDescription className="text-[10px]">
                           Per{" "}
-                          {UNIT_TYPE_LABELS[form.watch("unitType") || "Nos"]}
+                          {formatUnitType(form.watch("unitType") || "Nos")}
                         </FormDescription>
                         <FormMessage />
                       </FormItem>

@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Trash2, Package } from "lucide-react";
 import { useEnquiryStore } from "@/store/enquiryStore";
-import { UNIT_TYPE_LABELS } from "@/constants/quantities";
+import { formatUnitType } from "@/constants/quantities";
 
 export function EnquiryLineItems() {
   const { items, removeItem } = useEnquiryStore();
@@ -72,7 +72,7 @@ export function EnquiryLineItems() {
                     {item.quantity}
                   </TableCell>
                   <TableCell className="text-center text-primary/60 font-bold py-6">
-                    {item.unitType ? UNIT_TYPE_LABELS[item.unitType] : "-"}
+                    {formatUnitType(item.unitType)}
                   </TableCell>
                   <TableCell
                     className="max-w-[150px] truncate text-primary/80 font-medium py-6"

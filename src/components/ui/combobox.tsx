@@ -37,6 +37,7 @@ interface ComboboxProps {
   label?: string;
   className?: string;
   disabled?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export function Combobox({
@@ -51,6 +52,7 @@ export function Combobox({
   label = "Select item...",
   className,
   disabled = false,
+  onOpenChange,
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const { variant } = useAppTheme();
@@ -61,7 +63,13 @@ export function Combobox({
   }, [value, options]);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover
+      open={open}
+      onOpenChange={(nextOpen) => {
+        setOpen(nextOpen);
+        onOpenChange?.(nextOpen);
+      }}
+    >
       <PopoverTrigger asChild>
         <Button
           variant={isAppVariant ? "ghost" : "outline"}

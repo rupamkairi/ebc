@@ -36,7 +36,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { format } from "date-fns";
-import { UNIT_TYPE_LABELS } from "@/constants/quantities";
+import { formatUnitType } from "@/constants/quantities";
 import { useAcceptQuotationMutation } from "@/queries/activityQueries";
 import { useWalletDetails } from "@/queries/walletQueries";
 import { RechargeModal } from "../../seller/recharge-modal";
@@ -341,7 +341,7 @@ export function QuotationForm({
                         </p>
                         <p className="text-sm text-gray-400 font-medium mt-0.5">
                           Requested {eli.quantity}{" "}
-                          {UNIT_TYPE_LABELS[eli.unitType]}
+                          {formatUnitType(eli.unitType)}
                         </p>
                       </div>
                       <div className="flex flex-wrap gap-2 shrink-0">
@@ -421,7 +421,7 @@ export function QuotationForm({
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1.5">
                           <Label className="text-[10px] font-black   text-primary/50">
-                            Rate (Per {UNIT_TYPE_LABELS[eli.unitType]})
+                            Rate (Per {formatUnitType(eli.unitType)})
                           </Label>
                           <div className="relative">
                             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-primary text-sm font-bold">

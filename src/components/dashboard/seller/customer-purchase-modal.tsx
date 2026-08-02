@@ -26,6 +26,7 @@ import { Enquiry, Appointment, EnquiryLineItem } from "@/types/activity";
 import { useLanguage } from "@/hooks/useLanguage";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { formatUnitType } from "@/constants/quantities";
 
 interface CustomerPurchaseModalProps {
   customer: {
@@ -201,7 +202,9 @@ export function CustomerPurchaseModal({
                                   </span>
                                   <span className="text-[10px] text-slate-400 ml-1 font-bold">
                                     {isEnquiry
-                                      ? (item as EnquiryLineItem).unitType
+                                      ? formatUnitType(
+                                          (item as EnquiryLineItem).unitType,
+                                        )
                                       : "Units"}
                                   </span>
                                 </div>

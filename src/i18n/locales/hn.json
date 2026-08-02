@@ -1239,5 +1239,11 @@
   "review_preview_fallback": "File ko compatible app mein dekhne ke liye download karein.",
   "review_download": "Download",
   "review_download_video": "Video Download Karein",
-  "review_open": "Open"
+  "review_open": "Open",
+  "unit_select_label": "Unit select karein",
+  "unit_search_placeholder": "Units search karein...",
+  "acceptable_unit_search_placeholder": "Acceptable units search karein...",
+  "unit_no_matches": "Koi matching unit nahi mila.",
+  "unit_results_count": "{{total}} mein se {{visible}} dikh rahe hain",
+  "unit_selected_count": "{{count}} selected"
 }

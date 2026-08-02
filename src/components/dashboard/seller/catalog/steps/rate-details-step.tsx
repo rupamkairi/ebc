@@ -12,15 +12,9 @@ import { Button } from "@/components/ui/button";
 import { Item } from "@/types/catalog";
 import { NumericInput } from "@/components/ui/numeric-input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { UNIT_TYPES, UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
+import { formatUnitType, UNIT_TYPES, UnitType } from "@/constants/quantities";
+import { UnitTypeSelect } from "@/components/shared/unit-type-select";
 
 interface RateDetailsStepProps {
   selectedItem: Item | null;
@@ -92,7 +86,7 @@ export function RateDetailsStep({
           <p className="text-xs text-muted-foreground pl-[23px]">
             This item can only be listed in{" "}
             <span className="font-semibold text-foreground">
-              {allowedUnitTypes.map((u) => UNIT_TYPE_LABELS[u]).join(", ")}
+              {allowedUnitTypes.map(formatUnitType).join(", ")}
             </span>
             . The dropdown has been filtered accordingly.
           </p>
@@ -127,21 +121,11 @@ export function RateDetailsStep({
           {isLoadingAllowedTypes ? (
             <div className="h-10 w-full rounded-md border bg-muted animate-pulse" />
           ) : (
-            <Select
+            <UnitTypeSelect
               value={unitType}
-              onValueChange={(v) => setUnitType(v as UnitType)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select unit" />
-              </SelectTrigger>
-              <SelectContent>
-                {visibleUnits.map((unit) => (
-                  <SelectItem key={unit} value={unit}>
-                    {UNIT_TYPE_LABELS[unit]}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              onValueChange={setUnitType}
+              units={visibleUnits}
+            />
           )}
         </div>
 
@@ -164,7 +148,7 @@ export function RateDetailsStep({
             <IndianRupee size={13} className="text-primary" />
             Base Price{" "}
             <span className="font-normal text-muted-foreground">
-              (per {UNIT_TYPE_LABELS[unitType]})
+              (per {formatUnitType(unitType)})
             </span>
           </Label>
           <NumericInput

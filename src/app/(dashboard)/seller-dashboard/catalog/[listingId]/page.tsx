@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { DocumentPreview } from "@/components/shared/document-preview";
+import { formatUnitType } from "@/constants/quantities";
 
 export interface OfferListParams {
   itemListingId?: string;
@@ -144,7 +145,7 @@ export default function ListingDetailsPage() {
                     {t("category")}
                   </p>
                   <p className="text-sm font-medium">
-                    {listing.itemRates[0].unitType}
+                    {formatUnitType(listing.itemRates[0].unitType)}
                   </p>
                 </div>
               </>

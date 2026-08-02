@@ -13,23 +13,16 @@ import {
 import { NumericInput } from "@/components/ui/numeric-input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useEnquiryStore } from "@/store/enquiryStore";
 import { Product } from "@/queries/browse.queries";
 import { useItemQuery } from "@/queries/catalogQueries";
 import { toast } from "sonner";
 import {
   UNIT_TYPE,
-  UNIT_TYPE_LABELS,
   UNIT_TYPES,
   UnitType,
 } from "@/constants/quantities";
+import { UnitTypeSelect } from "@/components/shared/unit-type-select";
 
 interface AddToEnquiryModalProps {
   isOpen: boolean;
@@ -154,24 +147,14 @@ export function AddToEnquiryModal({
                 fallbackValue={1}
                 className="flex-1"
               />
-              <Select
+              <UnitTypeSelect
                 value={effectiveUnitType}
-                onValueChange={(val) => setUnitType(val as UnitType)}
+                onValueChange={setUnitType}
+                units={visibleUnits}
                 disabled={isWaitingForLatestUnits}
-              >
-                <SelectTrigger className="w-[140px]">
-                  <SelectValue
-                    placeholder={isWaitingForLatestUnits ? "Loading..." : "Unit"}
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {visibleUnits.map((u) => (
-                    <SelectItem key={u} value={u}>
-                      {UNIT_TYPE_LABELS[u]}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                label={isWaitingForLatestUnits ? "Loading..." : "Unit"}
+                className="w-[140px]"
+              />
             </div>
           </div>
           <div className="grid grid-cols-4 items-center gap-4">

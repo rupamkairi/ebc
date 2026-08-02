@@ -27,7 +27,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { AddToEnquiryModal } from "@/components/browse/add-to-enquiry-modal";
 import { AddToAppointmentModal } from "@/components/browse/add-to-appointment-modal";
 import { Product } from "@/queries/browse.queries";
-import { UNIT_TYPE_LABELS } from "@/constants/quantities";
+import { formatUnitType } from "@/constants/quantities";
 import { cn } from "@/lib/utils";
 
 export default function ItemDetailsPage() {
@@ -293,7 +293,7 @@ export default function ItemDetailsPage() {
                       variant="secondary"
                       className="text-xs font-bold"
                     >
-                      {UNIT_TYPE_LABELS[u] ?? u}
+                      {formatUnitType(u)}
                     </Badge>
                   ))}
                 </div>

@@ -14,7 +14,7 @@ import {
   PackageCheck,
   ShieldAlert,
 } from "lucide-react";
-import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
+import { formatUnitType } from "@/constants/quantities";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -276,7 +276,7 @@ export default function EnquiryDetailsPage() {
                         </p>
                         <p className="text-sm text-gray-500 font-medium">
                           {item.quantity}{" "}
-                          {UNIT_TYPE_LABELS[item.unitType as UnitType]}
+                          {formatUnitType(item.unitType)}
                         </p>
                         {item.remarks && (
                           <p className="text-xs italic text-gray-400 mt-1">

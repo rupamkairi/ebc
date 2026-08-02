@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Enquiry } from "@/types/activity";
-import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
+import { formatUnitType } from "@/constants/quantities";
 import { ENQUIRY_STATUS } from "@/constants/enums";
 import { format } from "date-fns";
 import { Package, MapPin, Calendar, ArrowRight, ShieldAlert } from "lucide-react";
@@ -101,9 +101,7 @@ export function EnquiryCard({ enquiry, detailsHref }: EnquiryCardProps) {
                         {lineItem.quantity}
                       </span>
                       <span className="text-[10px] font-black text-primary/60  tracking-tighter">
-                        {lineItem.unitType
-                          ? UNIT_TYPE_LABELS[lineItem.unitType as UnitType]
-                          : "-"}
+                        {formatUnitType(lineItem.unitType)}
                       </span>
                     </div>
                     {lineItem.flexibleWithBrands && (

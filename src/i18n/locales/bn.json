@@ -1259,5 +1259,11 @@
   "review_preview_fallback": "সামঞ্জস্যপূর্ণ অ্যাপে দেখতে ফাইলটি ডাউনলোড করুন।",
   "review_download": "ডাউনলোড",
   "review_download_video": "ভিডিও ডাউনলোড করুন",
-  "review_open": "খুলুন"
+  "review_open": "খুলুন",
+  "unit_select_label": "ইউনিট নির্বাচন করুন",
+  "unit_search_placeholder": "ইউনিট খুঁজুন...",
+  "acceptable_unit_search_placeholder": "গ্রহণযোগ্য ইউনিট খুঁজুন...",
+  "unit_no_matches": "কোনো মিলযুক্ত ইউনিট পাওয়া যায়নি।",
+  "unit_results_count": "{{total}}টির মধ্যে {{visible}}টি দেখানো হচ্ছে",
+  "unit_selected_count": "{{count}}টি নির্বাচিত"
 }

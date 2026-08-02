@@ -40,6 +40,7 @@ import { cn } from "@/lib/utils";
 import { normalizeOfferForAdmin } from "./offer-display";
 import { formatConferenceHallRegion } from "@/lib/conference-hall-region-label";
 import { TargetRegion } from "@/types/region";
+import { formatUnitType } from "@/constants/quantities";
 
 interface OfferVerificationModalProps {
   offer: Offer | null;
@@ -481,7 +482,7 @@ function RelationCard({
                 ? `${relation.item.GSTPercentage}% GST`
                 : null,
               relation.item?.acceptableUnitTypes?.length
-                ? `Units: ${relation.item.acceptableUnitTypes.join(", ")}`
+                ? `Units: ${relation.item.acceptableUnitTypes.map(formatUnitType).join(", ")}`
                 : null,
             ]
               .filter(Boolean)
@@ -521,7 +522,7 @@ function RelationCard({
               relation.itemListing?.itemRates?.length
                 ? relation.itemListing.itemRates
                     .map((rate) =>
-                      `${rate.minQuantity} ${rate.unitType} @ ${rate.rate}${rate.isNegotiable ? " negotiable" : ""}`,
+                      `${rate.minQuantity} ${formatUnitType(rate.unitType)} @ ${rate.rate}${rate.isNegotiable ? " negotiable" : ""}`,
                     )
                     .join(" • ")
                 : "N/A"

@@ -31,6 +31,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { formatUnitType } from "@/constants/quantities";
 
 interface ActivityDetailModalProps {
   activity: Enquiry | Appointment | null;
@@ -135,7 +136,7 @@ export function ActivityDetailModal({
                           </div>
                           <div className="text-right">
                             <p className="text-sm font-black text-primary">
-                              {item.quantity} {item.unitType}
+                              {item.quantity} {formatUnitType(item.unitType)}
                             </p>
                           </div>
                         </div>

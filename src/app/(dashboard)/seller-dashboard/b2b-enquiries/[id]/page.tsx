@@ -36,7 +36,7 @@ import { format } from "date-fns";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { toast } from "sonner";
-import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
+import { formatUnitType } from "@/constants/quantities";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/hooks/useLanguage";
 
@@ -144,7 +144,7 @@ export default function SellerEnquiryDetailsPage() {
                         {item.quantity}
                       </div>
                       <div className="text-[10px] font-black   text-muted-foreground">
-                        {UNIT_TYPE_LABELS[item.unitType as UnitType]}
+                        {formatUnitType(item.unitType)}
                       </div>
                     </div>
                   </CardContent>

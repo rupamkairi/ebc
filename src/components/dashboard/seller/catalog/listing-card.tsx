@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ItemListing } from "@/types/catalog";
-import { UNIT_TYPE_LABELS } from "@/constants/quantities";
+import { formatUnitType } from "@/constants/quantities";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -110,7 +110,7 @@ export function ListingCard({ listing, type }: ListingCardProps) {
                     {listing.itemRates?.[0]?.minQuantity}{" "}
                     <span className="text-[10px] font-bold text-primary/30 italic opacity-60">
                       {listing.itemRates?.[0]?.unitType &&
-                        UNIT_TYPE_LABELS[listing.itemRates[0].unitType]}
+                        formatUnitType(listing.itemRates[0].unitType)}
                     </span>
                   </p>
                 </div>

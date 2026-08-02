@@ -29,16 +29,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BrandSearchAutocomplete } from "@/components/autocompletes/brand-search-autocomplete";
 import { CategorySearchAutocomplete } from "@/components/autocompletes/category-search-autocomplete";
 import { SpecificationSearchAutocomplete } from "@/components/autocompletes/specification-search-autocomplete";
 import { RoomSearchAutocomplete } from "@/components/autocompletes/room-search-autocomplete";
 import { ITEM_TYPE, UNIT_TYPE_LABELS } from "@/constants/enums";
 import { Checkbox } from "@/components/ui/checkbox";
-import { UNIT_TYPES, UnitType } from "@/constants/quantities";
+import {
+  filterUnitTypes,
+  UNIT_TYPES,
+  UnitType,
+} from "@/constants/quantities";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function ItemForm() {
+  const [unitSearch, setUnitSearch] = useState("");
+  const { t } = useLanguage();
   const { isCreateOpen, setCreateOpen, isEditOpen, setEditOpen, selectedItem } =
     useItemStore();
   // Create/Update mutations
@@ -47,6 +54,10 @@ export function ItemForm() {
 
   const isOpen = isCreateOpen || isEditOpen;
   const isEditing = isEditOpen && !!selectedItem;
+  const visibleUnitTypes = useMemo(
+    () => filterUnitTypes(UNIT_TYPES, unitSearch),
+    [unitSearch],
+  );
 
   const form = useForm({
     defaultValues: {
@@ -76,11 +87,13 @@ export function ItemForm() {
           await updateMutation.mutateAsync({ ...payload, id: selectedItem.id });
           setEditOpen(false);
           form.reset();
+          setUnitSearch("");
           toast.success("Item updated successfully");
         } else {
           await createMutation.mutateAsync(payload);
           setCreateOpen(false);
           form.reset();
+          setUnitSearch("");
           toast.success("Item created successfully");
         }
       } catch (error) {
@@ -126,6 +139,7 @@ export function ItemForm() {
   }, [isEditing, selectedItem, form]);
 
   const handleOpenChange = (open: boolean) => {
+    if (!open) setUnitSearch("");
     if (isEditing) {
       setEditOpen(open);
     } else {
@@ -452,8 +466,27 @@ export function ItemForm() {
                       <Label className="text-sm font-bold">
                         Acceptable Unit Types
                       </Label>
-                      <div className="grid grid-cols-2 gap-3 p-3 border rounded-lg bg-muted/30">
-                        {UNIT_TYPES.map((unit) => (
+                      <Input
+                        value={unitSearch}
+                        onChange={(event) => setUnitSearch(event.target.value)}
+                        placeholder={t("acceptable_unit_search_placeholder")}
+                        aria-label="Search acceptable unit types"
+                      />
+                      <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                        <span>
+                          {t("unit_results_count", {
+                            visible: visibleUnitTypes.length,
+                            total: UNIT_TYPES.length,
+                          })}
+                        </span>
+                        <span>
+                          {t("unit_selected_count", {
+                            count: field.state.value.length,
+                          })}
+                        </span>
+                      </div>
+                      <div className="grid max-h-72 grid-cols-2 gap-3 overflow-y-auto rounded-lg border bg-muted/30 p-3 pr-2">
+                        {visibleUnitTypes.map((unit) => (
                           <div
                             key={unit}
                             className="flex items-center space-x-2"
@@ -480,6 +513,11 @@ export function ItemForm() {
                             </Label>
                           </div>
                         ))}
+                        {visibleUnitTypes.length === 0 && (
+                          <p className="col-span-2 py-6 text-center text-xs text-muted-foreground">
+                            {t("unit_no_matches")}
+                          </p>
+                        )}
                       </div>
                       <p className="text-[10px] text-muted-foreground">
                         Select which units sellers can use when listing this

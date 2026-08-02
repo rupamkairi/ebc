@@ -35,6 +35,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { ReviewSnapshot } from "@/components/shared/reviews";
 import { DocumentPreview } from "@/components/shared/document-preview";
+import { formatUnitType } from "@/constants/quantities";
 
 export default function QuotationDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -288,7 +289,17 @@ export default function QuotationDetailsPage() {
             <CardContent className="p-0">
               <div className="divide-y divide-dashed">
                 {q.quotationLineItems?.map((li) => {
-                  const unitLabel = li.item?.acceptableUnitTypes?.[0] || "Nos";
+                  const enquiryLineItem = q.enquiry?.enquiryLineItems?.find(
+                    (lineItem) =>
+                      lineItem.itemId === li.itemId &&
+                      (!li.itemListingId ||
+                        lineItem.itemListingId === li.itemListingId),
+                  );
+                  const unitLabel = formatUnitType(
+                    enquiryLineItem?.unitType ||
+                      li.item?.acceptableUnitTypes?.[0] ||
+                      "Nos",
+                  );
                   return (
                     <div
                       key={li.id}

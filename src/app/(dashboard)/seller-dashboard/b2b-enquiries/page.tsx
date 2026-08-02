@@ -19,7 +19,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { getTimeBadge } from "@/lib/activity-utils";
-import { UNIT_TYPE_LABELS, UnitType } from "@/constants/quantities";
+import { formatUnitType } from "@/constants/quantities";
 import { ENQUIRY_STATUS } from "@/constants/enums";
 import { EnquiryLineItem } from "@/types/activity";
 
@@ -227,9 +227,7 @@ export default function EnquiriesPage() {
                             )}
                             {firstItem?.quantity}{" "}
                             {firstItem?.unitType &&
-                              UNIT_TYPE_LABELS[
-                                firstItem.unitType as UnitType
-                              ]}{" "}
+                              formatUnitType(firstItem.unitType)}{" "}
                             Requested
                           </p>
                         </div>

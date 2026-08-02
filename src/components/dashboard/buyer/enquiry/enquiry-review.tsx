@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { MapPin, Phone, Mail, User, Info } from "lucide-react";
-import { UNIT_TYPE_LABELS } from "@/constants/quantities";
+import { formatUnitType } from "@/constants/quantities";
 import { EnquiryItem } from "@/store/enquiryStore";
 
 interface EnquiryReviewProps {
@@ -164,7 +164,7 @@ export function EnquiryReview({ onSubmit, isSubmitting }: EnquiryReviewProps) {
                                 {item.quantity}{" "}
                                 <span className="text-sm font-medium text-slate-500">
                                   {item.unitType
-                                    ? UNIT_TYPE_LABELS[item.unitType]
+                                    ? formatUnitType(item.unitType)
                                     : ""}
                                 </span>
                               </p>
