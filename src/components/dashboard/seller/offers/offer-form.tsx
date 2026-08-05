@@ -1180,7 +1180,7 @@ export function OfferForm({ offerId, entityId }: OfferFormProps) {
               {(createMutation.isPending || updateMutation.isPending) && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
-              {isEdit ? "Update Offer" : "Create Draft"}
+              {isEdit ? "Update Offer" : "Create Offer"}
             </Button>
           </div>
         </div>

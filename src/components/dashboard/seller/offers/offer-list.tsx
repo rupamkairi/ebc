@@ -70,7 +70,7 @@ export function OfferList() {
     if (!offer.isActive) return <Badge variant="destructive">Inactive</Badge>;
     if (isPublished)
       return <Badge className="bg-green-500 text-white">Published</Badge>;
-    return <Badge variant="secondary">Draft</Badge>;
+    return <Badge variant="secondary">Unpublished</Badge>;
   };
 
   return (
