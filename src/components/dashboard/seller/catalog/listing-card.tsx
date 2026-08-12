@@ -61,12 +61,12 @@ export function ListingCard({ listing, type }: ListingCardProps) {
                     href={`/seller-dashboard/catalog/${listing.id}`}
                     className="min-w-0 flex-1"
                   >
-                    <h3 className="text-base font-semibold truncate text-primary hover:underline">
+                    <h3 className="whitespace-normal break-words text-base font-semibold text-primary [overflow-wrap:anywhere] hover:underline">
                       {listing.item?.name}
                     </h3>
                   </Link>
                 ) : (
-                  <h3 className="text-base font-semibold truncate text-primary">
+                  <h3 className="min-w-0 flex-1 whitespace-normal break-words text-base font-semibold text-primary [overflow-wrap:anywhere]">
                     {listing.item?.name}
                   </h3>
                 )}

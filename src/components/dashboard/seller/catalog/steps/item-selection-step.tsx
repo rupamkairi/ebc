@@ -20,7 +20,7 @@ export function ItemSelectionStep({
       : "To Product Catalog";
 
   return (
-    <div className="animate-in fade-in slide-in-from-right-2">
+    <div className="min-w-0 max-w-full animate-in fade-in slide-in-from-right-2">
       <ItemSearch
         onItemSelect={onItemSelect}
         type={itemType as "PRODUCT" | "SERVICE"}

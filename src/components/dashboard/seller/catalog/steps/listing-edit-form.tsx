@@ -245,13 +245,15 @@ export function ListingEditForm({ listing, onSuccess }: ListingEditFormProps) {
 
   return (
     <div className="space-y-6">
-      <div className="bg-muted/30 p-4 rounded-lg border flex items-center gap-4">
-        <div className="h-12 w-12 rounded-md bg-background border shadow-sm flex items-center justify-center text-primary">
+      <div className="flex min-w-0 items-center gap-4 rounded-lg border bg-muted/30 p-4">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md border bg-background text-primary shadow-sm">
           <Package size={24} />
         </div>
-        <div>
-          <h4 className="text-lg font-bold">{listing.item?.name}</h4>
-          <p className="text-[11px] font-medium text-muted-foreground">
+        <div className="min-w-0 flex-1">
+          <h4 className="whitespace-normal break-words text-lg font-bold [overflow-wrap:anywhere]">
+            {listing.item?.name}
+          </h4>
+          <p className="break-words text-[11px] font-medium text-muted-foreground [overflow-wrap:anywhere]">
             {listing.item?.category?.name} • {listing.item?.brand?.name}
           </p>
         </div>

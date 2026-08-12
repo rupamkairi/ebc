@@ -22,17 +22,19 @@ export function ListingModalHeader({ step }: ListingModalHeaderProps) {
   const Icon = step === 1 ? Package : step === 2 ? IndianRupee : MapPin;
 
   return (
-    <div className="p-6 border-b bg-muted/30">
+    <div className="min-w-0 border-b bg-muted/30 p-4 pr-12 sm:p-6 sm:pr-12">
       <DialogHeader>
-        <div className="flex items-center gap-4">
-          <div className="h-10 w-10 rounded-md bg-primary text-primary-foreground flex items-center justify-center shadow-sm">
+        <div className="flex min-w-0 items-center gap-4">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-sm">
             <Icon size={20} />
           </div>
-          <div>
-            <DialogTitle className="text-xl font-bold">
+          <div className="min-w-0">
+            <DialogTitle className="break-words text-xl font-bold [overflow-wrap:anywhere]">
               {titles[step - 1]}
             </DialogTitle>
-            <DialogDescription>{descriptions[step - 1]}</DialogDescription>
+            <DialogDescription className="break-words [overflow-wrap:anywhere]">
+              {descriptions[step - 1]}
+            </DialogDescription>
           </div>
         </div>
       </DialogHeader>

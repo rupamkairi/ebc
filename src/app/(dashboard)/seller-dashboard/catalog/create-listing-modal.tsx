@@ -190,10 +190,10 @@ export function CreateListingModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(val) => !val && onClose()}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 border shadow-lg">
+      <DialogContent className="max-h-[90vh] max-w-4xl overflow-x-hidden overflow-y-auto border p-0 shadow-lg">
         <ListingModalHeader step={step} />
 
-        <div className="p-6">
+        <div className="min-w-0 max-w-full p-4 sm:p-6">
           {step === 1 && (
             <ItemSelectionStep
               onItemSelect={handleItemSelect}

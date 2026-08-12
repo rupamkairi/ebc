@@ -49,27 +49,27 @@ export function ItemSearch({
   });
 
   return (
-    <div className={cn("space-y-6", className)}>
+    <div className={cn("min-w-0 max-w-full space-y-6", className)}>
       {/* Choose Items Blue Section */}
-      <div className="rounded-4xl bg-linear-to-br from-primary to-primary/80 p-6 sm:p-10 shadow-2xl overflow-hidden relative">
+      <div className="relative min-w-0 max-w-full overflow-hidden rounded-4xl bg-linear-to-br from-primary to-primary/80 p-6 shadow-2xl sm:p-10">
         {/* Subtle Background Pattern/Glow */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
 
-        <div className="relative z-10 space-y-8">
-          <div className="flex items-center gap-3 border-b border-white/20 pb-4">
-            <Search className="size-8 text-white" />
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+        <div className="relative z-10 min-w-0 space-y-8">
+          <div className="flex min-w-0 items-center gap-3 border-b border-white/20 pb-4">
+            <Search className="size-8 shrink-0 text-white" />
+            <h2 className="min-w-0 whitespace-normal break-words text-2xl font-bold tracking-tight text-white [overflow-wrap:anywhere] sm:text-3xl">
               {title ||
                 `Choose Items to ${type === "PRODUCT" ? "Enquire" : "Book"}`}
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="space-y-2 group">
+          <div className="grid min-w-0 grid-cols-1 gap-6 md:grid-cols-3">
+            <div className="group min-w-0 space-y-2">
               <Label className="text-[10px] font-black tracking-[0.2em] text-white/60  pl-1">
                 Sub Category
               </Label>
-              <div className="relative">
+              <div className="relative min-w-0">
                 <CategorySearchAutocomplete
                   value={categoryId}
                   onValueChange={setCategoryId}
@@ -83,7 +83,7 @@ export function ItemSearch({
               </div>
             </div>
 
-            <div className="space-y-2 group">
+            <div className="group min-w-0 space-y-2">
               <Label className="text-[10px] font-black tracking-[0.2em] text-white/60  pl-1">
                 Brand
               </Label>
@@ -95,7 +95,7 @@ export function ItemSearch({
               />
             </div>
 
-            <div className="space-y-2 group">
+            <div className="group min-w-0 space-y-2">
               <Label className="text-[10px] font-black tracking-[0.2em] text-white/60  pl-1">
                 Specification
               </Label>
@@ -108,11 +108,11 @@ export function ItemSearch({
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="min-w-0 space-y-2">
             <Label className="text-[10px] font-black tracking-[0.2em] text-white/60  pl-1">
               Item Search
             </Label>
-            <div className="relative group">
+            <div className="group relative min-w-0">
               <Input
                 placeholder="Enter Name..."
                 value={search}
@@ -126,35 +126,35 @@ export function ItemSearch({
       </div>
 
       {/* Results Section */}
-      <div className="pt-4">
+      <div className="min-w-0 max-w-full pt-4">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20 bg-muted/30 rounded-3xl border-2 border-dashed border-primary/20">
             <Loader2 className="size-10 animate-spin text-primary mb-3" />
             <p className="text-primary font-bold">Searching for items...</p>
           </div>
         ) : items && items.length > 0 ? (
-          <div className="max-h-[500px] overflow-y-auto rounded-3xl border border-primary/10 bg-white/50 backdrop-blur-sm p-4 space-y-4 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+          <div className="max-h-[500px] min-w-0 max-w-full space-y-4 overflow-x-hidden overflow-y-auto rounded-3xl border border-primary/10 bg-white/50 p-4 backdrop-blur-sm scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/20">
             {items.map((item) => (
               <div
                 key={item.id}
-                className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-white shadow-sm ring-1 ring-primary/5 hover:ring-secondary/50 hover:shadow-xl transition-all animate-in fade-in slide-in-from-bottom-2 duration-300"
+                className="group flex w-full max-w-full min-w-0 flex-col justify-between gap-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-primary/5 transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 hover:shadow-xl hover:ring-secondary/50 sm:flex-row sm:items-center"
               >
-                <div className="flex items-center gap-4 min-w-0">
+                <div className="flex w-full min-w-0 flex-1 items-center gap-4">
                   <div className="bg-primary/5 p-3 rounded-xl group-hover:bg-secondary group-hover:text-white transition-all duration-300 shrink-0">
                     <Package className="size-6" />
                   </div>
-                  <div className="flex flex-col min-w-0">
-                    <h4 className="font-bold text-primary text-lg leading-tight truncate">
+                  <div className="flex min-w-0 flex-1 flex-col">
+                    <h4 className="whitespace-normal break-words text-lg font-bold leading-tight text-primary [overflow-wrap:anywhere]">
                       {item.name}
                     </h4>
                     <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-muted-foreground mt-1">
                       {item.brand && (
-                        <span className="flex items-center gap-1 bg-primary/5 px-2 py-0.5 rounded-md">
+                        <span className="flex min-w-0 max-w-full items-center gap-1 break-words rounded-md bg-primary/5 px-2 py-0.5 [overflow-wrap:anywhere]">
                           {item.brand.name}
                         </span>
                       )}
                       {item.category && (
-                        <span className="flex items-center gap-1 bg-primary/5 px-2 py-0.5 rounded-md">
+                        <span className="flex min-w-0 max-w-full items-center gap-1 break-words rounded-md bg-primary/5 px-2 py-0.5 [overflow-wrap:anywhere]">
                           {item.category.name}
                         </span>
                       )}

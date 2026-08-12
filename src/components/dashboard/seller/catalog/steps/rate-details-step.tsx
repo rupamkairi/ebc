@@ -61,12 +61,14 @@ export function RateDetailsStep({
         <div className="h-12 w-12 shrink-0 rounded-md bg-background border shadow-sm flex items-center justify-center text-primary">
           <Package size={24} />
         </div>
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <p className="text-[10px] font-semibold   text-muted-foreground">
             Selected Item
           </p>
-          <h4 className="text-lg font-bold truncate">{selectedItem?.name}</h4>
-          <p className="text-[11px] font-medium text-muted-foreground truncate">
+          <h4 className="whitespace-normal break-words text-lg font-bold [overflow-wrap:anywhere]">
+            {selectedItem?.name}
+          </h4>
+          <p className="break-words text-[11px] font-medium text-muted-foreground [overflow-wrap:anywhere]">
             {selectedItem?.category?.name}
             {selectedItem?.brand?.name ? ` • ${selectedItem.brand.name}` : ""}
           </p>
